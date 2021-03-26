@@ -1,7 +1,32 @@
-;;;; After this file is loaded, the rest of PAX can be written using
-;;;; DEFSECTION.
+(uiop:define-package 40ants-doc
+  (:documentation "See 40ants-doc:@index.")
+  (:nicknames 40ants-doc/core)
+  (:use #:common-lisp)
+  (:export #:define-package
+           #:defsection
+           #:exportable-locative-type-p
+           #:locative-args
+           #:locative-type
+           #:make-reference
+           #:reference
+           #:reference-object
+           #:reference-locative
+           #:section
+           #:section-name
+           #:section-package
+           #:section-readtable
+           #:section-title
+           #:section-link-title-to
+           #:section-entries
+           ;; TODO:
+           ;; Locatives for these symbols will be defined
+           ;; in the full 40ants-doc/full package:
+           #:reader
+           #:writer
+           #:accessor
+           #:macro))
+(in-package 40ants-doc)
 
-(in-package :mgl-pax-minimal)
 
 ;;; Should this remove docstrings of referenced things?
 (defvar *discard-documentation-p* nil
@@ -16,7 +41,7 @@
   "Define a documentation section and maybe export referenced symbols.
   A bit behind the scenes, a global variable with NAME is defined and
   is bound to a [SECTION][class] object. By convention, section names
-  start with the character `@`. See @MGL-PAX-TUTORIAL for an example.
+  start with the character `@`. See @40ANTS-DOC-TUTORIAL for an example.
 
   ENTRIES consists of docstrings and references. Docstrings are
   arbitrary strings in markdown format, references are defined in the
@@ -33,14 +58,14 @@
   A locative in a reference can either be a symbol or it can be a list
   whose CAR is a symbol. In either case, the symbol is the called the
   type of the locative while the rest of the elements are the locative
-  arguments. See @MGL-PAX-LOCATIVE-TYPES for the list of locative
+  arguments. See @40ANTS-DOC-LOCATIVE-TYPES for the list of locative
   types available out of the box.
 
   The same symbol can occur multiple times in a reference, typically
   with different locatives, but this is not required.
 
   The references are not looked up (see RESOLVE in the
-  @MGL-PAX-EXTENSION-API) until documentation is generated, so it is
+  @40ANTS-DOC-EXTENSION-API) until documentation is generated, so it is
   allowed to refer to things yet to be defined.
 
   If EXPORT is true (the default), the referenced symbols and NAME are
@@ -155,7 +180,7 @@
       ()))
 
 ;; This function is from alexandria, to not
-;; introduce any dependencies to mgl-pax-minimal
+;; introduce any dependencies to 40ants-doc/core
 (defun ensure-list (list)
   "If LIST is a list, it is returned. Otherwise returns the list designated by LIST."
   (if (listp list)
@@ -227,6 +252,9 @@
   nil)
 
 
+;; TODO: try to use uiop:define-package
+;; seems it is not have this package variance error on SBCL
+;; If it is correct, then we can remove this macro:
 (defmacro define-package (package &body options)
   "This is like CL:DEFPACKAGE but silences warnings and errors
   signaled when the redefined package is at variance with the current
@@ -244,7 +272,7 @@
   form:
 
   ```lisp
-  :defsystem-depends-on (\"mgl-pax-minimal\")
+  :defsystem-depends-on (\"40ants-doc\")
   ```
 "
   `(eval-when (:compile-toplevel :load-toplevel, :execute)

@@ -11,7 +11,7 @@
   :description "Exploratory programming tool and documentation generator, based on MGL-PAX."
   :class :package-inferred-system
   :pathname "src"
-  :depends-on ("core")
+  :depends-on ("40ants-doc/core")
   ;; :depends-on (:3bmd :3bmd-ext-code-blocks :alexandria :babel :cl-fad :colorize
   ;;              :ironclad :named-readtables :pythonic-string-reader :swank
   ;;              :mgl-pax-minimal)
