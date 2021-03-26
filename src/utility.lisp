@@ -1,4 +1,7 @@
-(in-package :mgl-pax)
+(uiop:define-package #:40ants-doc/utils
+  (:use #:cl))
+(in-package 40ants-doc/utils)
+
 
 (defun symbol-global-value (symbol)
   #+sbcl
