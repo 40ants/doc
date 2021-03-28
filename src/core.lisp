@@ -2,6 +2,7 @@
   (:documentation "See 40ants-doc:@index.")
   (:nicknames 40ants-doc/core)
   (:use #:common-lisp)
+  (:import-from #:40ants-doc/reference)
   (:export #:define-package
            #:defsection
            #:exportable-locative-type-p
@@ -108,29 +109,6 @@
                                     ()
                                     `(transform-entries ',entries))))))
 
-(defclass reference ()
-  ((object :initarg :object :reader reference-object)
-   (locative :initarg :locative :reader reference-locative))
-  (:documentation "A REFERENCE represents a path (REFERENCE-LOCATIVE)
-  to take from an object (REFERENCE-OBJECT)."))
-
-(defun make-reference (object locative)
-  (make-instance 'reference :object object :locative locative))
-
-(defmethod print-object ((object reference) stream)
-  (print-unreadable-object (object stream :type t)
-    (format stream "~S ~S" (reference-object object)
-            (reference-locative object))))
-
-(defun reference= (reference-1 reference-2)
-  (and (equal (reference-object reference-1)
-              (reference-object reference-2))
-       (equal (reference-locative reference-1)
-              (reference-locative reference-2))))
-
-(defun reference-locative-type (reference)
-  (locative-type (reference-locative reference)))
-
 (defclass section ()
   ((name
     :initarg :name :reader section-name
@@ -162,22 +140,6 @@
   (print-unreadable-object (section stream :type t)
     (format stream "~a" (section-name section))))
 
-(defun locative-type (locative)
-  "The first element of LOCATIVE if it's a list. If it's a symbol then
-  it's that symbol itself. Typically, methods of generic functions
-  working with locatives take locative type and locative args as
-  separate arguments to allow methods have eql specializers on the
-  type symbol."
-  (if (listp locative)
-      (first locative)
-      locative))
-
-(defun locative-args (locative)
-  "The REST of LOCATIVE if it's a list. If it's a symbol then
-  it's ()."
-  (if (listp locative)
-      (rest locative)
-      ()))
 
 ;; This function is from alexandria, to not
 ;; introduce any dependencies to 40ants-doc/core
@@ -204,13 +166,13 @@
     (assert (symbolp symbol) ()
             "~S is not a valid reference its first element is not a ~
             symbol." entry)
-    (make-reference symbol locative)))
+    (40ants-doc/reference::make-reference symbol locative)))
 
 (defun transform-link-title-to (link-title-to)
   (when link-title-to
     (if (typep link-title-to 'reference)
         link-title-to
-        (apply #'make-reference link-title-to))))
+        (apply #'40ants-doc/reference::make-reference link-title-to))))
 
 ;;;; Exporting
 
@@ -221,7 +183,7 @@
     (when (listp entry)
       (destructuring-bind (symbol locative) entry
         (when (and (symbol-accessible-in-package-p symbol package)
-                   (exportable-locative-type-p (locative-type locative)))
+                   (exportable-locative-type-p (40ants-doc/locatives/base::locative-type locative)))
           (export symbol package))))))
 
 (defun symbol-accessible-in-package-p (symbol package)
@@ -289,3 +251,5 @@
   ;; work with package inferred asdf systems:
   (pushnew 'define-package
            asdf/package-inferred-system:*defpackage-forms*))
+
+

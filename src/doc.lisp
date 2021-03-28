@@ -1,531 +1,343 @@
-(in-package :mgl-pax)
+(uiop:define-package #:40ants-doc/doc
+  (:use #:cl)
+  (:import-from #:40ants-doc
+                #:defsection))
+(in-package 40ants-doc/doc)
 
-(named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
-(defsection @mgl-pax-generating-documentation
-    (:title "Generating Documentation")
-  "Two convenience functions are provided to serve the common case of
-  having an ASDF system with some readmes and a directory with for the
-  HTML documentation and the default css stylesheet."
-  (update-asdf-system-readmes function)
-  (update-asdf-system-html-docs function)
-  (*document-html-max-navigation-table-of-contents-level* variable)
-  (*document-html-top-blocks-of-links* variable)
-  (*document-html-bottom-blocks-of-links* variable)
-  (@mgl-pax-github-workflow section)
-  (@mgl-pax-world section))
-
+(defsection @index (:title "40Ants Doc Manual")
+  "
+[![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
+"
+  (40ants-doc asdf:system)
+  (@mgl-pax-links section)
+  (@mgl-pax-background section)
+  (@mgl-pax-tutorial section)
+  (@mgl-pax-emacs-integration section)
+  (@mgl-pax-basics section)
+  (@mgl-pax-generating-documentation section)
+  (@mgl-pax-markdown-support section)
+  (@mgl-pax-documentation-printer-variables section)
+  (@mgl-pax-locative-types section)
+  (@mgl-pax-extension-api section)
+  (@mgl-pax-transcript section))
 
-(defparameter *default-output-options*
-  '(:if-does-not-exist :create
-    :if-exists :supersede
-    :ensure-directories-exist t))
+(defsection @mgl-pax-links (:title "Links")
+  "Here is the [official
+  repository](https://github.com/melisgl/mgl-pax) and the [HTML
+  documentation](http://melisgl.github.io/mgl-pax-world/mgl-pax-manual.html)
+  for the latest version.")
 
-(defun update-asdf-system-readmes (sections asdf-system)
-  "Convenience function to generate two readme files in the directory
-  holding the ASDF-SYSTEM definition.
+(defsection @mgl-pax-background (:export nil :title "Background")
+  "As a user, I frequently run into documentation that's incomplete
+  and out of date, so I tend to stay in the editor and explore the
+  code by jumping around with SLIME's [`M-.`][SLIME-M-.]. As a library
+  author, I spend a great deal of time polishing code, but precious
+  little writing documentation.
 
-  README.md has anchors, links, inline code, and other markup added.
-  Not necessarily the easiest on the eye in an editor, but looks good
-  on github.
+  [SLIME-M-.]: http://common-lisp.net/project/slime/doc/html/Finding-definitions.html#Finding-definitions
 
-  README is optimized for reading in text format. Has no links and
-  cluttery markup.
+  In fact, I rarely write anything more comprehensive than docstrings
+  for exported stuff. Writing docstrings feels easier than writing a
+  separate user manual and they are always close at hand during
+  development. The drawback of this style is that users of the library
+  have to piece the big picture together themselves.
 
-  Example usage:
+  That's easy to solve, I thought, let's just put all the narrative
+  that holds docstrings together in the code and be a bit like a
+  Literate Programming weenie turned inside out. The original
+  prototype which did almost everything I wanted was this:
 
   ```
-  (update-asdf-system-readmes @mgl-pax-manual :mgl-pax)
-  ```"
-  (with-open-file (stream (asdf:system-relative-pathname
-                           asdf-system "README.md")
-                          :direction :output
-                          :if-does-not-exist :create
-                          :if-exists :supersede)
-    (document sections :stream stream)
-    (print-markdown-footer stream))
-  (with-open-file (stream (asdf:system-relative-pathname
-                           asdf-system "README")
-                          :direction :output
-                          :if-does-not-exist :create
-                          :if-exists :supersede)
-    (loop for section in (alexandria:ensure-list sections) do
-      (describe section stream))
-    (print-markdown-footer stream)))
-
-(defun add-markdown-defaults-to-page-specs (sections page-specs dir)
-  (flet ((section-has-page-spec-p (section)
-           (some (lambda (page-spec)
-                   (member section (getf page-spec :objects)))
-                 page-specs)))
-    (mapcar (lambda (page-spec)
-              (add-markdown-defaults-to-page-spec page-spec dir))
-            (append page-specs
-                    (mapcar (lambda (section)
-                              `(:objects (,section)))
-                            (remove-if #'section-has-page-spec-p sections))))))
-
-(defun add-markdown-defaults-to-page-spec (page-spec filename)
-  `(,@page-spec
-    ,@(unless (getf page-spec :output)
-        `(:output (,filename ,@*default-output-options*)))
-    ,@(unless (getf page-spec :footer-fn)
-        `(:footer-fn ,#'print-markdown-footer))))
-
-(defun print-markdown-footer (stream)
-  (format stream "~%* * *~%")
-  (format stream "###### \\[generated by ~
-                 [MGL-PAX](https://github.com/melisgl/mgl-pax)\\]~%"))
-
-
-(defun update-asdf-system-html-docs (sections asdf-system &key pages
-                                     (target-dir (asdf:system-relative-pathname
-                                                  asdf-system "doc/"))
-                                     (update-css-p t))
-  "Generate pretty HTML documentation for a single ASDF system,
-  possibly linking to github. If UPDATE-CSS-P, copy the CSS style
-  sheet to TARGET-DIR, as well. Example usage:
-
-  ```commonlisp
-  (update-asdf-system-html-docs @mgl-pax-manual :mgl-pax)
+  (defmacro defsection (name docstring)
+    `(defun ,name () ,docstring))
   ```
 
-  The same, linking to the sources on github:
+  Armed with DEFSECTION, I soon found myself organizing code following
+  the flow of user level documentation and relegated comments to
+  implementational details entirely. However, some portions of
+  DEFSECTION docstrings were just listings of all the functions,
+  macros and variables related to the narrative, and this list was
+  effectively repeated in the DEFPACKAGE form complete with little
+  comments that were like section names. A clear violation of
+  [OAOO][oaoo], one of them had to go, so DEFSECTION got a list of
+  symbols to export.
+
+  [oaoo]: http://c2.com/cgi/wiki?OnceAndOnlyOnce
+
+  That was great, but soon I found that the listing of symbols is
+  ambiguous if, for example, a function, a compiler macro and a class
+  are named by the same symbol. This did not concern exporting, of
+  course, but it didn't help readability. Distractingly, on such
+  symbols, `M-.` was popping up selection dialogs. There were two
+  birds to kill, and the symbol got accompanied by a type which was
+  later generalized into the concept of locatives:
 
   ```commonlisp
-  (update-asdf-system-html-docs
-    @mgl-pax-manual :mgl-pax
-    :pages
-    `((:objects
-      (,mgl-pax:@mgl-pax-manual)
-      :source-uri-fn ,(make-github-source-uri-fn
-                       :mgl-pax
-                       \"https://github.com/melisgl/mgl-pax\"))))
-  ```"
-  (document-html sections pages target-dir update-css-p nil))
+  (defsection @mgl-pax-introduction ()
+    \"A single line for one man ...\"
+    (foo class)
+    (bar function))
+  ```
 
-;;; Generate with the default HTML look
-(defun document-html (sections page-specs target-dir update-css-p
-                      link-to-pax-world-p)
-  (when update-css-p
-    (copy-css target-dir))
-  (document sections
-            :pages (add-html-defaults-to-page-specs
-                    (alexandria:ensure-list sections)
-                    page-specs target-dir link-to-pax-world-p)
-            :format :html))
+  After a bit of elisp hacking, `M-.` was smart enough to disambiguate
+  based on the locative found in the vicinity of the symbol and
+  everything was good for a while.
 
-(defun add-html-defaults-to-page-specs (sections page-specs dir
-                                        link-to-pax-world-p)
-  (flet ((section-has-page-spec-p (section)
-           (some (lambda (page-spec)
-                   (member section (getf page-spec :objects)))
-                 page-specs)))
-    (mapcar (lambda (page-spec)
-              (add-html-defaults-to-page-spec page-spec dir
-                                              link-to-pax-world-p))
-            (append page-specs
-                    (mapcar (lambda (section)
-                              `(:objects (,section)))
-                            (remove-if #'section-has-page-spec-p sections))))))
+  Then I realized that sections could refer to other sections if there
+  were a SECTION locative. Going down that path, I soon began to feel
+  the urge to generate pretty documentation as all the necessary
+  information was manifest in the DEFSECTION forms. The design
+  constraint imposed on documentation generation was that following
+  the typical style of upcasing symbols in docstrings there should be
+  no need to explicitly mark up links: if `M-.` works, then the
+  documentation generator shall also be able find out what's being
+  referred to.
 
-(defun add-html-defaults-to-page-spec (page-spec dir link-to-pax-world-p)
-  (let* ((objects (getf page-spec :objects))
-         (section (if (and (= 1 (length objects))
-                           (typep (first objects) 'section))
-                      (first objects)
-                      nil))
-         (title (if section
-                    (section-title section)
-                    nil))
-         (filename (sections-to-filename objects dir)))
-    (flet ((header (stream)
-             (html-header stream :title title
-                          :stylesheet "style.css" :charset "UTF-8"
-                          :link-to-pax-world-p link-to-pax-world-p))
-           (footer (stream)
-             (html-footer stream)))
-      `(,@page-spec
-        ,@(unless (getf page-spec :output)
-            `(:output (,filename ,@*default-output-options*)))
-        ,@(unless (getf page-spec :header-fn)
-            `(:header-fn ,#'header))
-        ,@(unless (getf page-spec :footer-fn)
-            `(:footer-fn ,#'footer))))))
+  I settled on [Markdown][markdown] as a reasonably non-intrusive
+  format, and a few thousand lines later PAX was born.
 
-(defun sections-to-filename (sections dir)
-  (flet ((name (section)
-           (string-downcase
-            (remove-special-chars (symbol-name (section-name section))))))
-    (merge-pathnames (format nil "~{~A~^-~}.html"
-                             (mapcar #'name sections))
-                     dir)))
+  [markdown]: https://daringfireball.net/projects/markdown/")
 
-(defun remove-special-chars (string)
-  (remove-if (lambda (char)
-               (find char "!@#$%^&*"))
-             string))
+(defsection @mgl-pax-tutorial (:title "Tutorial")
+  """PAX provides an extremely poor man's Explorable Programming
+  environment. Narrative primarily lives in so called sections that
+  mix markdown docstrings with references to functions, variables,
+  etc, all of which should probably have their own docstrings.
 
-(defun copy-css (target-dir)
-  (ensure-directories-exist target-dir)
-  (loop for file in '("src/jquery.min.js" "src/toc.min.js" "src/style.css")
-        do (uiop:copy-file (asdf:system-relative-pathname :mgl-pax file)
-                           (merge-pathnames (file-namestring file)
-                                            target-dir))))
+  The primary focus is on making code easily explorable by using
+  SLIME's `M-.` (`slime-edit-definition`). See how to enable some
+  fanciness in @MGL-PAX-EMACS-INTEGRATION. Generating documentation
+  from sections and all the referenced items in Markdown or HTML
+  format is also implemented.
 
-(defvar *document-html-top-blocks-of-links* ()
-  "A list of blocks of links to be display on the sidebar on the left,
-  above the table of contents. A block is of the form `(&KEY TITLE ID
-  LINKS)`, where TITLE will be displayed at the top of the block in a
-  HTML `DIV` with `ID`, followed by the links. LINKS is a list
-  of `(URI LABEL) elements.`")
+  With the simplistic tools provided, one may accomplish similar
+  effects as with Literate Programming, but documentation is generated
+  from code, not vice versa and there is no support for chunking yet.
+  Code is first, code must look pretty, documentation is code.
 
-(defvar *document-html-bottom-blocks-of-links* ()
-  "Like *DOCUMENT-HTML-TOP-BLOCKS-OF-LINKS*, only it is displayed
-  below the table of contents.")
+  In typical use, PAX packages have no :EXPORT's defined. Instead the
+  DEFINE-PACKAGE form gets a docstring which may mention section
+  names (defined with DEFSECTION). When the code is loaded into the
+  lisp, pressing `M-.` in SLIME on the name of the section will take
+  you there. Sections can also refer to other sections, packages,
+  functions, etc and you can keep exploring.
 
-(defun html-header
-    (stream &key title stylesheet (charset "UTF-8")
-     link-to-pax-world-p
-     (top-blocks-of-links *document-html-top-blocks-of-links*)
-     (bottom-blocks-of-links *document-html-bottom-blocks-of-links*))
-  (format
-   stream
-   """<!DOCTYPE html>~%~
-   <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>~%~
-   <head>~%~
-   ~@[<title>~A</title>~]~%~
-   ~@[<link type='text/css' href='~A' rel='stylesheet'/>~]~%~
-   ~@[<meta http-equiv="Content-Type" ~
-            content="text/html; ~
-   charset=~A"/>~]~%~
-   <script src="jquery.min.js"></script>~%~
-   <script src="toc.min.js"></script>~%~
-   <script type="text/x-mathjax-config">
-     MathJax.Hub.Config({
-       tex2jax: {
-         inlineMath: [['$','$']],
-         processEscapes: true
-       }
-     });
-   </script>
-   <script type="text/javascript" ~
-    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
-   </script>
-   </head>~%~
-   <body>~%~
-   <div id="content-container">~%~
-     <div id="toc">~%~
-       ~A~
-       ~:[~;<div id="toc-header"><ul><li><a href="index.html">~
-            PAX World</a></li></ul></div>~%~]~
-       <div id="page-toc">~%~
-       </div>~%~
-       ~A~
-       <div id="toc-footer">~
-         <ul><li><a href="https://github.com/melisgl/mgl-pax">[generated ~
-             by MGL-PAX]</a></li></ul>~
-       </div>~%~
-     </div>~%~
-     <div id="content">~%"""
-   title stylesheet charset
-   (blocks-of-links-to-html-string top-blocks-of-links)
-   link-to-pax-world-p
-   (blocks-of-links-to-html-string bottom-blocks-of-links)))
-
-(defun blocks-of-links-to-html-string (blocks-of-links)
-  (format nil "~{~A~}" (mapcar #'block-of-links-to-html-string
-                               blocks-of-links)))
-
-(defun block-of-links-to-html-string (block-of-links)
-  (destructuring-bind (&key title id links) block-of-links
-    (with-output-to-string (stream)
-      (format stream "<div class=\"menu-block\"")
-      (when id
-        (format stream " id=\"~A\"" id))
-      (format stream ">")
-      (when title
-        (format stream "<span class=\"menu-block-title\">~A</span>" title))
-      (format stream "<ul>")
-      (dolist (link links)
-        (format stream "<li><a href=\"~A\">~A</a></li>"
-                (first link)
-                (second link)))
-      (princ "</ul></div>" stream))))
-
-(defvar *google-analytics-id* nil)
-
-(defun html-footer (stream &key (google-analytics-id *google-analytics-id*))
-  (format
-   stream
-   "  </div>~%~
-   </div>~%~
-   <script>$('#page-toc').toc(~A);</script>~%~
-   ~:[~;<script>
-   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){~
-   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement~
-   (o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.~
-   insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/~
-   analytics.js','ga');ga('create', '~A', 'auto');ga('send', 'pageview');~
-   </script>~%~]</body>~%</html>~%"
-   (toc-options)
-   google-analytics-id google-analytics-id))
-
-(defvar *document-html-max-navigation-table-of-contents-level* nil
-  "NIL or a non-negative integer. If non-NIL, it overrides
-  *DOCUMENT-MAX-NUMBERING-LEVEL* in dynamic HTML table of contents on
-  the left of the page.")
-
-(defun toc-options ()
-  (let ((max-level (or *document-html-max-navigation-table-of-contents-level*
-                       *document-max-table-of-contents-level*)))
-    (format nil "{'selectors': '~{~A~^,~}'}"
-            (loop for i upfrom 1 upto (1+ max-level)
-                  collect (format nil "h~S" i)))))
-
-
-
-(defsection @mgl-pax-github-workflow (:title "Github Workflow")
-  "It is generally recommended to commit generated readmes (see
-  UPDATE-ASDF-SYSTEM-READMES) so that users have something to read
-  without reading the code and sites like github can display them.
-
-  HTML documentation can also be committed, but there is an issue with
-  that: when linking to the sources (see MAKE-GITHUB-SOURCE-URI-FN),
-  the commit id is in the link. This means that code changes need to
-  be committed first, then HTML documentation regenerated and
-  committed in a followup commit.
-
-  The second issue is that github is not very good at serving HTMLs
-  files from the repository itself (and
-  [http://htmlpreview.github.io](http://htmlpreview.github.io) chokes
-  on links to the sources).
-
-  The recommended workflow is to use
-  [gh-pages](https://pages.github.com/), which can be made relatively
-  painless with the `git workflow` command. The gist of it is to make
-  the `doc/` directory a checkout of the branch named `gh-pages`. A
-  good description of this process is
-  [http://sangsoonam.github.io/2019/02/08/using-git-worktree-to-deploy-github-pages.html](http://sangsoonam.github.io/2019/02/08/using-git-worktree-to-deploy-github-pages.html).
-  Two commits needed still, but it is somewhat less painful.
-
-  This way the HTML documentation will be available at
-  `http://<username>.github.io/<repo-name>`. It is probably a good
-  idea to add section like the @MGL-PAX-LINKS section to allow jumping
-  between the repository and the gh-pages site."
-  (make-github-source-uri-fn function))
-
-(defun make-github-source-uri-fn (asdf-system github-uri &key git-version)
-  "Return a function suitable as :SOURCE-URI-FN of a page spec (see
-  the PAGES argument of DOCUMENT). The function looks the source
-  location of the reference passed to it, and if the location is
-  found, the path is made relative to the root directory of
-  ASDF-SYSTEM and finally an URI pointing to github is returned. The
-  URI looks like this:
-
-      https://github.com/melisgl/mgl-pax/blob/master/src/pax-early.lisp#L12
-
-  \"master\" in the above link comes from GIT-VERSION.
-
-  If GIT-VERSION is NIL, then an attempt is made to determine to
-  current commit id from the `.git` in the directory holding
-  ASDF-SYSTEM. If no `.git` directory is found, then no links to
-  github will be generated.
-
-  A separate warning is signalled whenever source location lookup
-  fails or if the source location points to a directory not below the
-  directory of ASDF-SYSTEM."
-  (let* ((git-version (or git-version (asdf-system-git-version asdf-system)))
-         (system-dir (asdf:system-relative-pathname asdf-system "")))
-    (if git-version
-        (let ((line-file-position-cache (make-hash-table :test #'equal))
-              (find-source-cache (make-hash-table :test #'equal)))
-          (lambda (reference)
-            (let ((*find-source-cache* find-source-cache))
-              (multiple-value-bind (relative-path line-number)
-                  (convert-source-location (find-source
-                                            (mgl-pax:resolve reference))
-                                           system-dir reference
-                                           line-file-position-cache)
-                (when relative-path
-                  (format nil "~A/blob/~A/~A#L~S" github-uri git-version
-                          relative-path (1+ line-number)))))))
-        (warn "No GIT-VERSION given and can't find .git directory ~
-              for ASDF system~% ~A. Links to github will not be generated."
-              (asdf:component-name (asdf:find-system asdf-system))))))
-
-(defun asdf-system-git-version (system)
-  (let ((git-dir
-          (merge-pathnames (make-pathname :directory '(:relative ".git"))
-                           (asdf:system-relative-pathname
-                            (asdf:component-name (asdf:find-system system))
-                            ""))))
-    (if (probe-file git-dir)
-        (git-version git-dir)
-        nil)))
-
-(defun git-version (git-dir)
-  (let ((head-string (read-first-line
-                      (merge-pathnames (make-pathname :name "HEAD") git-dir))))
-    (if (alexandria:starts-with-subseq "ref: " head-string)
-        (let ((ref (subseq head-string 5)))
-          (values (read-first-line (merge-pathnames ref git-dir)) ref))
-        head-string)))
-
-(defun read-first-line (filename)
-  (with-open-file (stream filename)
-    (read-line stream)))
-
-(defun convert-source-location (source-location system-dir reference
-                                line-file-position-cache)
-  (cond ((or
-          ;; CCL
-          (null source-location)
-          ;; SBCL, AllegroCL
-          (eq (first source-location) :error))
-         (warn "~@<No source location found for reference ~:_~A: ~:_~A~%~@:>"
-               reference (second source-location)))
-        (t
-         (assert (eq (first source-location) :location))
-         (let* ((filename (second (assoc :file (rest source-location))))
-                (position (second (assoc :position (rest source-location))))
-                (relative-path (and filename
-                                    (enough-namestring filename system-dir))))
-           (if (and relative-path (cl-fad:pathname-relative-p relative-path))
-               (values relative-path
-                       (file-position-to-line-number filename position
-                                                     line-file-position-cache))
-               (warn "Source location for ~S is not below system ~
-                     directory ~S.~%" reference system-dir))))))
-
-(defun file-position-to-line-number (filename file-position cache)
-  (if (null file-position)
-      0
-      (let ((line-file-positions (or (gethash filename cache)
-                                     (setf (gethash filename cache)
-                                           (line-file-positions filename)))))
-        (loop for line-number upfrom 0
-              for line-file-position in line-file-positions
-              do (when (< file-position line-file-position)
-                   (return line-number))))))
-
-;;; This is cached because it is determining the line number for a
-;;; given file position would need to traverse the file, which is
-;;; extremely expesive. Note that position 0 is not included, but
-;;; FILE-LENGTH is.
-(defun line-file-positions (filename)
-  (with-open-file (stream filename)
-    (loop for line = (read-line stream nil nil)
-          for line-number upfrom 0
-          while line
-          collect (file-position stream))))
-
-
-(defsection @mgl-pax-world (:title "PAX World")
-  "PAX World is a registry of documents, which can generate
-  cross-linked HTML documentation pages for all the registered
-  documents."
-  (register-doc-in-pax-world function)
-  "For example, this is how PAX registers itself:"
-  (register-doc-example (include (:start (pax-sections function)
-                                  :end (end-of-register-doc-example variable))
-                                 :header-nl "```commonlisp"
-                                 :footer-nl "```"))
-  (update-pax-world function))
-
-(defvar *registered-pax-world-docs* ())
-
-(defun register-doc-in-pax-world (name sections page-specs)
-  "Register SECTIONS and PAGE-SPECS under NAME in PAX World. By
-  default, UPDATE-PAX-WORLD generates documentation for all of these."
-  (setq *registered-pax-world-docs*
-        (remove name *registered-pax-world-docs* :key #'first))
-  (push (list name sections page-specs) *registered-pax-world-docs*))
-
-;;; Register PAX itself.
-(defun pax-sections ()
-  (list @mgl-pax-manual))
-(defun pax-pages ()
-  `((:objects
-     (,mgl-pax:@mgl-pax-manual)
-     :source-uri-fn ,(make-github-source-uri-fn
-                      :mgl-pax
-                      "https://github.com/melisgl/mgl-pax"))))
-(register-doc-in-pax-world :mgl-pax (pax-sections) (pax-pages))
-(defvar end-of-register-doc-example)
-
-(defvar *pax-world-dir* nil
-  "The default location to which to write the generated documentation.
-  Defaults to:
+  Here is an example of how it all works together:
 
   ```commonlisp
-  (asdf:system-relative-pathname :mgl-pax \"world/\")
-  ```")
+  (mgl-pax:define-package :foo-random
+    (:documentation "This package provides various utilities for
+    random. See FOO-RANDOM:@FOO-RANDOM-MANUAL.")
+    (:use #:common-lisp #:mgl-pax))
 
-(defun update-pax-world (&key docs dir)
-  "Generate HTML documentation for all DOCS. By default, files are
-  created in *PAX-WORLD-DIR* or `(asdf:system-relative-pathname
-  :mgl-pax \"world/\")`, if NIL. DOCS is a list of entries of the
-  form (NAME SECTIONS PAGE-SPECS). The default for DOCS is all the
-  sections and pages registered with REGISTER-DOC-IN-PAX-WORLD.
+  (in-package :foo-random)
 
-  In the absence of :HEADER-FN :FOOTER-FN, :OUTPUT, every spec in
-  PAGE-SPECS is augmented with HTML headers, footers and output
-  location specifications (based on the name of the section).
+  (defsection @foo-random-manual (:title "Foo Random manual")
+    "Here you describe what's common to all the referenced (and
+    exported) functions that follow. They work with *FOO-STATE*,
+    and have a :RANDOM-STATE keyword arg. Also explain when to
+    choose which."
+    (foo-random-state class)
+    (state (reader foo-random-state))
+    "Hey we can also print states!"
+    (print-object (method () (foo-random-state t)))
+    (*foo-state* variable)
+    (gaussian-random function)
+    (uniform-random function)
+    ;; this is a subsection
+    (@foo-random-examples section))
 
-  If necessary a default page spec is created for every section."
-  (let ((dir (or dir (asdf:system-relative-pathname :mgl-pax "world/")))
-        (docs (or docs (sort (copy-seq *registered-pax-world-docs*) #'string<
-                             :key (lambda (entry)
-                                    (string (first entry)))))))
-    (multiple-value-bind (sections pages) (sections-and-pages docs)
-      (create-pax-world sections pages dir t))))
+  (defclass foo-random-state ()
+    ((state :reader state)))
 
-(defun sections-and-pages (registered-docs)
-  (values (apply #'append (mapcar #'second registered-docs))
-          (apply #'append (mapcar #'third registered-docs))))
+  (defmethod print-object ((object foo-random-state) stream)
+    (print-unreadable-object (object stream :type t)))
 
-;;; This section is not in the documentation of PAX-WORLD itself. It
-;;; is dynamically extended with the list of sections for which
-;;; UPDATE-PAX-WORLD was called. FIXME: this is not thread-safe.
-(defsection @mgl-pax-world-dummy (:title "PAX World")
-  "This is a list of documents generated with MGL-PAX in the default
-  style. The documents are cross-linked: links to other documents are
-  added automatically when a reference is found. Note that clicking on
-  the locative type (e.g. `[function]`) will take you to the sources
-  on github if possible.")
+  (defvar *foo-state* (make-instance 'foo-random-state)
+    "Much like *RANDOM-STATE* but uses the FOO algorithm.")
 
-(defun create-pax-world (sections page-specs dir update-css-p)
-  (set-pax-world-list sections)
-  (document-html (cons @mgl-pax-world-dummy sections)
-                 (cons `(:objects
-                         ,(list @mgl-pax-world-dummy)
-                         :output (,(merge-pathnames "index.html" dir)
-                                  ,@*default-output-options*))
-                       page-specs)
-                 dir update-css-p t))
+  (defun uniform-random (limit &key (random-state *foo-state*))
+    "Return a random number from the between 0 and LIMIT (exclusive)
+    uniform distribution."
+    nil)
 
-(defun set-pax-world-list (objects)
-  (setf (slot-value @mgl-pax-world-dummy 'mgl-pax::entries)
-        (list (first (section-entries @mgl-pax-world-dummy))
-              (with-output-to-string (stream)
-                (dolist (object objects)
-                  (format stream "- ~S~%~%" (section-name object)))))))
+  (defun gaussian-random (stddev &key (random-state *foo-state*))
+    "Return a random number from a zero mean normal distribution with
+    STDDEV."
+    nil)
 
-#+nil
-(progn
-  (update-asdf-system-readmes (pax-sections) :mgl-pax)
-  (update-asdf-system-html-docs (pax-sections) :mgl-pax :pages (pax-pages)))
+  (defsection @foo-random-examples (:title "Examples")
+    "Let's see the transcript of a real session of someone working
+    with FOO:
 
-#+nil
-(progn
-  (asdf:load-system :mgl-mat)
-  (asdf:load-system :named-readtables/doc)
-  (asdf:load-system :micmac)
-  (asdf:load-system :mgl-gpr)
-  (asdf:load-system :mgl)
-  (asdf:load-system :journal)
-  (asdf:load-system :trivial-utf-8/doc))
+    ```cl-transcript
+    (values (princ :hello) (list 1 2))
+    .. HELLO
+    => :HELLO
+    => (1 2)
 
-#+nil
-(update-pax-world)
+    (make-instance 'foo-random-state)
+    ==> #<FOO-RANDOM-STATE >
+    ```")
+  ```
+
+  Generating documentation in a very stripped down markdown format is
+  easy:
+
+  ```commonlisp
+  (describe @foo-random-manual)
+  ```
+
+  For this example, the generated markdown would look like this:
+
+      # Foo Random manual
+
+      ###### \[in package FOO-RANDOM\]
+      Here you describe what's common to all the referenced (and
+      exported) functions that follow. They work with *FOO-STATE*,
+      and have a :RANDOM-STATE keyword arg. Also explain when to
+      choose which.
+
+      - [class] FOO-RANDOM-STATE
+
+      - [reader] STATE FOO-RANDOM-STATE
+
+      Hey we can also print states!
+
+      - [method] PRINT-OBJECT (OBJECT FOO-RANDOM-STATE) STREAM
+
+      - [variable] *FOO-STATE* #<FOO-RANDOM-STATE >
+
+          Much like *RANDOM-STATE* but uses the FOO algorithm.
+
+      - [function] GAUSSIAN-RANDOM STDDEV &KEY (RANDOM-STATE *FOO-STATE*)
+
+          Return a random number from a zero mean normal distribution with
+          STDDEV.
+
+      - [function] UNIFORM-RANDOM LIMIT &KEY (RANDOM-STATE *FOO-STATE*)
+
+          Return a random number from the between 0 and LIMIT (exclusive)
+          uniform distribution.
+
+      ## Examples
+
+      Let's see the transcript of a real session of someone working
+      with FOO:
+
+      ```cl-transcript
+      (values (princ :hello) (list 1 2))
+      .. HELLO
+      => :HELLO
+      => (1 2)
+
+      (make-instance 'foo-random-state)
+      ==> #<FOO-RANDOM-STATE >
+
+      ```
+
+  More fancy markdown or HTML output with automatic markup and linking
+  of uppercase symbol names found in docstrings, section numbering,
+  table of contents, etc is possible by calling the DOCUMENT function.
+
+  *One can even generate documentation for different, but related
+  libraries at the same time with the output going to different files,
+  but with cross-page links being automatically added for symbols
+  mentioned in docstrings. See @MGL-PAX-GENERATING-DOCUMENTATION for
+  some convenience functions to cover the most common cases.*
+
+  Note how `(VARIABLE *FOO-STATE*)` in the DEFSECTION form both
+  exports `*FOO-STATE*` and includes its documentation in
+  `@FOO-RANDOM-MANUAL`. The symbols VARIABLE and FUNCTION are just two
+  instances of 'locatives' which are used in DEFSECTION to refer to
+  definitions tied to symbols. See @MGL-PAX-LOCATIVE-TYPES.
+
+  The transcript in the code block tagged with `cl-transcript` is
+  automatically checked for up-to-dateness. See
+  @MGL-PAX-TRANSCRIPT.""")
+
+(defsection @mgl-pax-emacs-integration (:title "Emacs Integration")
+  "Integration into SLIME's `M-.` (`slime-edit-definition`) allows one
+  to visit the source location of the thing that's identified by a
+  symbol and the locative before or after the symbol in a buffer. With
+  this extension, if a locative is the previous or the next expression
+  around the symbol of interest, then `M-.` will go straight to the
+  definition which corresponds to the locative. If that fails, `M-.`
+  will try to find the definitions in the normal way which may involve
+  popping up an xref buffer and letting the user interactively select
+  one of possible definitions.
+
+  *Note that the this feature is implemented in terms of
+  SWANK-BACKEND:FIND-SOURCE-LOCATION and
+  SWANK-BACKEND:FIND-DEFINITIONS whose support varies across the Lisp
+  implementations.*
+
+  In the following examples, pressing `M-.` when the cursor is on one
+  of the characters of `FOO` or just after `FOO`, will visit the
+  definition of function `FOO`:
+
+      function foo
+      foo function
+      (function foo)
+      (foo function)
+
+  In particular, references in a DEFSECTION form are in (SYMBOL
+  LOCATIVE) format so `M-.` will work just fine there.
+
+  Just like vanilla `M-.`, this works in comments and docstrings. In
+  this example pressing `M-.` on `FOO` will visit `FOO`'s default
+  method:
+
+  ```commonlisp
+  ;;;; See FOO `(method () (t t t))` for how this all works.
+  ;;;; But if the locative has semicolons inside: FOO `(method
+  ;;;; () (t t t))`, then it won't, so be wary of line breaks
+  ;;;; in comments.
+  ```
+
+  With a prefix argument (`C-u M-.`), one can enter a symbol plus a
+  locative separated by whitespace to preselect one of the
+  possibilities.
+
+  The `M-.` extensions can be enabled by adding this to your Emacs
+  initialization file (or loading `src/pax.el`):"
+  (pax.el (include #.(asdf:system-relative-pathname :mgl-pax "src/pax.el")
+                   :header-nl "```elisp" :footer-nl "```")))
+
+
+
+(defsection @mgl-pax-locatives-and-references
+    (:title "Locatives and References")
+  "While Common Lisp has rather good introspective abilities, not
+  everything is first class. For example, there is no object
+  representing the variable defined with `(DEFVAR
+  FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a REFERENCE that
+  captures the path to take from an object (the symbol FOO) to an
+  entity of interest (for example, the documentation of the variable).
+  The path is called the locative. A locative can be applied to an
+  object like this:
+
+  ```
+  (locate 'foo 'variable)
+  ```
+
+  which will return the same reference as `(MAKE-REFERENCE 'FOO
+  'VARIABLE)`. Operations need to know how to deal with references
+  which we will see in LOCATE-AND-COLLECT-REACHABLE-OBJECTS,
+  LOCATE-AND-DOCUMENT and LOCATE-AND-FIND-SOURCE.
+
+  Naturally, `(LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
+  need to muck with references when there is a perfectly good object."
+  (locate function)
+  (locate-error condition)
+  (locate-error-message (reader locate-error))
+  (locate-error-object (reader locate-error))
+  (locate-error-locative (reader locate-error))
+  (resolve function)
+  (reference class)
+  (reference-object (reader reference))
+  (reference-locative (reader reference))
+  (make-reference function)
+  (locative-type function)
+  (locative-args function))

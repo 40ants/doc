@@ -11,7 +11,13 @@
 ;;;;
 ;;;; - capture conditions signalled?
 
-(in-package :mgl-pax)
+(uiop:define-package #:40ants-doc/transcribe
+  (:use #:cl)
+  (:import-from #:40ants-doc/core
+                #:defsection)
+  (:import-from #:named-readtables)
+  (:import-from #:pythonic-string-reader))
+(in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

@@ -1,0 +1,11 @@
+(defpackage #:40ants-doc/full
+  (:use #:cl)
+  (:import-from #:40ants-doc/builder)
+  (:import-from #:40ants-doc/builder/reference)
+  (:import-from #:40ants-doc/locatives/section)
+  (:import-from #:40ants-doc/locatives/function)
+  (:import-from #:40ants-doc/locatives/dislocated)
+  (:import-from #:40ants-doc/render/navigation)
+  (:import-from #:40ants-doc/document/string)
+  (:import-from #:40ants-doc/github))
+(in-package 40ants-doc/full)

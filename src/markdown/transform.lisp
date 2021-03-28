@@ -1,0 +1,250 @@
+(defpackage #:40ants-doc/markdown/transform
+  (:use #:cl)
+  (:import-from #:alexandria)
+  (:import-from #:3bmd-code-blocks)
+  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/markdown)
+  (:import-from #:40ants-doc/transcribe)
+  (:import-from #:40ants-doc/definitions)
+  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/builder/printer))
+(in-package 40ants-doc/markdown/transform)
+
+
+;;; This is called by MAP-NAMES so the return values are NEW-TREE,
+;;; SLICE, N-CHARS-READ. Also called by TRANSLATE-TAGGED that expects
+;;; only a single return value: the new tree.
+(defun translate-uppercase-name (parent tree name known-references)
+  (declare (ignore parent))
+  (when (40ants-doc/utils::no-lowercase-chars-p name)
+    (flet ((foo (name)
+             (multiple-value-bind (refs n-chars-read)
+                 (40ants-doc/reference::references-for-similar-names name known-references)
+               (when refs
+                 (values `(,(40ants-doc/utils::code-fragment (40ants-doc/builder/printer::maybe-downcase name)))
+                         t n-chars-read)))))
+      (let ((emph (and (listp tree) (eq :emph (first tree)))))
+        (cond ((and emph (eql #\\ (alexandria:first-elt name)))
+               (values (list `(:emph ,(40ants-doc/builder/printer::maybe-downcase (subseq name 1))))
+                       t
+                       (length name)))
+              ((eql #\\ (alexandria:first-elt name))
+               ;; Discard the leading backslash escape.
+               (values (list (40ants-doc/builder/printer::maybe-downcase (subseq name 1)))
+                       t
+                       (length name)))
+              ((not 40ants-doc/builder/printer::*document-uppercase-is-code*)
+               nil)
+              (emph
+               (foo (format nil "*~A*" name)))
+              (t
+               (foo name)))))))
+
+
+(defun translate-emph (parent tree known-references)
+  (if (= 2 (length tree))
+      (let ((translation (translate-uppercase-name parent tree (second tree)
+                                                   known-references)))
+        (if translation
+            ;; Replace TREE with TRANSLATION, don't process
+            ;; TRANSLATION again recursively, slice the return value
+            ;; into the list of children of PARENT.
+            (values translation nil t)
+            ;; leave it alone, don't recurse, don't slice
+            (values tree nil nil)))
+      ;; leave it alone, recurse, don't slice
+      (values tree t nil)))
+
+
+;;; CODE-BLOCK looks like this:
+;;;
+;;;     (3BMD-CODE-BLOCKS::CODE-BLOCK :LANG "commonlisp" :CONTENT "42")
+(defun translate-code-block (parent code-block)
+  (declare (ignore parent))
+  (let ((lang (getf (rest code-block) :lang)))
+    (if (equal lang "cl-transcript")
+        `(3bmd-code-blocks::code-block
+          :lang ,lang
+          :content ,(40ants-doc/transcribe::transcribe (getf (rest code-block) :content)
+                                                       nil
+                                                       :update-only t
+                                                       :check-consistency t))
+        code-block)))
+
+
+
+(defun translate-to-code (parent tree known-references)
+  (cond ((stringp tree)
+         (let ((string tree))
+           (values (40ants-doc/utils::map-names string
+                                                (lambda (string start end)
+                                                  (let ((name (subseq string start end)))
+                                                    (translate-uppercase-name parent string name
+                                                                              known-references))))
+                   ;; don't recurse, do slice
+                   nil t)))
+        ((eq :emph (first tree))
+         (translate-emph parent tree known-references))
+        ((eq '3bmd-code-blocks::code-block (first tree))
+         (translate-code-block parent tree))
+        (t
+         (error "~@<Unexpected tree type ~S.~:@>" (first tree)))))
+
+
+;;;; Automatic markup of symbols
+
+(defun translate-to-links (parent tree known-references)
+  (break)
+  (cond
+    ;; (:CODE "something")
+    ((and (eq :code (first tree))
+          (= 2 (length tree))
+          (stringp (second tree)))
+     (let* ((name (second tree))
+            (translation (translate-name parent tree name known-references)))
+       (if translation
+           (values translation nil t)
+           tree)))
+    ;; [section][type], [`section`][type], [*var*][variable], [section][]
+    ((and (eq :reference-link (first tree)))
+     ;; For example, the tree for [`section`][type] is
+     ;; (:REFERENCE-LINK :LABEL ((:CODE "SECTION")) :DEFINITION "type")
+     (destructuring-bind (&key label definition tail) (rest tree)
+       (let* ((name (extract-name-from-label label))
+              (symbol (if name
+                          (40ants-doc/definitions::find-definitions-find-symbol-or-package name)
+                          nil)))
+         (if (not symbol)
+             tree
+             (let* ((references (remove symbol known-references
+                                        :test-not #'eq
+                                        :key #'40ants-doc/reference::reference-object))
+                    (references (if (and (zerop (length definition))
+                                         (equal tail "[]"))
+                                    (filter-references references)
+                                    (alexandria:ensure-list
+                                     (find-reference-by-locative-string
+                                      definition
+                                      ;; Explicit references don't
+                                      ;; need heuristic conflict
+                                      ;; resolution so we don't call
+                                      ;; FILTER-REFERENCES.
+                                      (filter-references-by-format
+                                       references)
+                                      :if-dislocated symbol)))))
+               (if references
+                   (values (format-references name references) nil t)
+                   tree))))))
+    (t
+     tree)))
+
+(defun extract-name-from-label (label)
+  (let ((e (first label)))
+    (cond ((stringp e)
+           e)
+          ((and (eq :emph (first e))
+                (= 2 (length e))
+                (stringp (second e)))
+           (format nil "*~A*" (second e)))
+          ((and (eq :code (first e))
+                (= 2 (length e))
+                (stringp (second e)))
+           (second e)))))
+
+
+;;; NAME-ELEMENT is a child of TREE. It is the name of the symbol or
+;;; it contains the name. Find a locative before or after NAME-ELEMENT
+;;; with which NAME occurs in KNOWN-REFERENCES. Return the matching
+;;; REFERENCE, if found. KNOWN-REFERENCES must only contain references
+;;; to the symbol.
+(defun find-locative-around (tree name-element possible-references)
+  (break)
+  (labels ((try (element)
+             (let ((reference
+                     (cond ((stringp element)
+                            (find-reference-by-locative-string
+                             element possible-references))
+                           ((eq :code (first element))
+                            (find-reference-by-locative-string
+                             (second element) possible-references))
+                           ;; (:REFERENCE-LINK :LABEL ((:CODE
+                           ;; "CLASS")) :DEFINITION "0524")
+                           ((eq :reference-link (first element))
+                            (try (first (third element)))))))
+               (when reference
+                 (return-from find-locative-around reference)))))
+    ;; For example, (:PLAIN "See" "function" " " "FOO")
+    (loop for rest on tree
+          do (when (and (eq (third rest) name-element)
+                        (stringp (second rest))
+                        (blankp (second rest)))
+               (try (first rest))
+               (return)))
+    ;; For example, (:PLAIN "See" "the" "FOO" " " "function")
+    (loop for rest on tree
+          do (when (and (eq (first rest) name-element)
+                        (stringp (second rest))
+                        (blankp (second rest)))
+               (try (third rest))
+               (return)))))
+
+
+;;; Translate NAME (a string) that's part of TREE (e.g. it's "xxx"
+;;; from (:CODE "xxx") or from "xxx,yyy"), or it's constructed from
+;;; TREE (e.g. it's "*SYM*" from (:EMPH "SYM")).
+(defun translate-name (parent tree name known-references)
+  (multiple-value-bind (refs n-chars-read)
+      (40ants-doc/reference::references-for-similar-names name known-references)
+    (when refs
+      (let ((refs (40ants-doc/page::filter-references refs)))
+        ;; If necessary, try to find a locative before or after NAME
+        ;; to disambiguate.
+        (when (and (< 1 (length refs))
+                   (40ants-doc/reference::references-for-the-same-symbol-p refs))
+          (let ((reference (find-locative-around parent tree refs)))
+            (when reference
+              (setq refs (list reference)))))
+        (values (40ants-doc/page::format-references
+                 (40ants-doc/builder/printer::maybe-downcase (subseq name 0 n-chars-read)) refs)
+                t
+                n-chars-read)))))
+
+;;; Take a string in markdown format and a list of KNOWN-REFERENCES.
+;;; Markup symbols as code (if *DOCUMENT-UPPERCASE-IS-CODE*), autolink
+;;; (if *DOCUMENT-LINK-SECTIONS*, *DOCUMENT-LINK-CODE*) and handle
+;;; explicit links with locatives (always). Return the transformed
+;;; string.
+(defun replace-known-references (string &key (known-references 40ants-doc/reference::*references*))
+  (when string
+    (let ((string
+            ;; Handle *DOCUMENT-UPPERCASE-IS-CODE* in normal strings
+            ;; and :EMPH (to recognize *VAR*).
+            (40ants-doc/markdown::map-markdown-parse-tree
+             '(:emph 3bmd-code-blocks::code-block)
+             '(:code :verbatim 3bmd-code-blocks::code-block
+               :reference-link :explicit-link :image :mailto)
+             t
+             (alexandria:rcurry #'translate-to-code known-references)
+             string)))
+      ;; Handle *DOCUMENT-LINK-CODE* (:CODE for `SYMBOL` and
+      ;; :REFERENCE-LINK for [symbol][locative]). Don't hurt links.
+      (40ants-doc/markdown::map-markdown-parse-tree
+       '(:code :reference-link)
+       '(:explicit-link :image :mailto)
+       nil
+       (alexandria:rcurry #'translate-to-links known-references)
+       string))))
+
+
+(defun massage-docstring (docstring &key (indentation "    "))
+  ;; (when (str:contains? "BAR function" docstring)
+  ;;   (break))
+  (if 40ants-doc/builder/vars::*table-of-contents-stream*
+      ;; The output is going to /dev/null and this is a costly
+      ;; operation, skip it.
+      ""
+      (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
+        (40ants-doc/utils::prefix-lines indentation
+                                        (replace-known-references docstring)))))

@@ -1,5 +1,6 @@
 (uiop:define-package #:40ants-doc/utils
-  (:use #:cl))
+  (:use #:cl)
+  (:import-from #:40ants-doc/builder/vars))
 (in-package 40ants-doc/utils)
 
 
@@ -446,21 +447,6 @@
         (t
          (values tree (and tree (listp tree)) nil))))
 
-(defun map-markdown-parse-tree (tags stop-tags handle-strings fn string)
-  (let* ((3bmd-grammar:*smart-quotes* nil)
-         (parse-tree
-           ;; To be able to recognize symbols like FOO* join (...
-           ;; "FOO" "*" ...) to look like (... "FOO*" ...).
-           (join-consecutive-non-blank-strings-in-parse-tree
-            (3bmd-grammar:parse-doc string))))
-    (with-output-to-string (out)
-      (3bmd::print-doc-to-stream-using-format
-       (transform-tree (lambda (parent tree)
-                         (defer-tag-handling tags stop-tags handle-strings
-                           fn parent tree))
-                       parse-tree)
-       out :markdown))))
-
 (defun join-consecutive-non-blank-strings-in-parse-tree (parse-tree)
   (transform-tree
    (lambda (parent tree)
@@ -481,3 +467,120 @@
                 (concatenate 'string (first result) element))
           (push element result)))
     (reverse result)))
+
+
+(defun no-lowercase-chars-p (string)
+  (notany (lambda (char)
+            (char/= char (char-upcase char)))
+          ;; Allows plurals as in "FRAMEs" and "FRAMEs."
+          (string-right-trim 40ants-doc/builder/vars::*find-definitions-right-trim-2* string)))
+
+
+;;;; Indentation utilities
+
+
+(defun n-leading-spaces (line)
+  (let ((n 0))
+    (loop for i below (length line)
+          while (char= (aref line i) #\Space)
+          do (incf n))
+    n))
+
+;;; Return the minimum number of leading spaces in non-blank lines
+;;; after the first.
+(defun docstring-indentation (docstring &key (first-line-special-p t))
+  (let ((n-min-indentation nil))
+    (with-input-from-string (s docstring)
+      (loop for i upfrom 0
+            for line = (read-line s nil nil)
+            while line
+            do (when (and (or (not first-line-special-p) (plusp i))
+                          (not (blankp line)))
+                 (when (or (null n-min-indentation)
+                           (< (n-leading-spaces line) n-min-indentation))
+                   (setq n-min-indentation (n-leading-spaces line))))))
+    (or n-min-indentation 0)))
+
+;;; Add PREFIX to every line in STRING.
+(defun prefix-lines (prefix string &key exclude-first-line-p)
+  (with-output-to-string (out)
+    (with-input-from-string (in string)
+      (loop for i upfrom 0 do
+        (multiple-value-bind (line missing-newline-p) (read-line in nil nil)
+          (unless line
+            (return))
+          (if (and exclude-first-line-p (= i 0))
+              (format out "~a" line)
+              (format out "~a~a" prefix line))
+          (unless missing-newline-p
+            (terpri out)))))))
+
+
+;;; Normalize indentation of docstrings as it's described in
+;;; (METHOD () (STRING T)) DOCUMENT-OBJECT.
+(defun strip-docstring-indentation (docstring &key (first-line-special-p t))
+  (let ((indentation
+          (docstring-indentation docstring
+                                 :first-line-special-p first-line-special-p)))
+    (values (with-output-to-string (out)
+              (with-input-from-string (s docstring)
+                (loop for i upfrom 0
+                      do (multiple-value-bind (line missing-newline-p)
+                             (read-line s nil nil)
+                           (unless line
+                             (return))
+                           (if (and first-line-special-p (zerop i))
+                               (write-string line out)
+                               (write-string (subseq* line indentation) out))
+                           (unless missing-newline-p
+                             (terpri out))))))
+            indentation)))
+
+
+(defun delimiterp (char)
+  (or (whitespacep char)
+      (find char "()'`\"#<")))
+
+
+;;; Call FN with STRING and START, END indices. FN returns three
+;;; values: a replacement parse tree fragment (or NIL, if the subseq
+;;; shall not be replaced), whether the replacement shall be sliced
+;;; into the result list, and the number of characters replaced (may
+;;; be less than (- END START). MAP-NAMES returns a parse tree
+;;; fragment that's a list of non-replaced parts of STRING and
+;;; replacements (maybe sliced). Consecutive strings are concatenated.
+(defun map-names (string fn)
+  (let ((translated ())
+        (i 0)
+        (n (length string)))
+    (flet ((add (a)
+             (if (and (stringp a)
+                      (stringp (first translated)))
+                 (setf (first translated)
+                       (concatenate 'string (first translated) a))
+                 (push a translated ))))
+      (loop while (< i n)
+            for prev = nil then char
+            for char = (aref string i)
+            do (let ((replacement nil)
+                     (n-chars-replaced nil)
+                     (slice nil))
+                 (when (and (not (delimiterp char))
+                            (or (null prev) (delimiterp prev)))
+                   (let ((end (or (position-if #'delimiterp string :start i)
+                                  (length string))))
+                     (multiple-value-setq (replacement slice n-chars-replaced)
+                       (funcall fn string i end))
+                     (when replacement
+                       (if slice
+                           (dolist (a replacement)
+                             (add a))
+                           (add replacement))
+                       (if n-chars-replaced
+                           (incf i n-chars-replaced)
+                           (setq i end)))))
+                 (unless replacement
+                   (add (string char))
+                   (incf i)))))
+    (reverse translated)))
+
