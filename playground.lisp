@@ -29,6 +29,7 @@
   (@locative 40ants-doc/core::section)
   (@macro 40ants-doc/core::section)
   (@methods 40ants-doc/core::section)
+  (@package 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -126,6 +127,11 @@
 (40ants-doc:defsection @methods (:title "Generic and methods")
   (get-address generic-function)
   (get-address (method () (user))))
+
+
+(40ants-doc:defsection @package (:title "Package")
+  (40ants-doc package)
+  (40ants-doc/full package))
 
 
 
