@@ -22,6 +22,7 @@
   (@asdf 40ants-doc/core::section)
   (@function 40ants-doc/core::section)
   (@class 40ants-doc/core::section)
+  (@structure 40ants-doc/core::section)
   (@compiler-macro 40ants-doc/core::section)
   (@constant 40ants-doc/core::section)
   (@vars 40ants-doc/core::section)
@@ -123,9 +124,22 @@
   (user-nickname (40ants-doc/locatives/slots::reader user))
   (user-email (40ants-doc/locatives/slots::accessor user)))
 
-
 (defgeneric get-address (entity)
   (:documentation "Docstring of the generic function."))
+
+
+(defstruct box
+  x
+  y
+  width
+  (height 0
+   :type integer
+   :read-only t))
+
+
+(40ants-doc:defsection @structure (:title "Structures")
+  (box-width 40ants-doc/locatives/structure-accessor::structure-accessor)
+  (box-height 40ants-doc/locatives/structure-accessor::structure-accessor))
 
 
 (defmethod get-address ((user user))

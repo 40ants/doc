@@ -111,6 +111,9 @@
   (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
   (write-char #\Space stream)
   (40ants-doc/render/args::print-arglist locative-args stream)
+
+  ;; TODO: Show type using (swank-mop:slot-definition-type slot-def)
+  
   (when (or (swank-mop:slot-definition-initargs slot-def)
             (swank-mop:slot-definition-initfunction slot-def))
     (write-char #\Space stream)
