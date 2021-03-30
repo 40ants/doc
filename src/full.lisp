@@ -20,6 +20,7 @@
   (:import-from #:40ants-doc/locatives/generic-function)
   (:import-from #:40ants-doc/locatives/method)
   (:import-from #:40ants-doc/locatives/package)
+  (:import-from #:40ants-doc/locatives/restart)
   
   (:import-from #:40ants-doc/render/navigation)
   (:import-from #:40ants-doc/document/string)

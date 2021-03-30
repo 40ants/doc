@@ -6,7 +6,8 @@
   (:import-from #:40ants-doc/document)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/locatives/base)
-  (:import-from #:40ants-doc/definitions))
+  (:import-from #:40ants-doc/definitions)
+  (:import-from #:40ants-doc/locatives/dislocated))
 (in-package 40ants-doc/reference)
 
 
@@ -76,7 +77,7 @@
   ;; be recognized without markup because its name is too short. The
   ;; correct solution would be to add links automatically for the
   ;; hyperspec.
-  (list (make-reference t 'dislocated)))
+  (list (make-reference t '40ants-doc/locatives/dislocated::dislocated)))
 
 
 ;;; Return the references from REFS which are for SYMBOL or which are
@@ -100,7 +101,7 @@
                        refs)
         ;; Don't codify A, I and similar.
         (if (< 2 n-chars-read)
-            (list (make-reference symbol 'dislocated))
+            (list (make-reference symbol '40ants-doc/locatives/dislocated::dislocated))
             ()))))
 
 
@@ -118,7 +119,7 @@
 ;;; If there is a DISLOCATED reference, then don't link anywhere
 ;;; (remove all the other references).
 (defun resolve-dislocated (refs)
-  (let ((ref (find 'dislocated refs :key #'reference-locative-type)))
+  (let ((ref (find '40ants-doc/locatives/dislocated::dislocated refs :key #'reference-locative-type)))
     (if ref
         (list ref)
         refs)))

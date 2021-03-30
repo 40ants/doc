@@ -30,6 +30,7 @@
   (@macro 40ants-doc/core::section)
   (@methods 40ants-doc/core::section)
   (@package 40ants-doc/core::section)
+  (@restart 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -134,6 +135,14 @@
   (40ants-doc/full package))
 
 
+
+;; TODO: make this public
+(40ants-doc/locatives/restart::define-restart retry-this-error ()
+    "Some docstring for restart")
+
+
+(40ants-doc:defsection @restart (:title "Restarts")
+  (retry-this-error restart))
 
 (40ants-doc:defsection @todo (:title "TODO")
   "Here what I need to check and fix:
