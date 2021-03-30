@@ -32,6 +32,7 @@
   (@methods 40ants-doc/core::section)
   (@package 40ants-doc/core::section)
   (@restart 40ants-doc/core::section)
+  (@type 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -140,6 +141,21 @@
 (40ants-doc:defsection @structure (:title "Structures")
   (box-width 40ants-doc/locatives/structure-accessor::structure-accessor)
   (box-height 40ants-doc/locatives/structure-accessor::structure-accessor))
+
+
+(defun a-few-p (value)
+  (and (> value 0)
+       (<= value 3)))
+
+
+(deftype a-few (&optional (type 'integer))
+  "Very small integer, less or equal than 3."
+  `(and ,type
+        (satisfies a-few-p)))
+
+
+(40ants-doc:defsection @type (:title "Types")
+  (a-few type))
 
 
 (defmethod get-address ((user user))
