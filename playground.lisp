@@ -28,6 +28,7 @@
   (@glossary 40ants-doc/core::section)
   (@locative 40ants-doc/core::section)
   (@macro 40ants-doc/core::section)
+  (@methods 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -111,6 +112,21 @@
 
 (40ants-doc:defsection @class (:title "Classes")
   (user class))
+
+
+(defgeneric get-address (entity)
+  (:documentation "Docstring of the generic function."))
+
+
+(defmethod get-address ((user user))
+  "Returns user's address."
+  :foo-bar)
+
+
+(40ants-doc:defsection @methods (:title "Generic and methods")
+  (get-address generic-function)
+  (get-address (method () (user))))
+
 
 
 (40ants-doc:defsection @todo (:title "TODO")

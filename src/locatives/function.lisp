@@ -24,8 +24,6 @@
   the quality of SWANK-BACKEND:ARGLIST. It may be that default
   values of optional and keyword arguments are missing.")
 
-(define-locative-type generic-function ())
-
 (defmethod locate-object (symbol (locative-type (eql 'function)) locative-args)
   (declare (ignore locative-args))
   (when (macro-function symbol)
@@ -35,19 +33,8 @@
       (locate-error "~S is a generic function, not a plain function." symbol))
     function))
 
-(defmethod locate-object (symbol (locative-type (eql 'generic-function))
-                          locative-args)
-  (declare (ignore locative-args))
-  (let ((function (symbol-function symbol)))
-    (unless (typep function 'generic-function)
-      (locate-error "#'~S is not a generic function." symbol))
-    function))
-
 (defmethod canonical-reference ((function function))
   (40ants-doc/reference::make-reference (swank-backend:function-name function) 'function))
-
-(defmethod canonical-reference ((function generic-function))
-  (40ants-doc/reference::make-reference (swank-mop:generic-function-name function) 'generic-function))
 
 (defmethod document-object ((function function) stream)
   (let ((reference (canonical-reference function)))
