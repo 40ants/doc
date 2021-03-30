@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/markdown
+(uiop:define-package #:40ants-doc/markdown
   (:use #:cl)
   (:import-from #:40ants-doc/core
                 #:defsection)

@@ -8,6 +8,7 @@
   (:import-from #:40ants-doc/locatives/class)
   (:import-from #:40ants-doc/locatives/asdf-system)
   (:import-from #:40ants-doc/locatives/argument)
+  (:import-from #:40ants-doc/locatives/compiler-macro)
   (:import-from #:40ants-doc/render/navigation)
   (:import-from #:40ants-doc/document/string)
   (:import-from #:40ants-doc/github))

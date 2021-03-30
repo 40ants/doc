@@ -167,9 +167,10 @@
   (let ((object (resolve reference)))
     (if (typep object 'reference)
         (let ((locative (reference-locative reference)))
-          (locate-and-collect-reachable-objects (reference-object reference)
-                                                (locative-type locative)
-                                                (locative-args locative)))
+          (40ants-doc/locatives/base::locate-and-collect-reachable-objects
+           (reference-object reference)
+           (40ants-doc/locatives/base::locative-type locative)
+           (40ants-doc/locatives/base::locative-args locative)))
         (collect-reachable-objects object))))
 
 

@@ -12,7 +12,7 @@
 
 ;; Надо разобраться почему не работает явное указание locatives
 (defun bar (user)
-  "Cool! This function prints its USER argument of BAR."
+  "Cool! This function prints its USER argument of BAR function."
   (format t "BAR: ~S~%"
           user))
 
@@ -22,6 +22,7 @@
   (@asdf 40ants-doc/core::section)
   (@function 40ants-doc/core::section)
   (@class 40ants-doc/core::section)
+  (@compiler-macro 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -35,6 +36,17 @@
 
 (40ants-doc:defsection @asdf (:title "ASDF System")
   (40ants-doc asdf:system))
+
+
+(define-compiler-macro bar (&whole form arg)
+  "A custom dostring for a compiler macro"
+  (format t "Expanding: ~S" form)
+  (if (atom arg)
+      arg
+      form))
+
+(40ants-doc:defsection @compiler-macro (:title "Compiler macro")
+  (bar compiler-macro))
 
 
 (defclass user ()
