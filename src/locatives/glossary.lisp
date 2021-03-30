@@ -53,8 +53,8 @@
 (40ants-doc/locatives/base::define-locative-type glossary-term ()
   "Refers to a glossary term defined by DEFINE-GLOSSARY-TERM.")
 
-(defmethod locate-object (symbol (locative-type (eql 'glossary-term))
-                          locative-args)
+(defmethod 40ants-doc/locatives/base::locate-object (symbol (locative-type (eql 'glossary-term))
+                                                     locative-args)
   (declare (ignore locative-args))
   (assert (typep (symbol-value symbol) 'glossary-term))
   (symbol-value symbol))
@@ -69,7 +69,7 @@
         (when docstring
           (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring)))))))
 
-(defmethod canonical-reference ((glossary-term glossary-term))
+(defmethod 40ants-doc/reference-api::canonical-reference ((glossary-term glossary-term))
   (40ants-doc/reference::make-reference (glossary-term-name glossary-term) 'glossary-term))
 
 (defmethod 40ants-doc/source::find-source ((glossary-term glossary-term))
@@ -78,6 +78,6 @@
 
 (defmethod 40ants-doc/reference-api::format-reference ((obj glossary-term) name ref link)
   `((:reference-link :label (,(40ants-doc/locatives/glossary::glossary-term-title-or-name
-                               (40ants-doc/locatives/base::resolve ref)))
+                               (40ants-doc/reference::resolve ref)))
                      :definition ,link)))
 

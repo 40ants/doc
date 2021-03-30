@@ -25,6 +25,7 @@
   (@compiler-macro 40ants-doc/core::section)
   (@constant 40ants-doc/core::section)
   (@vars 40ants-doc/core::section)
+  (@glossary 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -69,13 +70,20 @@
 (defvar *var-c*)
 
 (setf (documentation '*var-c* 'variable)
-      "Unbound var with docstring.")
+      "Unbound var with docstring. LISP allows us to define docstring separately.")
 
 
 (40ants-doc:defsection @vars (:title "Variables")
   (*var-a* variable)
   (*var-b* variable)
   (*var-c* variable))
+
+
+(40ants-doc/locatives/glossary::define-glossary-term lisp (:title "The Best Programmin Language")
+                                                     "A glossary docstring")
+
+(40ants-doc:defsection @glossary (:title "Glossary")
+  (lisp 40ants-doc/locatives/glossary::glossary-term))
 
 
 (defclass user ()

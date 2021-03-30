@@ -14,6 +14,7 @@
   (:import-from #:40ants-doc/locatives/compiler-macro)
   (:import-from #:40ants-doc/locatives/constant)
   (:import-from #:40ants-doc/locatives/variable)
+  (:import-from #:40ants-doc/locatives/glossary)
   
   (:import-from #:40ants-doc/render/navigation)
   (:import-from #:40ants-doc/document/string)
