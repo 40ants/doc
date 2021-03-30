@@ -1,10 +1,27 @@
-(defpackage #:40ants-doc/locatives/clos
+(uiop:define-package #:40ants-doc/locatives/slots
   (:use #:cl)
-  (:import-from #:40ants-doc/builder/printer))
-(in-package 40ants-doc/locatives/clos)
+  (:import-from #:40ants-doc/locatives/base
+                #:locate-and-document
+                #:locate-error
+                #:locate-object
+                #:define-locative-type)
+  (:import-from #:40ants-doc/document
+                #:document-object)
+  (:import-from #:40ants-doc/render/args)
+  (:import-from #:40ants-doc/builder/bullet)
+  (:import-from #:40ants-doc/reference-api
+                #:canonical-reference)
+  (:import-from #:40ants-doc/args)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:40ants-doc/render/print)
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/page)
+  (:import-from #:swank-mop)
+  (:import-from #:40ants-doc/builder/printer)
+  (:import-from #:40ants-doc/markdown/transform))
+(in-package 40ants-doc/locatives/slots)
 
-
-;; TODO: Fix it
 
 (define-locative-type accessor (class-name)
   "To refer to an accessor named `FOO-SLOT` of class
@@ -29,7 +46,8 @@
   (assert (= 1 (length locative-args)) ()
           "The syntax of the ACCESSOR locative is (ACCESSOR <CLASS-NAME>).")
   (find-accessor-slot-definition symbol (first locative-args))
-  (make-reference symbol (cons locative-type locative-args)))
+  (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
+
 
 (defun find-accessor-slot-definition (accessor-symbol class-symbol)
   (dolist (slot-def (swank-mop:class-direct-slots (find-class class-symbol)))
@@ -47,7 +65,7 @@
   (assert (= 1 (length locative-args)) ()
           "The syntax of the READER locative is (READER <CLASS-NAME>).")
   (find-reader-slot-definition symbol (first locative-args))
-  (make-reference symbol (cons locative-type locative-args)))
+  (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
 
 (defun find-reader-slot-definition (accessor-symbol class-symbol)
   (dolist (slot-def (swank-mop:class-direct-slots (find-class class-symbol)))
@@ -61,7 +79,7 @@
   (assert (= 1 (length locative-args)) ()
           "The syntax of the WRITER locative is (WRITER <CLASS-NAME>).")
   (find-writer-slot-definition symbol (first locative-args))
-  (make-reference symbol (cons locative-type locative-args)))
+  (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
 
 (defun find-writer-slot-definition (accessor-symbol class-symbol)
   (dolist (slot-def (swank-mop:class-direct-slots (find-class class-symbol)))
@@ -90,29 +108,30 @@
 
 (defun generate-documentation-for-slot-definition
     (symbol slot-def locative-type locative-args stream)
-  (locate-and-print-bullet locative-type locative-args symbol stream)
+  (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
   (write-char #\Space stream)
-  (print-arglist locative-args stream)
+  (40ants-doc/render/args::print-arglist locative-args stream)
   (when (or (swank-mop:slot-definition-initargs slot-def)
             (swank-mop:slot-definition-initfunction slot-def))
     (write-char #\Space stream)
-    (if (and *document-mark-up-signatures* (eq 40ants-doc/builder/printer::*format* :html))
+    (if (and 40ants-doc/builder/vars::*document-mark-up-signatures*
+             (eq 40ants-doc/builder/printer::*format* :html))
         (let ((initarg-strings
                 (when (swank-mop:slot-definition-initargs slot-def)
-                  (mapcar #'prin1-and-escape-markdown
+                  (mapcar #'40ants-doc/utils::prin1-and-escape-markdown
                           (swank-mop:slot-definition-initargs slot-def)))))
-          (print-arglist
+          (40ants-doc/render/args::print-arglist
            (format nil "(~{~A~^ ~}~A)" initarg-strings
                    (if (swank-mop:slot-definition-initfunction slot-def)
                        (format nil "~A= ~A"
                                (if initarg-strings " " "")
-                               (replace-known-references
-                                (prin1-and-escape-markdown
+                               (40ants-doc/markdown/transform::replace-known-references
+                                (40ants-doc/utils::prin1-and-escape-markdown
                                  (swank-mop:slot-definition-initform
                                   slot-def))))
                        ""))
            stream))
-        (print-arglist
+        (40ants-doc/render/args::print-arglist
          (prin1-to-string
           `(,@(when (swank-mop:slot-definition-initargs slot-def)
                 (swank-mop:slot-definition-initargs slot-def))
@@ -120,27 +139,27 @@
                 `(=
                   ,(swank-mop:slot-definition-initform slot-def)))))
          stream)))
-  (print-end-bullet stream)
+  (40ants-doc/builder/bullet::print-end-bullet stream)
   ;; No documentation for condition accessors, and some
   ;; implementations signal warnings.
-  (with-dislocated-symbols ((list symbol))
+  (40ants-doc/args::with-dislocated-symbols ((list symbol))
     (unless (subtypep (find-class (first locative-args)) 'condition)
       (let ((docstring (swank-mop:slot-definition-documentation slot-def)))
         (when docstring
-          (format stream "~%~A~%" (massage-docstring docstring)))))))
+          (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring)))))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'accessor))
                                    locative-args)
-  (find-source (find-method (symbol-function symbol)
-                            '() (list (find-class (first locative-args))))))
+  (40ants-doc/source-api::find-source (find-method (symbol-function symbol)
+                                                   '() (list (find-class (first locative-args))))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'reader))
                                    locative-args)
-  (find-source (find-method (symbol-function symbol)
-                            '() (list (find-class (first locative-args))))))
+  (40ants-doc/source-api::find-source (find-method (symbol-function symbol)
+                                                   '() (list (find-class (first locative-args))))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'writer))
                                    locative-args)
-  (find-source (find-method (symbol-function symbol)
-                            '() (mapcar #'find-class
-                                        (list t (first locative-args))))))
+  (40ants-doc/source-api::find-source (find-method (symbol-function symbol)
+                                                   '() (mapcar #'find-class
+                                                               (list t (first locative-args))))))

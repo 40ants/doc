@@ -110,10 +110,18 @@
 
 
 (defclass user ()
-  ())
+  ((nickname :reader user-nickname
+             :initform :unauthorized
+             :documentation "User's nickname")
+   (email :accessor user-email
+          :type (or string null)
+          :initform nil
+          :documentation "User's Email. Can be empty")))
 
 (40ants-doc:defsection @class (:title "Classes")
-  (user class))
+  (user class)
+  (user-nickname (40ants-doc/locatives/slots::reader user))
+  (user-email (40ants-doc/locatives/slots::accessor user)))
 
 
 (defgeneric get-address (entity)
