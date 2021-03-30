@@ -27,6 +27,7 @@
   (@vars 40ants-doc/core::section)
   (@glossary 40ants-doc/core::section)
   (@locative 40ants-doc/core::section)
+  (@macro 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -90,6 +91,19 @@
 (40ants-doc:defsection @locative (:title "Locatives")
   (40ants-doc/locatives/glossary::glossary-term 40ants-doc/locatives/locative::locative)
   (variable 40ants-doc/locatives/locative::locative))
+
+
+(defmacro the-macro ((title) &body body)
+  "Macro's docstring.
+
+   We can refer FOO function from here.
+"
+  (declare (ignore title))
+  `(progn ,@body))
+
+
+(40ants-doc:defsection @macro (:title "Macro")
+  (the-macro 40ants-doc/locatives/macro::macro))
 
 
 (defclass user ()
