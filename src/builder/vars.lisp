@@ -1,5 +1,7 @@
 (defpackage #:40ants-doc/builder/vars
-  (:use #:cl))
+  (:use #:cl)
+  (:export
+   #:*document-mark-up-signatures*))
 (in-package 40ants-doc/builder/vars)
 
 

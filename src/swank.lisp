@@ -3,7 +3,8 @@
   (:import-from #:swank)
   (:import-from #:alexandria)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:import-from #:40ants-doc/utils))
 (in-package 40ants-doc/swank)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -87,12 +88,12 @@
           (swank::find-definitions-find-symbol-or-package string))
       (if found
           symbol
-          (let ((first-char-pos (position-if-not #'whitespacep string)))
+          (let ((first-char-pos (position-if-not #'40ants-doc/utils::whitespacep string)))
             (when (and first-char-pos
                        (char= #\())
               ;; Looks like a list. The first element must be an
               ;; interned symbol naming a locative.
-              (let ((delimiter-pos (position-if #'delimiterp string
+              (let ((delimiter-pos (position-if #'40ants-doc/utils::delimiterp string
                                                 :start (1+ first-char-pos))))
                 (multiple-value-bind (symbol found)
                     (swank::parse-symbol

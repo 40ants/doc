@@ -9,7 +9,10 @@
   (:import-from #:40ants-doc/transcribe)
   (:import-from #:40ants-doc/definitions)
   (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/builder/printer))
+  (:import-from #:40ants-doc/builder/printer)
+  (:import-from #:40ants-doc/locatives/dislocated)
+  (:import-from #:40ants-doc/swank)
+  (:import-from #:40ants-doc/core))
 (in-package 40ants-doc/markdown/transform)
 
 
@@ -95,8 +98,24 @@
 
 ;;;; Automatic markup of symbols
 
+(defun find-reference-by-locative-string (locative-string possible-references
+                                          &key if-dislocated)
+  (let ((locative (40ants-doc/swank::read-locative-from-string locative-string)))
+    (when locative
+      ;; This won't find [SECTION][TYPE] because SECTION is a class.
+      ;;
+      ;; Reference lookup could look for a different locative which
+      ;; would lead to the same object/reference, but there is no sane
+      ;; generalization of that to locative-types. Do we need
+      ;; something like LOCATIVE-SUBTYPE-P?
+      (if (and if-dislocated (eq locative '40ants-doc/locatives/dislocated::dislocated))
+          (40ants-doc/reference::make-reference if-dislocated '40ants-doc/locatives/dislocated::dislocated)
+          (find locative possible-references
+                :key #'40ants-doc/reference::reference-locative
+                :test #'40ants-doc/core::locative-equal)))))
+
+
 (defun translate-to-links (parent tree known-references)
-  (break)
   (cond
     ;; (:CODE "something")
     ((and (eq :code (first tree))
@@ -123,7 +142,7 @@
                                         :key #'40ants-doc/reference::reference-object))
                     (references (if (and (zerop (length definition))
                                          (equal tail "[]"))
-                                    (filter-references references)
+                                    (40ants-doc/page::filter-references references)
                                     (alexandria:ensure-list
                                      (find-reference-by-locative-string
                                       definition
@@ -131,11 +150,11 @@
                                       ;; need heuristic conflict
                                       ;; resolution so we don't call
                                       ;; FILTER-REFERENCES.
-                                      (filter-references-by-format
+                                      (40ants-doc/page::filter-references-by-format
                                        references)
                                       :if-dislocated symbol)))))
                (if references
-                   (values (format-references name references) nil t)
+                   (values (40ants-doc/page::format-references name references) nil t)
                    tree))))))
     (t
      tree)))
@@ -160,7 +179,6 @@
 ;;; REFERENCE, if found. KNOWN-REFERENCES must only contain references
 ;;; to the symbol.
 (defun find-locative-around (tree name-element possible-references)
-  (break)
   (labels ((try (element)
              (let ((reference
                      (cond ((stringp element)
@@ -179,14 +197,14 @@
     (loop for rest on tree
           do (when (and (eq (third rest) name-element)
                         (stringp (second rest))
-                        (blankp (second rest)))
+                        (40ants-doc/utils::blankp (second rest)))
                (try (first rest))
                (return)))
     ;; For example, (:PLAIN "See" "the" "FOO" " " "function")
     (loop for rest on tree
           do (when (and (eq (first rest) name-element)
                         (stringp (second rest))
-                        (blankp (second rest)))
+                        (40ants-doc/utils::blankp (second rest)))
                (try (third rest))
                (return)))))
 

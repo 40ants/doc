@@ -4,4 +4,5 @@
 
 
 (defgeneric fancy-navigation (object)
-  (:method ((object t))))
+  (:method ((object t))
+    ""))

@@ -6,16 +6,55 @@
   "Cool! It calls BAR function!"
   (bar arg))
 
-(defun bar (arg)
-  "Cool! This function prints its argument"
+(defun user ()
+  "Just to check locatives in docstrings"
+  )
+
+;; Надо разобраться почему не работает явное указание locatives
+(defun bar (user)
+  "Cool! This function prints its USER argument of BAR."
   (format t "BAR: ~S~%"
-          arg))
+          user))
 
 
 (40ants-doc:defsection @index (:title "Playground")
   "Hello World!"
+  (@asdf 40ants-doc/core::section)
+  (@function 40ants-doc/core::section)
+  (@class 40ants-doc/core::section)
+  (@todo 40ants-doc/core::section))
+
+
+(40ants-doc:defsection @function (:title "Functions")
   (foo function)
+  (user function)
+  ;; Это и не должно работать:
+  ;; (user 40ants-doc/locatives/argument::argument)
   (bar function))
+
+
+(40ants-doc:defsection @asdf (:title "ASDF System")
+  (40ants-doc asdf:system))
+
+
+(defclass user ()
+  ())
+
+(40ants-doc:defsection @class (:title "Classes")
+  (user class))
+
+
+(40ants-doc:defsection @todo (:title "TODO")
+  "Here what I need to check and fix:
+
+- enable all locatives
+- check dependencies of core
+- reenable tests suite
+- fix how do M-. work in SLIME
+- fix transcribe
+- create integration with SLY
+"
+  )
 
 
 

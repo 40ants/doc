@@ -1,4 +1,22 @@
-;;;; CLASS and CONDITION locatives
+(uiop:define-package #:40ants-doc/locatives/class
+  (:use #:cl)
+  (:import-from #:40ants-doc/locatives/base
+                #:locate-error
+                #:locate-object
+                #:define-locative-type)
+  (:import-from #:40ants-doc/document
+                #:document-object)
+  (:import-from #:40ants-doc/render/args)
+  (:import-from #:40ants-doc/builder/bullet)
+  (:import-from #:40ants-doc/reference-api
+                #:canonical-reference)
+  (:import-from #:40ants-doc/args)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:40ants-doc/render/print)
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/page))
+(in-package 40ants-doc/locatives/class)
 
 (define-locative-type class ())
 
@@ -19,8 +37,8 @@
 
 (defmethod canonical-reference ((class class))
   (if (subtypep class 'condition)
-      (make-reference (class-name class) 'condition)
-      (make-reference (class-name class) 'class)))
+      (40ants-doc/reference::make-reference (class-name class) 'condition)
+      (40ants-doc/reference::make-reference (class-name class) 'class)))
 
 (defmethod document-object ((class class) stream)
   (let* ((conditionp (subtypep class 'condition))
@@ -31,28 +49,29 @@
                             (and conditionp (eq name 'condition))))
                       (mapcar #'class-name
                               (swank-mop:class-direct-superclasses class)))))
-    (print-bullet class stream)
+    (40ants-doc/builder/bullet::print-bullet class stream)
     (when superclasses
       (write-char #\Space stream)
-      (if *document-mark-up-signatures*
-          (print-arglist (mark-up-superclasses superclasses) stream)
-          (print-arglist superclasses stream)))
-    (print-end-bullet stream)
-    (with-dislocated-symbols ((list symbol))
-      (maybe-print-docstring class t stream))))
+      (if 40ants-doc/builder/vars::*document-mark-up-signatures*
+          (40ants-doc/render/args::print-arglist
+           (mark-up-superclasses superclasses) stream)
+          (40ants-doc/render/args::print-arglist superclasses stream)))
+    (40ants-doc/builder/bullet::print-end-bullet stream)
+    (40ants-doc/args::with-dislocated-symbols ((list symbol))
+      (40ants-doc/render/print::maybe-print-docstring class t stream))))
 
 (defun mark-up-superclasses (superclasses)
   (with-output-to-string (stream)
     (loop for class in superclasses
           for i upfrom 0
-          do (let ((reference (make-reference class 'class)))
-               (let ((name (escape-markdown (prin1-to-string class))))
+          do (let ((reference (40ants-doc/reference::make-reference class 'class)))
+               (let ((name (40ants-doc/utils::escape-markdown (prin1-to-string class))))
                  (unless (zerop i)
                    (format stream " "))
                  (if (find-known-reference reference)
                      (format stream "[~A][~A]" name
-                             (link-to-reference reference))
+                             (40ants-doc/page::link-to-reference reference))
                      (format stream "~A" name)))))))
 
 (defun find-known-reference (reference)
-  (find reference *references* :test #'reference=))
+  (find reference 40ants-doc/reference::*references* :test #'40ants-doc/reference::reference=))
