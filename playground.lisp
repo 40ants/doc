@@ -26,6 +26,7 @@
   (@constant 40ants-doc/core::section)
   (@vars 40ants-doc/core::section)
   (@glossary 40ants-doc/core::section)
+  (@locative 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -84,6 +85,11 @@
 
 (40ants-doc:defsection @glossary (:title "Glossary")
   (lisp 40ants-doc/locatives/glossary::glossary-term))
+
+
+(40ants-doc:defsection @locative (:title "Locatives")
+  (40ants-doc/locatives/glossary::glossary-term 40ants-doc/locatives/locative::locative)
+  (variable 40ants-doc/locatives/locative::locative))
 
 
 (defclass user ()
