@@ -24,6 +24,7 @@
   (@class 40ants-doc/core::section)
   (@compiler-macro 40ants-doc/core::section)
   (@constant 40ants-doc/core::section)
+  (@vars 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -58,6 +59,23 @@
 (40ants-doc:defsection @constant (:title "Constants")
   (+the-question+ 40ants-doc/locatives/constant::constant)
   (+the-answer+ 40ants-doc/locatives/constant::constant))
+
+
+(defvar *var-a*)
+
+(defvar *var-b* 100500
+  "Just a var with docstring.")
+
+(defvar *var-c*)
+
+(setf (documentation '*var-c* 'variable)
+      "Unbound var with docstring.")
+
+
+(40ants-doc:defsection @vars (:title "Variables")
+  (*var-a* variable)
+  (*var-b* variable)
+  (*var-c* variable))
 
 
 (defclass user ()
