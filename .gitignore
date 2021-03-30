@@ -3,5 +3,6 @@
 *.*fsl
 test/data/tmp/
 world/
+doc/
 docs/
 .qlot/
