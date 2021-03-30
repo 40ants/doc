@@ -23,6 +23,7 @@
   (@function 40ants-doc/core::section)
   (@class 40ants-doc/core::section)
   (@compiler-macro 40ants-doc/core::section)
+  (@constant 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -47,6 +48,16 @@
 
 (40ants-doc:defsection @compiler-macro (:title "Compiler macro")
   (bar compiler-macro))
+
+
+(defconstant +the-question+ nil)
+
+(defconstant +the-answer+ 42
+  "The answer to everything")
+
+(40ants-doc:defsection @constant (:title "Constants")
+  (+the-question+ 40ants-doc/locatives/constant::constant)
+  (+the-answer+ 40ants-doc/locatives/constant::constant))
 
 
 (defclass user ()
