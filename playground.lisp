@@ -33,6 +33,7 @@
   (@package 40ants-doc/core::section)
   (@restart 40ants-doc/core::section)
   (@type 40ants-doc/core::section)
+  (@include 40ants-doc/core::section)
   (@todo 40ants-doc/core::section))
 
 
@@ -181,6 +182,15 @@
 
 (40ants-doc:defsection @restart (:title "Restarts")
   (retry-this-error restart))
+
+
+(40ants-doc:defsection @include (:title "Inclusions")
+  (function-locative-example
+   (40ants-doc/locatives/include::include
+    (:start (foo function)
+     :end (user function))
+    :header-nl "```commonlisp"
+    :footer-nl "```")))
 
 (40ants-doc:defsection @todo (:title "TODO")
   "Here what I need to check and fix:

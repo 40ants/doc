@@ -1,4 +1,32 @@
-;;;; INCLUDE locative
+(uiop:define-package #:40ants-doc/locatives/include
+  (:use #:cl)
+  (:import-from #:40ants-doc/locatives/base
+                #:locate-and-find-source
+                #:locate-and-document
+                #:locate-error
+                #:locate-object
+                #:define-locative-type)
+  (:import-from #:40ants-doc/document
+                #:document-object)
+  (:import-from #:40ants-doc/render/args)
+  (:import-from #:40ants-doc/builder/bullet)
+  (:import-from #:40ants-doc/reference-api
+                #:canonical-reference)
+  (:import-from #:40ants-doc/args)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:40ants-doc/render/print)
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/page)
+  (:import-from #:named-readtables)
+  (:import-from #:pythonic-string-reader)
+  (:import-from #:40ants-doc/core
+                #:exportable-locative-type-p)
+  (:import-from #:40ants-doc/source-api))
+(in-package 40ants-doc/locatives/include)
+
+(named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
+
 
 (define-locative-type include (source &key line-prefix header footer
                                       header-nl footer-nl)
@@ -55,6 +83,7 @@
   each line included in the documentation. For example, a string of
   four spaces makes markdown think it's a code block.""")
 
+
 (defmethod exportable-locative-type-p ((locative-type (eql 'include)))
   nil)
 
@@ -63,11 +92,13 @@
   (destructuring-bind (source &key line-prefix header footer
                        header-nl footer-nl) locative-args
     (declare (ignore source line-prefix header footer header-nl footer-nl))
-    (make-reference symbol (cons locative-type locative-args))))
+    (40ants-doc/reference::make-reference symbol (cons locative-type locative-args))))
+
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'include))
                                    locative-args)
-  (multiple-value-bind (file start) (include-region (first locative-args))
+  (multiple-value-bind (file start)
+      (include-region (first locative-args))
     (assert file)
     `(:location
       (:file ,(namestring file))
@@ -76,16 +107,21 @@
 
 (defmethod locate-and-document (symbol (locative-type (eql 'include))
                                 locative-args stream)
-  (destructuring-bind (source &key (line-prefix "") header footer
-                       header-nl footer-nl) locative-args
+  (destructuring-bind (source &key (line-prefix "")
+                                   header
+                                   footer
+                                   header-nl
+                                   footer-nl)
+      locative-args
+    
     (when header
       (format stream "~A" header))
     (when header-nl
       (format stream "~A~%" header-nl))
     (format stream "~A"
-            (prefix-lines line-prefix
-                          (multiple-value-call #'file-subseq
-                            (include-region source))))
+            (40ants-doc/utils::prefix-lines line-prefix
+                                            (multiple-value-call #'file-subseq
+                                              (include-region source))))
     (when footer
       (format stream "~A" footer))
     (when footer-nl
@@ -102,8 +138,12 @@
          (values source 0 nil))
         ((and source (listp source))
          (destructuring-bind (&key start end) source
-           (let ((start (find-source (resolve (entry-to-reference start))))
-                 (end (find-source (resolve (entry-to-reference end)))))
+           (let* ((start-reference (40ants-doc/reference::resolve
+                                    (40ants-doc/core::entry-to-reference start)))
+                  (end-reference (40ants-doc/reference::resolve
+                                  (40ants-doc/core::entry-to-reference end)))
+                  (start (40ants-doc/source-api::find-source start-reference))
+                  (end (40ants-doc/source-api::find-source end-reference)))
              (when start
                (check-location start))
              (when end
@@ -142,19 +182,21 @@
 (defun location-position (location)
   (1- (second (find :position (rest location) :key #'first))))
 
+;; TODO: Find why this get called three times when I have only one include in my document :(
 (defun file-subseq (pathname &optional start end)
-  (with-open-file (stream pathname)
-    (let ((*print-pretty* nil)
-          (start (or start 0))
-          (end (or end (file-length stream)))
-          (buffer-size 4096))
+  ;; START and END arguments contains offsets in bytes,
+  ;; thus to process Unicode symbols, encoded in UTF-8,
+  ;; we need to read data as bytes and transfrom into
+  ;; the characters:
+  (with-open-file (stream pathname :element-type '(unsigned-byte 8))
+    (let* ((*print-pretty* nil)
+           (start (or start 0))
+           (file-len (file-length stream))
+           (end (min (or end file-len)
+                     file-len))
+           (buffer-size (- end start))
+           (buffer (make-array buffer-size :element-type '(unsigned-byte 8))))
       (file-position stream start)
-      (with-output-to-string (datum)
-        (let ((buffer (make-array buffer-size :element-type 'character)))
-          (loop
-            for bytes-read = (read-sequence
-                              buffer stream
-                              :end (min buffer-size
-                                        (- end (file-position stream))))
-            do (write-sequence buffer datum :start 0 :end bytes-read)
-            while (= bytes-read buffer-size)))))))
+      (read-sequence buffer stream)
+      (babel:octets-to-string buffer))))
+

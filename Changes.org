@@ -1,2 +1,4 @@
 * Now system is package inferred and loadable has a core with minimum dependencies.
 * Fixed displaying docstring for constant locative.
+* Include locative was fixed for files with unicode characters
+file-subseq function was rewritten.
