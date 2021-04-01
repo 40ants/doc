@@ -1,20 +1,26 @@
-(defpackage #:playground
+(uiop:define-package #:playground
   (:use #:cl))
 (in-package playground)
-
-(defun foo (arg)
-  "Cool! It calls BAR function!"
-  (bar arg))
 
 (defun user ()
   "Just to check locatives in docstrings"
   )
+
+(define-compiler-macro bar (&whole form arg)
+  "A custom dostring for a compiler macro"
+  (if (atom arg)
+      arg
+      form))
 
 ;; Надо разобраться почему не работает явное указание locatives
 (defun bar (user)
   "Cool! This function prints its USER argument of BAR function."
   (format t "BAR: ~S~%"
           user))
+
+(defun foo (arg)
+  "Cool! It calls BAR function!"
+  (bar arg))
 
 
 (40ants-doc:defsection @index (:title "Playground")
@@ -49,13 +55,6 @@
   (40ants-doc asdf:system))
 
 
-(define-compiler-macro bar (&whole form arg)
-  "A custom dostring for a compiler macro"
-  (format t "Expanding: ~S" form)
-  (if (atom arg)
-      arg
-      form))
-
 (40ants-doc:defsection @compiler-macro (:title "Compiler macro")
   (bar compiler-macro))
 
@@ -66,8 +65,8 @@
   "The answer to everything")
 
 (40ants-doc:defsection @constant (:title "Constants")
-  (+the-question+ 40ants-doc/locatives/constant::constant)
-  (+the-answer+ 40ants-doc/locatives/constant::constant))
+  (+the-question+ constant)
+  (+the-answer+ constant))
 
 
 (defvar *var-a*)
@@ -87,16 +86,17 @@
   (*var-c* variable))
 
 
-(40ants-doc/locatives/glossary::define-glossary-term lisp (:title "The Best Programmin Language")
-                                                     "A glossary docstring")
+;; (40ants-doc/locatives/glossary::define-glossary-term lisp (:title "The Best Programmin Language")
+;;                                                      "A glossary docstring")
 
 (40ants-doc:defsection @glossary (:title "Glossary")
-  (lisp 40ants-doc/locatives/glossary::glossary-term))
+  ;; TODO: Support minimal glossary term definition
+  ;; (lisp glossary-term)
+  )
 
 
 (40ants-doc:defsection @locative (:title "Locatives")
-  (40ants-doc/locatives/glossary::glossary-term 40ants-doc/locatives/locative::locative)
-  (variable 40ants-doc/locatives/locative::locative))
+  (variable locative))
 
 
 (defmacro the-macro ((title) &body body)
@@ -109,7 +109,7 @@
 
 
 (40ants-doc:defsection @macro (:title "Macro")
-  (the-macro 40ants-doc/locatives/macro::macro))
+  (the-macro macro))
 
 
 (defclass user ()
@@ -123,8 +123,8 @@
 
 (40ants-doc:defsection @class (:title "Classes")
   (user class)
-  (user-nickname (40ants-doc/locatives/slots::reader user))
-  (user-email (40ants-doc/locatives/slots::accessor user)))
+  (user-nickname (reader user))
+  (user-email (accessor user)))
 
 (defgeneric get-address (entity)
   (:documentation "Docstring of the generic function."))
@@ -140,8 +140,8 @@
 
 
 (40ants-doc:defsection @structure (:title "Structures")
-  (box-width 40ants-doc/locatives/structure-accessor::structure-accessor)
-  (box-height 40ants-doc/locatives/structure-accessor::structure-accessor))
+  (box-width structure-accessor)
+  (box-height structure-accessor))
 
 
 (defun a-few-p (value)
@@ -176,19 +176,21 @@
 
 
 ;; TODO: make this public
-(40ants-doc/locatives/restart::define-restart retry-this-error ()
-    "Some docstring for restart")
+;; (40ants-doc/locatives/restart::define-restart retry-this-error ()
+;;     "Some docstring for restart")
 
 
 (40ants-doc:defsection @restart (:title "Restarts")
-  (retry-this-error restart))
+  ;; TODO: Support minimal restart definitions
+  ;; (retry-this-error restart)
+  )
 
 
 (40ants-doc:defsection @include (:title "Inclusions")
   (function-locative-example
-   (40ants-doc/locatives/include::include
-    (:start (foo function)
-     :end (user function))
+   (include
+    (:start (user function)
+     :end (bar function))
     :header-nl "```commonlisp"
     :footer-nl "```")))
 

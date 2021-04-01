@@ -6,7 +6,6 @@
   (:import-from #:40ants-doc/document)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/locatives/base)
-  (:import-from #:40ants-doc/definitions)
   (:import-from #:40ants-doc/locatives/dislocated))
 (in-package 40ants-doc/reference)
 
@@ -103,14 +102,6 @@
         (if (< 2 n-chars-read)
             (list (make-reference symbol '40ants-doc/locatives/dislocated::dislocated))
             ()))))
-
-
-(defun references-for-similar-names (name refs)
-  (multiple-value-bind (symbol n-chars-read)
-      (40ants-doc/definitions::find-definitions-find-symbol-or-package name)
-    (when n-chars-read
-      (values (references-for-symbol symbol refs n-chars-read) n-chars-read))))
-
 
 
 (defun references-for-the-same-symbol-p (refs)

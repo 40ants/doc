@@ -3,7 +3,9 @@
   (:import-from #:40ants-doc/locatives/base
                 #:locate-error
                 #:locate-object
-                #:define-locative-type))
+                #:define-locative-type)
+  (:import-from #:40ants-doc/locatives
+                #:dislocated))
 (in-package 40ants-doc/locatives/dislocated)
 
 

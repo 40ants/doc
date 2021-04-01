@@ -15,6 +15,8 @@
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/locatives
+                #:macro)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend))
 (in-package 40ants-doc/locatives/macro)

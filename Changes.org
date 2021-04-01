@@ -2,3 +2,5 @@
 * Fixed displaying docstring for constant locative.
 * Include locative was fixed for files with unicode characters
 file-subseq function was rewritten.
+* Locatives can be specified without a package prefix inside the defsection
+because all locative symbols now live in 40ANTS-DOC/LOCATIVES package.

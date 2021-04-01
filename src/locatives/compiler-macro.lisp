@@ -23,7 +23,6 @@
 (in-package 40ants-doc/locatives/compiler-macro)
 
 
-
 (define-locative-type compiler-macro ())
 
 (defmethod locate-object (symbol (locative-type (eql 'compiler-macro))

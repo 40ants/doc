@@ -17,6 +17,8 @@
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/builder/heading)
+  (:import-from #:40ants-doc/locatives
+                #:argument)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader))
 (in-package 40ants-doc/locatives/argument)

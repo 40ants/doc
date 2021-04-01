@@ -19,6 +19,10 @@
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-mop)
   (:import-from #:40ants-doc/builder/printer)
+  (:import-from #:40ants-doc/locatives
+                #:accessor
+                #:reader
+                #:writer)
   (:import-from #:40ants-doc/markdown/transform))
 (in-package 40ants-doc/locatives/slots)
 

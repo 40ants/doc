@@ -9,8 +9,11 @@
   (:import-from #:40ants-doc/builder/heading)
   (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/locatives
+                #:section)
   (:import-from #:40ants-doc/core
-                #:section))
+                ;; #:section
+                ))
 (in-package 40ants-doc/locatives/section)
 
 
@@ -20,21 +23,23 @@
 (defmethod 40ants-doc/locatives/base::locate-object (symbol (locative-type (eql 'section))
                           locative-args)
   (declare (ignore locative-args))
-  (assert (typep (symbol-value symbol) 'section))
+  (unless (typep (symbol-value symbol)
+                 '40ants-doc/core::section)
+    (error "Section locative works only with objects defined by defsection."))
   (symbol-value symbol))
 
-(defmethod 40ants-doc/reference-api::canonical-reference ((section section))
+(defmethod 40ants-doc/reference-api::canonical-reference ((section 40ants-doc/core::section))
   (40ants-doc/reference::make-reference (40ants-doc/core::section-name section)
                                         'section))
 
-(defmethod 40ants-doc/reference-api::collect-reachable-objects ((section section))
+(defmethod 40ants-doc/reference-api::collect-reachable-objects ((section 40ants-doc/core::section))
   (mapcan (lambda (reference)
             (cons reference (40ants-doc/reference-api::collect-reachable-objects reference)))
           (remove-if-not (lambda (entry)
                            (typep entry '40ants-doc/reference::reference))
                          (40ants-doc/core::section-entries section))))
 
-(defmethod 40ants-doc/builder/heading-api::fancy-navigation ((object section))
+(defmethod 40ants-doc/builder/heading-api::fancy-navigation ((object 40ants-doc/core::section))
   (if (and 40ants-doc/builder/vars::*document-fancy-html-navigation*
            40ants-doc/link::*document-link-sections*
            (eq 40ants-doc/builder/printer::*format* :html))
@@ -76,5 +81,5 @@
       ""))
 
 
-(defmethod 40ants-doc/source::find-source ((section section))
+(defmethod 40ants-doc/source::find-source ((section 40ants-doc/core::section))
   (40ants-doc/locatives/base::locate-and-find-source (40ants-doc/core::section-name section) 'variable ()))

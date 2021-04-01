@@ -13,7 +13,7 @@
   :pathname "src"
   :depends-on (
                "40ants-doc/core"
-               "40ants-doc/small"
+               ;; "40ants-doc/small"
                )
   ;; :depends-on (:3bmd :3bmd-ext-code-blocks :alexandria :babel :cl-fad :colorize
   ;;              :ironclad :named-readtables :pythonic-string-reader :swank

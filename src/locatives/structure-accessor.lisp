@@ -22,6 +22,8 @@
   (:import-from #:40ants-doc/markdown/transform)
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/source-api)
+  (:import-from #:40ants-doc/locatives
+                #:structure-accessor)
   (:import-from #:40ants-doc/locatives/utils))
 (in-package 40ants-doc/locatives/structure-accessor)
 

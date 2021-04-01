@@ -3,6 +3,7 @@
   (:nicknames 40ants-doc/core)
   (:use #:common-lisp)
   (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/locatives)
   (:export #:define-package
            #:defsection
            #:exportable-locative-type-p
@@ -36,8 +37,8 @@
   building a binary application.")
 
 (defmacro defsection (name (&key (package '*package*) (readtable '*readtable*)
-                            (export t) title link-title-to
-                            (discard-documentation-p *discard-documentation-p*))
+                                 (export t) title link-title-to
+                                 (discard-documentation-p *discard-documentation-p*))
                       &body entries)
   "Define a documentation section and maybe export referenced symbols.
   A bit behind the scenes, a global variable with NAME is defined and
@@ -92,6 +93,10 @@
   When DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
   is true, ENTRIES will not be recorded to save memory."
   ;; Let's check the syntax as early as possible.
+  (setf entries
+        (transform-locative-symbols
+                entries))
+  
   (transform-entries entries)
   (transform-link-title-to link-title-to)
   `(progn
@@ -185,6 +190,20 @@
         (when (and (symbol-accessible-in-package-p symbol package)
                    (exportable-locative-type-p (40ants-doc/locatives/base::locative-type locative)))
           (export symbol package))))))
+
+(defun transform-locative-symbols (entries &aux (locatives-package (find-package "40ANTS-DOC/LOCATIVES")))
+  (labels ((transform (locative)
+           (etypecase locative
+             (symbol (intern (symbol-name locative) locatives-package))
+             (cons (cons (transform (car locative))
+                         (cdr locative))))))
+    
+    (loop for entry in entries
+          if (listp entry)
+          collect (destructuring-bind (symbol locative) entry
+                    (list symbol
+                          (transform locative)))
+          else collect entry)))
 
 (defun symbol-accessible-in-package-p (symbol package)
   (eq symbol (find-symbol (symbol-name symbol) package)))

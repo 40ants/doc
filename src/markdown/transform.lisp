@@ -16,6 +16,13 @@
 (in-package 40ants-doc/markdown/transform)
 
 
+(defun references-for-similar-names (name refs)
+  (multiple-value-bind (symbol n-chars-read)
+      (40ants-doc/definitions::find-definitions-find-symbol-or-package name)
+    (when n-chars-read
+      (values (40ants-doc/reference::references-for-symbol symbol refs n-chars-read) n-chars-read))))
+
+
 ;;; This is called by MAP-NAMES so the return values are NEW-TREE,
 ;;; SLICE, N-CHARS-READ. Also called by TRANSLATE-TAGGED that expects
 ;;; only a single return value: the new tree.
@@ -24,7 +31,7 @@
   (when (40ants-doc/utils::no-lowercase-chars-p name)
     (flet ((foo (name)
              (multiple-value-bind (refs n-chars-read)
-                 (40ants-doc/reference::references-for-similar-names name known-references)
+                 (references-for-similar-names name known-references)
                (when refs
                  (values `(,(40ants-doc/utils::code-fragment (40ants-doc/builder/printer::maybe-downcase name)))
                          t n-chars-read)))))
@@ -214,7 +221,7 @@
 ;;; TREE (e.g. it's "*SYM*" from (:EMPH "SYM")).
 (defun translate-name (parent tree name known-references)
   (multiple-value-bind (refs n-chars-read)
-      (40ants-doc/reference::references-for-similar-names name known-references)
+      (references-for-similar-names name known-references)
     (when refs
       (let ((refs (40ants-doc/page::filter-references refs)))
         ;; If necessary, try to find a locative before or after NAME

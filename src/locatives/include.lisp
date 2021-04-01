@@ -6,6 +6,8 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
+  (:import-from #:40ants-doc/locatives
+                #:include)
   (:import-from #:40ants-doc/document
                 #:document-object)
   (:import-from #:40ants-doc/render/args)
@@ -157,6 +159,14 @@
                                   (namestring (truename end-file)))
                          () "Include starts in file ~S and ends in ~
                          another file ~S." start-file end-file))
+
+               (when (< end-position
+                        start-position)
+                 (error "Something went wrong end position ~A of ~S goes before start position ~A of ~S"
+                        end-position
+                        (getf source :end)
+                        start-position
+                        (getf source :start)))
                (values (or start-file end-file) start-position end-position)))))
         (t
          (error "~@<Malformed include source ~S.~:@>" source))))

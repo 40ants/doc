@@ -21,7 +21,9 @@
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:swank-backend)
-  (:import-from #:40ants-doc/locatives/utils))
+  (:import-from #:40ants-doc/locatives/utils)
+  (:import-from #:40ants-doc/locatives
+                #:constant))
 (in-package 40ants-doc/locatives/constant)
 
 
