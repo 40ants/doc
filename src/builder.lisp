@@ -37,37 +37,42 @@
     :if-exists :supersede
     :ensure-directories-exist t))
 
-(defun update-asdf-system-readmes (sections asdf-system)
-  "Convenience function to generate two readme files in the directory
+(defun update-asdf-system-readmes (sections asdf-system &key (format :markdown))
+  "Convenience function to generate readme file in the directory
   holding the ASDF-SYSTEM definition.
 
-  README.md has anchors, links, inline code, and other markup added.
-  Not necessarily the easiest on the eye in an editor, but looks good
-  on github.
+  By default, README.md is generated. It has anchors, links, inline code,
+  and other markup added. Not necessarily the easiest on the eye in an editor,
+  but looks good on github.
 
-  README is optimized for reading in text format. Has no links and
+  You can provide `:FORMAT :PLAIN` argument to generate README instead.
+  It will be optimized for reading in text format. Has no links and
   cluttery markup.
 
   Example usage:
 
   ```
-  (update-asdf-system-readmes @mgl-pax-manual :mgl-pax)
+  (update-asdf-system-readmes @40ants-doc-manual :40ants-doc)
   ```"
-  (with-open-file (stream (asdf:system-relative-pathname
-                           asdf-system "README.md")
-                          :direction :output
-                          :if-does-not-exist :create
-                          :if-exists :supersede)
-    (document sections :stream stream)
-    (print-markdown-footer stream))
-  (with-open-file (stream (asdf:system-relative-pathname
-                           asdf-system "README")
-                          :direction :output
-                          :if-does-not-exist :create
-                          :if-exists :supersede)
-    (loop for section in (alexandria:ensure-list sections) do
-      (describe section stream))
-    (print-markdown-footer stream)))
+  (ecase format
+    (:markdown
+     (with-open-file (stream (asdf:system-relative-pathname
+                              asdf-system "README.md")
+                             :direction :output
+                             :if-does-not-exist :create
+                             :if-exists :supersede)
+       (40ants-doc/document::document sections :stream stream)
+       (print-markdown-footer stream)))
+    (:plain
+     (with-open-file (stream (asdf:system-relative-pathname
+                              asdf-system "README")
+                             :direction :output
+                             :if-does-not-exist :create
+                             :if-exists :supersede)
+       (loop for section in (alexandria:ensure-list sections) do
+                (describe section stream))
+       (print-markdown-footer stream)))))
+
 
 (defun add-markdown-defaults-to-page-specs (sections page-specs dir)
   (flet ((section-has-page-spec-p (section)

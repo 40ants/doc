@@ -4,3 +4,4 @@
 file-subseq function was rewritten.
 * Locatives can be specified without a package prefix inside the defsection
 because all locative symbols now live in 40ANTS-DOC/LOCATIVES package.
+* Function update-asdf-system-readmes now generates only one README file

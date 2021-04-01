@@ -264,3 +264,9 @@
       :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
+
+
+(defun render-readme ()
+  (40ants-doc/builder::update-asdf-system-readmes playground::@index :40ants-doc)
+  (40ants-doc/builder::update-asdf-system-readmes playground::@index :40ants-doc
+                                                  :format :plain))
