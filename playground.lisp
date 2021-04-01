@@ -174,14 +174,12 @@
 
 
 ;; TODO: make this public
-;; (40ants-doc/locatives/restart::define-restart retry-this-error ()
-;;     "Some docstring for restart")
+(40ants-doc/restart::define-restart retry-this-error ()
+  "Some docstring for restart")
 
 
 (40ants-doc:defsection @restart (:title "Restarts")
-  ;; TODO: Support minimal restart definitions
-  ;; (retry-this-error restart)
-  )
+  (retry-this-error restart))
 
 
 (40ants-doc:defsection @include (:title "Inclusions")

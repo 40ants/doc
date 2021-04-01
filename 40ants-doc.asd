@@ -12,5 +12,6 @@
   :class :package-inferred-system
   :pathname "src"
   :depends-on ("40ants-doc/core"
+               "40ants-doc/restart"
                "40ants-doc/glossary")
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))

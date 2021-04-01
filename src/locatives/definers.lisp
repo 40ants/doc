@@ -65,24 +65,3 @@
      
      (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
        (40ants-doc/source-api::find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))
-
-
-(defun expand-define-definer-for-symbol-as-locative-definer-body
-    (symbol locative-type lambda-list docstring)
-  `(defmethod 40ants-doc/locatives/base::symbol-lambda-list ((symbol (eql ',symbol))
-                                  (locative-type (eql ',locative-type)))
-     ,@docstring
-     ',lambda-list))
-
-
-(defmacro define-definer-for-symbol-locative-type
-    (name locative-type &body docstring)
-  "Define a macro with NAME which can be used to attach documentation,
-  a lambda-list and source location to a symbol in the context of
-  LOCATIVE-TYPE. The defined macro's arglist is (SYMBOL LAMBDA-LIST
-  &OPTIONAL DOCSTRING). LOCATIVE-TYPE is assumed to have been defined
-  with DEFINE-SYMBOL-LOCATIVE-TYPE."
-  `(defmacro ,name (symbol lambda-list &body docstring)
-     ,@docstring
-     `,(expand-define-definer-for-symbol-as-locative-definer-body
-        symbol ',locative-type lambda-list docstring)))
