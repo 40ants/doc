@@ -1,5 +1,6 @@
-(defpackage #:40ants-doc/full
+(defpackage #:40ants-doc-full
   (:use #:cl)
+  (:nicknames #:40ants-doc/full)
   (:import-from #:40ants-doc/builder)
   (:import-from #:40ants-doc/builder/reference)
 

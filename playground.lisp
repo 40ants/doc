@@ -86,13 +86,11 @@
   (*var-c* variable))
 
 
-;; (40ants-doc/locatives/glossary::define-glossary-term lisp (:title "The Best Programmin Language")
-;;                                                      "A glossary docstring")
+(40ants-doc/glossary::define-glossary-term lisp (:title "The Best Programmin Language")
+                                           "You really should use LISP!")
 
 (40ants-doc:defsection @glossary (:title "Glossary")
-  ;; TODO: Support minimal glossary term definition
-  ;; (lisp glossary-term)
-  )
+  (lisp glossary-term))
 
 
 (40ants-doc:defsection @locative (:title "Locatives")
