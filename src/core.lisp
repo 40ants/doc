@@ -60,14 +60,14 @@
   A locative in a reference can either be a symbol or it can be a list
   whose CAR is a symbol. In either case, the symbol is the called the
   type of the locative while the rest of the elements are the locative
-  arguments. See @40ANTS-DOC-LOCATIVE-TYPES for the list of locative
+  arguments. See @LOCATIVE-TYPES for the list of locative
   types available out of the box.
 
   The same symbol can occur multiple times in a reference, typically
   with different locatives, but this is not required.
 
   The references are not looked up (see RESOLVE in the
-  @40ANTS-DOC-EXTENSION-API) until documentation is generated, so it is
+  @EXTENSION-API) until documentation is generated, so it is
   allowed to refer to things yet to be defined.
 
   If EXPORT is true (the default), the referenced symbols and NAME are

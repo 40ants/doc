@@ -10,9 +10,9 @@
 (in-package 40ants-doc/github)
 
 
-(defsection @mgl-pax-github-workflow (:title "Github Workflow")
+(defsection @github-workflow (:title "Github Workflow")
   "It is generally recommended to commit generated readmes (see
-  UPDATE-ASDF-SYSTEM-READMES) so that users have something to read
+  UPDATE-ASDF-SYSTEM-README) so that users have something to read
   without reading the code and sites like github can display them.
 
   HTML documentation can also be committed, but there is an issue with

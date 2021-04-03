@@ -11,32 +11,33 @@
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
-(defsection @mgl-pax-markdown-support (:title "Markdown Support")
+(defsection @markdown-support (:title "Markdown Support")
   "The [Markdown][markdown] in docstrings is processed with the
   [3BMD][3bmd] library."
-  (@mgl-pax-markdown-indentation section)
-  (@mgl-pax-markdown-syntax-highlighting section)
-  (@mgl-pax-mathjax section))
+  (@markdown-indentation section)
+  (@markdown-syntax-highlighting section)
+  (@mathjax section))
 
-(defsection @mgl-pax-markdown-indentation (:title "Indentation")
+
+(defsection @markdown-indentation (:title "Indentation")
   """Docstrings can be indented in any of the usual styles. PAX
   normalizes indentation by converting:
 
       (defun foo ()
         "This is
-        indented
-        differently")
+  indented
+  differently")
 
   to
 
       (defun foo ()
         "This is
-      indented
-      differently")
+  indented
+  differently")
 
   See [DOCUMENT-OBJECT][(method () (string t))] for the details.""")
 
-(defsection @mgl-pax-markdown-syntax-highlighting (:title "Syntax highlighting")
+(defsection @markdown-syntax-highlighting (:title "Syntax highlighting")
   "For syntax highlighting, github's [fenced code
   blocks][fenced-code-blocks] markdown extension to mark up code
   blocks with triple backticks is enabled so all you need to do is
@@ -57,7 +58,7 @@
   [colorize]: https://github.com/redline6561/colorize/
   [fenced-code-blocks]: https://help.github.com/articles/github-flavored-markdown#fenced-code-blocks")
 
-(defsection @mgl-pax-mathjax (:title "MathJax")
+(defsection @mathjax (:title "MathJax")
   """Displaying pretty mathematics in TeX format is supported via
   MathJax. It can be done inline with `$` like this:
 

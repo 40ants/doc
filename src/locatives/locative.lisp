@@ -1,6 +1,7 @@
 (uiop:define-package #:40ants-doc/locatives/locative
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
+                #:locate-and-find-source
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)

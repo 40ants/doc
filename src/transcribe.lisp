@@ -16,12 +16,17 @@
   (:import-from #:40ants-doc/core
                 #:defsection)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:import-from #:40ants-doc/utils
+                #:write-prefixed-lines
+                #:read-prefixed-lines
+                #:read-line*
+                #:whitespacep))
 (in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
-(defsection @mgl-pax-transcript (:title "Transcripts")
+(defsection @transcript (:title "Transcripts")
   "What are transcripts for? When writing a tutorial, one often wants
   to include a REPL session with maybe a few defuns and a couple of
   forms whose output or return values are shown. Also, in a function's
@@ -63,17 +68,18 @@
   can be enabled with:
 
       (in-readtable pythonic-string-syntax)"
-  (@mgl-pax-transcript-emacs-integration section)
-  (@mgl-pax-transcript-api section))
-
+  (@transcript-emacs-integration section)
+  (@transcript-api section))
 
-(defsection @mgl-pax-transcript-api (:title "Transcript API")
+
+(defsection @transcript-api (:title "Transcript API")
   (transcribe function)
   (*syntaxes* variable)
   (transcription-error condition)
   (transcription-consistency-error condition)
   (transcription-output-consistency-error condition)
   (transcription-values-consistency-error condition))
+
 
 (defparameter *syntaxes*
   '((:default
@@ -319,7 +325,7 @@
                     :echo echo
                     :default-syntax default-syntax
                     :syntaxes output-syntaxes))
-
+
 
 ;;;; Prefix utilities
 
@@ -353,7 +359,7 @@
     (values-list (if syntax-id
                      (foo (find-syntax syntax-id))
                      (some #'foo *syntaxes*)))))
-
+
 
 ;;;; READ-TRANSCRIPT constructs a parse tree that's fed into
 ;;;; WRITE-TRANSCRIPT by TRANSCRIBE. This parse tree is simply called
@@ -544,6 +550,7 @@
                      (transcription-error-message e)
                      (transcription-error-message-args e)))))
         (nreverse transcript)))))
+
 
 (defun parse-transcript-element (stream prefix-id syntax-id
                                  first-line match-length)
@@ -994,9 +1001,9 @@
           :form-as-string form-as-string
           :message message
           :message-args message-args))
-
 
-(defsection @mgl-pax-transcript-emacs-integration
+
+(defsection @transcript-emacs-integration
     (:title "Transcribing with Emacs")
   """Typical transcript usage from within Emacs is simple: add a lisp
   form to a docstring or comment at any indentation level. Move the

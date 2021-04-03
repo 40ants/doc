@@ -1,34 +1,58 @@
 (uiop:define-package #:40ants-doc/doc
-  (:use #:cl)
+  (:use #:cl
+        #:40ants-doc/locatives)
   (:import-from #:40ants-doc
-                #:defsection))
+                #:defsection)
+  (:import-from #:40ants-doc/restart)
+  (:import-from #:40ants-doc/glossary)
+
+  (:import-from #:40ants-doc-full)
+  (:import-from #:named-readtables)
+  (:import-from #:pythonic-string-reader)
+  (:import-from #:40ants-doc/builder)
+  (:import-from #:40ants-doc/markdown)
+  (:import-from #:40ants-doc/builder/printer)
+  (:import-from #:40ants-doc/link)
+  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:40ants-doc/locatives/base)
+  (:import-from #:40ants-doc/reference-api)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/source-api)
+  (:import-from #:40ants-doc/document))
 (in-package 40ants-doc/doc)
+
+(named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
 (defsection @index (:title "40Ants Doc Manual")
   "
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
 "
-  (40ants-doc asdf:system)
-  (@mgl-pax-links section)
-  (@mgl-pax-background section)
-  (@mgl-pax-tutorial section)
-  (@mgl-pax-emacs-integration section)
-  (@mgl-pax-basics section)
-  (@mgl-pax-generating-documentation section)
-  (@mgl-pax-markdown-support section)
-  (@mgl-pax-documentation-printer-variables section)
-  (@mgl-pax-locative-types section)
-  (@mgl-pax-extension-api section)
-  (@mgl-pax-transcript section))
+  (40ants-doc system)
+  (@links section)
+  (@background section)
+  (@tutorial section)
+  (@emacs-integration section)
+  (@basics section)
+  (40ants-doc/builder::@generating-documentation section)
+  (40ants-doc/markdown::@markdown-support section)
+  (@documentation-printer-variables section)
+  (@locative-types section)
+  (@extension-api section)
+  (40ants-doc/transcribe::@transcript section))
 
-(defsection @mgl-pax-links (:title "Links")
-  "Here is the [official
-  repository](https://github.com/melisgl/mgl-pax) and the [HTML
-  documentation](http://melisgl.github.io/mgl-pax-world/mgl-pax-manual.html)
-  for the latest version.")
 
-(defsection @mgl-pax-background (:export nil :title "Background")
+(defsection @links (:title "Links")
+  "
+  Here is the [official repository](https://github.com/40ants/doc) and
+  the [HTML documentation](https://40ants.com/doc) for the latest version.
+
+  This system is a fork of the [MGL-PAX](https://github.com/melisgl/mgl-pax).
+  Because of massive refactoring, it is incompatible with original repository.
+")
+
+
+(defsection @background (:export nil :title "Background")
   "As a user, I frequently run into documentation that's incomplete
   and out of date, so I tend to stay in the editor and explore the
   code by jumping around with SLIME's [`M-.`][SLIME-M-.]. As a library
@@ -74,7 +98,7 @@
   later generalized into the concept of locatives:
 
   ```commonlisp
-  (defsection @mgl-pax-introduction ()
+  (defsection @introduction ()
     \"A single line for one man ...\"
     (foo class)
     (bar function))
@@ -99,7 +123,7 @@
 
   [markdown]: https://daringfireball.net/projects/markdown/")
 
-(defsection @mgl-pax-tutorial (:title "Tutorial")
+(defsection @tutorial (:title "Tutorial")
   """PAX provides an extremely poor man's Explorable Programming
   environment. Narrative primarily lives in so called sections that
   mix markdown docstrings with references to functions, variables,
@@ -107,7 +131,7 @@
 
   The primary focus is on making code easily explorable by using
   SLIME's `M-.` (`slime-edit-definition`). See how to enable some
-  fanciness in @MGL-PAX-EMACS-INTEGRATION. Generating documentation
+  fanciness in @EMACS-INTEGRATION. Generating documentation
   from sections and all the referenced items in Markdown or HTML
   format is also implemented.
 
@@ -244,20 +268,20 @@
   *One can even generate documentation for different, but related
   libraries at the same time with the output going to different files,
   but with cross-page links being automatically added for symbols
-  mentioned in docstrings. See @MGL-PAX-GENERATING-DOCUMENTATION for
+  mentioned in docstrings. See @GENERATING-DOCUMENTATION for
   some convenience functions to cover the most common cases.*
 
   Note how `(VARIABLE *FOO-STATE*)` in the DEFSECTION form both
   exports `*FOO-STATE*` and includes its documentation in
   `@FOO-RANDOM-MANUAL`. The symbols VARIABLE and FUNCTION are just two
   instances of 'locatives' which are used in DEFSECTION to refer to
-  definitions tied to symbols. See @MGL-PAX-LOCATIVE-TYPES.
+  definitions tied to symbols. See @LOCATIVE-TYPES.
 
   The transcript in the code block tagged with `cl-transcript` is
   automatically checked for up-to-dateness. See
-  @MGL-PAX-TRANSCRIPT.""")
+  @TRANSCRIPT.""")
 
-(defsection @mgl-pax-emacs-integration (:title "Emacs Integration")
+(defsection @emacs-integration (:title "Emacs Integration")
   "Integration into SLIME's `M-.` (`slime-edit-definition`) allows one
   to visit the source location of the thing that's identified by a
   symbol and the locative before or after the symbol in a buffer. With
@@ -306,8 +330,14 @@
                    :header-nl "```elisp" :footer-nl "```")))
 
 
+(defsection @basics (:title "Basics")
+  "Now let's examine the most important pieces in detail."
+  (40ants-doc::defsection macro)
+  (40ants-doc::*discard-documentation-p* variable)
+  (40ants-doc/document::document generic-function))
 
-(defsection @mgl-pax-locatives-and-references
+
+(defsection @locatives-and-references
     (:title "Locatives and References")
   "While Common Lisp has rather good introspective abilities, not
   everything is first class. For example, there is no object
@@ -329,15 +359,155 @@
 
   Naturally, `(LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
   need to muck with references when there is a perfectly good object."
-  (locate function)
-  (locate-error condition)
-  (locate-error-message (reader locate-error))
-  (locate-error-object (reader locate-error))
-  (locate-error-locative (reader locate-error))
-  (resolve function)
-  (reference class)
-  (reference-object (reader reference))
-  (reference-locative (reader reference))
-  (make-reference function)
-  (locative-type function)
-  (locative-args function))
+  (40ants-doc/locatives/base::locate function)
+  (40ants-doc/locatives/base::locate-error condition)
+  (40ants-doc/locatives/base::locate-error-message (reader 40ants-doc/locatives/base::locate-error))
+  (40ants-doc/locatives/base::locate-error-object (reader 40ants-doc/locatives/base::locate-error))
+  (40ants-doc/locatives/base::locate-error-locative (reader 40ants-doc/locatives/base::locate-error))
+  (40ants-doc/reference::resolve function)
+  (40ants-doc/reference::reference class)
+  (40ants-doc/reference::reference-object (reader 40ants-doc/reference::reference))
+  (40ants-doc/reference::reference-locative (reader 40ants-doc/reference::reference))
+  (40ants-doc/reference::make-reference function)
+  (40ants-doc/locatives/base::locative-type function)
+  (40ants-doc/locatives/base::locative-args function))
+
+
+(defsection @documentation-printer-variables
+    (:title "Documentation Printer Variables")
+  "Docstrings are assumed to be in markdown format and they are pretty
+  much copied verbatim to the documentation subject to a few knobs
+  described below."
+  (40ants-doc/builder/printer::*document-uppercase-is-code* variable)
+  (40ants-doc/builder/printer::*document-downcase-uppercase-code* variable)
+  (40ants-doc/builder/printer::*document-normalize-packages* variable)
+  (40ants-doc/link::*document-link-code* variable)
+  (40ants-doc/link::*document-link-sections* variable)
+  (40ants-doc/link::*document-min-link-hash-length* variable)
+  (40ants-doc/builder/vars::*document-mark-up-signatures* variable)
+  (40ants-doc/builder/vars::*document-max-numbering-level* variable)
+  (40ants-doc/builder/vars::*document-max-table-of-contents-level* variable)
+  (40ants-doc/builder/vars::*document-text-navigation* variable)
+  (40ants-doc/builder/vars::*document-fancy-html-navigation* variable))
+
+
+(defsection @locative-types (:title "Locative Types")
+  "These are the locatives type supported out of the box. As all
+  locative types, they are symbols and their names should make it
+  obvious what kind of things they refer to. Unless otherwise noted,
+  locatives take no arguments."
+  (system locative)
+  (section locative)
+  (variable locative)
+  (constant locative)
+  (macro locative)
+  (compiler-macro locative)
+  (function locative)
+  (generic-function locative)
+  (method locative)
+  (accessor locative)
+  (reader locative)
+  (writer locative)
+  (structure-accessor locative)
+  (class locative)
+  (condition locative)
+  (type locative)
+  (package locative)
+  (dislocated locative)
+  (argument locative)
+  (locative locative)
+  (include locative)
+  (40ants-doc/restart::define-restart macro)
+  (restart locative)
+  (40ants-doc/glossary::define-glossary-term macro)
+  (glossary-term locative))
+
+
+(defsection @extension-api (:title "Extension API")
+  (@locatives-and-references section)
+  (@new-object-types section)
+  (@reference-based-extensions section)
+  (@sections section))
+
+
+(defsection @new-object-types (:title "Adding New Object Types")
+  "One may wish to make the DOCUMENT function and `M-.` navigation
+  work with new object types. Extending DOCUMENT can be done by
+  defining a DOCUMENT-OBJECT method. To allow these objects to be
+  referenced from DEFSECTION, a LOCATE-OBJECT method is to be defined.
+  Finally, for `M-.` FIND-SOURCE can be specialized. Finally,
+  EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
+  makes sense. Here is a stripped down example of how all this is done
+  for ASDF:SYSTEM:"
+  (asdf-example (include (:start (asdf:system locative)
+                          :end (40ants-doc/locatives/asdf-system::end-of-asdf-example variable))
+                         :header-nl "```commonlisp"
+                         :footer-nl "```"))
+  (40ants-doc/locatives/base::define-locative-type macro)
+  (40ants-doc::exportable-locative-type-p generic-function)
+  (40ants-doc/locatives/base::locate-object generic-function)
+  (40ants-doc/locatives/base::locate-error function)
+  (40ants-doc/reference-api::canonical-reference generic-function)
+  (40ants-doc/reference-api::collect-reachable-objects generic-function)
+  (40ants-doc/reference-api::collect-reachable-objects (method () (t)))
+  (40ants-doc/document::document-object generic-function)
+  (40ants-doc/document::document-object (method () (string t)))
+  (40ants-doc/source-api::find-source generic-function))
+
+
+(defsection @reference-based-extensions
+    (:title "Reference Based Extensions")
+  "Let's see how to extend DOCUMENT and `M-.` navigation if there is
+  no first class object to represent the thing of interest. Recall
+  that LOCATE returns a REFERENCE object in this case. DOCUMENT-OBJECT
+  and FIND-SOURCE defer to LOCATE-AND-DOCUMENT and
+  LOCATE-AND-FIND-SOURCE, which have LOCATIVE-TYPE in their argument
+  list for EQL specializing pleasure. Here is a stripped down example
+  of how the VARIABLE locative is defined:"
+  (variable-example (include (:start (variable locative)
+                              :end (40ants-doc/locatives/variable::end-of-variable-example variable))
+                             :header-nl "```commonlisp"
+                             :footer-nl "```"))
+  (40ants-doc/reference-api::collect-reachable-objects (method () (40ants-doc/reference::reference)))
+  (40ants-doc/locatives/base::locate-and-collect-reachable-objects generic-function)
+  (40ants-doc/locatives/base::locate-and-collect-reachable-objects (method () (t t t)))
+  (40ants-doc/document::document-object (method () (40ants-doc/reference::reference t)))
+  (40ants-doc/locatives/base::locate-and-document generic-function)
+  (40ants-doc/source-api::find-source (method () (40ants-doc/reference::reference)))
+  (40ants-doc/locatives/base::locate-and-find-source generic-function)
+  (40ants-doc/locatives/base::locate-and-find-source (method () (t t t)))
+  "We have covered the basic building blocks of reference based
+  extensions. Now let's see how the obscure
+  DEFINE-SYMBOL-LOCATIVE-TYPE and
+  DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
+  simplify the common task of associating definition and documentation
+  with symbols in a certain context."
+  (40ants-doc/locatives/definers::define-symbol-locative-type macro)
+  (40ants-doc/locatives/define-definer::define-definer-for-symbol-locative-type macro))
+
+
+(defsection @sections (:title "Sections")
+  "[Section][class] objects rarely need to be dissected since
+  DEFSECTION and DOCUMENT cover most needs. However, it is plausible
+  that one wants to subclass them and maybe redefine how they are
+  presented."
+  (40ants-doc::section class)
+  (40ants-doc::section-name (reader 40ants-doc::section))
+  (40ants-doc::section-package (reader 40ants-doc::section))
+  (40ants-doc::section-readtable (reader 40ants-doc::section))
+  (40ants-doc::section-title (reader 40ants-doc::section))
+  (40ants-doc::section-link-title-to (reader 40ants-doc::section))
+  (40ants-doc::section-entries (reader 40ants-doc::section))
+  (describe-object (method () (40ants-doc::section t))))
+
+
+
+(defun render ()
+  (40ants-doc/builder::update-asdf-system-html-docs
+   @index :40ants-doc
+   :pages
+   (list (list :objects
+               (list @index)
+               :source-uri-fn
+               (40ants-doc/github::make-github-source-uri-fn
+                :40ants-doc "https://github.com/40ants/doc")))))

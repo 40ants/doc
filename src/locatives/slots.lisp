@@ -1,6 +1,7 @@
 (uiop:define-package #:40ants-doc/locatives/slots
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
+                #:locate-and-find-source
                 #:locate-and-document
                 #:locate-error
                 #:locate-object

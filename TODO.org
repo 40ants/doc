@@ -1,5 +1,11 @@
-;;;; Original TODO from MGL-PAX
-;;;;
+* New TODO
+** TODO Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced
+** TODO Support custom HTML themes
+** TODO Support SLY and make both SLIME and SLY integrations optional
+** TODO Add a search facility which will build an index for static file like Sphinx does
+** TODO Separate markup parsing and result rendering code to support markups other than Markdown and HTML
+
+* Original TODO from MGL-PAX
 ;;;; - locative aliases for docstrings (object[s] -> class)
 ;;;;
 ;;;; - add method-combination locative

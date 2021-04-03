@@ -10,25 +10,6 @@
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
-(defsection @mgl-pax-documentation-printer-variables
-    (:title "Documentation Printer Variables")
-  "Docstrings are assumed to be in markdown format and they are pretty
-  much copied verbatim to the documentation subject to a few knobs
-  described below."
-  (*document-uppercase-is-code* variable)
-  (*document-downcase-uppercase-code* variable)
-  (*document-link-code* variable)
-  (*document-link-sections* variable)
-  (*document-min-link-hash-length* variable)
-  (*document-mark-up-signatures* variable)
-  (*document-max-numbering-level* variable)
-  (*document-max-table-of-contents-level* variable)
-  (*document-text-navigation* variable)
-  (*document-fancy-html-navigation* variable)
-  (*document-normalize-packages* variable))
-
-;;;; Packages
-
 (defvar *document-normalize-packages* t
   "If true, symbols are printed relative to SECTION-PACKAGE of the
   innermost containing section or with full package names if there is
@@ -50,11 +31,11 @@
 
       "`FOO` and `FOO`."
 
-  iff `FOO` is an interned symbol. To suppress this behavior, add a
+  if `FOO` is an interned symbol. To suppress this behavior, add a
   backslash to the beginning of the symbol or right after the leading
   * if it would otherwise be parsed as markdown emphasis:
 
-      "\\MGL-PAX *\\DOCUMENT-NORMALIZE-PACKAGES*"
+      "\\40ANTS-DOC *\\DOCUMENT-NORMALIZE-PACKAGES*"
 
   The number of backslashes is doubled above because that's how the
   example looks in a docstring. Note that the backslash is discarded

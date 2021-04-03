@@ -32,4 +32,3 @@
            #:variable))
 (in-package 40ants-doc/locatives)
 
-
