@@ -1,55 +1,60 @@
-(in-package :mgl-pax-test)
+(defpackage #:40ants-doc-test/test-transcribe
+  (:use #:cl)
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/transcribe))
+(in-package 40ants-doc-test/test-transcribe)
+
 
 (defun test-read-prefixed-lines ()
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1"))
-             (mgl-pax::read-prefixed-lines stream ">")))
+             (40ants-doc/utils::read-prefixed-lines stream ">")))
           '("1" 1 nil t 2)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%"))
-             (mgl-pax::read-prefixed-lines stream ">")))
+             (40ants-doc/utils::read-prefixed-lines stream ">")))
           '("1" 1 nil t 3)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>"))
-             (mgl-pax::read-prefixed-lines stream ">")))
+             (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%") 2 nil t 4)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3"))
-             (mgl-pax::read-prefixed-lines stream ">")))
+             (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 nil t 9)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy~%"))
-             (mgl-pax::read-prefixed-lines stream ">")))
+             (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 "xy" nil 10)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy"))
-             (mgl-pax::read-prefixed-lines stream ">")))
+             (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 "xy" t 10)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1"))
-             (mgl-pax::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           '(">1" 1 nil t 2)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3"))
-             (mgl-pax::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 nil t 9)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy~%"))
-             (mgl-pax::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 "xy" nil 10)))
   (assert
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy"))
-             (mgl-pax::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 "xy" t 10))))
 
 (defclass bbb ()
@@ -266,15 +271,15 @@
      :errors (nil))))
 
 (defun call-format-on-strings (tree)
-  (mgl-pax::transform-tree (lambda (parent node)
-                             (declare (ignore parent))
-                             (if (stringp node)
-                                 (values (format nil node) nil nil)
-                                 (values node t nil)))
-                           tree))
+  (40ants-doc/utils::transform-tree (lambda (parent node)
+                                      (declare (ignore parent))
+                                      (if (stringp node)
+                                          (values (format nil node) nil nil)
+                                          (values node t nil)))
+                                    tree))
 
 (defun test-read-write-transcript ()
-  (let ((*package* (find-package :mgl-pax-test)))
+  (let ((*package* (find-package :40ants-doc-test/test-transcribe)))
     (loop for test-case in *transcribe-test-cases* do
       (format t "test case: ~S~%" test-case)
       (destructuring-bind (&key input transcript output check-consistency
@@ -288,27 +293,27 @@
               (errors* ()))
           (catch 'here
             (handler-bind
-                ((transcription-output-consistency-error
+                ((40ants-doc/transcribe::transcription-output-consistency-error
                    (lambda (e)
-                     (push (mgl-pax::transcription-error-file-position e)
+                     (push (40ants-doc/transcribe::transcription-error-file-position e)
                            output-consistency-errors*)
                      (continue)))
-                 (transcription-values-consistency-error
+                 (40ants-doc/transcribe::transcription-values-consistency-error
                    (lambda (e)
-                     (push (mgl-pax::transcription-error-file-position e)
+                     (push (40ants-doc/transcribe::transcription-error-file-position e)
                            values-consistency-errors*)
                      (continue)))
-                 (transcription-error
+                 (40ants-doc/transcribe::transcription-error
                    (lambda (e)
-                     (push (mgl-pax::transcription-error-file-position e)
+                     (push (40ants-doc/transcribe::transcription-error-file-position e)
                            errors*)
                      (throw 'here nil))))
               (let* ((input (format nil input))
                      (output (when output (format nil output)))
                      (transcript (call-format-on-strings transcript))
-                     (transcript* (mgl-pax::read-transcript input))
+                     (transcript* (40ants-doc/transcribe::read-transcript input))
                      (output*
-                       (mgl-pax::write-transcript
+                       (40ants-doc/transcribe::write-transcript
                         transcript* nil
                         :check-consistency check-consistency
                         :update-only update-only
@@ -327,11 +332,11 @@
 
 (defparameter *transcribe-source-file*
   (asdf:system-relative-pathname
-   :mgl-pax "test/data/baseline/transcribe-source.lisp"))
+   :40ants-doc-test "test/data/baseline/transcribe-source.lisp"))
 
 (defparameter *transcribe-transcription-file*
   (asdf:system-relative-pathname
-   :mgl-pax "test/data/baseline/transcribe-transcription.lisp"))
+   :40ants-doc-test "test/data/baseline/transcribe-transcription.lisp"))
 
 (defun test-transcribe-from-source ()
   (check-transcription *transcribe-source-file*
@@ -360,7 +365,7 @@
         (transcribe source transcription :update-only t
                     :check-consistency check-consistency)))))
 
-(defun test-transcribe ()
+(defun test ()
   (test-read-prefixed-lines)
   (test-read-write-transcript)
   (test-transcribe-from-source)

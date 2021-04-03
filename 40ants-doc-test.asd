@@ -2,9 +2,8 @@
   :licence "MIT"
   :author "Alexander Artemenko"
   :description "Test system for 40ants-doc."
-  :depends-on ("40ants-doc")
   :class :package-inferred-system
-  :pathname "t"
+  :pathname "test"
   :depends-on ("40ants-doc-test/test-transcribe"
                "40ants-doc-test/test")
   ;; :components ((:module "test"

@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/world
+(uiop:define-package #:40ants-doc/world
   (:use #:cl)
   (:import-from #:40ants-doc
                 #:defsection))

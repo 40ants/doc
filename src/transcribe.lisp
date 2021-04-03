@@ -1020,7 +1020,7 @@
   `cl-transcript` is only to tell PAX to perform consistency checks at
   documentation generation time.
 
-  Now invoke the elisp function `mgl-pax-transcribe` where the cursor
+  Now invoke the elisp function `40ants-doc-transcribe` where the cursor
   is and the fenced code block from the docstring becomes:
 
       (values (princ :hello) (list 1 2))
@@ -1053,7 +1053,7 @@
           2)
       ^
 
-  then invoke the elisp function `mgl-pax-retranscribe-region` to get:
+  then invoke the elisp function `40ants-doc-retranscribe-region` to get:
 
       (values (princ :hello-world) (list 1 2))
       .. HELLO-WORLD
@@ -1066,17 +1066,17 @@
   Note how the indentation and the comment of `(1 2)` was left alone
   but the output and the first return value got updated.
 
-  Alternatively, `C-u 1 mgl-pax-transcribe` will emit commented markup:
+  Alternatively, `C-u 1 40ants-doc-transcribe` will emit commented markup:
 
       (values (princ :hello) (list 1 2))
       ;.. HELLO
       ;=> :HELLO
       ;=> (1 2)
 
-  `C-u 0 mgl-pax-retranscribe-region` will turn commented into
+  `C-u 0 40ants-doc-retranscribe-region` will turn commented into
   non-commented markup. In general, the numeric prefix argument is the
-  index of the syntax to be used in MGL-PAX:*SYNTAXES*. Without a
-  prefix argument `mgl-pax-retranscribe-region` will not change the
+  index of the syntax to be used in 40ants-doc:*SYNTAXES*. Without a
+  prefix argument `40ants-doc-retranscribe-region` will not change the
   markup style.
 
   Finally, not only do both functions work at any indentation level,
@@ -1088,9 +1088,9 @@
       ;;;; => (1 2)
 
   Transcription support in emacs can be enabled by adding this to your
-  Emacs initialization file (or loading `src/transcribe.el`):"""
+  Emacs initialization file (or loading `elisp/transcribe.el`):"""
   (transcribe.el (include
-                  #.(asdf:system-relative-pathname :mgl-pax "src/transcribe.el")
+                  #.(asdf:system-relative-pathname :40ants-doc "elisp/transcribe.el")
                   :header-nl "```elisp"
                   :footer-nl "```")))
 

@@ -175,7 +175,7 @@
 
 (defun transform-link-title-to (link-title-to)
   (when link-title-to
-    (if (typep link-title-to 'reference)
+    (if (typep link-title-to '40ants-doc/reference::reference)
         link-title-to
         (apply #'40ants-doc/reference::make-reference link-title-to))))
 

@@ -1,11 +1,18 @@
-(in-package :mgl-pax-test)
+(uiop:define-package #:40ants-doc-test/test
+  (:use #:cl
+        #:40ants-doc/locatives)
+  (:import-from #:40ants-doc
+                #:defsection)
+  (:import-from #:40ants-doc/doc))
+(in-package 40ants-doc-test/test)
+
 
 (defsection @test (:export nil)
   "[*TEST-VARIABLE*][]
   [`*TEST-VARIABLE*`][]
   [*test-variable*][]
   [`*test-variable*`][]
-  [mgl-pax-test:*test-variable*][]
+  [40ants-doc-test/test:*test-variable*][]
   FOO function, function FOO,
   `FOO` function, function `FOO`,
   FOO `function`, `function` FOO,
@@ -111,7 +118,7 @@
 
 (defsection @test-section-with-link-to-other-page-in-title
     (:title "Link to @TEST-OTHER"
-            :link-title-to (@test-other section))
+     :link-title-to (@test-other section))
   "Same link in docstring to @TEST-OTHER.")
 
 (defsection @test-section-with-link-to-same-page-in-title
@@ -151,6 +158,7 @@
 (defun ->max ())
 
 (defparameter *navigation-test-cases*
+  ;; (symbol locative prefix &optional alternative-prefix)
   '((foo function (defun foo))
     (foo type (defclass foo))
     (foo class (defclass foo))
@@ -166,12 +174,12 @@
     (bar constant (defconstant bar))
     (baz generic-function (defgeneric baz))
     (baz variable (defvar baz))
-    (@mgl-pax-manual section (defsection @mgl-pax-manual))
+    (40ants-doc/doc::@index section (defsection @index))
     (baz-aaa structure-accessor (defstruct baz))
-    (mgl-pax-minimal package
-     (eval-when (:compile-toplevel :load-toplevel :execute))
-     (cl:defpackage))
-    (mgl-pax asdf:system ())
+    (40ants-doc package
+     (cl:defpackage)
+     (uiop:define-package))
+    (40ants-doc system ())
     ;; Allegro has the location off by one form.
     #-allegro
     (test-gf generic-function (defgeneric test-gf))
@@ -188,13 +196,14 @@
         do (destructuring-bind
                (symbol locative prefix &optional alternative-prefix) test-case
              (when (working-locative-p locative)
-               (let ((location (find-source (locate symbol locative))))
+               (let ((location (40ants-doc/source-api::find-source
+                                (40ants-doc/locatives/base::locate symbol locative))))
                  (assert (not (eq :error (first location))) ()
                          "Could not find source location for (~S ~S)"
                          symbol locative)
                  (let* ((file (second (second location)))
                         (position (1- (second (third location))))
-                        (form (let ((*package* (find-package :mgl-pax-test)))
+                        (form (let ((*package* (find-package :40ants-doc-test/test)))
                                 (read-form-from-file-position file position))))
                    (assert
                     (or (alexandria:starts-with-subseq prefix form
@@ -215,41 +224,46 @@
 
 (defun test-replace-known-references ()
   (assert (string= "`FOO`"
-                   (mgl-pax::replace-known-references "`FOO`"
-                                                      :known-references ()))))
+                   (40ants-doc/markdown/transform::replace-known-references
+                    "`FOO`"
+                    :known-references ()))))
 
 (defun test-transform-tree ()
   (assert (equal '(1)
-                 (mgl-pax::transform-tree (lambda (parent a)
-                                            (declare (ignore parent))
-                                            (values a (listp a) nil))
-                                          '(1))))
+                 (40ants-doc/utils::transform-tree
+                  (lambda (parent a)
+                    (declare (ignore parent))
+                    (values a (listp a) nil))
+                  '(1))))
 
   (assert (equal '(2 (3 (4 5)))
-                 (mgl-pax::transform-tree (lambda (parent a)
-                                            (declare (ignore parent))
-                                            (values (if (listp a) a (1+ a))
-                                                    (listp a)
-                                                    nil))
-                                          '(1 (2 (3 4))))))
+                 (40ants-doc/utils::transform-tree
+                  (lambda (parent a)
+                    (declare (ignore parent))
+                    (values (if (listp a) a (1+ a))
+                            (listp a)
+                            nil))
+                  '(1 (2 (3 4))))))
 
   (assert (equal '(1 2 (2 3 (3 4 4 5)))
-                 (mgl-pax::transform-tree (lambda (parent a)
-                                            (declare (ignore parent))
-                                            (values (if (listp a)
-                                                        a
-                                                        (list a (1+ a)))
-                                                    (listp a)
-                                                    (not (listp a))))
-                                          '(1 (2 (3 4)))))))
+                 (40ants-doc/utils::transform-tree
+                  (lambda (parent a)
+                    (declare (ignore parent))
+                    (values (if (listp a)
+                                a
+                                (list a (1+ a)))
+                            (listp a)
+                            (not (listp a))))
+                  '(1 (2 (3 4)))))))
 
 (defun test-macro-arg-names ()
   (assert (equal '(x a b c)
-                 (mgl-pax::macro-arg-names '((&key (x y)) (a b) &key (c d))))))
+                 (40ants-doc/args::macro-arg-names
+                  '((&key (x y)) (a b) &key (c d))))))
 
 (defun test-document (format)
   (let ((outputs (write-test-document-files
-                  (asdf:system-relative-pathname :mgl-pax "test/data/tmp/")
+                  (asdf:system-relative-pathname :40ants-doc "test/data/tmp/")
                   format)))
     (assert (= 4 (length outputs)))
     ;; the default page corresponding to :STREAM is empty
@@ -276,27 +290,27 @@
                              :type (if (eq format :markdown) "md" "html")
                              :directory (pathname-directory basedir)))))
     (let ((open-args '(:if-exists :supersede :ensure-directories-exist t))
-          (*document-downcase-uppercase-code* (eq format :html)))
-      (document @test
-                :pages `((:objects
-                          ,(list @test-examples)
-                          :output (nil))
-                         (:objects
-                          ,(list @test-other)
-                          :output (,(rebase "other/test-other") ,@open-args))
-                         (:objects
-                          ,(list @test)
-                          :output (,(rebase "test") ,@open-args)))
-                :format format))))
+          (40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html)))
+      (40ants-doc/document::document
+       @test
+       :pages `((:objects
+                 ,(list @test-examples)
+                 :output (nil))
+                (:objects
+                 ,(list @test-other)
+                 :output (,(rebase "other/test-other") ,@open-args))
+                (:objects
+                 ,(list @test)
+                 :output (,(rebase "test") ,@open-args)))
+       :format format))))
 
 (defun update-test-document-baseline (format)
   (write-test-document-files
-   (asdf:system-relative-pathname :mgl-pax "test/data/baseline/")
+   (asdf:system-relative-pathname :40ants-doc "test/data/baseline/")
    format))
 
 
 (defun test ()
-  (test-transcribe)
   ;; ECL does not provide source locations for most things.
   #-ecl
   (test-navigation)

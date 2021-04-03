@@ -58,4 +58,4 @@
 
 (defmethod 40ants-doc/reference-api::format-reference ((obj 40ants-doc/core::section) name ref link)
   `((:reference-link :label (,(section-title-or-name (40ants-doc/reference::resolve ref)))
-                     :definition link)))
+                     :definition ,link)))
