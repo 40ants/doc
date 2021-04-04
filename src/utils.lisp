@@ -1,6 +1,7 @@
 (uiop:define-package #:40ants-doc/utils
   (:use #:cl)
-  (:import-from #:40ants-doc/builder/vars))
+  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:alexandria))
 (in-package 40ants-doc/utils)
 
 
@@ -13,17 +14,10 @@
   #-(or sbcl allegro)
   (ignore-errors (symbol-value symbol)))
 
-;; TODO: probably replace with uiop
-;; (defun read-stream-into-string (stream &key (buffer-size 4096))
-;;   (let ((*print-pretty* nil))
-;;     (with-output-to-string (datum)
-;;       (let ((buffer (make-array buffer-size :element-type 'character)))
-;;         (loop for bytes-read = (read-sequence buffer stream)
-;;               do (write-sequence buffer datum :start 0 :end bytes-read)
-;;               while (= bytes-read buffer-size))))))
 
 (defun subseq* (seq start)
   (subseq seq (min (length seq) start)))
+
 
 (defun relativize-pathname (pathname reference-pathname)
   "Return a pathname that's equivalent to PATHNAME but relative to

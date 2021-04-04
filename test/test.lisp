@@ -3,7 +3,11 @@
         #:40ants-doc/locatives)
   (:import-from #:40ants-doc
                 #:defsection)
-  (:import-from #:40ants-doc/doc))
+  (:import-from #:40ants-doc/doc)
+  (:import-from #:rove
+                #:ok
+                #:deftest
+                #:testing))
 (in-package 40ants-doc-test/test)
 
 
@@ -185,90 +189,100 @@
     (test-gf generic-function (defgeneric test-gf))
     (test-gf (method () (number)) (defmethod test-gf))))
 
+
 (defun working-locative-p (locative)
   (declare (ignorable locative))
   ;; AllegroCL doesn't store source location for DEFPACKAGE.
   #+allegro (not (eq locative 'package))
   #-allegro t)
 
-(defun test-navigation ()
-  (loop for test-case in *navigation-test-cases*
-        do (destructuring-bind
-               (symbol locative prefix &optional alternative-prefix) test-case
-             (when (working-locative-p locative)
-               (let ((location (40ants-doc/source-api::find-source
-                                (40ants-doc/locatives/base::locate symbol locative))))
-                 (assert (not (eq :error (first location))) ()
-                         "Could not find source location for (~S ~S)"
-                         symbol locative)
-                 (let* ((file (second (second location)))
-                        (position (1- (second (third location))))
-                        (form (let ((*package* (find-package :40ants-doc-test/test)))
-                                (read-form-from-file-position file position))))
-                   (assert
-                    (or (alexandria:starts-with-subseq prefix form
-                                                       :test #'equal)
-                        (and alternative-prefix
-                             (alexandria:starts-with-subseq
-                              alternative-prefix form :test #'equal)))
-                    () "Could not find prefix ~S~@[ or ~S~] ~
-                     at source location~%~S~%for reference (~S ~S).~%~
-                     Form found was:~%~S."
-                    prefix alternative-prefix
-                    location symbol locative form)))))))
+
+(deftest test-navigation
+  (dolist (test-case *navigation-test-cases*)
+    (destructuring-bind
+        (symbol locative prefix &optional alternative-prefix) test-case
+      (testing (format nil "(~S ~S)"
+                       symbol locative)
+        (when (working-locative-p locative)
+          (let ((location (40ants-doc/source-api::find-source
+                           (40ants-doc/locatives/base::locate symbol locative))))
+            (ok (not (eq :error (first location)))
+                (format nil "Could not find source location for (~S ~S)"
+                        symbol locative))
+            (let* ((file (second (second location)))
+                   (position (1- (second (third location))))
+                   (form (let ((*package* (find-package :40ants-doc-test/test)))
+                           (read-form-from-file-position file position))))
+              (ok
+               (or (alexandria:starts-with-subseq prefix form
+                                                  :test #'equal)
+                   (and alternative-prefix
+                        (alexandria:starts-with-subseq
+                         alternative-prefix form :test #'equal)))
+               (format nil "Could not find prefix ~S~@[ or ~S~] ~
+                            at source location~%~S~%for reference (~S ~S).~%~
+                            Form found was:~%~S."
+                       prefix alternative-prefix
+                       location symbol locative form)))))))))
+
 
 (defun read-form-from-file-position (filename position)
   (with-open-file (stream filename :direction :input)
     (file-position stream position)
     (read stream)))
 
-(defun test-replace-known-references ()
-  (assert (string= "`FOO`"
-                   (40ants-doc/markdown/transform::replace-known-references
-                    "`FOO`"
-                    :known-references ()))))
 
-(defun test-transform-tree ()
-  (assert (equal '(1)
-                 (40ants-doc/utils::transform-tree
-                  (lambda (parent a)
-                    (declare (ignore parent))
-                    (values a (listp a) nil))
-                  '(1))))
+(deftest test-replace-known-references
+  (ok (string= "`FOO`"
+               (40ants-doc/markdown/transform::replace-known-references
+                "`FOO`"
+                :known-references ()))))
 
-  (assert (equal '(2 (3 (4 5)))
-                 (40ants-doc/utils::transform-tree
-                  (lambda (parent a)
-                    (declare (ignore parent))
-                    (values (if (listp a) a (1+ a))
-                            (listp a)
-                            nil))
-                  '(1 (2 (3 4))))))
 
-  (assert (equal '(1 2 (2 3 (3 4 4 5)))
-                 (40ants-doc/utils::transform-tree
-                  (lambda (parent a)
-                    (declare (ignore parent))
-                    (values (if (listp a)
-                                a
-                                (list a (1+ a)))
-                            (listp a)
-                            (not (listp a))))
-                  '(1 (2 (3 4)))))))
+(deftest test-transform-tree
+  (ok (equal '(1)
+             (40ants-doc/utils::transform-tree
+              (lambda (parent a)
+                (declare (ignore parent))
+                (values a (listp a) nil))
+              '(1))))
 
-(defun test-macro-arg-names ()
-  (assert (equal '(x a b c)
-                 (40ants-doc/args::macro-arg-names
-                  '((&key (x y)) (a b) &key (c d))))))
+  (ok (equal '(2 (3 (4 5)))
+             (40ants-doc/utils::transform-tree
+              (lambda (parent a)
+                (declare (ignore parent))
+                (values (if (listp a) a (1+ a))
+                        (listp a)
+                        nil))
+              '(1 (2 (3 4))))))
+  
+  (ok (equal '(1 2 (2 3 (3 4 4 5)))
+             (40ants-doc/utils::transform-tree
+              (lambda (parent a)
+                (declare (ignore parent))
+                (values (if (listp a)
+                            a
+                            (list a (1+ a)))
+                        (listp a)
+                        (not (listp a))))
+              '(1 (2 (3 4)))))))
+
+
+(deftest test-macro-arg-names
+  (ok (equal '(x a b c)
+             (40ants-doc/args::macro-arg-names
+              '((&key (x y)) (a b) &key (c d))))))
+
 
 (defun test-document (format)
   (let ((outputs (write-test-document-files
                   (asdf:system-relative-pathname :40ants-doc "test/data/tmp/")
                   format)))
-    (assert (= 4 (length outputs)))
+    (ok (= 4 (length outputs)))
     ;; the default page corresponding to :STREAM is empty
-    (assert (string= "" (first outputs)))
-    (assert (= 2 (count-if #'pathnamep outputs)))
+    (ok (string= "" (first outputs)))
+    (ok (= 2 (count-if #'pathnamep outputs)))
+    
     (dolist (output outputs)
       (when (pathnamep output)
         (let ((baseline (make-pathname
@@ -282,6 +296,15 @@
                     "~@<Output ~S ~_differs from baseline ~S.~@:>"
                     output baseline)
             (update-test-document-baseline format)))))))
+
+
+(deftest test-markdown-document
+  (test-document :markdown))
+
+
+(deftest test-html-document
+  (test-document :html))
+
 
 (defun write-test-document-files (basedir format)
   (flet ((rebase (pathname)
@@ -308,17 +331,3 @@
   (write-test-document-files
    (asdf:system-relative-pathname :40ants-doc "test/data/baseline/")
    format))
-
-
-(defun test ()
-  ;; ECL does not provide source locations for most things.
-  #-ecl
-  (test-navigation)
-  (test-replace-known-references)
-  (test-transform-tree)
-  (test-macro-arg-names)
-  (test-document :markdown)
-  (test-document :html))
-
-#+nil
-(test)

@@ -1,61 +1,66 @@
 (defpackage #:40ants-doc-test/test-transcribe
   (:use #:cl)
   (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/transcribe))
+  (:import-from #:40ants-doc/transcribe)
+  (:import-from #:rove
+                #:testing
+                #:ok
+                #:deftest))
 (in-package 40ants-doc-test/test-transcribe)
 
 
-(defun test-read-prefixed-lines ()
-  (assert
+(deftest test-read-prefixed-lines
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1"))
              (40ants-doc/utils::read-prefixed-lines stream ">")))
           '("1" 1 nil t 2)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%"))
              (40ants-doc/utils::read-prefixed-lines stream ">")))
           '("1" 1 nil t 3)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>"))
              (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%") 2 nil t 4)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3"))
              (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 nil t 9)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy~%"))
              (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 "xy" nil 10)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy"))
              (40ants-doc/utils::read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 "xy" t 10)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1"))
              (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           '(">1" 1 nil t 2)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3"))
              (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 nil t 9)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy~%"))
              (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 "xy" nil 10)))
-  (assert
+  (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy"))
              (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 "xy" t 10))))
+
 
 (defclass bbb ()
   ())
@@ -76,6 +81,7 @@
     (format stream "~%"))
   #+ecl
   (format stream "#<BBB* ~%>"))
+
 
 (defparameter *transcribe-test-cases*
   '((:input "1"
@@ -278,57 +284,61 @@
                                           (values node t nil)))
                                     tree))
 
-(defun test-read-write-transcript ()
-  (let ((*package* (find-package :40ants-doc-test/test-transcribe)))
-    (loop for test-case in *transcribe-test-cases* do
-      (format t "test case: ~S~%" test-case)
-      (destructuring-bind (&key input transcript output check-consistency
-                           update-only (include-no-output update-only)
-                           (include-no-value update-only)
-                           default-syntax errors output-consistency-errors
-                           values-consistency-errors)
-          test-case
-        (let ((output-consistency-errors* ())
-              (values-consistency-errors* ())
-              (errors* ()))
-          (catch 'here
-            (handler-bind
-                ((40ants-doc/transcribe::transcription-output-consistency-error
-                   (lambda (e)
-                     (push (40ants-doc/transcribe::transcription-error-file-position e)
-                           output-consistency-errors*)
-                     (continue)))
-                 (40ants-doc/transcribe::transcription-values-consistency-error
-                   (lambda (e)
-                     (push (40ants-doc/transcribe::transcription-error-file-position e)
-                           values-consistency-errors*)
-                     (continue)))
-                 (40ants-doc/transcribe::transcription-error
-                   (lambda (e)
-                     (push (40ants-doc/transcribe::transcription-error-file-position e)
-                           errors*)
-                     (throw 'here nil))))
-              (let* ((input (format nil input))
-                     (output (when output (format nil output)))
-                     (transcript (call-format-on-strings transcript))
-                     (transcript* (40ants-doc/transcribe::read-transcript input))
-                     (output*
-                       (40ants-doc/transcribe::write-transcript
-                        transcript* nil
-                        :check-consistency check-consistency
-                        :update-only update-only
-                        :include-no-output include-no-output
-                        :include-no-value include-no-value
-                        :default-syntax default-syntax)))
-                (when transcript
-                  (assert (equal transcript transcript*)))
-                (when output
-                  (assert (equal output output*))))))
-          (assert (equal (reverse errors*) errors))
-          (assert (equal (reverse output-consistency-errors*)
-                         output-consistency-errors))
-          (assert (equal (reverse values-consistency-errors*)
-                         values-consistency-errors)))))))
+(deftest test-read-write-transcript
+  (loop with *package* = (find-package :40ants-doc-test/test-transcribe)
+        for test-case in *transcribe-test-cases*
+        do (testing (format nil "test case: ~S" test-case)
+             (destructuring-bind (&key input transcript output check-consistency
+                                       update-only (include-no-output update-only)
+                                       (include-no-value update-only)
+                                       default-syntax errors output-consistency-errors
+                                       values-consistency-errors)
+                 test-case
+               (let ((output-consistency-errors* ())
+                     (values-consistency-errors* ())
+                     (errors* ()))
+                 (catch 'here
+                   (handler-bind
+                       ((40ants-doc/transcribe::transcription-output-consistency-error
+                          (lambda (e)
+                            (push (40ants-doc/transcribe::transcription-error-file-position e)
+                                  output-consistency-errors*)
+                            (continue)))
+                        (40ants-doc/transcribe::transcription-values-consistency-error
+                          (lambda (e)
+                            (push (40ants-doc/transcribe::transcription-error-file-position e)
+                                  values-consistency-errors*)
+                            (continue)))
+                        (40ants-doc/transcribe::transcription-error
+                          (lambda (e)
+                            (push (40ants-doc/transcribe::transcription-error-file-position e)
+                                  errors*)
+                            (throw 'here nil))))
+                     (let* ((input (format nil input))
+                            (output (when output (format nil output)))
+                            (transcript (call-format-on-strings transcript))
+                            (transcript* (40ants-doc/transcribe::read-transcript input))
+                            (output*
+                              (40ants-doc/transcribe::write-transcript
+                               transcript* nil
+                               :check-consistency check-consistency
+                               :update-only update-only
+                               :include-no-output include-no-output
+                               :include-no-value include-no-value
+                               :default-syntax default-syntax)))
+                       (when transcript
+                         (ok (equal transcript
+                                    transcript*)))
+                       (when output
+                         (ok (equal output
+                                    output*))))))
+                 (ok (equal (reverse errors*)
+                            errors))
+                 (ok (equal (reverse output-consistency-errors*)
+                            output-consistency-errors))
+                 (ok (equal (reverse values-consistency-errors*)
+                            values-consistency-errors)))))))
+
 
 (defparameter *transcribe-source-file*
   (asdf:system-relative-pathname
@@ -337,17 +347,6 @@
 (defparameter *transcribe-transcription-file*
   (asdf:system-relative-pathname
    :40ants-doc-test "test/data/baseline/transcribe-transcription.lisp"))
-
-(defun test-transcribe-from-source ()
-  (check-transcription *transcribe-source-file*
-                       *transcribe-transcription-file*
-                       :check-consistency nil))
-
-;;; Check that repeated transcription produces the same results.
-(defun test-transcribe-stability ()
-  (check-transcription *transcribe-transcription-file*
-                       *transcribe-transcription-file*
-                       :check-consistency t))
 
 
 (defun get-diff (baseline new-content)
@@ -364,6 +363,7 @@
 
 (defun check-transcription (source-file transcription-file
                             &key check-consistency)
+  "Check that repeated transcription produces the same results."
   (let ((result (with-output-to-string (transcription)
                   (with-open-file (source source-file)
                     (40ants-doc/transcribe::transcribe source
@@ -380,8 +380,14 @@
       (alexandria:write-string-into-file result transcription-file
                                          :if-exists :rename-and-delete))))
 
-(defun test ()
-  (test-read-prefixed-lines)
-  (test-read-write-transcript)
-  (test-transcribe-from-source)
-  (test-transcribe-stability))
+
+(deftest test-transcribe-from-source
+  (check-transcription *transcribe-source-file*
+                       *transcribe-transcription-file*
+                       :check-consistency nil))
+
+
+(deftest test-transcribe-stability
+  (check-transcription *transcribe-transcription-file*
+                       *transcribe-transcription-file*
+                       :check-consistency t))

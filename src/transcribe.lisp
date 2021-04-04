@@ -22,7 +22,9 @@
                 #:read-prefixed-lines
                 #:read-line*
                 #:whitespacep)
-  (:import-from #:40ants-doc/reference))
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/page)
+  (:import-from #:swank))
 (in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -477,8 +479,7 @@
          ;; There is no way to guarantee that FILE-POSITION will work
          ;; on a stream so let's just read the entire INPUT into a
          ;; string.
-         (with-input-from-string (stream  ;; (40ants-doc/utils::read-stream-into-string input)
-                                          (uiop:slurp-stream-string input))
+         (with-input-from-string (stream (uiop:slurp-stream-string input))
            (funcall fn stream)))
         ((stringp input)
          (with-input-from-string (input input)
