@@ -19,6 +19,7 @@
   :by-cron "0 10 * * 1"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/run-tests:run-tests
+          :asd-system "40ants-doc-full"
           :coverage t)))
 
 
