@@ -36,8 +36,11 @@
   One may want to set *DISCARD-DOCUMENTATION-P* to true before
   building a binary application.")
 
-(defmacro defsection (name (&key (package '*package*) (readtable '*readtable*)
-                                 (export t) title link-title-to
+(defmacro defsection (name (&key (package-symbol '*package*)
+                                 (readtable-symbol '*readtable*)
+                                 (export t)
+                                 title
+                                 link-title-to
                                  (discard-documentation-p *discard-documentation-p*))
                       &body entries)
   "Define a documentation section and maybe export referenced symbols.
@@ -102,12 +105,12 @@
   `(progn
      (eval-when (:compile-toplevel :load-toplevel :execute)
        (when ,export
-         (export-some-symbols ',name ',entries ,package)))
+         (export-some-symbols ',name ',entries ,package-symbol)))
      (defparameter ,name
        (make-instance 'section
                       :name ',name
-                      :package ,package
-                      :readtable ,readtable
+                      :package ,package-symbol
+                      :readtable ,readtable-symbol
                       :title ,title
                       :link-title-to (transform-link-title-to ',link-title-to)
                       :entries ,(if discard-documentation-p
@@ -231,44 +234,3 @@
 
 (defmethod exportable-locative-type-p ((locative-type (eql 'method)))
   nil)
-
-
-;; TODO: try to use uiop:define-package
-;; seems it is not have this package variance error on SBCL
-;; If it is correct, then we can remove this macro:
-(defmacro define-package (package &body options)
-  "This is like CL:DEFPACKAGE but silences warnings and errors
-  signaled when the redefined package is at variance with the current
-  state of the package. Typically this situation occurs when symbols
-  are exported by calling EXPORT (as is the case with DEFSECTION) as
-  opposed to adding :EXPORT forms to the DEFPACKAGE form and the
-  package definition is reevaluated. See the section on [package
-  variance](http://www.sbcl.org/manual/#Package-Variance) in the SBCL
-  manual.
-
-  The bottom line is that if you rely on DEFSECTION to do the
-  exporting, then you'd better use DEFINE-PACKAGE.
-
-  To uses this macro in your own ASDF systems, add this to the DEFSYSTEM
-  form:
-
-  ```lisp
-  :defsystem-depends-on (\"40ants-doc\")
-  ```
-"
-  `(eval-when (:compile-toplevel :load-toplevel, :execute)
-     (locally
-         (declare #+sbcl
-                  (sb-ext:muffle-conditions sb-kernel::package-at-variance))
-       (handler-bind
-           (#+sbcl (sb-kernel::package-at-variance #'muffle-warning))
-         (cl:defpackage ,package ,@options)))))
-
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  ;; This makes our custom define-package
-  ;; work with package inferred asdf systems:
-  (pushnew 'define-package
-           asdf/package-inferred-system:*defpackage-forms*))
-
-
