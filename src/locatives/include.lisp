@@ -41,7 +41,7 @@
 
   ```commonlisp
   (defsection example-section ()
-    (pax.el (include #.(asdf:system-relative-pathname :mgl-pax "src/pax.el")
+    (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
                      :header-nl "```elisp" :footer-nl "```"))
     (foo-example (include (:start (foo function)
                            :end (end-of-foo-example variable))

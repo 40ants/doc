@@ -110,20 +110,19 @@
   sheet to TARGET-DIR, as well. Example usage:
 
   ```commonlisp
-  (update-asdf-system-html-docs @mgl-pax-manual :mgl-pax)
+  (update-asdf-system-html-docs @manual :40ants-doc)
   ```
 
   The same, linking to the sources on github:
 
   ```commonlisp
   (update-asdf-system-html-docs
-    @mgl-pax-manual :mgl-pax
+    @manual :40ants-doc
     :pages
-    `((:objects
-      (,mgl-pax:@mgl-pax-manual)
-      :source-uri-fn ,(make-github-source-uri-fn
-                       :mgl-pax
-                       \"https://github.com/melisgl/mgl-pax\"))))
+    (list (list :objects (list @manual)
+                :source-uri-fn (make-github-source-uri-fn
+                                 :40ants-doc
+                                 \"https://github.com/40ants/doc\"))))
   ```"
   (document-html sections pages target-dir update-css-p nil))
 

@@ -150,10 +150,10 @@
   Here is an example of how it all works together:
 
   ```commonlisp
-  (mgl-pax:define-package #:foo-random
+  (uiop:define-package #:foo-random
     (:documentation "This package provides various utilities for
     random. See FOO-RANDOM:@FOO-RANDOM-MANUAL.")
-    (:use #:common-lisp #:mgl-pax))
+    (:use #:common-lisp #:40ants-doc))
 
   (in-package foo-random)
 
@@ -326,7 +326,7 @@
 
   The `M-.` extensions can be enabled by adding this to your Emacs
   initialization file (or loading `src/pax.el`):"
-  (pax.el (include #.(asdf:system-relative-pathname :mgl-pax "src/pax.el")
+  (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
                    :header-nl "```elisp" :footer-nl "```")))
 
 
