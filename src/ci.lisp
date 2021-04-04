@@ -9,6 +9,7 @@
 
 
 (defworkflow linter
+  :on-push-to "master"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/linter:linter)))
 

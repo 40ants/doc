@@ -1,6 +1,11 @@
 {
   "name": "LINTER",
   "on": {
+    "push": {
+      "branches": [
+        "master"
+      ]
+    },
     "pull_request": null
   },
   "jobs": {
