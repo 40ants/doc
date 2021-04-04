@@ -1,7 +1,7 @@
-(uiop:define-package 40ants-doc
+(uiop:define-package :40ants-doc
   (:documentation "See 40ants-doc:@index.")
-  (:nicknames 40ants-doc/core)
-  (:use #:common-lisp)
+  (:use #:cl)
+  (:nicknames #:40ants-doc/core)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives)
   (:export #:define-package
@@ -19,14 +19,7 @@
            #:section-readtable
            #:section-title
            #:section-link-title-to
-           #:section-entries
-           ;; TODO:
-           ;; Locatives for these symbols will be defined
-           ;; in the full 40ants-doc/full package:
-           #:reader
-           #:writer
-           #:accessor
-           #:macro))
+           #:section-entries))
 (in-package 40ants-doc)
 
 
@@ -82,9 +75,11 @@
   - there is a reference to it in the section being defined with a
     locative whose type is approved by EXPORTABLE-LOCATIVE-TYPE-P.
 
-  See DEFINE-PACKAGE if you use the export feature. The idea with
-  confounding documentation and exporting is to force documentation of
-  all exported symbols.
+  The idea with confounding documentation and exporting is to force
+  documentation of all exported symbols. EXPORT argument will cause
+  [package variance](http://www.sbcl.org/manual/#Package-Variance)
+  error on SBCL. To prevent it, use UIOP:DEFINE-PACKAGE instead
+  of CL:DEFPACKAGE.
 
   TITLE is a non-marked-up string or NIL. If non-NIL, it determines
   the text of the heading in the generated output. LINK-TITLE-TO is a
@@ -98,7 +93,7 @@
   ;; Let's check the syntax as early as possible.
   (setf entries
         (transform-locative-symbols
-                entries))
+         entries))
   
   (transform-entries entries)
   (transform-link-title-to link-title-to)
