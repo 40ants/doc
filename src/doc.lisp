@@ -150,12 +150,12 @@
   Here is an example of how it all works together:
 
   ```commonlisp
-  (mgl-pax:define-package :foo-random
+  (mgl-pax:define-package #:foo-random
     (:documentation "This package provides various utilities for
     random. See FOO-RANDOM:@FOO-RANDOM-MANUAL.")
     (:use #:common-lisp #:mgl-pax))
 
-  (in-package :foo-random)
+  (in-package foo-random)
 
   (defsection @foo-random-manual (:title "Foo Random manual")
     "Here you describe what's common to all the referenced (and

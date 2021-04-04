@@ -1,4 +1,4 @@
-(uiop:define-package :40ants-doc
+(uiop:define-package #:40ants-doc
   (:documentation "See 40ants-doc:@index.")
   (:use #:cl)
   (:nicknames #:40ants-doc/core)
