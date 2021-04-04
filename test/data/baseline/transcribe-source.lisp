@@ -1,4 +1,6 @@
-(in-package :mgl-pax-test)
+(defpackage #:40ants-doc-test/transcribe-source
+  (:use #:cl))
+(in-package 40ants-doc-test/transcribe-source)
 
 (defclass aaa ()
   ((aaa :initarg :aaa :reader aaa)))

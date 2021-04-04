@@ -21,7 +21,8 @@
                 #:write-prefixed-lines
                 #:read-prefixed-lines
                 #:read-line*
-                #:whitespacep))
+                #:whitespacep)
+  (:import-from #:40ants-doc/reference))
 (in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -476,7 +477,8 @@
          ;; There is no way to guarantee that FILE-POSITION will work
          ;; on a stream so let's just read the entire INPUT into a
          ;; string.
-         (with-input-from-string (stream (read-stream-into-string input))
+         (with-input-from-string (stream  ;; (40ants-doc/utils::read-stream-into-string input)
+                                          (uiop:slurp-stream-string input))
            (funcall fn stream)))
         ((stringp input)
          (with-input-from-string (input input)
@@ -939,7 +941,7 @@
                        ~@[ ~:_at position ~A~].~
                        ~:_ ~?~%~
                        Form: ~:_~S~:@>"
-                       (if (typep on 'reference)
+                       (if (typep on '40ants-doc/reference::reference)
                            ;; Allow M-. to work in the slime debugger.
                            (print-reference-with-package on)
                            ;; Don't print the stream, since it's
@@ -960,8 +962,8 @@
 (defun transcription-error (stream file-position form-as-string
                             message &rest message-args)
   (error 'transcription-error
-         :on (or *reference-being-documented* stream)
-         :file-position (if *reference-being-documented* nil file-position)
+         :on (or 40ants-doc/page::*reference-being-documented* stream)
+         :file-position (if 40ants-doc/page::*reference-being-documented* nil file-position)
          :form-as-string form-as-string
          :message message
          :message-args message-args))
@@ -992,8 +994,8 @@
 (defun consistency-error (class stream form-as-string
                           message &rest message-args)
   (cerror "Continue." class
-          :on (or *reference-being-documented* stream)
-          :file-position (cond (*reference-being-documented*
+          :on (or 40ants-doc/page::*reference-being-documented* stream)
+          :file-position (cond (40ants-doc/page::*reference-being-documented*
                                 nil)
                                (stream
                                 (file-position stream))

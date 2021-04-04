@@ -349,21 +349,36 @@
                        *transcribe-transcription-file*
                        :check-consistency t))
 
+
+(defun get-diff (baseline new-content)
+  (uiop:with-temporary-file (:stream new :pathname new-path :direction :output)
+    (write-string new-content new)
+    (finish-output new)
+    (uiop:run-program (format nil "diff -u \"~A\" \"~A\""
+                              baseline
+                              new-path)
+                      :ignore-error-status t
+                      :output :string
+                      :error-output :output)))
+
+
 (defun check-transcription (source-file transcription-file
                             &key check-consistency)
-  (unless (string= (alexandria:read-file-into-string transcription-file)
-                   (with-output-to-string (transcription)
-                     (with-open-file (source source-file)
-                       (transcribe source transcription :update-only t
-                                   :check-consistency check-consistency))))
-    (cerror "Update transcription file." "Transcription differs from ~S."
-            transcription-file)
-    (with-input-from-string (source (alexandria:read-file-into-string
-                                     source-file))
-      (with-open-file (transcription transcription-file :direction :output
-                                     :if-exists :rename-and-delete)
-        (transcribe source transcription :update-only t
-                    :check-consistency check-consistency)))))
+  (let ((result (with-output-to-string (transcription)
+                  (with-open-file (source source-file)
+                    (40ants-doc/transcribe::transcribe source
+                                                       transcription
+                                                       :update-only t
+                                                       :check-consistency check-consistency)))))
+    (unless (string= (alexandria:read-file-into-string transcription-file)
+                     result)
+      (cerror "Update transcription file."
+              "Transcription differs from ~S:~2%~A"
+              transcription-file
+              (get-diff transcription-file
+                        result))
+      (alexandria:write-string-into-file result transcription-file
+                                         :if-exists :rename-and-delete))))
 
 (defun test ()
   (test-read-prefixed-lines)
