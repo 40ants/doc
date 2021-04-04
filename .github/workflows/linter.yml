@@ -1,14 +1,10 @@
 {
-  "name": "DOCS",
+  "name": "LINTER",
   "on": {
-    "push": {
-      "branches": [
-        "master"
-      ]
-    }
+    "pull_request": null
   },
   "jobs": {
-    "build-docs": {
+    "linter": {
       "runs-on": "ubuntu-latest",
       "env": {
         "OS": "ubuntu-latest",
@@ -28,11 +24,14 @@
           }
         },
         {
-          "name": "Build Docs",
-          "uses": "40ants/build-docs@v1",
-          "with": {
-            "asdf-system": "40ants-doc"
-          }
+          "name": "Install SBLint",
+          "run": "qlot exec ros install cxxxr/sblint",
+          "shell": "bash"
+        },
+        {
+          "name": "Run Linter",
+          "run": "qlot exec sblint 40ants-doc.asd",
+          "shell": "bash"
         }
       ]
     }

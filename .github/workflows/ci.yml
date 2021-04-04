@@ -1,14 +1,20 @@
 {
-  "name": "DOCS",
+  "name": "CI",
   "on": {
     "push": {
       "branches": [
         "master"
       ]
-    }
+    },
+    "pull_request": null,
+    "schedule": [
+      {
+        "cron": "0 10 * * 1"
+      }
+    ]
   },
   "jobs": {
-    "build-docs": {
+    "run-tests": {
       "runs-on": "ubuntu-latest",
       "env": {
         "OS": "ubuntu-latest",
@@ -28,10 +34,11 @@
           }
         },
         {
-          "name": "Build Docs",
-          "uses": "40ants/build-docs@v1",
+          "name": "Run Tests",
+          "uses": "40ants/run-tests@v2",
           "with": {
-            "asdf-system": "40ants-doc"
+            "asdf-system": "40ants-doc",
+            "coveralls-token": "${{ secrets.github_token }}"
           }
         }
       ]
