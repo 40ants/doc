@@ -11,7 +11,8 @@
 (defworkflow linter
   :on-push-to "master"
   :on-pull-request t
-  :jobs ((40ants-ci/jobs/linter:linter)))
+  :jobs ((40ants-ci/jobs/linter:linter
+          :asd-system "40ants-doc-full")))
 
 
 (defworkflow ci
