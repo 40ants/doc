@@ -28,7 +28,7 @@
   "
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
 "
-  (about section)
+  (@about section)
   (40ants-doc system)
   (@links section)
   (@background section)
