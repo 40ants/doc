@@ -579,3 +579,33 @@
                    (incf i)))))
     (reverse translated)))
 
+
+(defun external-dependencies (system-name) 
+  (let ((primary-name (asdf:primary-system-name system-name))
+        (processed nil))
+    (labels ((rec (system-name &optional collected)
+               (cond
+                 ((member system-name processed
+                          :test #'string-equal)
+                  collected)
+                 (t
+                  (push system-name processed)
+                  ;; (format t "Processing ~S system~%" system-name)
+                  
+                  (let* ((system (asdf/system:find-system system-name))
+                         (dependencies (asdf/system:system-depends-on system)))
+                    (loop for dep in dependencies
+                          for dep-primary = (asdf:primary-system-name dep)
+                          unless (or (string-equal primary-name dep-primary)
+                                     (member dep collected
+                                             :test #'string-equal))
+                          collect dep into new-deps
+                          finally (setf collected
+                                        (append new-deps
+                                                collected)))
+                    (loop for dep in dependencies
+                          do (setf collected
+                                   (rec dep collected)))
+                    collected)))))
+      (sort (rec system-name)
+            #'string<))))

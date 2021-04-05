@@ -7,7 +7,7 @@
   :mailto "svetlyak.40wt@gmail.com"
   :homepage "http://40ants.com/doc"
   :bug-tracker "https://github.com/40ants/doc/issues"
-  :source-control (:git "https://github.com/40ants/doc.git")
+  :source-control (:git "https://github.com/40ants/doc")
   :description "Exploratory programming tool and documentation generator, based on MGL-PAX."
   :class :package-inferred-system
   :pathname "src"

@@ -7,7 +7,8 @@
   (:import-from #:rove
                 #:ok
                 #:deftest
-                #:testing))
+                #:testing)
+  (:import-from #:40ants-doc/utils))
 (in-package 40ants-doc-test/test)
 
 
@@ -331,3 +332,10 @@
   (write-test-document-files
    (asdf:system-relative-pathname :40ants-doc "test/data/baseline/")
    format))
+
+
+(deftest test-core-dependencies
+  (ok (equal (40ants-doc/utils::external-dependencies :40ants-doc)
+             (list "asdf"
+                   "named-readtables"
+                   "pythonic-string-reader"))))
