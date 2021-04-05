@@ -62,7 +62,7 @@ who will decide to learn how the documentation builder works. Also,
 granular design will make it possible loading subsystems like SLIME or SLY
 integration.
 
-In future I'm planning to extend this fork. Learn more in the TODO section.")
+In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
 
 (defsection @links (:title "Links")
