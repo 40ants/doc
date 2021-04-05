@@ -31,7 +31,7 @@
           "name": "Build Docs",
           "uses": "40ants/build-docs@v1.0.8-beta1",
           "with": {
-            "asdf-system": "40ants-doc"
+            "asdf-system": "40ants-doc/doc"
           }
         }
       ]
