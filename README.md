@@ -4,36 +4,60 @@
 
 ## Table of Contents
 
-- [1 40ants-doc ASDF System Details][b62a]
-- [2 Links][f967]
-- [3 Background][98a8]
-- [4 Tutorial][2ae8]
-- [5 Emacs Integration][f4b9]
-- [6 Basics][45b1]
-- [7 Generating Documentation][1052]
-    - [7.1 Github Workflow][21a6]
-    - [7.2 PAX World][90f8]
-- [8 Markdown Support][76ae]
-    - [8.1 Indentation][10a2]
-    - [8.2 Syntax highlighting][d4a5]
-    - [8.3 MathJax][4a92]
-- [9 Documentation Printer Variables][333d]
-- [10 Locative Types][e978]
-- [11 Extension API][6980]
-    - [11.1 Locatives and References][2af1]
-    - [11.2 Adding New Object Types][1150]
-    - [11.3 Reference Based Extensions][6e9a]
-    - [11.4 Sections][ec9b]
-- [12 Transcripts][d3cf]
-    - [12.1 Transcribing with Emacs][a18b]
-    - [12.2 Transcript API][650c]
+- [1 About this fork][b5ed]
+- [2 40ants-doc ASDF System Details][b62a]
+- [3 Links][f967]
+- [4 Background][98a8]
+- [5 Tutorial][2ae8]
+- [6 Emacs Integration][f4b9]
+- [7 Basics][45b1]
+- [8 Generating Documentation][1052]
+    - [8.1 Github Workflow][21a6]
+    - [8.2 PAX World][90f8]
+- [9 Markdown Support][76ae]
+    - [9.1 Indentation][10a2]
+    - [9.2 Syntax highlighting][d4a5]
+    - [9.3 MathJax][4a92]
+- [10 Documentation Printer Variables][333d]
+- [11 Locative Types][e978]
+- [12 Extension API][6980]
+    - [12.1 Locatives and References][2af1]
+    - [12.2 Adding New Object Types][1150]
+    - [12.3 Reference Based Extensions][6e9a]
+    - [12.4 Sections][ec9b]
+- [13 Transcripts][d3cf]
+    - [13.1 Transcribing with Emacs][a18b]
+    - [13.2 Transcript API][650c]
+- [14 TODO][0ef6]
 
 ###### \[in package 40ANTS-DOC/DOC\]
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
 
+<a id='x-2840ANTS-DOC-2FDOC-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
+
+## 1 About this fork
+
+This system is a fork of [MGL-PAX](https://github.com/melisgl/mgl-pax).
+
+There are a few reasons, why I've created the fork.
+
+The main goal is to extract a core features into the system [`40ANTS-DOC`][b62a]
+with as little dependencies as possible. This is important, because with MGL-PAX's
+style, you define documentation sections in your library's code, which makes
+it dependent on the documentation system. However, heavy weight dependencies
+like `IRONCLAD`, `3BMD` or `SWANK` should not be required.
+
+The seconds goal was to refactor a 3.5k lines of `pax.lisp` file into
+a smaller modules to make navigation easier. This will help any person
+who will decide to learn how the documentation builder works. Also,
+granular design will make it possible loading subsystems like SLIME or SLY
+integration.
+
+In future I'm planning to extend this fork. Learn more in the TODO section.
+
 <a id='x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29'></a>
 
-## 1 40ants-doc ASDF System Details
+## 2 40ants-doc ASDF System Details
 
 - Version: 0.1.0
 - Description: Exploratory programming tool and documentation generator, based on MGL-PAX.
@@ -42,11 +66,11 @@
 - Mailto: [svetlyak.40wt@gmail.com](mailto:svetlyak.40wt@gmail.com)
 - Homepage: [http://40ants.com/doc](http://40ants.com/doc)
 - Bug tracker: [https://github.com/40ants/doc/issues](https://github.com/40ants/doc/issues)
-- Source control: [GIT](https://github.com/40ants/doc.git)
+- Source control: [GIT](https://github.com/40ants/doc)
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40LINKS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 2 Links
+## 3 Links
 
 Here is the [official repository](https://github.com/40ants/doc) and
 the [HTML documentation](https://40ants.com/doc) for the latest version.
@@ -56,7 +80,7 @@ Because of massive refactoring, it is incompatible with original repository.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40BACKGROUND-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 3 Background
+## 4 Background
 
 As a user, I frequently run into documentation that's incomplete
 and out of date, so I tend to stay in the editor and explore the
@@ -131,7 +155,7 @@ format, and a few thousand lines later PAX was born.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 4 Tutorial
+## 5 Tutorial
 
 PAX provides an extremely poor man's Explorable Programming
 environment. Narrative primarily lives in so called sections that
@@ -292,7 +316,7 @@ automatically checked for up-to-dateness. See
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 5 Emacs Integration
+## 6 Emacs Integration
 
 Integration into SLIME's `M-.` (`slime-edit-definition`) allows one
 to visit the source location of the thing that's identified by a
@@ -402,7 +426,7 @@ initialization file (or loading `src/pax.el`):
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40BASICS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 6 Basics
+## 7 Basics
 
 Now let's examine the most important pieces in detail.
 
@@ -622,7 +646,7 @@ Now let's examine the most important pieces in detail.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 7 Generating Documentation
+## 8 Generating Documentation
 
 ###### \[in package 40ANTS-DOC/BUILDER\]
 Two convenience functions are provided to serve the common case of
@@ -703,7 +727,7 @@ HTML documentation and the default css stylesheet.
 
 <a id='x-2840ANTS-DOC-2FGITHUB-3A-40GITHUB-WORKFLOW-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 7.1 Github Workflow
+### 8.1 Github Workflow
 
 ###### \[in package 40ANTS-DOC/GITHUB\]
 It is generally recommended to commit generated readmes (see
@@ -760,7 +784,7 @@ between the repository and the gh-pages site.
 
 <a id='x-2840ANTS-DOC-2FWORLD-3A-40WORLD-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 7.2 PAX World
+### 8.2 PAX World
 
 ###### \[in package 40ANTS-DOC/WORLD\]
 MGL-PAX supported a "World" which was a registry of documents, which can generate
@@ -782,7 +806,7 @@ feature, please, let me know.
 
 <a id='x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-SUPPORT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 8 Markdown Support
+## 9 Markdown Support
 
 ###### \[in package 40ANTS-DOC/MARKDOWN\]
 The [Markdown][markdown] in docstrings is processed with the
@@ -790,7 +814,7 @@ The [Markdown][markdown] in docstrings is processed with the
 
 <a id='x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-INDENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 8.1 Indentation
+### 9.1 Indentation
 
 Docstrings can be indented in any of the usual styles. PAX
 normalizes indentation by converting:
@@ -813,7 +837,7 @@ See [DOCUMENT-OBJECT][(method () (string t))] for the details.
 
 <a id='x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-SYNTAX-HIGHLIGHTING-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 8.2 Syntax highlighting
+### 9.2 Syntax highlighting
 
 For syntax highlighting, github's [fenced code
 blocks][fenced-code-blocks] markdown extension to mark up code
@@ -840,7 +864,7 @@ the details.
 
 <a id='x-2840ANTS-DOC-2FMARKDOWN-3A-40MATHJAX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 8.3 MathJax
+### 9.3 MathJax
 
 Displaying pretty mathematics in TeX format is supported via
 MathJax. It can be done inline with `$` like this:
@@ -865,7 +889,7 @@ with that.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40DOCUMENTATION-PRINTER-VARIABLES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 9 Documentation Printer Variables
+## 10 Documentation Printer Variables
 
 Docstrings are assumed to be in markdown format and they are pretty
 much copied verbatim to the documentation subject to a few knobs
@@ -1080,7 +1104,7 @@ described below.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 10 Locative Types
+## 11 Locative Types
 
 These are the locatives type supported out of the box. As all
 locative types, they are symbols and their names should make it
@@ -1348,11 +1372,11 @@ locatives take no arguments.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40EXTENSION-API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 11 Extension API
+## 12 Extension API
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40LOCATIVES-AND-REFERENCES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 11.1 Locatives and References
+### 12.1 Locatives and References
 
 While Common Lisp has rather good introspective abilities, not
 everything is first class. For example, there is no object
@@ -1448,7 +1472,7 @@ need to muck with references when there is a perfectly good object.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40NEW-OBJECT-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 11.2 Adding New Object Types
+### 12.2 Adding New Object Types
 
 One may wish to make the DOCUMENT function and `M-.` navigation
 work with new object types. Extending DOCUMENT can be done by
@@ -1641,7 +1665,7 @@ for [`ASDF:SYSTEM:`][3ab8]
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40REFERENCE-BASED-EXTENSIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 11.3 Reference Based Extensions
+### 12.3 Reference Based Extensions
 
 Let's see how to extend DOCUMENT and `M-.` navigation if there is
 no first class object to represent the thing of interest. Recall
@@ -1796,7 +1820,7 @@ with symbols in a certain context.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40SECTIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 11.4 Sections
+### 12.4 Sections
 
 [Section][class] objects rarely need to be dissected since
 [`DEFSECTION`][79c1] and DOCUMENT cover most needs. However, it is plausible
@@ -1860,7 +1884,7 @@ presented.
 
 <a id='x-2840ANTS-DOC-2FTRANSCRIBE-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-## 12 Transcripts
+## 13 Transcripts
 
 ###### \[in package 40ANTS-DOC/TRANSCRIBE\]
 What are transcripts for? When writing a tutorial, one often wants
@@ -1909,7 +1933,7 @@ can be enabled with:
 
 <a id='x-2840ANTS-DOC-2FTRANSCRIBE-3A-40TRANSCRIPT-EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 12.1 Transcribing with Emacs
+### 13.1 Transcribing with Emacs
 
 Typical transcript usage from within Emacs is simple: add a lisp
 form to a docstring or comment at any indentation level. Move the
@@ -2064,7 +2088,7 @@ changed."
 
 <a id='x-2840ANTS-DOC-2FTRANSCRIBE-3A-40TRANSCRIPT-API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
-### 12.2 Transcript API
+### 13.2 Transcript API
 
 <a id='x-2840ANTS-DOC-2FTRANSCRIBE-3ATRANSCRIBE-20FUNCTION-29'></a>
 
@@ -2319,7 +2343,23 @@ changed."
     with `:CHECK-CONSISTENCY` and the values of a form are inconsistent
     with their parsed representation.
 
+<a id='x-2840ANTS-DOC-2FDOC-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
+
+## 14 TODO
+
+- Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.
+
+- Support custom HTML themes.
+
+- Support SLY and make both SLIME and SLY integrations optional.
+
+- Add a search facility which will build an index for static file like Sphinx does.
+
+- Separate markup parsing and result rendering code to support markups other than Markdown and HTML.
+
+
   [0333]: #x-2840ANTS-DOC-2FTRANSCRIBE-3ATRANSCRIPTION-CONSISTENCY-ERROR-20CONDITION-29 "(40ANTS-DOC/TRANSCRIBE:TRANSCRIPTION-CONSISTENCY-ERROR CONDITION)"
+  [0ef6]: #x-2840ANTS-DOC-2FDOC-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "TODO"
   [1052]: #x-2840ANTS-DOC-2FBUILDER-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Generating Documentation"
   [10a2]: #x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-INDENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Indentation"
   [1150]: #x-2840ANTS-DOC-2FDOC-3A-40NEW-OBJECT-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Adding New Object Types"
@@ -2348,6 +2388,7 @@ changed."
   [98a8]: #x-2840ANTS-DOC-2FDOC-3A-40BACKGROUND-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Background"
   [9a5c]: #x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(FUNCTION (40ANTS-DOC/LOCATIVES:LOCATIVE))"
   [a18b]: #x-2840ANTS-DOC-2FTRANSCRIBE-3A-40TRANSCRIPT-EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Transcribing with Emacs"
+  [b5ed]: #x-2840ANTS-DOC-2FDOC-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "About this fork"
   [b62a]: #x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29 "(#A((10) BASE-CHAR . \"40ants-doc\") ASDF/SYSTEM:SYSTEM)"
   [b8a4]: #x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(VARIABLE (40ANTS-DOC/LOCATIVES:LOCATIVE))"
   [ba26]: #x-2840ANTS-DOC-2FLOCATIVES-3ASECTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(40ANTS-DOC/LOCATIVES:SECTION (40ANTS-DOC/LOCATIVES:LOCATIVE))"
