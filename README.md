@@ -53,7 +53,7 @@ who will decide to learn how the documentation builder works. Also,
 granular design will make it possible loading subsystems like SLIME or SLY
 integration.
 
-In future I'm planning to extend this fork. Learn more in the TODO section.
+In future I'm planning to extend this fork. Learn more in the [TODO][0ef6] section.
 
 <a id='x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29'></a>
 
