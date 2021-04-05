@@ -28,6 +28,7 @@
   "
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
 "
+  (about section)
   (40ants-doc system)
   (@links section)
   (@background section)
@@ -39,7 +40,29 @@
   (@documentation-printer-variables section)
   (@locative-types section)
   (@extension-api section)
-  (40ants-doc/transcribe::@transcript section))
+  (40ants-doc/transcribe::@transcript section)
+  (@todo section))
+
+
+(defsection @about (:title "About this fork")
+  "
+This system is a fork of [MGL-PAX](https://github.com/melisgl/mgl-pax).
+
+There are a few reasons, why I've created the fork.
+
+The main goal is to extract a core features into the system 40ANTS-DOC
+with as little dependencies as possible. This is important, because with MGL-PAX's
+style, you define documentation sections in your library's code, which makes
+it dependent on the documentation system. However, heavy weight dependencies
+like IRONCLAD, 3BMD or SWANK should not be required.
+
+The seconds goal was to refactor a 3.5k lines of `pax.lisp` file into
+a smaller modules to make navigation easier. This will help any person
+who will decide to learn how the documentation builder works. Also,
+granular design will make it possible loading subsystems like SLIME or SLY
+integration.
+
+In future I'm planning to extend this fork. Learn more in the TODO section.")
 
 
 (defsection @links (:title "Links")
@@ -500,6 +523,15 @@
   (40ants-doc::section-entries (reader 40ants-doc::section))
   (describe-object (method () (40ants-doc::section t))))
 
+
+(defsection @todo (:title "TODO")
+  "
+- Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.
+- Support custom HTML themes.
+- Support SLY and make both SLIME and SLY integrations optional.
+- Add a search facility which will build an index for static file like Sphinx does.
+- Separate markup parsing and result rendering code to support markups other than Markdown and HTML.
+")
 
 
 (defun render ()
