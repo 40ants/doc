@@ -12,7 +12,7 @@
   :on-push-to "master"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/linter:linter
-          :asd-system "40ants-doc-full")))
+          :asdf-system "40ants-doc-full")))
 
 
 (defworkflow ci
@@ -20,10 +20,11 @@
   :by-cron "0 10 * * 1"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/run-tests:run-tests
-          :asd-system "40ants-doc-full"
+          :asdf-system "40ants-doc-full"
           :coverage t)))
 
 
 (defworkflow docs
   :on-push-to "master"
-  :jobs ((40ants-ci/jobs/docs:build-docs)))
+  :jobs ((40ants-ci/jobs/docs:build-docs
+          :asdf-system "40ants-doc/doc")))
