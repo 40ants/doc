@@ -1,3 +1,5 @@
+(asdf:register-system-packages "3bmd-ext-code-blocks" '("3BMD-CODE-BLOCKS"))
+
 (defpackage #:40ants-doc/markdown/transform
   (:use #:cl)
   (:import-from #:alexandria)

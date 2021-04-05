@@ -1,3 +1,5 @@
+(asdf:register-system-packages "3bmd-ext-code-blocks" '("3BMD-CODE-BLOCKS"))
+
 (uiop:define-package #:40ants-doc/builder
   (:use #:cl)
   (:import-from #:alexandria)

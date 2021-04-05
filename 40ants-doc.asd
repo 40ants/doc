@@ -17,6 +17,5 @@
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))
 
 
-(asdf:register-system-packages "3bmd-ext-code-blocks" '("3BMD-CODE-BLOCKS"))
 (asdf:register-system-packages "swank" '("SWANK-BACKEND"
                                          "SWANK-MOP"))
