@@ -11,11 +11,5 @@
   :description "Documentation generator for 40ANTS-DOC (based on MGL-PAX)."
   :class :package-inferred-system
   :pathname "src"
-  :depends-on ("40ants-doc/full"
-               "40ants-doc/glossary")
+  :depends-on ("40ants-doc/full")
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))
-
-
-(asdf:register-system-packages "3bmd-ext-code-blocks" '("3BMD-CODE-BLOCKS"))
-(asdf:register-system-packages "swank" '("SWANK-BACKEND"
-                                         "SWANK-MOP"))
