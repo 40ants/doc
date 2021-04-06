@@ -35,7 +35,7 @@
         },
         {
           "name": "Install Custom SBLINT runner",
-          "run": "qlot exec ros install 40ants/linter",
+          "run": "qlot exec ros install 40ants/defmain && qlot exec ros install 40ants/linter",
           "shell": "bash"
         },
         {
