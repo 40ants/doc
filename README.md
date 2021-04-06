@@ -33,6 +33,8 @@
 ###### \[in package 40ANTS-DOC/DOC\]
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
 
+[![Coverage Status](https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master)](https://coveralls.io/github/40ants/doc?branch=master)
+
 <a id='x-2840ANTS-DOC-2FDOC-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
 ## 1 About this fork
