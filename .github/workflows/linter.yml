@@ -30,12 +30,7 @@
         },
         {
           "name": "Install SBLint",
-          "run": "qlot exec ros install cxxxr/sblint",
-          "shell": "bash"
-        },
-        {
-          "name": "Install Custom SBLINT runner",
-          "run": "qlot exec ros install 40ants/defmain && qlot exec ros install 40ants/linter",
+          "run": "\necho 'dist ultralisp http://dist.ultralisp.org' > qlfile\nqlot update\nqlot exec ros install 40ants-linter\n",
           "shell": "bash"
         },
         {
