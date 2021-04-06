@@ -27,6 +27,9 @@
 (defsection @index (:title "40Ants Doc Manual")
   "
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
+
+[![Coverage Status](https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master)](https://coveralls.io/github/40ants/doc?branch=master)
+
 "
   (@about section)
   (40ants-doc system)
