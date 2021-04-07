@@ -25,7 +25,7 @@
           "name": "Setup Common Lisp Environment",
           "uses": "40ants/setup-lisp@v1",
           "with": {
-            "asdf-system": "40ants-doc/full"
+            "asdf-system": "40ants-doc"
           }
         },
         {
@@ -35,7 +35,7 @@
         },
         {
           "name": "Run Linter",
-          "run": "qlot exec 40ants-linter --system 40ants-doc/full",
+          "run": "qlot exec 40ants-linter --system \"40ants-doc, 40ants-doc/full\"",
           "shell": "bash"
         }
       ]
