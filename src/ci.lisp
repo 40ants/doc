@@ -12,8 +12,7 @@
   :on-push-to "master"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/linter:linter
-          :asdf-systems ("40ants-doc"
-                         "40ants-doc/full"))))
+          :asdf-systems ("40ants-doc/full"))))
 
 
 (defworkflow ci

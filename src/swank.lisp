@@ -4,7 +4,9 @@
   (:import-from #:alexandria)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
-  (:import-from #:40ants-doc/utils))
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/locatives/base)
+  (:import-from #:40ants-doc/source-api))
 (in-package 40ants-doc/swank)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -24,7 +26,7 @@
 ;;; string arguments and returns a location suitable for
 ;;; make-slime-xref.
 (defun locate-definition-for-emacs (name locative-string)
-  (let ((locative-string (trim-whitespace locative-string)))
+  (let ((locative-string (40ants-doc/utils::trim-whitespace locative-string)))
     (swank-backend::converting-errors-to-error-location
       (swank::with-buffer-syntax ()
         (or
@@ -60,9 +62,9 @@
     (when found
       (let ((locative (read-marked-up-locative-from-string locative-string)))
         (when locative
-          (let ((thing (locate symbol locative :errorp nil)))
+          (let ((thing (40ants-doc/locatives/base::locate symbol locative :errorp nil)))
             (when thing
-              (find-source thing))))))))
+              (40ants-doc/source-api::find-source thing))))))))
 
 ;;; Ensure that some Swank internal facilities (such as
 ;;; SWANK::FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE,

@@ -957,8 +957,8 @@
 
 (defun print-reference-with-package (reference)
   (let ((*package* (find-package :keyword)))
-    (format nil "~S ~S" (reference-object reference)
-            (reference-locative reference))))
+    (format nil "~S ~S" (40ants-doc/reference::reference-object reference)
+            (40ants-doc/reference::reference-locative reference))))
 
 (defun transcription-error (stream file-position form-as-string
                             message &rest message-args)
@@ -1107,14 +1107,15 @@
                                         default-syntax*)))))
     (swank::with-buffer-syntax ()
       (multiple-value-bind (string prefix)
-          (strip-longest-common-prefix
+          (40ants-doc/utils::strip-longest-common-prefix
            string "; " :first-line-special-p first-line-special-p)
         (let ((transcript
-                (prefix-lines prefix
-                              (transcribe string nil
-                                          :default-syntax default-syntax
-                                          :update-only update-only :echo echo)
-                              :exclude-first-line-p first-line-special-p)))
+                (40ants-doc/utils::prefix-lines
+                 prefix
+                 (transcribe string nil
+                             :default-syntax default-syntax
+                             :update-only update-only :echo echo)
+                 :exclude-first-line-p first-line-special-p)))
           (if echo
               transcript
               (format nil "~%~A" transcript)))))))
