@@ -295,7 +295,7 @@
 
 (defvar *document-html-max-navigation-table-of-contents-level* nil
   "NIL or a non-negative integer. If non-NIL, it overrides
-  *DOCUMENT-MAX-NUMBERING-LEVEL* in dynamic HTML table of contents on
+  40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MAX-NUMBERING-LEVEL* in dynamic HTML table of contents on
   the left of the page.")
 
 (defun toc-options ()

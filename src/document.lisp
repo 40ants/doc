@@ -105,13 +105,13 @@
   possible to print arbitrary headers, typically setting the title,
   css stylesheet, or charset.
 
-  :FOOTER-FN is similar to HEADER-FN, but it's called after the last
+  :FOOTER-FN is similar to :HEADER-FN, but it's called after the last
   write to the page. For HTML, it typically just closes the body.
 
   :URI-FRAGMENT is a string such as `"doc/manual.html"` that specifies
   where the page will be deployed on a webserver. It defines how links
   between pages will look. If it's not specified and `OUTPUT` refers
-  to a file, then it defaults to the name of the file. If URI-FRAGMENT
+  to a file, then it defaults to the name of the file. If :URI-FRAGMENT
   is NIL, then no links will be made to or from that page.
 
   Finally, :SOURCE-URI-FN is a function of a single, 40ANTS-DOC/REFERENCE::REFERENCE

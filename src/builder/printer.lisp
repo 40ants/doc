@@ -23,7 +23,7 @@
   """When true, words with at least three characters and no lowercase
   characters naming an interned symbol are assumed to be code as if
   they were marked up with backticks which is especially useful when
-  combined with *DOCUMENT-LINK-CODE*. For example, this docstring:
+  combined with 40ANTS-DOC/LINK::*DOCUMENT-LINK-CODE*. For example, this docstring:
 
       "`FOO` and FOO."
 

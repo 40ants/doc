@@ -20,8 +20,8 @@
 
 
 (defsection @markdown-indentation (:title "Indentation")
-  """Docstrings can be indented in any of the usual styles. PAX
-  normalizes indentation by converting:
+  """Docstrings can be indented in any of the usual styles.
+  40ANTS-DOC normalizes indentation by converting:
 
       (defun foo ()
         "This is
@@ -48,7 +48,7 @@
       ```
 
   to get syntactically marked up HTML output. Copy `src/style.css`
-  from PAX and you are set. The language tag, `elisp` in this example,
+  from 40ANTS-DOC and you are set. The language tag, `elisp` in this example,
   is optional and defaults to `common-lisp`.
 
   See the documentation of [3BMD][3bmd] and [colorize][colorize] for

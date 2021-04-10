@@ -16,20 +16,20 @@
   "A non-negative integer. Top-level sections are given a table of
   contents which includes a nested tree of section titles whose depth
   is limited by this value. Setting it to 0 turns generation of the
-  table of contents off. If *DOCUMENT-LINK-SECTIONS* is true, then the
+  table of contents off. If 40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS* is true, then the
   table of contents will link to the sections.")
 
 (defvar *document-text-navigation* nil
   "If true, then before each heading a line is printed with links to
   the previous, parent and next section. Needs
-  *DOCUMENT-LINK-SECTIONS* to be on to work.")
+  40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS* to be on to work.")
 
 (defvar *document-fancy-html-navigation* t
   "If true and the output format is HTML, then headings get a
   navigation component that consists of links to the previous, parent,
   next section and a permalink. This component is normally hidden, it
   is visible only when the mouse is over the heading. Needs
-  *DOCUMENT-LINK-SECTIONS* to be on to work.")
+  40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS* to be on to work.")
 
 (defvar *heading-number* ())
 
@@ -44,7 +44,7 @@
 (defvar *document-mark-up-signatures* t
   "When true, some things such as function names and arglists are
   rendered as bold and italic. In :HTML output, locative types become
-  links to sources (if :SOURCE-URI-FN is provided, see DOCUMENT), and
+  links to sources (if :SOURCE-URI-FN is provided, see 40ANTS-DOC/DOCUMENT::DOCUMENT), and
   the symbol becomes a self-link for your permalinking pleasure.
 
   For example, a reference is rendered in markdown roughly as:

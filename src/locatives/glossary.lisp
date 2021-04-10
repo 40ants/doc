@@ -14,7 +14,7 @@
 
 
 (40ants-doc/locatives/base::define-locative-type glossary-term ()
-  "Refers to a glossary term defined by DEFINE-GLOSSARY-TERM.")
+  "Refers to a glossary term defined by 40ANTS-DOC/GLOSSARY::DEFINE-GLOSSARY-TERM.")
 
 (defmethod 40ants-doc/locatives/base::locate-object (symbol (locative-type (eql 'glossary-term))
                                                      locative-args)

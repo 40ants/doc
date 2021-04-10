@@ -10,9 +10,10 @@
 (in-package 40ants-doc/github)
 
 
-(defsection @github-workflow (:title "Github Workflow")
+(defsection @github-workflow (:title "Github Workflow"
+                              :ignore-words ("HTML"))
   "It is generally recommended to commit generated readmes (see
-  UPDATE-ASDF-SYSTEM-README) so that users have something to read
+  40ANTS-DOC/BUILDER::UPDATE-ASDF-SYSTEM-README) so that users have something to read
   without reading the code and sites like github can display them.
 
   HTML documentation can also be committed, but there is an issue with
@@ -36,13 +37,13 @@
 
   This way the HTML documentation will be available at
   `http://<username>.github.io/<repo-name>`. It is probably a good
-  idea to add section like the @MGL-PAX-LINKS section to allow jumping
+  idea to add section like the 40ANTS-DOC/DOC:@LINKS section to allow jumping
   between the repository and the gh-pages site."
   (make-github-source-uri-fn function))
 
 (defun make-github-source-uri-fn (asdf-system github-uri &key git-version)
   "Return a function suitable as :SOURCE-URI-FN of a page spec (see
-  the PAGES argument of DOCUMENT). The function looks the source
+  the :PAGES argument of 40ANTS-DOC/DOCUMENT::DOCUMENT). The function looks the source
   location of the reference passed to it, and if the location is
   found, the path is made relative to the root directory of
   ASDF-SYSTEM and finally an URI pointing to github is returned. The

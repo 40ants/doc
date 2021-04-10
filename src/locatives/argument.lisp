@@ -28,7 +28,7 @@
 ;;;; ARGUMENT locative
 
 (define-locative-type argument ()
-  """An alias for DISLOCATED, so the one can refer to an argument of a
+  """An alias for 40ANTS-DOC/LOCATIVES::DISLOCATED, so the one can refer to an argument of a
   macro without accidentally linking to a class that has the same name
   as that argument. In the following example, FORMAT may link to
   CL:FORMAT (if we generated documentation for it):

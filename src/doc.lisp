@@ -24,7 +24,20 @@
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
-(defsection @index (:title "40Ants Doc Manual")
+(defsection @index (:title "40Ants Doc Manual"
+                    :ignore-words ("HTML"
+                                   "HTMLs"
+                                   "README"
+                                   "JSON"
+                                   "MGL-PAX"
+                                   "SLIME"
+                                   "SWANK"
+                                   "SLY"
+                                   "URI"
+                                   "URL"
+                                   "URLs"
+                                   "LISP"
+                                   "SBCL"))
   "
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
 
@@ -81,11 +94,11 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 (defsection @background (:export nil :title "Background")
   "As a user, I frequently run into documentation that's incomplete
   and out of date, so I tend to stay in the editor and explore the
-  code by jumping around with SLIME's [`M-.`][SLIME-M-.]. As a library
+  code by jumping around with SLIME's [`M-.`][slime-M-.]. As a library
   author, I spend a great deal of time polishing code, but precious
   little writing documentation.
 
-  [SLIME-M-.]: http://common-lisp.net/project/slime/doc/html/Finding-definitions.html#Finding-definitions
+  [slime-M-.]: http://common-lisp.net/project/slime/doc/html/Finding-definitions.html#Finding-definitions
 
   In fact, I rarely write anything more comprehensive than docstrings
   for exported stuff. Writing docstrings feels easier than writing a
@@ -145,12 +158,12 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   referred to.
 
   I settled on [Markdown][markdown] as a reasonably non-intrusive
-  format, and a few thousand lines later PAX was born.
+  format, and a few thousand lines later MGL-PAX was born.
 
   [markdown]: https://daringfireball.net/projects/markdown/")
 
 (defsection @tutorial (:title "Tutorial")
-  """PAX provides an extremely poor man's Explorable Programming
+  """40ANTS-DOC provides an extremely poor man's Explorable Programming
   environment. Narrative primarily lives in so called sections that
   mix markdown docstrings with references to functions, variables,
   etc, all of which should probably have their own docstrings.
@@ -166,8 +179,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   from code, not vice versa and there is no support for chunking yet.
   Code is first, code must look pretty, documentation is code.
 
-  In typical use, PAX packages have no :EXPORT's defined. Instead the
-  UIOP:DEFINE-PACKAGE form gets a docstring which may mention section
+  In typical use, using 40ANTS-DOC, packages have no :EXPORT's defined.
+  Instead the UIOP:DEFINE-PACKAGE form gets a docstring which may mention section
   names (defined with DEFSECTION). When the code is loaded into the
   lisp, pressing `M-.` in SLIME on the name of the section will take
   you there. Sections can also refer to other sections, packages,
@@ -178,7 +191,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   ```commonlisp
   (uiop:define-package #:foo-random
     (:documentation "This package provides various utilities for
-  random. See FOO-RANDOM:@FOO-RANDOM-MANUAL.")
+  random. See @FOO-RANDOM-MANUAL.")
     (:use #:common-lisp #:40ants-doc))
 
   (in-package foo-random)
@@ -365,11 +378,12 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
 
 (defsection @locatives-and-references
-    (:title "Locatives and References")
+    (:title "Locatives and References"
+     :ignore-words ("FOO"))
   "While Common Lisp has rather good introspective abilities, not
   everything is first class. For example, there is no object
   representing the variable defined with `(DEFVAR
-  FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a REFERENCE that
+  FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a 40ANTS-DOC/REFERENCE::REFERENCE that
   captures the path to take from an object (the symbol FOO) to an
   entity of interest (for example, the documentation of the variable).
   The path is called the locative. A locative can be applied to an
@@ -381,8 +395,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
   which will return the same reference as `(MAKE-REFERENCE 'FOO
   'VARIABLE)`. Operations need to know how to deal with references
-  which we will see in LOCATE-AND-COLLECT-REACHABLE-OBJECTS,
-  LOCATE-AND-DOCUMENT and LOCATE-AND-FIND-SOURCE.
+  which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS,
+  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
 
   Naturally, `(LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
   need to muck with references when there is a perfectly good object."
@@ -458,12 +472,12 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
 
 (defsection @new-object-types (:title "Adding New Object Types")
-  "One may wish to make the DOCUMENT function and `M-.` navigation
-  work with new object types. Extending DOCUMENT can be done by
-  defining a DOCUMENT-OBJECT method. To allow these objects to be
-  referenced from DEFSECTION, a LOCATE-OBJECT method is to be defined.
-  Finally, for `M-.` FIND-SOURCE can be specialized. Finally,
-  EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
+  "One may wish to make the 40ANTS-DOC/DOCUMENT::DOCUMENT function and `M-.` navigation
+  work with new object types. Extending 40ANTS-DOC/DOCUMENT::DOCUMENT can be done by
+  defining a 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT method. To allow these objects to be
+  referenced from DEFSECTION, a 40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT method is to be defined.
+  Finally, for `M-.` 40ANTS-DOC/SOURCE-API::FIND-SOURCE can be specialized. Finally,
+  40ANTS-DOC::EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
   makes sense. Here is a stripped down example of how all this is done
   for ASDF:SYSTEM:"
   (asdf-example (include (:start (asdf:system locative)
@@ -484,11 +498,11 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
 (defsection @reference-based-extensions
     (:title "Reference Based Extensions")
-  "Let's see how to extend DOCUMENT and `M-.` navigation if there is
+  "Let's see how to extend 40ANTS-DOC/DOCUMENT::DOCUMENT and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
-  that LOCATE returns a REFERENCE object in this case. DOCUMENT-OBJECT
-  and FIND-SOURCE defer to LOCATE-AND-DOCUMENT and
-  LOCATE-AND-FIND-SOURCE, which have LOCATIVE-TYPE in their argument
+  that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case. 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
+  and 40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and
+  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE, which have 40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE in their argument
   list for EQL specializing pleasure. Here is a stripped down example
   of how the VARIABLE locative is defined:"
   (variable-example (include (:start (variable locative)

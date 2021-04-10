@@ -41,8 +41,8 @@
   calling the LOCATE-ERROR function if the lookup fails. Signal other
   errors if the types of the argument are bad, for instance
   LOCATIVE-ARGS is not the empty list in the package example. If a
-  REFERENCE is returned then it must be canonical in the sense that
-  calling CANONICAL-REFERENCE on it will return the same reference.
+  40ANTS-DOC/REFERENCE::REFERENCE is returned then it must be canonical in the sense that
+  calling 40ANTS-DOC/REFERENCE-API::CANONICAL-REFERENCE on it will return the same reference.
   For extension only, don't call this directly."))
 
 (defun locate-error (&rest format-and-args)
@@ -61,7 +61,7 @@
 
 (defun locate (object locative &key (errorp t))
   "Follow LOCATIVE from OBJECT and return the object it leads to or a
-  REFERENCE if there is no first class object corresponding to the
+  40ANTS-DOC/REFERENCE::REFERENCE if there is no first class object corresponding to the
   location. If ERRORP, then a LOCATE-ERROR condition is signaled when
   the lookup fails."
   (handler-case
@@ -87,8 +87,8 @@
 
 (defgeneric locate-and-document (object locative-type locative-args
                                  stream)
-  (:documentation "Called by DOCUMENT-OBJECT on REFERENCE objects,
-  this function has essentially the same purpose as DOCUMENT-OBJECT
+  (:documentation "Called by 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT on 40ANTS-DOC/REFERENCE::REFERENCE objects,
+  this function has essentially the same purpose as 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
   but it has different arguments to allow specializing on
   LOCATIVE-TYPE."))
 
@@ -109,8 +109,8 @@
 
 (defgeneric locate-and-collect-reachable-objects (object locative-type
                                                   locative-args)
-  (:documentation "Called by COLLECT-REACHABLE-OBJECTS on REFERENCE
-  objects, this function has essentially the same purpose as its
+  (:documentation "Called by 40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS on
+  40ANTS-DOC/REFERENCE::REFERENCE objects, this function has essentially the same purpose as its
   caller but it has different arguments to allow specializing on
   LOCATIVE-TYPE."))
 

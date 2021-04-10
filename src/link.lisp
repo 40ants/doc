@@ -36,7 +36,7 @@
 
 (defvar *document-link-code* t
   """When true, during the process of generating documentation for a
-  [SECTION][class], HTML anchors are added before the documentation of
+  [40ANTS-DOC::SECTION][class], HTML anchors are added before the documentation of
   every reference that's not to a section. Also, markdown style
   reference links are added when a piece of inline code found in a
   docstring refers to a symbol that's referenced by one of the
@@ -82,9 +82,9 @@
 
           Calls `BAR`([`1`][link-id-1] [`2`][link-id-2]) on `X`.
 
-  This situation occurs in PAX with SECTION which is both a class (see
-  [SECTION][class]) and a locative type denoted by a symbol (see
-  [SECTION][locative]). Back in the example above, clearly,
+  This situation occurs with 40ANTS-DOC::SECTION which is both a class (see
+  [40ANTS-DOC::SECTION][class]) and a locative type denoted by a symbol (see
+  [40ANTS-DOC::SECTION][locative]). Back in the example above, clearly,
   there is no reason to link to type `BAR`, so one may wish to select
   the function locative. There are two ways to do that. One is to
   specify the locative explicitly as the id of a reference link:

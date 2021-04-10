@@ -15,11 +15,11 @@
 
       `FOO`
 
-  will be linked to (if *DOCUMENT-LINK-CODE*) its definition. However,
+  will be linked to (if 40ANTS-DOC/LINK::*DOCUMENT-LINK-CODE*) its definition. However,
 
       [`FOO`][dislocated]
 
-  will not be. On a dislocated locative LOCATE always fails with a
+  will not be. On a dislocated locative 40ANTS-DOC/LOCATIVES/BASE::LOCATE always fails with a
   LOCATE-ERROR condition.")
 
 (defmethod locate-object (symbol (locative-type (eql 'dislocated))

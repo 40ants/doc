@@ -18,14 +18,14 @@
 
 
 (40ants-doc/locatives/base::define-locative-type section ()
-  "Refers to a section defined by DEFSECTION.")
+  "Refers to a section defined by 40ANTS-DOC::DEFSECTION.")
 
 (defmethod 40ants-doc/locatives/base::locate-object (symbol (locative-type (eql 'section))
                           locative-args)
   (declare (ignore locative-args))
   (unless (typep (symbol-value symbol)
                  '40ants-doc/core::section)
-    (error "Section locative works only with objects defined by defsection."))
+    (error "Section locative works only with objects defined by 40ANTS-DOC::DEFSECTION."))
   (symbol-value symbol))
 
 (defmethod 40ants-doc/reference-api::canonical-reference ((section 40ants-doc/core::section))

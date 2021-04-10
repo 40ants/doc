@@ -132,9 +132,9 @@
 
 
 (defmethod 40ants-doc/source-api::find-source ((reference reference))
-  "If REFERENCE can be resolved to a non-reference, call FIND-SOURCE
-  with it, else call LOCATE-AND-FIND-SOURCE on the object,
-  locative-type, locative-args of REFERENCE"
+  "If REFERENCE can be resolved to a non-reference, call 40ANTS-DOC/SOURCE-API::FIND-SOURCE
+  with it, else call 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE on the object,
+  locative-type, locative-args of REFERENCE."
   (let ((locative (reference-locative reference)))
     (40ants-doc/locatives/base::locate-and-find-source (reference-object reference)
                                                        (40ants-doc/locatives/base::locative-type locative)
@@ -154,7 +154,7 @@
 (defmethod collect-reachable-objects ((reference reference))
   "If REFERENCE can be resolved to a non-reference, call
   COLLECT-REACHABLE-OBJECTS with it, else call
-  LOCATE-AND-COLLECT-REACHABLE-OBJECTS on the object, locative-type,
+  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS on the object, locative-type,
   locative-args of REFERENCE"
   (let ((object (resolve reference)))
     (if (typep object 'reference)
@@ -167,7 +167,7 @@
 
 
 (defun resolve (reference &key (errorp t))
-  "A convenience function to LOCATE REFERENCE's object with its
+  "A convenience function to 40ANTS-DOC/LOCATIVES/BASE::LOCATE REFERENCE's object with its
   locative."
   (40ants-doc/locatives/base::locate (reference-object reference)
                                      (reference-locative reference)
