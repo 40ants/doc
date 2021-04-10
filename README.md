@@ -86,11 +86,11 @@ Because of massive refactoring, it is incompatible with original repository.
 
 As a user, I frequently run into documentation that's incomplete
 and out of date, so I tend to stay in the editor and explore the
-code by jumping around with SLIME's [`M-.`][SLIME-M-.]. As a library
+code by jumping around with SLIME's [`M-.`][slime-M-.]. As a library
 author, I spend a great deal of time polishing code, but precious
 little writing documentation.
 
-[SLIME-M-.]: http://common-lisp.net/project/slime/doc/html/Finding-definitions.html#Finding-definitions 
+[slime-M-.]: http://common-lisp.net/project/slime/doc/html/Finding-definitions.html#Finding-definitions 
 
 In fact, I rarely write anything more comprehensive than docstrings
 for exported stuff. Writing docstrings feels easier than writing a
@@ -150,7 +150,7 @@ documentation generator shall also be able find out what's being
 referred to.
 
 I settled on [Markdown][markdown] as a reasonably non-intrusive
-format, and a few thousand lines later PAX was born.
+format, and a few thousand lines later MGL-PAX was born.
 
 [markdown]: https://daringfireball.net/projects/markdown/ 
 
@@ -159,7 +159,7 @@ format, and a few thousand lines later PAX was born.
 
 ## 5 Tutorial
 
-PAX provides an extremely poor man's Explorable Programming
+[`40ANTS-DOC`][b62a] provides an extremely poor man's Explorable Programming
 environment. Narrative primarily lives in so called sections that
 mix markdown docstrings with references to functions, variables,
 etc, all of which should probably have their own docstrings.
@@ -175,8 +175,8 @@ effects as with Literate Programming, but documentation is generated
 from code, not vice versa and there is no support for chunking yet.
 Code is first, code must look pretty, documentation is code.
 
-In typical use, PAX packages have no `:EXPORT`'s defined. Instead the
-`UIOP:DEFINE-PACKAGE` form gets a docstring which may mention section
+In typical use, using [`40ANTS-DOC`][b62a], packages have no `:EXPORT`'s defined.
+Instead the `UIOP:DEFINE-PACKAGE` form gets a docstring which may mention section
 names (defined with [`DEFSECTION`][79c1]). When the code is loaded into the
 lisp, pressing `M-.` in SLIME on the name of the section will take
 you there. Sections can also refer to other sections, packages,
@@ -187,7 +187,7 @@ Here is an example of how it all works together:
 ```commonlisp
 (`uiop:define-package` #:foo-random
   (:documentation "This package provides various utilities for
-random. See FOO-RANDOM:@FOO-RANDOM-MANUAL.")
+random. See @FOO-RANDOM-MANUAL.")
   (:use #:common-lisp #:40ants-doc))
 
 (in-package foo-random)
@@ -598,13 +598,13 @@ Now let's examine the most important pieces in detail.
     possible to print arbitrary headers, typically setting the title,
     css stylesheet, or charset.
     
-    `:FOOTER-FN` is similar to HEADER-FN, but it's called after the last
+    `:FOOTER-FN` is similar to `:HEADER-FN`, but it's called after the last
     write to the page. For HTML, it typically just closes the body.
     
     `:URI-FRAGMENT` is a string such as `"doc/manual.html"` that specifies
     where the page will be deployed on a webserver. It defines how links
     between pages will look. If it's not specified and `OUTPUT` refers
-    to a file, then it defaults to the name of the file. If URI-FRAGMENT
+    to a file, then it defaults to the name of the file. If `:URI-FRAGMENT`
     is `NIL`, then no links will be made to or from that page.
     
     Finally, `:SOURCE-URI-FN` is a function of a single, [`40ANTS-DOC/REFERENCE::REFERENCE`][5011]
@@ -712,7 +712,7 @@ HTML documentation and the default css stylesheet.
 - [variable] **\*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL\*** *NIL*
 
     `NIL` or a non-negative integer. If non-NIL, it overrides
-    *DOCUMENT-MAX-NUMBERING-LEVEL* in dynamic HTML table of contents on
+    [`40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MAX-NUMBERING-LEVEL*`][27fc] in dynamic HTML table of contents on
     the left of the page.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-3A-2ADOCUMENT-HTML-TOP-BLOCKS-OF-LINKS-2A-20-28VARIABLE-29-29'></a>
@@ -738,7 +738,7 @@ HTML documentation and the default css stylesheet.
 
 ###### \[in package 40ANTS-DOC/GITHUB\]
 It is generally recommended to commit generated readmes (see
-UPDATE-ASDF-SYSTEM-README) so that users have something to read
+[`40ANTS-DOC/BUILDER::UPDATE-ASDF-SYSTEM-README`][b7df]) so that users have something to read
 without reading the code and sites like github can display them.
 
 HTML documentation can also be committed, but there is an issue with
@@ -762,7 +762,7 @@ Two commits needed still, but it is somewhat less painful.
 
 This way the HTML documentation will be available at
 `http://<username>.github.io/<repo-name>`. It is probably a good
-idea to add section like the @MGL-PAX-LINKS section to allow jumping
+idea to add section like the [Links][f967] section to allow jumping
 between the repository and the gh-pages site.
 
 <a id='x-2840ANTS-DOC-2FGITHUB-3AMAKE-GITHUB-SOURCE-URI-FN-20FUNCTION-29'></a>
@@ -770,7 +770,7 @@ between the repository and the gh-pages site.
 - [function] **MAKE-GITHUB-SOURCE-URI-FN** *ASDF-SYSTEM GITHUB-URI &KEY GIT-VERSION*
 
     Return a function suitable as `:SOURCE-URI-FN` of a page spec (see
-    the PAGES argument of DOCUMENT). The function looks the source
+    the `:PAGES` argument of [`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25]). The function looks the source
     location of the reference passed to it, and if the location is
     found, the path is made relative to the root directory of
     `ASDF-SYSTEM` and finally an URI pointing to github is returned. The
@@ -805,11 +805,11 @@ If somebody want's cross referencing between different libraries, then instead
 of building their docs simultaneously, I'd suggest to create an index of entities,
 provided by libraries and to store them as a JSON file along with a library documentation.
 
-This way it will be possible to enumerate such sources of cross references as usual URLS.
+This way it will be possible to enumerate such sources of cross references as usual URLs.
 
 Such feature is not implemented in the [`40ANTS-DOC`][b62a] system yet, but probably it will be
-useful for libraries built around the Weblocks. If you want to help and implement the
-feature, please, let me know.
+useful for libraries built around the [Weblocks](https://40ants.com/weblocks/).
+If you want to help and implement the feature, please, let me know.
 
 <a id='x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-SUPPORT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
@@ -823,8 +823,8 @@ The [Markdown][markdown] in docstrings is processed with the
 
 ### 9.1 Indentation
 
-Docstrings can be indented in any of the usual styles. PAX
-normalizes indentation by converting:
+Docstrings can be indented in any of the usual styles.
+[`40ANTS-DOC`][b62a] normalizes indentation by converting:
 
     (defun foo ()
       "This is
@@ -856,7 +856,7 @@ write:
     ```
 
 to get syntactically marked up HTML output. Copy `src/style.css`
-from PAX and you are set. The language tag, `elisp` in this example,
+from [`40ANTS-DOC`][b62a] and you are set. The language tag, `elisp` in this example,
 is optional and defaults to `common-lisp`.
 
 See the documentation of [3BMD][3bmd] and [colorize][colorize] for
@@ -909,7 +909,7 @@ described below.
     When true, words with at least three characters and no lowercase
     characters naming an interned symbol are assumed to be code as if
     they were marked up with backticks which is especially useful when
-    combined with *DOCUMENT-LINK-CODE*. For example, this docstring:
+    combined with [`40ANTS-DOC/LINK::*DOCUMENT-LINK-CODE*`][c686]. For example, this docstring:
     
         "`FOO` and FOO."
     
@@ -953,7 +953,7 @@ described below.
 - [variable] **40ANTS-DOC/LINK::\*DOCUMENT-LINK-CODE\*** *T*
 
     When true, during the process of generating documentation for a
-    [SECTION][class], HTML anchors are added before the documentation of
+    [`40ANTS-DOC::SECTION`][a456], HTML anchors are added before the documentation of
     every reference that's not to a section. Also, markdown style
     reference links are added when a piece of inline code found in a
     docstring refers to a symbol that's referenced by one of the
@@ -999,9 +999,9 @@ described below.
         
             Calls `BAR`([`1`][link-id-1] [`2`][link-id-2]) on `X`.
     
-    This situation occurs in PAX with SECTION which is both a class (see
-    [SECTION][class]) and a locative type denoted by a symbol (see
-    [SECTION][locative]). Back in the example above, clearly,
+    This situation occurs with [`40ANTS-DOC::SECTION`][a456] which is both a class (see
+    [`40ANTS-DOC::SECTION`][a456]) and a locative type denoted by a symbol (see
+    [`40ANTS-DOC::SECTION`][locative]). Back in the example above, clearly,
     there is no reason to link to type `BAR`, so one may wish to select
     the function locative. There are two ways to do that. One is to
     specify the locative explicitly as the id of a reference link:
@@ -1059,7 +1059,7 @@ described below.
 
     When true, some things such as function names and arglists are
     rendered as bold and italic. In `:HTML` output, locative types become
-    links to sources (if `:SOURCE-URI-FN` is provided, see DOCUMENT), and
+    links to sources (if `:SOURCE-URI-FN` is provided, see [`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25]), and
     the symbol becomes a self-link for your permalinking pleasure.
     
     For example, a reference is rendered in markdown roughly as:
@@ -1088,7 +1088,7 @@ described below.
     A non-negative integer. Top-level sections are given a table of
     contents which includes a nested tree of section titles whose depth
     is limited by this value. Setting it to 0 turns generation of the
-    table of contents off. If *DOCUMENT-LINK-SECTIONS* is true, then the
+    table of contents off. If [`40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS*`][6e80] is true, then the
     table of contents will link to the sections.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-3A-2ADOCUMENT-TEXT-NAVIGATION-2A-20-28VARIABLE-29-29'></a>
@@ -1097,7 +1097,7 @@ described below.
 
     If true, then before each heading a line is printed with links to
     the previous, parent and next section. Needs
-    *DOCUMENT-LINK-SECTIONS* to be on to work.
+    [`40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS*`][6e80] to be on to work.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-3A-2ADOCUMENT-FANCY-HTML-NAVIGATION-2A-20-28VARIABLE-29-29'></a>
 
@@ -1107,7 +1107,7 @@ described below.
     navigation component that consists of links to the previous, parent,
     next section and a permalink. This component is normally hidden, it
     is visible only when the mouse is over the heading. Needs
-    *DOCUMENT-LINK-SECTIONS* to be on to work.
+    [`40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS*`][6e80] to be on to work.
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
@@ -1131,7 +1131,7 @@ locatives take no arguments.
 
 - [locative] **SECTION**
 
-    Refers to a section defined by DEFSECTION.
+    Refers to a section defined by [`40ANTS-DOC::DEFSECTION`][79c1].
 
 <a id='x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29'></a>
 
@@ -1245,18 +1245,18 @@ locatives take no arguments.
     
         `FOO`
     
-    will be linked to (if *DOCUMENT-LINK-CODE*) its definition. However,
+    will be linked to (if [`40ANTS-DOC/LINK::*DOCUMENT-LINK-CODE*`][c686]) its definition. However,
     
         [`FOO`][dislocated]
     
-    will not be. On a dislocated locative LOCATE always fails with a
+    will not be. On a dislocated locative [`40ANTS-DOC/LOCATIVES/BASE::LOCATE`][e604] always fails with a
     [`LOCATE-ERROR`][b316] condition.
 
 <a id='x-2840ANTS-DOC-2FLOCATIVES-3AARGUMENT-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29'></a>
 
 - [locative] **ARGUMENT**
 
-    An alias for DISLOCATED, so the one can refer to an argument of a
+    An alias for [`40ANTS-DOC/LOCATIVES::DISLOCATED`][69c0], so the one can refer to an argument of a
     macro without accidentally linking to a class that has the same name
     as that argument. In the following example, `FORMAT` may link to
     `CL:FORMAT` (if we generated documentation for it):
@@ -1315,7 +1315,7 @@ locatives take no arguments.
     ;;; More irrelevant code follows.
     ```
     
-    In the above example, pressing `M-.` on PAX.EL will open the
+    In the above example, pressing `M-.` on `pax.el` will open the
     `src/pax.el` file and put the cursor on its first character. `M-.`
     on `FOO-EXAMPLE` will go to the source location of the `(`asdf:system`
     locative)` locative.
@@ -1363,19 +1363,19 @@ locatives take no arguments.
 
     Define a global variable with `NAME` and set it to a glossary term
     object. A glossary term is just a symbol to hang a docstring on. It
-    is a bit like a SECTION in that, when linked to, its `TITLE` will be
+    is a bit like a [`40ANTS-DOC::SECTION`][a456] in that, when linked to, its `TITLE` will be
     the link text instead of the name of the symbol. Unlike sections
     though, glossary terms are not rendered with headings, but in the
     more lightweight bullet + locative + name/title style.
     
-    When `DISCARD-DOCUMENTATION-P` (defaults to *DISCARD-DOCUMENTATION-P*)
+    When `DISCARD-DOCUMENTATION-P` (defaults to [`40ANTS-DOC::*DISCARD-DOCUMENTATION-P*`][1e69])
     is true, `DOCSTRING` will not be recorded to save memory.
 
 <a id='x-2840ANTS-DOC-2FLOCATIVES-3AGLOSSARY-TERM-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29'></a>
 
 - [locative] **GLOSSARY-TERM**
 
-    Refers to a glossary term defined by DEFINE-GLOSSARY-TERM.
+    Refers to a glossary term defined by [`40ANTS-DOC/GLOSSARY::DEFINE-GLOSSARY-TERM`][062e].
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40EXTENSION-API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
@@ -1388,7 +1388,7 @@ locatives take no arguments.
 While Common Lisp has rather good introspective abilities, not
 everything is first class. For example, there is no object
 representing the variable defined with `(DEFVAR
-FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a REFERENCE that
+FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] that
 captures the path to take from an object (the symbol FOO) to an
 entity of interest (for example, the documentation of the variable).
 The path is called the locative. A locative can be applied to an
@@ -1400,8 +1400,8 @@ object like this:
 
 which will return the same reference as `(MAKE-REFERENCE 'FOO
 'VARIABLE)`. Operations need to know how to deal with references
-which we will see in LOCATE-AND-COLLECT-REACHABLE-OBJECTS,
-LOCATE-AND-DOCUMENT and LOCATE-AND-FIND-SOURCE.
+which we will see in [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS`][264c],
+[`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT`][d85a] and [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE`][12a4].
 
 Naturally, `(LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
 need to muck with references when there is a perfectly good object.
@@ -1411,7 +1411,7 @@ need to muck with references when there is a perfectly good object.
 - [function] **40ANTS-DOC/LOCATIVES/BASE::LOCATE** *OBJECT LOCATIVE &KEY (ERRORP T)*
 
     Follow `LOCATIVE` from `OBJECT` and return the object it leads to or a
-    REFERENCE if there is no first class object corresponding to the
+    [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] if there is no first class object corresponding to the
     location. If `ERRORP`, then a [`LOCATE-ERROR`][b316] condition is signaled when
     the lookup fails.
 
@@ -1438,7 +1438,7 @@ need to muck with references when there is a perfectly good object.
 
 - [function] **40ANTS-DOC/REFERENCE::RESOLVE** *REFERENCE &KEY (ERRORP T)*
 
-    A convenience function to LOCATE `REFERENCE`'s object with its
+    A convenience function to [`40ANTS-DOC/LOCATIVES/BASE::LOCATE`][e604] `REFERENCE`'s object with its
     locative.
 
 <a id='x-2840ANTS-DOC-2FREFERENCE-3A-3AREFERENCE-20CLASS-29'></a>
@@ -1481,12 +1481,12 @@ need to muck with references when there is a perfectly good object.
 
 ### 12.2 Adding New Object Types
 
-One may wish to make the DOCUMENT function and `M-.` navigation
-work with new object types. Extending DOCUMENT can be done by
-defining a DOCUMENT-OBJECT method. To allow these objects to be
-referenced from [`DEFSECTION`][79c1], a LOCATE-OBJECT method is to be defined.
-Finally, for `M-.` FIND-SOURCE can be specialized. Finally,
-EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
+One may wish to make the [`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25] function and `M-.` navigation
+work with new object types. Extending [`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25] can be done by
+defining a [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a4f0] method. To allow these objects to be
+referenced from [`DEFSECTION`][79c1], a [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT`][dbb9] method is to be defined.
+Finally, for `M-.` [`40ANTS-DOC/SOURCE-API::FIND-SOURCE`][3b25] can be specialized. Finally,
+[`40ANTS-DOC::EXPORTABLE-LOCATIVE-TYPE-P`][b812] may be overridden if exporting does not
 makes sense. Here is a stripped down example of how all this is done
 for [`ASDF:SYSTEM`][3ab8]:
 
@@ -1586,8 +1586,8 @@ for [`ASDF:SYSTEM`][3ab8]:
     calling the [`LOCATE-ERROR`][5e7e] function if the lookup fails. Signal other
     errors if the types of the argument are bad, for instance
     `LOCATIVE-ARGS` is not the empty list in the package example. If a
-    REFERENCE is returned then it must be canonical in the sense that
-    calling CANONICAL-REFERENCE on it will return the same reference.
+    [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] is returned then it must be canonical in the sense that
+    calling [`40ANTS-DOC/REFERENCE-API::CANONICAL-REFERENCE`][fad3] on it will return the same reference.
     For extension only, don't call this directly.
 
 <a id='x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-ERROR-20FUNCTION-29'></a>
@@ -1607,18 +1607,18 @@ for [`ASDF:SYSTEM`][3ab8]:
 
 - [generic-function] **40ANTS-DOC/REFERENCE-API::CANONICAL-REFERENCE** *OBJECT*
 
-    Return a REFERENCE that resolves to `OBJECT`.
+    Return a [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] that resolves to `OBJECT`.
 
 <a id='x-2840ANTS-DOC-2FREFERENCE-API-3A-3ACOLLECT-REACHABLE-OBJECTS-20GENERIC-FUNCTION-29'></a>
 
 - [generic-function] **40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS** *OBJECT*
 
     Return a list of objects representing all things
-    that would be documented in a (DOCUMENT `OBJECT`) call. For sections
-    this is simply the union of references reachable from references in
-    SECTION-ENTRIES. The returned objects can be anything provided that
-    [`CANONICAL-REFERENCE`][fad3] works on them. The list need not include `OBJECT`
-    itself.
+    that would be documented in a ([`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25] `OBJECT`) call.
+    For sections this is simply the union of references reachable from
+    references in [`40ANTS-DOC::SECTION-ENTRIES`][9459]. The returned objects can be anything
+    provided that [`CANONICAL-REFERENCE`][fad3] works on them. The list need not
+    include `OBJECT` itself.
     
     One only has to specialize this for new container-like objects.
 
@@ -1651,8 +1651,8 @@ for [`ASDF:SYSTEM`][3ab8]:
     Like `SWANK:FIND-DEFINITION-FOR-THING`, but this
     one is a generic function to be extensible. In fact, the default
     implementation simply defers to `SWANK:FIND-DEFINITION-FOR-THING`.
-    This function is called by LOCATE-DEFINITION-FOR-EMACS which lies
-    behind the `M-.` extension (see @MGL-PAX-EMACS-INTEGRATION).
+    This function is called by `40ANTS-DOC/SWANK::LOCATE-DEFINITION-FOR-EMACS` which lies
+    behind the `M-.` extension (see [Emacs Integration][f4b9]).
     
     If successful, the return value looks like this:
     
@@ -1674,11 +1674,11 @@ for [`ASDF:SYSTEM`][3ab8]:
 
 ### 12.3 Reference Based Extensions
 
-Let's see how to extend DOCUMENT and `M-.` navigation if there is
+Let's see how to extend [`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25] and `M-.` navigation if there is
 no first class object to represent the thing of interest. Recall
-that LOCATE returns a REFERENCE object in this case. DOCUMENT-OBJECT
-and FIND-SOURCE defer to LOCATE-AND-DOCUMENT and
-LOCATE-AND-FIND-SOURCE, which have LOCATIVE-TYPE in their argument
+that [`40ANTS-DOC/LOCATIVES/BASE::LOCATE`][e604] returns a [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] object in this case. [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a4f0]
+and [`40ANTS-DOC/SOURCE-API::FIND-SOURCE`][3b25] defer to [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT`][d85a] and
+[`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE`][12a4], which have [`40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE`][d395] in their argument
 list for `EQL` specializing pleasure. Here is a stripped down example
 of how the [`VARIABLE`][b8a4] locative is defined:
 
@@ -1722,15 +1722,15 @@ of how the [`VARIABLE`][b8a4] locative is defined:
 
     If `REFERENCE` can be resolved to a non-reference, call
     [`COLLECT-REACHABLE-OBJECTS`][1ea8] with it, else call
-    LOCATE-AND-COLLECT-REACHABLE-OBJECTS on the object, locative-type,
+    [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS`][264c] on the object, locative-type,
     locative-args of `REFERENCE`
 
 <a id='x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-AND-COLLECT-REACHABLE-OBJECTS-20GENERIC-FUNCTION-29'></a>
 
 - [generic-function] **40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS** *OBJECT LOCATIVE-TYPE LOCATIVE-ARGS*
 
-    Called by COLLECT-REACHABLE-OBJECTS on REFERENCE
-    objects, this function has essentially the same purpose as its
+    Called by [`40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS`][1ea8] on
+    [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] objects, this function has essentially the same purpose as its
     caller but it has different arguments to allow specializing on
     `LOCATIVE-TYPE`.
 
@@ -1746,15 +1746,15 @@ of how the [`VARIABLE`][b8a4] locative is defined:
 - [method] **40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT** *(REFERENCE REFERENCE) STREAM*
 
     If `REFERENCE` can be resolved to a non-reference, call
-    DOCUMENT-OBJECT with it, else call LOCATE-AND-DOCUMENT-OBJECT on the
+    [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a4f0] with it, else call `40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT-OBJECT` on the
     object, locative-type, locative-args of `REFERENCE`
 
 <a id='x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-AND-DOCUMENT-20GENERIC-FUNCTION-29'></a>
 
 - [generic-function] **40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT** *OBJECT LOCATIVE-TYPE LOCATIVE-ARGS STREAM*
 
-    Called by DOCUMENT-OBJECT on REFERENCE objects,
-    this function has essentially the same purpose as DOCUMENT-OBJECT
+    Called by [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a4f0] on [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] objects,
+    this function has essentially the same purpose as [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a4f0]
     but it has different arguments to allow specializing on
     `LOCATIVE-TYPE`.
 
@@ -1762,9 +1762,9 @@ of how the [`VARIABLE`][b8a4] locative is defined:
 
 - [method] **40ANTS-DOC/SOURCE-API::FIND-SOURCE** *(REFERENCE REFERENCE)*
 
-    If `REFERENCE` can be resolved to a non-reference, call FIND-SOURCE
-    with it, else call LOCATE-AND-FIND-SOURCE on the object,
-    locative-type, locative-args of `REFERENCE`
+    If `REFERENCE` can be resolved to a non-reference, call [`40ANTS-DOC/SOURCE-API::FIND-SOURCE`][3b25]
+    with it, else call [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE`][12a4] on the object,
+    locative-type, locative-args of `REFERENCE`.
 
 <a id='x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-AND-FIND-SOURCE-20GENERIC-FUNCTION-29'></a>
 
@@ -2366,14 +2366,18 @@ changed."
 
 
   [0333]: #x-2840ANTS-DOC-2FTRANSCRIBE-3ATRANSCRIPTION-CONSISTENCY-ERROR-20CONDITION-29 "(40ANTS-DOC/TRANSCRIBE:TRANSCRIPTION-CONSISTENCY-ERROR CONDITION)"
+  [062e]: #x-2840ANTS-DOC-2FGLOSSARY-3A-3ADEFINE-GLOSSARY-TERM-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29 "(40ANTS-DOC/GLOSSARY::DEFINE-GLOSSARY-TERM (40ANTS-DOC/LOCATIVES:MACRO))"
   [0ef6]: #x-2840ANTS-DOC-2FDOC-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "TODO"
   [1052]: #x-2840ANTS-DOC-2FBUILDER-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Generating Documentation"
   [10a2]: #x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-INDENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Indentation"
   [1150]: #x-2840ANTS-DOC-2FDOC-3A-40NEW-OBJECT-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Adding New Object Types"
+  [12a4]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-AND-FIND-SOURCE-20GENERIC-FUNCTION-29 "(40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE GENERIC-FUNCTION)"
   [1db4]: #x-2840ANTS-DOC-2FREFERENCE-3A-3AREFERENCE-LOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-2040ANTS-DOC-2FREFERENCE-3A-3AREFERENCE-29-29 "(40ANTS-DOC/REFERENCE::REFERENCE-LOCATIVE (40ANTS-DOC/LOCATIVES:READER 40ANTS-DOC/REFERENCE::REFERENCE))"
   [1e69]: #x-2840ANTS-DOC-3A-3A-2ADISCARD-DOCUMENTATION-P-2A-20-28VARIABLE-29-29 "(40ANTS-DOC::*DISCARD-DOCUMENTATION-P* (VARIABLE))"
   [1ea8]: #x-2840ANTS-DOC-2FREFERENCE-API-3A-3ACOLLECT-REACHABLE-OBJECTS-20GENERIC-FUNCTION-29 "(40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS GENERIC-FUNCTION)"
   [21a6]: #x-2840ANTS-DOC-2FGITHUB-3A-40GITHUB-WORKFLOW-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Github Workflow"
+  [264c]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-AND-COLLECT-REACHABLE-OBJECTS-20GENERIC-FUNCTION-29 "(40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS GENERIC-FUNCTION)"
+  [27fc]: #x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-3A-2ADOCUMENT-MAX-NUMBERING-LEVEL-2A-20-28VARIABLE-29-29 "(40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MAX-NUMBERING-LEVEL* (VARIABLE))"
   [2ae8]: #x-2840ANTS-DOC-2FDOC-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Tutorial"
   [2af1]: #x-2840ANTS-DOC-2FDOC-3A-40LOCATIVES-AND-REFERENCES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Locatives and References"
   [2d83]: #x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(40ANTS-DOC/LOCATIVES:LOCATIVE (40ANTS-DOC/LOCATIVES:LOCATIVE))"
@@ -2393,7 +2397,9 @@ changed."
   [684b]: #x-2840ANTS-DOC-2FBUILDER-2FPRINTER-3A-3A-2ADOCUMENT-UPPERCASE-IS-CODE-2A-20-28VARIABLE-29-29 "(40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-UPPERCASE-IS-CODE* (VARIABLE))"
   [6980]: #x-2840ANTS-DOC-2FDOC-3A-40EXTENSION-API-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Extension API"
   [69b2]: #x-2840ANTS-DOC-2FREFERENCE-3A-3ARESOLVE-20FUNCTION-29 "(40ANTS-DOC/REFERENCE::RESOLVE FUNCTION)"
+  [69c0]: #x-2840ANTS-DOC-2FLOCATIVES-3ADISLOCATED-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(40ANTS-DOC/LOCATIVES:DISLOCATED (40ANTS-DOC/LOCATIVES:LOCATIVE))"
   [6b8a]: #x-2840ANTS-DOC-2FTRANSCRIBE-3ATRANSCRIPTION-VALUES-CONSISTENCY-ERROR-20CONDITION-29 "(40ANTS-DOC/TRANSCRIBE:TRANSCRIPTION-VALUES-CONSISTENCY-ERROR CONDITION)"
+  [6e80]: #x-2840ANTS-DOC-2FLINK-3A-3A-2ADOCUMENT-LINK-SECTIONS-2A-20-28VARIABLE-29-29 "(40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS* (VARIABLE))"
   [6e9a]: #x-2840ANTS-DOC-2FDOC-3A-40REFERENCE-BASED-EXTENSIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Reference Based Extensions"
   [76ae]: #x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-SUPPORT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Markdown Support"
   [79c1]: #x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29 "(40ANTS-DOC:DEFSECTION (40ANTS-DOC/LOCATIVES:MACRO))"
@@ -2403,6 +2409,7 @@ changed."
   [9035]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ADEFINE-LOCATIVE-TYPE-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29 "(40ANTS-DOC/LOCATIVES/BASE::DEFINE-LOCATIVE-TYPE (40ANTS-DOC/LOCATIVES:MACRO))"
   [90f8]: #x-2840ANTS-DOC-2FWORLD-3A-40WORLD-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "PAX World"
   [940d]: #x-28RESTART-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(RESTART (40ANTS-DOC/LOCATIVES:LOCATIVE))"
+  [9459]: #x-2840ANTS-DOC-3ASECTION-ENTRIES-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-2040ANTS-DOC-3ASECTION-29-29 "(40ANTS-DOC:SECTION-ENTRIES (40ANTS-DOC/LOCATIVES:READER 40ANTS-DOC:SECTION))"
   [98a8]: #x-2840ANTS-DOC-2FDOC-3A-40BACKGROUND-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Background"
   [9a5c]: #x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(FUNCTION (40ANTS-DOC/LOCATIVES:LOCATIVE))"
   [a18b]: #x-2840ANTS-DOC-2FTRANSCRIBE-3A-40TRANSCRIPT-EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Transcribing with Emacs"
@@ -2411,6 +2418,7 @@ changed."
   [b316]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-ERROR-20CONDITION-29 "(40ANTS-DOC/LOCATIVES/BASE::LOCATE-ERROR CONDITION)"
   [b5ed]: #x-2840ANTS-DOC-2FDOC-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "About this fork"
   [b62a]: #x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29 "(#A((10) BASE-CHAR . \"40ants-doc\") ASDF/SYSTEM:SYSTEM)"
+  [b7df]: #x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-README-20FUNCTION-29 "(40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-README FUNCTION)"
   [b812]: #x-2840ANTS-DOC-3AEXPORTABLE-LOCATIVE-TYPE-P-20GENERIC-FUNCTION-29 "(40ANTS-DOC:EXPORTABLE-LOCATIVE-TYPE-P GENERIC-FUNCTION)"
   [b8a4]: #x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(VARIABLE (40ANTS-DOC/LOCATIVES:LOCATIVE))"
   [ba26]: #x-2840ANTS-DOC-2FLOCATIVES-3ASECTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(40ANTS-DOC/LOCATIVES:SECTION (40ANTS-DOC/LOCATIVES:LOCATIVE))"
@@ -2418,10 +2426,12 @@ changed."
   [c686]: #x-2840ANTS-DOC-2FLINK-3A-3A-2ADOCUMENT-LINK-CODE-2A-20-28VARIABLE-29-29 "(40ANTS-DOC/LINK::*DOCUMENT-LINK-CODE* (VARIABLE))"
   [cc53]: #x-28METHOD-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(METHOD (40ANTS-DOC/LOCATIVES:LOCATIVE))"
   [ce1f]: #x-28CONDITION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(CONDITION (40ANTS-DOC/LOCATIVES:LOCATIVE))"
+  [d395]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATIVE-TYPE-20FUNCTION-29 "(40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE FUNCTION)"
   [d3cf]: #x-2840ANTS-DOC-2FTRANSCRIBE-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Transcripts"
   [d4a5]: #x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-SYNTAX-HIGHLIGHTING-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Syntax highlighting"
   [d72c]: #x-2840ANTS-DOC-2FBUILDER-3A-2ADOCUMENT-HTML-TOP-BLOCKS-OF-LINKS-2A-20-28VARIABLE-29-29 "(40ANTS-DOC/BUILDER:*DOCUMENT-HTML-TOP-BLOCKS-OF-LINKS* (VARIABLE))"
   [d833]: #x-28DESCRIBE-OBJECT-20-28METHOD-20NIL-20-2840ANTS-DOC-3ASECTION-20T-29-29-29 "(DESCRIBE-OBJECT (METHOD NIL (40ANTS-DOC:SECTION T)))"
+  [d85a]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-AND-DOCUMENT-20GENERIC-FUNCTION-29 "(40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT GENERIC-FUNCTION)"
   [da25]: #x-2840ANTS-DOC-2FDOCUMENT-3A-3ADOCUMENT-20GENERIC-FUNCTION-29 "(40ANTS-DOC/DOCUMENT::DOCUMENT GENERIC-FUNCTION)"
   [dbb9]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-OBJECT-20GENERIC-FUNCTION-29 "(40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT GENERIC-FUNCTION)"
   [dc19]: #x-28PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29 "(PACKAGE (40ANTS-DOC/LOCATIVES:LOCATIVE))"
