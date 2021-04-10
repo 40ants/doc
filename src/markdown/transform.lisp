@@ -43,10 +43,11 @@
                          ;; To print symbols with their packages
                          (*package* (find-package "COMMON-LISP")))
 
-                    (warn "Unable to find symbol ~S mentioned in (~S ~A)"
-                          name
-                          obj
-                          (40ants-doc/reference::reference-locative reference))))))))
+                    (unless (40ants-doc/warn::ignore-p name)
+                      (warn "Unable to find symbol ~S mentioned in (~S ~A)"
+                            name
+                            obj
+                            (40ants-doc/reference::reference-locative reference)))))))))
       (let ((emph (and (listp tree) (eq :emph (first tree)))))
         (cond ((and emph (eql #\\ (alexandria:first-elt name)))
                (values (list `(:emph ,(40ants-doc/builder/printer::maybe-downcase (subseq name 1))))

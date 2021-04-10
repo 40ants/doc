@@ -29,7 +29,9 @@
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
-(defsection @transcript (:title "Transcripts")
+(defsection @transcript (:title "Transcripts"
+                         :ignore-words ("PAX"
+                                        "REPL"))
   "What are transcripts for? When writing a tutorial, one often wants
   to include a REPL session with maybe a few defuns and a couple of
   forms whose output or return values are shown. Also, in a function's
@@ -1009,7 +1011,8 @@
 
 
 (defsection @transcript-emacs-integration
-    (:title "Transcribing with Emacs")
+    (:title "Transcribing with Emacs"
+     :ignore-words ("PAX"))
   """Typical transcript usage from within Emacs is simple: add a lisp
   form to a docstring or comment at any indentation level. Move the
   cursor right after the end of the form as if you were to evaluate it

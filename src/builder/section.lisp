@@ -5,7 +5,8 @@
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/reference-api)
-  (:import-from #:40ants-doc/document))
+  (:import-from #:40ants-doc/document)
+  (:import-from #:40ants-doc/warn))
 (in-package 40ants-doc/builder/section)
 
 
@@ -18,27 +19,28 @@
 (defvar *section*)
 
 (defmethod 40ants-doc/document::document-object ((section 40ants-doc/core::section) stream)
-  (let ((same-package (eq *package* (40ants-doc/core::section-package section)))
-        (*package* (if 40ants-doc/builder/printer::*document-normalize-packages*
-                       (40ants-doc/core::section-package section)
-                       *package*))
-        (*readtable* (40ants-doc/core::section-readtable section))
-        (*section* section))
-    (40ants-doc/builder/heading::with-heading (stream section (40ants-doc/builder/section::section-title-or-name section)
-                                               :link-title-to (40ants-doc/core::section-link-title-to section))
-      (when (and 40ants-doc/builder/printer::*document-normalize-packages*
-                 (not same-package))
-        (format stream "###### \\[in package ~A~A\\]~%" (package-name *package*)
-                (if (package-nicknames *package*)
-                    (format nil " with nicknames ~{~A~^, ~}" (package-nicknames *package*))
-                    "")))
-      (let ((firstp t))
-        (dolist (entry (40ants-doc/core::section-entries section))
-          (if firstp
-              (setq firstp nil)
-              (terpri stream))
-          (40ants-doc/render/toc::with-nested-headings ()
-            (40ants-doc/document::document-object entry stream)))))))
+  (40ants-doc/warn::with-ignored (40ants-doc/core::section-ignore-words section)
+    (let ((same-package (eq *package* (40ants-doc/core::section-package section)))
+          (*package* (if 40ants-doc/builder/printer::*document-normalize-packages*
+                         (40ants-doc/core::section-package section)
+                         *package*))
+          (*readtable* (40ants-doc/core::section-readtable section))
+          (*section* section))
+      (40ants-doc/builder/heading::with-heading (stream section (40ants-doc/builder/section::section-title-or-name section)
+                                                 :link-title-to (40ants-doc/core::section-link-title-to section))
+        (when (and 40ants-doc/builder/printer::*document-normalize-packages*
+                   (not same-package))
+          (format stream "###### \\[in package ~A~A\\]~%" (package-name *package*)
+                  (if (package-nicknames *package*)
+                      (format nil " with nicknames ~{~A~^, ~}" (package-nicknames *package*))
+                      "")))
+        (let ((firstp t))
+          (dolist (entry (40ants-doc/core::section-entries section))
+            (if firstp
+                (setq firstp nil)
+                (terpri stream))
+            (40ants-doc/render/toc::with-nested-headings ()
+              (40ants-doc/document::document-object entry stream))))))))
 
 
 (defmethod describe-object ((section 40ants-doc/core::section) stream)

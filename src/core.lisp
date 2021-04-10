@@ -34,7 +34,8 @@
                                  (export t)
                                  title
                                  link-title-to
-                                 (discard-documentation-p *discard-documentation-p*))
+                                 (discard-documentation-p *discard-documentation-p*)
+                                 (ignore-words nil))
                       &body entries)
   "Define a documentation section and maybe export referenced symbols.
   A bit behind the scenes, a global variable with NAME is defined and
@@ -89,7 +90,12 @@
   anchor.
 
   When DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
-  is true, ENTRIES will not be recorded to save memory."
+  is true, ENTRIES will not be recorded to save memory.
+
+  :IGNORE-WORDS allows to pass a list of string which will not cause
+  warnings. Usually these as uppercased words which are not symbols
+  in the current package, like SLIME, LISP, etc."
+  
   ;; Let's check the syntax as early as possible.
   (setf entries
         (transform-locative-symbols
@@ -110,7 +116,8 @@
                       :link-title-to (transform-link-title-to ',link-title-to)
                       :entries ,(if discard-documentation-p
                                     ()
-                                    `(transform-entries ',entries))))))
+                                    `(transform-entries ',entries))
+                      :ignore-words (list ,@ignore-words)))))
 
 (defclass section ()
   ((name
@@ -131,13 +138,18 @@
    (link-title-to
     :initform nil
     :initarg :link-title-to :reader section-link-title-to
-    :documentation "A REFERENCE or NIL. Used in generated documentation.")
+    :documentation "A 40ANTS-DOC/REFERENCE::REFERENCE or NIL. Used in generated documentation.")
    (entries
     :initarg :entries :reader section-entries
-    :documentation "A list of strings and REFERENCE objects in the
-    order they occurred in DEFSECTION."))
-  (:documentation "DEFSECTION stores its NAME, TITLE, PACKAGE,
-  READTABLE and ENTRIES in [SECTION][class] objects."))
+    :documentation "A list of strings and 40ANTS-DOC/REFERENCE::REFERENCE objects in the
+    order they occurred in DEFSECTION.")
+   (ignore-words
+    :initarg :ignore-words
+    :initform nil
+    :reader section-ignore-words
+    :documentation "A list of strings to not warn about."))
+  (:documentation "DEFSECTION stores its :NAME, :TITLE, :PACKAGE,
+  :READTABLE and :ENTRIES in [SECTION][class] objects."))
 
 (defmethod print-object ((section section) stream)
   (print-unreadable-object (section stream :type t)

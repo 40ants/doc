@@ -505,8 +505,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   (40ants-doc/locatives/base::locate-and-find-source (method () (t t t)))
   "We have covered the basic building blocks of reference based
   extensions. Now let's see how the obscure
-  DEFINE-SYMBOL-LOCATIVE-TYPE and
-  DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
+  40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE and
+  40ANTS-DOC/LOCATIVES/DEFINE-DEFINERS::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
   simplify the common task of associating definition and documentation
   with symbols in a certain context."
   (40ants-doc/locatives/definers::define-symbol-locative-type macro)
@@ -528,7 +528,11 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   (describe-object (method () (40ants-doc::section t))))
 
 
-(defsection @todo (:title "TODO")
+(defsection @todo (:title "TODO"
+                   :ignore-words ("SLIME"
+                                  "SLY"
+                                  "UPPERCASED"
+                                  "HTML"))
   "
 - Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.
 - Support custom HTML themes.

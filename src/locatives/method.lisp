@@ -41,7 +41,8 @@
                   symbol
                   symbol))
   
-  (destructuring-bind (qualifiers specializers) locative-args
+  (destructuring-bind (qualifiers specializers)
+      locative-args
     (or (ignore-errors
          (find-method (symbol-function symbol) qualifiers
                       (loop for specializer in specializers

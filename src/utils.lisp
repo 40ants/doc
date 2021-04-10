@@ -1,7 +1,11 @@
 (uiop:define-package #:40ants-doc/utils
   (:use #:cl)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:alexandria))
+  (:import-from #:alexandria)
+  (:import-from #:closer-mop
+                #:method-generic-function
+                #:generic-function-name)
+  (:import-from #:swank))
 (in-package 40ants-doc/utils)
 
 
@@ -615,3 +619,54 @@
                     collected)))))
       (sort (rec system-name)
             #'string<))))
+
+
+(defun file-package (filename)
+  "Searches for (in-package ...) form and returns referred package object."
+  (when (probe-file filename)
+    (uiop:with-safe-io-syntax (:package :cl)
+      (let ((forms (uiop:read-file-forms filename)))
+        (loop for form in forms
+              when (and (consp form)
+                        (eql (first form)
+                             'in-package))
+              do (return (find-package
+                          (second form))))))))
+
+
+(defgeneric object-package (object)
+  (:method ((object t))
+    (warn "Unable to figure out *package* for object ~S"
+          object)
+    *package*)
+  
+  (:method ((object symbol))
+    (symbol-package object))
+
+  (:method ((object generic-function))
+    (object-package
+     (generic-function-name object)))
+
+  (:method ((object standard-method))
+    ;; Method can be defined in other package than
+    ;; a generic function.
+    ;; Thus we need to find it's file and package
+    (let* ((swank-response
+             (swank:find-definition-for-thing object))
+           (filename
+             (getf (getf swank-response :location) :file))
+           (package
+             (when filename
+               (file-package filename))))
+      (if package
+          package
+          (call-next-method))))
+  
+  (:method ((object standard-class))
+    (object-package
+     (class-name object)))
+
+  #+sbcl
+  (:method ((object sb-pcl::condition-class))
+    (object-package
+     (slot-value object 'sb-pcl::name))))
