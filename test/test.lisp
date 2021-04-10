@@ -8,7 +8,9 @@
                 #:ok
                 #:deftest
                 #:testing)
-  (:import-from #:40ants-doc/utils))
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc-test/utils
+                #:get-files-diff))
 (in-package 40ants-doc-test/test)
 
 
@@ -297,9 +299,9 @@
                   :known-references
                   (list (40ants-doc/reference::make-reference 'foo 'function))))))
   (testing "With single locative 3"
-    (ok (string= "[`40ANT-DOC/SOURCE-API::FIND-SOURCE`][]"
+    (ok (string= "[`40ANTS-DOC/SOURCE-API::FIND-SOURCE`][]"
                  (40ants-doc/markdown/transform::replace-known-references
-                  "40ANT-DOC/SOURCE-API::FIND-SOURCE"
+                  "40ANTS-DOC/SOURCE-API::FIND-SOURCE"
                   :known-references
                   (list (40ants-doc/reference::make-reference '40ANTS-DOC/SOURCE-API::FIND-SOURCE
                                                               'generic-function))))))
@@ -368,8 +370,10 @@
           (unless (string= (alexandria:read-file-into-string baseline)
                            (alexandria:read-file-into-string output))
             (cerror "Update output file."
-                    "~@<Output ~S ~_differs from baseline ~S.~@:>"
-                    output baseline)
+                    "~@<Output ~S ~_differs from baseline ~S:~2%~A~@:>"
+                    output baseline
+                    (get-files-diff baseline
+                                    output))
             (update-test-document-baseline format)))))))
 
 

@@ -1,11 +1,13 @@
-(defpackage #:40ants-doc-test/test-transcribe
+(uiop:define-package #:40ants-doc-test/test-transcribe
   (:use #:cl)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/transcribe)
   (:import-from #:rove
                 #:testing
                 #:ok
-                #:deftest))
+                #:deftest)
+  (:import-from #:40ants-doc-test/utils
+                #:get-diff))
 (in-package 40ants-doc-test/test-transcribe)
 
 
@@ -347,18 +349,6 @@
 (defparameter *transcribe-transcription-file*
   (asdf:system-relative-pathname
    :40ants-doc-test "test/data/baseline/transcribe-transcription.lisp"))
-
-
-(defun get-diff (baseline new-content)
-  (uiop:with-temporary-file (:stream new :pathname new-path :direction :output)
-    (write-string new-content new)
-    (finish-output new)
-    (uiop:run-program (format nil "diff -u \"~A\" \"~A\""
-                              baseline
-                              new-path)
-                      :ignore-error-status t
-                      :output :string
-                      :error-output :output)))
 
 
 (defun check-transcription (source-file transcription-file

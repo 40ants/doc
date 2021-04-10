@@ -15,7 +15,7 @@
 [`*TEST-VARIABLE*`][7eec]
 [`*test-variable*`][7eec]
 [`*test-variable*`][7eec]
-[40ants-doc-test/test:*test-variable*][]
+[`40ants-doc-test/test:*test-variable*`][]
 [`FOO`][351d] function, function [`FOO`][351d],
 [`FOO`][351d] function, function [`FOO`][351d],
 [`FOO`][351d] `function`, `function` [`FOO`][351d],
@@ -49,7 +49,7 @@ Non escaped: `FOO`([`0`][dd4d] [`1`][351d]) [`*TEST-VARIABLE*`][7eec]
 This should be no link because the page of `@TEST-EXAMPLES`
 has `:URI-FRAGMENT` `NIL`.
 
-This is code: `T`
+This is code: T
 
 Plural uppercase ambiguous symbol: see `FOO`([`0`][dd4d] [`1`][351d])s
 
