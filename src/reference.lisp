@@ -173,3 +173,12 @@
                                      (reference-locative reference)
                                      :errorp errorp))
 
+
+;;; We need this for more informative ERRORs and WARNINGs
+(defvar *reference-being-documented* nil)
+
+
+(defmethod 40ants-doc/locatives/base::locate-and-document :around (object locative-type locative-args stream)
+  (let ((*reference-being-documented*
+          (make-reference object locative-type)))
+    (call-next-method)))

@@ -26,7 +26,8 @@
         (*section* section))
     (40ants-doc/builder/heading::with-heading (stream section (40ants-doc/builder/section::section-title-or-name section)
                                                :link-title-to (40ants-doc/core::section-link-title-to section))
-      (when (and 40ants-doc/builder/printer::*document-normalize-packages* (not same-package))
+      (when (and 40ants-doc/builder/printer::*document-normalize-packages*
+                 (not same-package))
         (format stream "###### \\[in package ~A~A\\]~%" (package-name *package*)
                 (if (package-nicknames *package*)
                     (format nil " with nicknames ~{~A~^, ~}" (package-nicknames *package*))
@@ -41,9 +42,9 @@
 
 
 (defmethod describe-object ((section 40ants-doc/core::section) stream)
-  "[SECTION][class] objects are printed by calling DOCUMENT on them
-  with all @MGL-PAX-DOCUMENTATION-PRINTER-VARIABLES, except for
-  40ANTS-DOC/BUILDER/PRINTER:*DOCUMENT-NORMALIZE-PACKAGES*, turned off to reduce clutter."
+  "40ANTS-DOC:SECTION objects are printed by calling 40ANTS-DOC/DOCUMENT::DOCUMENT on them
+  with all 40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES, except for
+  `40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`, turned off to reduce clutter."
   (let ((40ants-doc/builder/printer::*document-uppercase-is-code* nil)
         (40ants-doc/link::*document-link-code* nil)
         (40ants-doc/link::*document-link-sections* nil)

@@ -6,7 +6,7 @@
   (:import-from #:40ants-doc/restart)
   (:import-from #:40ants-doc/glossary)
 
-  (:import-from #:40ants-doc-full)
+  (:import-from #:40ants-doc/full)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/builder)
@@ -167,7 +167,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   Code is first, code must look pretty, documentation is code.
 
   In typical use, PAX packages have no :EXPORT's defined. Instead the
-  DEFINE-PACKAGE form gets a docstring which may mention section
+  UIOP:DEFINE-PACKAGE form gets a docstring which may mention section
   names (defined with DEFSECTION). When the code is loaded into the
   lisp, pressing `M-.` in SLIME on the name of the section will take
   you there. Sections can also refer to other sections, packages,
@@ -178,16 +178,16 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   ```commonlisp
   (uiop:define-package #:foo-random
     (:documentation "This package provides various utilities for
-    random. See FOO-RANDOM:@FOO-RANDOM-MANUAL.")
+  random. See FOO-RANDOM:@FOO-RANDOM-MANUAL.")
     (:use #:common-lisp #:40ants-doc))
 
   (in-package foo-random)
 
   (defsection @foo-random-manual (:title "Foo Random manual")
     "Here you describe what's common to all the referenced (and
-    exported) functions that follow. They work with *FOO-STATE*,
-    and have a :RANDOM-STATE keyword arg. Also explain when to
-    choose which."
+                                                            exported) functions that follow. They work with *FOO-STATE*,
+  and have a :RANDOM-STATE keyword arg. Also explain when to
+  choose which."
     (foo-random-state class)
     (state (reader foo-random-state))
     "Hey we can also print states!"
@@ -209,27 +209,27 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
   (defun uniform-random (limit &key (random-state *foo-state*))
     "Return a random number from the between 0 and LIMIT (exclusive)
-    uniform distribution."
+  uniform distribution."
     nil)
 
   (defun gaussian-random (stddev &key (random-state *foo-state*))
     "Return a random number from a zero mean normal distribution with
-    STDDEV."
+  STDDEV."
     nil)
 
   (defsection @foo-random-examples (:title "Examples")
     "Let's see the transcript of a real session of someone working
-    with FOO:
+  with FOO:
 
-    ```cl-transcript
-    (values (princ :hello) (list 1 2))
-    .. HELLO
-    => :HELLO
-    => (1 2)
+  ```cl-transcript
+  (values (princ :hello) (list 1 2))
+  .. HELLO
+  => :HELLO
+  => (1 2)
 
-    (make-instance 'foo-random-state)
-    ==> #<FOO-RANDOM-STATE >
-    ```")
+  (make-instance 'foo-random-state)
+  ==> #<FOO-RANDOM-STATE >
+  ```")
   ```
 
   Generating documentation in a very stripped down markdown format is
@@ -289,13 +289,14 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
   More fancy markdown or HTML output with automatic markup and linking
   of uppercase symbol names found in docstrings, section numbering,
-  table of contents, etc is possible by calling the DOCUMENT function.
+  table of contents, etc is possible by calling the `40ANTS-DOCUMENT::DOCUMENT`
+  function.
 
-  *One can even generate documentation for different, but related
+  One can even generate documentation for different, but related
   libraries at the same time with the output going to different files,
   but with cross-page links being automatically added for symbols
-  mentioned in docstrings. See @GENERATING-DOCUMENTATION for
-  some convenience functions to cover the most common cases.*
+  mentioned in docstrings. See `40ANTS-DOC/BUILDER::@GENERATING-DOCUMENTATION` for
+  some convenience functions to cover the most common cases.
 
   Note how `(VARIABLE *FOO-STATE*)` in the DEFSECTION form both
   exports `*FOO-STATE*` and includes its documentation in
@@ -305,7 +306,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
   The transcript in the code block tagged with `cl-transcript` is
   automatically checked for up-to-dateness. See
-  @TRANSCRIPT.""")
+  `40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT`.""")
 
 (defsection @emacs-integration (:title "Emacs Integration")
   "Integration into SLIME's `M-.` (`slime-edit-definition`) allows one
@@ -514,7 +515,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
 (defsection @sections (:title "Sections")
   "[Section][class] objects rarely need to be dissected since
-  DEFSECTION and DOCUMENT cover most needs. However, it is plausible
+  40ANTS-DOC::DEFSECTION and `40ANTS-DOC/DOCUMENT::DOCUMENT` cover most needs. However, it is plausible
   that one wants to subclass them and maybe redefine how they are
   presented."
   (40ants-doc::section class)

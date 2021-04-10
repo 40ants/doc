@@ -21,7 +21,7 @@
   object, T or NIL as with CL:FORMAT.
 
   Most often, this function is called on section objects
-  like `(DOCUMENT @MGL-PAX-MANUAL)`, but it supports all kinds of
+  like `(DOCUMENT @MANUAL)`, but it supports all kinds of
   objects for which DOCUMENT-OBJECT is defined. To look up the
   documentation of function DOCUMENT:
 
@@ -34,8 +34,8 @@
 
   Note that not only first class objects can have documentation. For
   instance, variables and deftypes are not represented by objects.
-  That's why CL:DOCUMENTATION has a DOC-TYPE argument. DOCUMENT does
-  not have anything like that, instead it relies on REFERENCE objects
+  That's why CL:DOCUMENTATION has a `DOC-TYPE` argument. DOCUMENT does
+  not have anything like that, instead it relies on 40ANTS-DOC/REFERENCE::REFERENCE objects
   to carry the extra information. We are going to see later how
   references and locatives work. Until then, here is an example on how
   to look up the documentation of type `FOO`:
@@ -47,7 +47,7 @@
   See DESCRIBE-OBJECT `(METHOD () (SECTION T))`.
 
   There are quite a few special variables that affect how output is
-  generated, see @MGL-PAX-DOCUMENTATION-PRINTER-VARIABLES.
+  generated, see 40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES.
 
   The rest of this description deals with how to generate multiple
   pages.
@@ -62,7 +62,7 @@
   When documentation for an object is generated, the first matching
   page spec is used, where the object matches the page spec if it is
   contained in one of its :OBJECTS in the sense of
-  COLLECT-REACHABLE-OBJECTS.
+  40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS.
 
   `OUTPUT` can be a number things:
 
@@ -99,29 +99,29 @@
   is always the first element in list of generated things that is the
   return value.
 
-  HEADER-FN, if not NIL, is a function of a single stream argument
+  :HEADER-FN, if not NIL, is a function of a single stream argument
   which is called just before the first write to the page.
   Since :FORMAT :HTML only generates HTML fragments, this makes it
   possible to print arbitrary headers, typically setting the title,
   css stylesheet, or charset.
 
-  FOOTER-FN is similar to HEADER-FN, but it's called after the last
+  :FOOTER-FN is similar to HEADER-FN, but it's called after the last
   write to the page. For HTML, it typically just closes the body.
 
-  URI-FRAGMENT is a string such as `"doc/manual.html"` that specifies
+  :URI-FRAGMENT is a string such as `"doc/manual.html"` that specifies
   where the page will be deployed on a webserver. It defines how links
   between pages will look. If it's not specified and `OUTPUT` refers
   to a file, then it defaults to the name of the file. If URI-FRAGMENT
   is NIL, then no links will be made to or from that page.
 
-  Finally, SOURCE-URI-FN is a function of a single, REFERENCE
+  Finally, :SOURCE-URI-FN is a function of a single, 40ANTS-DOC/REFERENCE::REFERENCE
   argument. If it returns a value other than NIL, then it must be a
   string representing an URI. If FORMAT is :HTML and
-  *DOCUMENT-MARK-UP-SIGNATURES* is true, then the locative as
+  40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MARK-UP-SIGNATURES* is true, then the locative as
   displayed in the signature will be a link to this uri. See
-  MAKE-GITHUB-SOURCE-URI-FN.
+  40ANTS-DOC/GITHUB::MAKE-GITHUB-SOURCE-URI-FN.
 
-  PAGES may look something like this:
+  :PAGES may look something like this:
 
   ```commonlisp
   `((;; The section about SECTIONs and everything below it ...

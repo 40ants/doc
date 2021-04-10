@@ -233,11 +233,81 @@
     (read stream)))
 
 
+(defvar *muffle-warnings* t)
+
+
+(deftest test-package-qualifed-replacer
+  (loop with cases = '("FOO::*BAR*"
+                       "FOO::+BAR+"
+                       "FOO::BAR"
+                       "BLAH-ME/MINOR::BAR-ME"
+                       "BLAH-ME/MINOR:BAR-ME"
+                       "`BLAH-ME/MINOR:BAR-ME`")
+        for case in cases
+        for input = (format nil "before ~A after" case)
+        for expected = (format nil "before `~A` after" case)
+        do (testing case
+             (ok (equal (40ants-doc/markdown/transform::replace-upcased-package-qualified-names input)
+                        expected)))))
+
+
 (deftest test-replace-known-references
-  (ok (string= "`FOO`"
-               (40ants-doc/markdown/transform::replace-known-references
-                "`FOO`"
-                :known-references ()))))
+  (let ((40ants-doc/reference::*reference-being-documented*
+          (40ants-doc/reference::make-reference @test '40ants-doc::section)))
+    ;; (testing "Unbound symbol should not be marked as a code block, and we should issue a warning"
+    ;;   (let (warning-caught)
+    ;;     (handler-bind ((warning (lambda (c)
+    ;;                               (setf warning-caught t)
+    ;;                               (when *muffle-warnings*
+    ;;                                 (muffle-warning c)))))
+    ;;       (ok (string= "BLAH"
+    ;;                    (40ants-doc/markdown/transform::replace-known-references
+    ;;                     "BLAH"
+    ;;                     :known-references
+    ;;                     (list (40ants-doc/reference::make-reference 'bar 'macro)))))
+    ;;       (ok warning-caught))))
+    (testing "Transforming into a code block"
+      ;; (ok (string= "`FOO`"
+      ;;              (40ants-doc/markdown/transform::replace-known-references
+      ;;               "FOO"
+      ;;               :known-references ())))
+      (ok (string= "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`"
+                   (40ants-doc/markdown/transform::replace-known-references
+                    "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`"
+                    :known-references ())))
+      ;; This does not work yet
+      (ok (string= "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`"
+                   (40ants-doc/markdown/transform::replace-known-references
+                    "40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
+                    :known-references ())))
+      ))
+  ;; (testing "Without references"
+  ;;   (ok (string= "`FOO`"
+  ;;                (40ants-doc/markdown/transform::replace-known-references
+  ;;                 "`FOO`"
+  ;;                 :known-references ()))))
+  ;; (testing "With single locative 1"
+  ;;   (ok (string= "[`FOO`][]"
+  ;;                (40ants-doc/markdown/transform::replace-known-references
+  ;;                 "`FOO`"
+  ;;                 :known-references
+  ;;                 (list (40ants-doc/reference::make-reference 'foo 'function))))))
+  ;; (testing "With single locative 2"
+  ;;   (ok (string= "[`FOO`][]"
+  ;;                (40ants-doc/markdown/transform::replace-known-references
+  ;;                 "FOO"
+  ;;                 :known-references
+  ;;                 (list (40ants-doc/reference::make-reference 'foo 'function))))))
+  ;; (testing "With multiple locatives"
+  ;;   (ok (string= "`FOO`([`0`][] [`1`][])"
+  ;;                (40ants-doc/markdown/transform::replace-known-references
+  ;;                 "`FOO`"
+  ;;                 :known-references
+  ;;                 (list (40ants-doc/reference::make-reference 'foo 'function)
+  ;;                       (40ants-doc/reference::make-reference 'foo 'class)
+  ;;                       ;; This reference should be ignored
+  ;;                       (40ants-doc/reference::make-reference 'bar 'function))))))
+  )
 
 
 (deftest test-transform-tree

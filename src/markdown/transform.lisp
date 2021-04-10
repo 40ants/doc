@@ -26,15 +26,27 @@
 ;;; This is called by MAP-NAMES so the return values are NEW-TREE,
 ;;; SLICE, N-CHARS-READ. Also called by TRANSLATE-TAGGED that expects
 ;;; only a single return value: the new tree.
-(defun translate-uppercase-name (parent tree name known-references)
+(defun translate-uppercase-name (parent tree name known-references &key (min-length 2))
   (declare (ignore parent))
-  (when (40ants-doc/utils::no-lowercase-chars-p name)
-    (flet ((foo (name)
+  (when (40ants-doc/utils::no-lowercase-chars-p name
+                                                :min-length min-length)
+    (flet ((process (name)
              (multiple-value-bind (refs n-chars-read)
                  (references-for-similar-names name known-references)
-               (when refs
-                 (values `(,(40ants-doc/utils::code-fragment (40ants-doc/builder/printer::maybe-downcase name)))
-                         t n-chars-read)))))
+               (cond
+                 (refs
+                  (values `(,(40ants-doc/utils::code-fragment (40ants-doc/builder/printer::maybe-downcase name)))
+                          t n-chars-read))
+                 (t
+                  (let* ((reference 40ants-doc/reference::*reference-being-documented*)
+                         (obj (40ants-doc/reference::reference-object reference))
+                         ;; To print symbols with their packages
+                         (*package* (find-package "COMMON-LISP")))
+
+                    (warn "Unable to find symbol ~S mentioned in (~S ~A)"
+                          name
+                          obj
+                          (40ants-doc/reference::reference-locative reference))))))))
       (let ((emph (and (listp tree) (eq :emph (first tree)))))
         (cond ((and emph (eql #\\ (alexandria:first-elt name)))
                (values (list `(:emph ,(40ants-doc/builder/printer::maybe-downcase (subseq name 1))))
@@ -48,9 +60,9 @@
               ((not 40ants-doc/builder/printer::*document-uppercase-is-code*)
                nil)
               (emph
-               (foo (format nil "*~A*" name)))
+               (process (format nil "*~A*" name)))
               (t
-               (foo name)))))))
+               (process name)))))))
 
 
 (defun translate-emph (parent tree known-references)
@@ -132,7 +144,10 @@
             (translation (translate-name parent tree name known-references)))
        (if translation
            (values translation nil t)
-           tree)))
+           (progn
+             ;; (warn "Reference not found 1: ~A"
+             ;;       name)
+             tree))))
     ;; [section][type], [`section`][type], [*var*][variable], [section][]
     ((and (eq :reference-link (first tree)))
      ;; For example, the tree for [`section`][type] is
@@ -143,7 +158,10 @@
                           (40ants-doc/definitions::find-definitions-find-symbol-or-package name)
                           nil)))
          (if (not symbol)
-             tree
+             (progn
+               ;; (warn "Reference not found 2: ~A"
+               ;;       name)
+               tree)
              (let* ((references (remove symbol known-references
                                         :test-not #'eq
                                         :key #'40ants-doc/reference::reference-object))
@@ -162,22 +180,28 @@
                                       :if-dislocated symbol)))))
                (if references
                    (values (40ants-doc/page::format-references name references) nil t)
-                   tree))))))
+                   (progn
+                     ;; (warn "Reference not found 3: ~A"
+                     ;;       name)
+                     tree)))))))
     (t
+     ;; (warn "Reference not found 4: ~S"
+     ;;       tree)
      tree)))
 
 (defun extract-name-from-label (label)
   (let ((e (first label)))
-    (cond ((stringp e)
-           e)
-          ((and (eq :emph (first e))
-                (= 2 (length e))
-                (stringp (second e)))
-           (format nil "*~A*" (second e)))
-          ((and (eq :code (first e))
-                (= 2 (length e))
-                (stringp (second e)))
-           (second e)))))
+    (cond
+      ((stringp e)
+       e)
+      ((and (eq :emph (first e))
+            (= 2 (length e))
+            (stringp (second e)))
+       (format nil "*~A*" (second e)))
+      ((and (eq :code (first e))
+            (= 2 (length e))
+            (stringp (second e)))
+       (second e)))))
 
 
 ;;; NAME-ELEMENT is a child of TREE. It is the name of the symbol or
@@ -226,15 +250,28 @@
       (let ((refs (40ants-doc/page::filter-references refs)))
         ;; If necessary, try to find a locative before or after NAME
         ;; to disambiguate.
-        (when (and (< 1 (length refs))
-                   (40ants-doc/reference::references-for-the-same-symbol-p refs))
-          (let ((reference (find-locative-around parent tree refs)))
-            (when reference
-              (setq refs (list reference)))))
+        (if (and (< 1 (length refs))
+                 (40ants-doc/reference::references-for-the-same-symbol-p refs))
+            (let ((reference (find-locative-around parent tree refs)))
+              (when reference
+                (setq refs (list reference))))
+            (unless refs
+              (warn "Unable to find reference for 5 ~S"
+                    name)))
         (values (40ants-doc/page::format-references
-                 (40ants-doc/builder/printer::maybe-downcase (subseq name 0 n-chars-read)) refs)
+                 (40ants-doc/builder/printer::maybe-downcase (subseq name 0 n-chars-read))
+                 refs)
                 t
                 n-chars-read)))))
+
+(defun replace-upcased-package-qualified-names (string)
+  ;; Replaces FOO:BAR names with `FOO:BAR`. Also works with double :.
+  ;; If name is already wrapped with `, it will be wrapped again,
+  ;; because Markdown allow multiple backticks.
+  (cl-ppcre:regex-replace-all "([\\w\\/-]+[:]{1,2}[*+]?[\\w-]+[*+]?)"
+                              string
+                              "`\\1`"))
+
 
 ;;; Take a string in markdown format and a list of KNOWN-REFERENCES.
 ;;; Markup symbols as code (if *DOCUMENT-UPPERCASE-IS-CODE*), autolink
@@ -243,16 +280,17 @@
 ;;; string.
 (defun replace-known-references (string &key (known-references 40ants-doc/reference::*references*))
   (when string
-    (let ((string
-            ;; Handle *DOCUMENT-UPPERCASE-IS-CODE* in normal strings
-            ;; and :EMPH (to recognize *VAR*).
-            (40ants-doc/markdown::map-markdown-parse-tree
-             '(:emph 3bmd-code-blocks::code-block)
-             '(:code :verbatim 3bmd-code-blocks::code-block
-               :reference-link :explicit-link :image :mailto)
-             t
-             (alexandria:rcurry #'translate-to-code known-references)
-             string)))
+    (let* ((string (replace-upcased-package-qualified-names string))
+           (string
+             ;; Handle *DOCUMENT-UPPERCASE-IS-CODE* in normal strings
+             ;; and :EMPH (to recognize *VAR*).
+             (40ants-doc/markdown::map-markdown-parse-tree
+              '(:emph 3bmd-code-blocks::code-block)
+              '(:code :verbatim 3bmd-code-blocks::code-block
+                :reference-link :explicit-link :image :mailto)
+              t
+              (alexandria:rcurry #'translate-to-code known-references)
+              string)))
       ;; Handle *DOCUMENT-LINK-CODE* (:CODE for `SYMBOL` and
       ;; :REFERENCE-LINK for [symbol][locative]). Don't hurt links.
       (40ants-doc/markdown::map-markdown-parse-tree

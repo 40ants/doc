@@ -413,7 +413,7 @@
 ;;; the new tree is not a leaf), then traversal goes recurses into the
 ;;; new tree.
 (defun transform-tree (fn tree)
-  (labels ((foo (parent tree)
+  (labels ((process (parent tree)
              (multiple-value-bind (new-tree recurse slice)
                  (funcall fn parent tree)
                (assert (or (not slice) (listp new-tree)))
@@ -423,12 +423,12 @@
                    (values (loop for sub-tree in new-tree
                                  append (multiple-value-bind
                                               (new-sub-tree slice)
-                                            (foo new-tree sub-tree)
+                                            (process new-tree sub-tree)
                                           (if slice
                                               new-sub-tree
                                               (list new-sub-tree))))
                            slice)))))
-    (foo nil tree)))
+    (process nil tree)))
 
 (defun defer-tag-handling (tags stop-tags handle-strings fn parent tree)
   (cond ((or (and (listp tree)
@@ -464,11 +464,17 @@
     (reverse result)))
 
 
-(defun no-lowercase-chars-p (string)
-  (notany (lambda (char)
-            (char/= char (char-upcase char)))
+(defun no-lowercase-chars-p (string &key min-length)
+  "If min-length is given, then string should contain at least this number of uppercase chars."
+  (let ((string
           ;; Allows plurals as in "FRAMEs" and "FRAMEs."
           (string-right-trim 40ants-doc/builder/vars::*find-definitions-right-trim-2* string)))
+    (and (notany (lambda (char)
+                   (char/= char (char-upcase char)))
+                 string)
+         (or (null min-length)
+             (>= (length string)
+                 min-length)))))
 
 
 ;;;; Indentation utilities

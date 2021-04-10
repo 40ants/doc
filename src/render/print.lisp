@@ -7,11 +7,18 @@
 ;;; up docstring indentation, then indent it by four spaces.
 ;;; Automarkup symbols.
 (defun maybe-print-docstring (object doc-type stream &key break)
-  (let ((docstring (filter-documentation object doc-type)))
-    (when break
-      (break))
-    (when docstring
-      (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring)))))
+  (let ((*package* (typecase object
+                     (symbol
+                      (symbol-package object))
+                     (t
+                      *package*))))
+    (let ((docstring (filter-documentation object doc-type)))
+      (when break
+        (break))
+      (when docstring
+        (format stream "~%~A~%"
+                (40ants-doc/markdown/transform::massage-docstring docstring))))))
+
 
 (defun filter-documentation (symbol doc-type)
   (let ((docstring (documentation symbol doc-type)))

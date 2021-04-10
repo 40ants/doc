@@ -238,10 +238,6 @@
                      :definition ,link)))
 
 
-;;; We need this for more informative TRANSCRIBE-ERRORs.
-(defvar *reference-being-documented* nil)
-
-
 (defmethod 40ants-doc/document::document-object :around (object stream)
   (loop
     (return
@@ -250,7 +246,7 @@
              (call-next-method))
             (t
              (let* ((reference (40ants-doc/reference::canonical-reference object))
-                    (*reference-being-documented* reference))
+                    (40ants-doc/reference::*reference-being-documented* reference))
                (assert (eq object (40ants-doc/reference::resolve reference)))
                (40ants-doc/page::with-temp-output-to-page (stream (40ants-doc/link::reference-page reference))
                  (when (and 40ants-doc/link::*document-link-code*

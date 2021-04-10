@@ -138,12 +138,14 @@
   See TRANSCRIBE for how the actual syntax to be used is selected.")
 
 (defun transcribe (input output &key update-only
-                   (include-no-output update-only)
-                   (include-no-value update-only)
-                   (echo t) check-consistency
-                   default-syntax (input-syntaxes *syntaxes*)
-                   (output-syntaxes *syntaxes*))
-  """Read forms from INPUT and write them (iff ECHO) to OUTPUT
+                                     (include-no-output update-only)
+                                     (include-no-value update-only)
+                                     (echo t)
+                                     check-consistency
+                                     default-syntax
+                                     (input-syntaxes *syntaxes*)
+                                     (output-syntaxes *syntaxes*))
+  """Read forms from INPUT and write them (if ECHO) to OUTPUT
   followed by any output and return values produced by calling EVAL on
   the form. INPUT can be a stream or a string, while OUTPUT can be a
   stream or NIL in which case transcription goes into a string. The
@@ -932,7 +934,7 @@
    (message-args
     :initarg :message-args
     :reader transcription-error-message-args))
-  (:documentation "Represents syntactic errors in the SOURCE argument
+  (:documentation "Represents syntactic errors in the INPUT argument
   of TRANSCRIBE and also serves as the superclass of
   TRANSCRIPTION-CONSISTENCY-ERROR.")
   (:report (lambda (condition stream)
@@ -963,8 +965,8 @@
 (defun transcription-error (stream file-position form-as-string
                             message &rest message-args)
   (error 'transcription-error
-         :on (or 40ants-doc/page::*reference-being-documented* stream)
-         :file-position (if 40ants-doc/page::*reference-being-documented* nil file-position)
+         :on (or 40ants-doc/reference::*reference-being-documented* stream)
+         :file-position (if 40ants-doc/reference::*reference-being-documented* nil file-position)
          :form-as-string form-as-string
          :message message
          :message-args message-args))
@@ -995,8 +997,8 @@
 (defun consistency-error (class stream form-as-string
                           message &rest message-args)
   (cerror "Continue." class
-          :on (or 40ants-doc/page::*reference-being-documented* stream)
-          :file-position (cond (40ants-doc/page::*reference-being-documented*
+          :on (or 40ants-doc/reference::*reference-being-documented* stream)
+          :file-position (cond (40ants-doc/reference::*reference-being-documented*
                                 nil)
                                (stream
                                 (file-position stream))
