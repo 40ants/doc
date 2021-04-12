@@ -28,7 +28,7 @@
 (define-locative-type method (method-qualifiers method-specializers)
   "See CL:FIND-METHOD for the description of the arguments.
   To refer to the default method of the three argument generic
-  function FOO:
+  function `FOO`:
 
       (foo (method () (t t t)))")
 

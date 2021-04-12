@@ -15,7 +15,7 @@
 [`*TEST-VARIABLE*`][7eec]
 [`*test-variable*`][7eec]
 [`*test-variable*`][7eec]
-[`40ants-doc-test/test:*test-variable*`][]
+[40ants-doc-test/test:*test-variable*][]
 [`FOO`][351d] function, function [`FOO`][351d],
 [`FOO`][351d] function, function [`FOO`][351d],
 [`FOO`][351d] `function`, `function` [`FOO`][351d],

@@ -265,13 +265,15 @@
                 t
                 n-chars-read)))))
 
+
 (defun replace-upcased-package-qualified-names (string)
   ;; Replaces FOO:BAR names with `FOO:BAR`. Also works with double :.
   ;; If name is already wrapped with `, it will be wrapped again,
   ;; because Markdown allow multiple backticks.
-  (cl-ppcre:regex-replace-all "([\\w\\/-]+[:]{1,2}[*+]?[\\w-]+[*+]?)"
-                              string
-                              "`\\1`"))
+  (cl-ppcre:regex-replace-all
+   "(?m)((?: |\\(|^)+)([\\p{UppercaseLetter}\\/0-9-]+[:]{1,2}[*+]?[\\p{UppercaseLetter}0-9-]+[*+]?)((?: |\\.|!|\\?|\\)|$)+)"
+   string
+   "\\1`\\2`\\3"))
 
 
 ;;; Take a string in markdown format and a list of KNOWN-REFERENCES.
