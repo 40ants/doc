@@ -185,7 +185,7 @@ functions, etc and you can keep exploring.
 Here is an example of how it all works together:
 
 ```commonlisp
-(`uiop:define-package` #:foo-random
+(uiop:define-package #:foo-random
   (:documentation "This package provides various utilities for
 random. See @FOO-RANDOM-MANUAL.")
   (:use #:common-lisp #:40ants-doc))
@@ -1001,7 +1001,7 @@ described below.
     
     This situation occurs with [`40ANTS-DOC::SECTION`][a456] which is both a class (see
     [`40ANTS-DOC::SECTION`][a456]) and a locative type denoted by a symbol (see
-    [`40ANTS-DOC::SECTION`][locative]). Back in the example above, clearly,
+    [40ANTS-DOC::SECTION][locative]). Back in the example above, clearly,
     there is no reason to link to type `BAR`, so one may wish to select
     the function locative. There are two ways to do that. One is to
     specify the locative explicitly as the id of a reference link:
@@ -1173,7 +1173,7 @@ locatives take no arguments.
 
     See `CL:FIND-METHOD` for the description of the arguments.
     To refer to the default method of the three argument generic
-    function FOO:
+    function `FOO`:
     
         (foo (method () (t t t)))
 
@@ -1294,7 +1294,7 @@ locatives take no arguments.
     
     ```commonlisp
     (defsection example-section ()
-      (pax.el (include #.(`asdf:system-relative-pathname` :40ants-doc "elisp/pax.el")
+      (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
                        :header-nl "```elisp" :footer-nl "```"))
       (foo-example (include (:start (foo function)
                              :end (end-of-foo-example variable))
@@ -1317,7 +1317,7 @@ locatives take no arguments.
     
     In the above example, pressing `M-.` on `pax.el` will open the
     `src/pax.el` file and put the cursor on its first character. `M-.`
-    on `FOO-EXAMPLE` will go to the source location of the `(`asdf:system`
+    on `FOO-EXAMPLE` will go to the source location of the `(asdf:system
     locative)` locative.
     
     When documentation is generated, the entire `pax.el` file is
@@ -1488,7 +1488,7 @@ referenced from [`DEFSECTION`][79c1], a [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJE
 Finally, for `M-.` [`40ANTS-DOC/SOURCE-API::FIND-SOURCE`][3b25] can be specialized. Finally,
 [`40ANTS-DOC::EXPORTABLE-LOCATIVE-TYPE-P`][b812] may be overridden if exporting does not
 makes sense. Here is a stripped down example of how all this is done
-for [`ASDF:SYSTEM`][3ab8]:
+for [`ASDF:SYSTEM:`][3ab8]
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-3AASDF-EXAMPLE-20-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-28-3ASTART-20-28ASDF-2FSYSTEM-3ASYSTEM-2040ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-20-3AEND-20-2840ANTS-DOC-2FLOCATIVES-2FASDF-SYSTEM-3A-3AEND-OF-ASDF-EXAMPLE-20VARIABLE-29-29-20-3AHEADER-NL-20-22-60-60-60commonlisp-22-20-3AFOOTER-NL-20-22-60-60-60-22-29-29'></a>
 
@@ -2012,7 +2012,7 @@ Alternatively, `C-u 1 40ants-doc-transcribe` will emit commented markup:
 
 `C-u 0 40ants-doc-retranscribe-region` will turn commented into
 non-commented markup. In general, the numeric prefix argument is the
-index of the syntax to be used in `40ants-doc:*SYNTAXES*`. Without a
+index of the syntax to be used in 40ants-doc:[`*SYNTAXES*`][83f3]. Without a
 prefix argument `40ants-doc-retranscribe-region` will not change the
 markup style.
 
@@ -2404,6 +2404,7 @@ changed."
   [76ae]: #x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-SUPPORT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Markdown Support"
   [79c1]: #x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29 "(40ANTS-DOC:DEFSECTION (40ANTS-DOC/LOCATIVES:MACRO))"
   [82a8]: #x-2840ANTS-DOC-2FLOCATIVES-2FDEFINE-DEFINER-3A-3ADEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29 "(40ANTS-DOC/LOCATIVES/DEFINE-DEFINER::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE (40ANTS-DOC/LOCATIVES:MACRO))"
+  [83f3]: #x-2840ANTS-DOC-2FTRANSCRIBE-3A-2ASYNTAXES-2A-20-28VARIABLE-29-29 "(40ANTS-DOC/TRANSCRIBE:*SYNTAXES* (VARIABLE))"
   [8a74]: #x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-2ADOCUMENT-MARK-UP-SIGNATURES-2A-20-28VARIABLE-29-29 "(40ANTS-DOC/BUILDER/VARS:*DOCUMENT-MARK-UP-SIGNATURES* (VARIABLE))"
   [8e3c]: #x-2840ANTS-DOC-2FGITHUB-3AMAKE-GITHUB-SOURCE-URI-FN-20FUNCTION-29 "(40ANTS-DOC/GITHUB:MAKE-GITHUB-SOURCE-URI-FN FUNCTION)"
   [9035]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ADEFINE-LOCATIVE-TYPE-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29 "(40ANTS-DOC/LOCATIVES/BASE::DEFINE-LOCATIVE-TYPE (40ANTS-DOC/LOCATIVES:MACRO))"
