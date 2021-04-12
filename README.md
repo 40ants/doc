@@ -433,6 +433,14 @@ initialization file (or loading `src/pax.el`):
 
 Now let's examine the most important pieces in detail.
 
+<a id='x-2840ANTS-DOC-3A-3A-2ADISCARD-DOCUMENTATION-P-2A-20-28VARIABLE-29-29'></a>
+
+- [variable] **40ANTS-DOC::\*DISCARD-DOCUMENTATION-P\*** *NIL*
+
+    The default value of [`DEFSECTION`][79c1]'s `DISCARD-DOCUMENTATION-P` argument.
+    One may want to set `*DISCARD-DOCUMENTATION-P*` to true before
+    building a binary application.
+
 <a id='x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29'></a>
 
 - [macro] **DEFSECTION** *NAME (&KEY (PACKAGE-SYMBOL '\*PACKAGE\*) (READTABLE-SYMBOL '\*READTABLE\*) (EXPORT T) TITLE LINK-TITLE-TO (DISCARD-DOCUMENTATION-P 40ANTS-DOC::\*DISCARD-DOCUMENTATION-P\*) (IGNORE-WORDS NIL)) &BODY ENTRIES*
@@ -489,20 +497,12 @@ Now let's examine the most important pieces in detail.
     generating HTML. If not specified, the heading will link to its own
     anchor.
     
-    When `DISCARD-DOCUMENTATION-P` (defaults to [`*DISCARD-DOCUMENTATION-P*`][1e69])
+    When `:DISCARD-DOCUMENTATION-P` (defaults to [`*DISCARD-DOCUMENTATION-P*`][1e69])
     is true, `ENTRIES` will not be recorded to save memory.
     
     `:IGNORE-WORDS` allows to pass a list of string which will not cause
     warnings. Usually these as uppercased words which are not symbols
     in the current package, like SLIME, LISP, etc.
-
-<a id='x-2840ANTS-DOC-3A-3A-2ADISCARD-DOCUMENTATION-P-2A-20-28VARIABLE-29-29'></a>
-
-- [variable] **40ANTS-DOC::\*DISCARD-DOCUMENTATION-P\*** *NIL*
-
-    The default value of [`DEFSECTION`][79c1]'s `DISCARD-DOCUMENTATION-P` argument.
-    One may want to set `*DISCARD-DOCUMENTATION-P*` to true before
-    building a binary application.
 
 <a id='x-2840ANTS-DOC-2FDOCUMENT-3A-3ADOCUMENT-20GENERIC-FUNCTION-29'></a>
 
