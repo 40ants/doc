@@ -71,7 +71,13 @@
 ;;;; STRING-STREAM-SPEC
 
 (defclass string-stream-spec ()
-  ((string :initform "" :initarg :string :accessor string-stream-spec-string)))
+  ((string :initform ""
+           :initarg :string
+           :accessor string-stream-spec-string)))
+
+
+(defmethod print-object ((obj string-stream-spec) stream)
+  (print-unreadable-object (obj stream :type t)))
 
 (defmethod make-stream-spec ((object null) &rest args)
   (assert (endp args))

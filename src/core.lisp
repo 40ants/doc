@@ -89,7 +89,7 @@
   generating HTML. If not specified, the heading will link to its own
   anchor.
 
-  When DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
+  When :DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
   is true, ENTRIES will not be recorded to save memory.
 
   :IGNORE-WORDS allows to pass a list of string which will not cause

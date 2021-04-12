@@ -372,8 +372,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
 (defsection @basics (:title "Basics")
   "Now let's examine the most important pieces in detail."
-  (40ants-doc::defsection macro)
   (40ants-doc::*discard-documentation-p* variable)
+  (40ants-doc::defsection macro)
   (40ants-doc/document::document generic-function))
 
 

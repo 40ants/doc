@@ -38,16 +38,16 @@
                   (values `(,(40ants-doc/utils::code-fragment (40ants-doc/builder/printer::maybe-downcase name)))
                           t n-chars-read))
                  (t
-                  (let* ((reference 40ants-doc/reference::*reference-being-documented*)
-                         (obj (40ants-doc/reference::reference-object reference))
-                         ;; To print symbols with their packages
-                         (*package* (find-package "COMMON-LISP")))
-
-                    (unless (40ants-doc/warn::ignore-p name)
+                  (unless (40ants-doc/warn::ignore-p name)
+                    (let* ((reference 40ants-doc/reference::*reference-being-documented*)
+                           (obj (40ants-doc/reference::reference-object reference))
+                           (locative (40ants-doc/reference::reference-locative reference))
+                           ;; To print symbols with their packages
+                           (*package* (find-package "COMMON-LISP")))
                       (warn "Unable to find symbol ~S mentioned in (~S ~A)"
                             name
                             obj
-                            (40ants-doc/reference::reference-locative reference)))))))))
+                            locative))))))))
       (let ((emph (and (listp tree) (eq :emph (first tree)))))
         (cond ((and emph (eql #\\ (alexandria:first-elt name)))
                (values (list `(:emph ,(40ants-doc/builder/printer::maybe-downcase (subseq name 1))))
@@ -248,20 +248,31 @@
   (multiple-value-bind (refs n-chars-read)
       (references-for-similar-names name known-references)
     (when refs
-      (let ((refs (40ants-doc/page::filter-references refs)))
+      (let ((filtered-refs (40ants-doc/page::filter-references refs)))
+
         ;; If necessary, try to find a locative before or after NAME
         ;; to disambiguate.
-        (if (and (< 1 (length refs))
-                 (40ants-doc/reference::references-for-the-same-symbol-p refs))
-            (let ((reference (find-locative-around parent tree refs)))
-              (when reference
-                (setq refs (list reference))))
-            (unless refs
-              (warn "Unable to find reference for 5 ~S"
-                    name)))
+        (when (and (> (length filtered-refs)
+                      1)
+                   (40ants-doc/reference::references-for-the-same-symbol-p filtered-refs))
+          (let ((reference (find-locative-around parent tree filtered-refs)))
+            (when reference
+              (setq filtered-refs (list reference)))))
+
+        (unless filtered-refs
+          (let* ((reference 40ants-doc/reference::*reference-being-documented*)
+                 (obj (40ants-doc/reference::reference-object reference))
+                 (locative (40ants-doc/reference::reference-locative reference))
+                 ;; To print symbols with their packages
+                 (*package* (find-package "COMMON-LISP")))
+            (warn "Unable to find a reference for ~S mentioned at (~S ~A)"
+                  name
+                  obj
+                  locative)))
+
         (values (40ants-doc/page::format-references
                  (40ants-doc/builder/printer::maybe-downcase (subseq name 0 n-chars-read))
-                 refs)
+                 filtered-refs)
                 t
                 n-chars-read)))))
 

@@ -327,10 +327,16 @@
     (40ants-doc/page::with-tracking-pages-created ()
       (40ants-doc/page::with-pages ((append (40ants-doc/page::translate-page-specs pages format)
                                             (list default-page)))
+        ;; Here we output documentation for all objects.
+        ;; Don't be misleaded by DEFAULT-PAGE here.
+        ;; DOCUMENT-OBJECT will write data to all pages
+        ;; depending on a page reference belong to.
+        ;; It does this in 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT :AROUND method
         (40ants-doc/page::with-temp-output-to-page (stream default-page)
           (dolist (object (alexandria:ensure-list object))
             (40ants-doc/builder/heading::with-headings (object)
               (40ants-doc/document::document-object object stream))))
+        
         (let ((outputs ()))
           (40ants-doc/page::do-pages-created (page)
             (40ants-doc/page::with-temp-output-to-page (stream page)
@@ -346,9 +352,12 @@
                                                          stream :format format)
                   (when (40ants-doc/page::page-footer-fn page)
                     (funcall (40ants-doc/page::page-footer-fn page) stream)))))
-            (push (40ants-doc/utils::unmake-stream-spec (40ants-doc/page::page-final-stream-spec page)) outputs))
-          (if (and stream (endp pages))
+            (push (40ants-doc/utils::unmake-stream-spec (40ants-doc/page::page-final-stream-spec page))
+                  outputs))
+          (if (and stream
+                   (endp pages))
               (first outputs)
-              (reverse outputs)))))))
+              (reverse outputs)))
+        ))))
 
 

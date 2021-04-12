@@ -39,7 +39,7 @@
 
 
 (defun call-with-heading (stream object title link-title-to fn)
-  (flet ((foo ()
+  (flet ((process ()
            ;; Arrange for all output to go to /dev/null
            ;; (MAKE-BROADCAST-STREAM) except for the headings when we
            ;; are generating the table of contents.
@@ -97,7 +97,7 @@
                       (loop repeat (max 0 (- (1+ level)
                                              (length 40ants-doc/builder/vars::*heading-number*)))
                             collect 0))))
-        (foo)))))
+        (process)))))
 
 
 (defmacro with-heading ((stream object title &key link-title-to)

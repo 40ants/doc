@@ -57,7 +57,12 @@
                        (uri-fragment nil uri-fragment-p)
                        source-uri-fn)
       page
-    (let ((stream-spec (apply #'40ants-doc/utils::make-stream-spec output)))
+    (let* ((stream-spec (apply #'40ants-doc/utils::make-stream-spec output))
+           (uri-fragment (or uri-fragment
+                             (if (and (not uri-fragment-p)
+                                      (typep stream-spec '40ants-doc/utils::file-stream-spec))
+                                 (40ants-doc/utils::file-stream-spec-pathname stream-spec)
+                                 nil))))
       (make-page
        :references (40ants-doc/reference::reachable-canonical-references objects)
        :temp-stream-spec (if (and (eq format :markdown)
@@ -66,11 +71,7 @@
                              stream-spec
                              (make-instance '40ants-doc/utils::string-stream-spec))
        :final-stream-spec stream-spec
-       :uri-fragment (or uri-fragment
-                         (if (and (not uri-fragment-p)
-                                  (typep stream-spec '40ants-doc/utils::file-stream-spec))
-                             (40ants-doc/utils::file-stream-spec-pathname stream-spec)
-                             nil))
+       :uri-fragment uri-fragment
        :header-fn header-fn
        :footer-fn footer-fn
        :source-uri-fn source-uri-fn))))
@@ -115,22 +116,30 @@
   `(40ants-doc/utils::with-open-stream-spec (,stream (page-temp-stream-spec ,page))
      ,@body))
 
+
+(defun call-with-temp-output-to-page (page stream func)
+  (cond
+    (40ants-doc/builder/vars::*table-of-contents-stream*
+     (let ((*page* page))
+       (funcall func (make-broadcast-stream))))
+    ((or (null page)
+         (eq page *page*))
+     (funcall func stream))
+    (t
+     ;; ATTENTION: Here  we are changing the stream we output documentation to!
+     (let ((stream-spec (page-temp-stream-spec page)))
+       (40ants-doc/utils::with-open-stream-spec (page-stream stream-spec
+                                                 :direction :output)
+         (let ((*page* page))
+           (mark-page-created page)
+           (funcall func page-stream )))))))
+
+
 (defmacro with-temp-output-to-page ((stream page) &body body)
-  (alexandria:once-only (page)
-    (alexandria:with-unique-names (stream-spec)
-      `(flet ((foo (,stream)
-                ,@body))
-         (cond (40ants-doc/builder/vars::*table-of-contents-stream*
-                (foo (make-broadcast-stream)))
-               ((or (null ,page) (eq ,page *page*))
-                (foo ,stream))
-               (t
-                (let ((,stream-spec (page-temp-stream-spec ,page)))
-                  (40ants-doc/utils::with-open-stream-spec (,stream ,stream-spec
-                                                            :direction :output)
-                    (let ((*page* ,page))
-                      (mark-page-created ,page)
-                      (foo ,stream))))))))))
+  `(flet ((process (,stream)
+            ,@body))
+     (call-with-temp-output-to-page ,page ,stream #'process)))
+
 
 (defmacro with-final-output-to-page ((stream page) &body body)
   `(40ants-doc/utils::with-open-stream-spec (,stream (page-final-stream-spec ,page)
@@ -158,18 +167,25 @@
                                  (typep (40ants-doc/reference::resolve ref :errorp nil)
                                         '40ants-doc/core::section))
                             40ants-doc/link::*document-link-code*)
-                        (let ((page (40ants-doc/link::reference-page ref)))
+                        (let* ((ref-page (40ants-doc/link::reference-page ref))
+                               (current-page *page*)
+                               (current-page-uri (40ants-doc/page::page-uri-fragment current-page))
+                               (ref-page-uri (when ref-page
+                                               (40ants-doc/page::page-uri-fragment ref-page)))
+                               (ref-locative-type (40ants-doc/reference::reference-locative-type ref)))
                           (or
                            ;; These have no pages, but won't result in
                            ;; link anyway. Keep them.
-                           (member (40ants-doc/reference::reference-locative-type ref) '(40ants-doc/locatives/dislocated::dislocated))
+                           (member ref-locative-type
+                                   '(40ants-doc/locatives/dislocated::dislocated))
                            ;; Intrapage links always work.
-                           (eq *page* page)
+                           (eq current-page
+                               ref-page)
                            ;; Else we need to know the URI-FRAGMENT of
                            ;; both pages. See
                            ;; RELATIVE-PAGE-URI-FRAGMENT.
-                           (and (40ants-doc/page::page-uri-fragment *page*)
-                                (40ants-doc/page::page-uri-fragment page))))))
+                           (and current-page-uri
+                                ref-page-uri)))))
                  refs))
 
 
@@ -239,6 +255,8 @@
 
 
 (defmethod 40ants-doc/document::document-object :around (object stream)
+  ;; This method renders object either to the current stream,
+  ;; or to the stream of the page object belongs to.
   (loop
     (return
       (cond ((or (stringp object)
@@ -248,6 +266,8 @@
              (let* ((reference (40ants-doc/reference::canonical-reference object))
                     (40ants-doc/reference::*reference-being-documented* reference))
                (assert (eq object (40ants-doc/reference::resolve reference)))
+
+               ;; ATTENTION: Inside with-temp-output-to-page we are changing the stream we output documentation to!
                (40ants-doc/page::with-temp-output-to-page (stream (40ants-doc/link::reference-page reference))
                  (when (and 40ants-doc/link::*document-link-code*
                             (not (typep object '40ants-doc/core::section))
