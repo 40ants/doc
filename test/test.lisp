@@ -242,7 +242,8 @@
   (flet ((ensure-case (value)
            (etypecase value
              (string (list value
-                           (if (str:starts-with-p "`" value)
+                           (if (char-equal (elt value 0)
+                                           #\`)
                                value
                                (format nil "`~A`" value))))
              (list value))))
