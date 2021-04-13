@@ -5,7 +5,8 @@
   (:import-from #:closer-mop
                 #:method-generic-function
                 #:generic-function-name)
-  (:import-from #:swank))
+  (:import-from #:swank)
+  (:import-from #:cl-ppcre))
 (in-package 40ants-doc/utils)
 
 
@@ -676,3 +677,14 @@
   (:method ((object sb-pcl::condition-class))
     (object-package
      (slot-value object 'sb-pcl::name))))
+
+
+(defun symbol-name-p (string)
+  "Checks if given string looks like a symbol's name.
+
+   String should include uppercased characters, digits,
+   a minus sign. Also, symbol name could be package-qualified.
+ "
+  (cl-ppcre:scan
+   "^(?:[\\p{UppercaseLetter}\\/0-9-]+[:]{1,2})?[*+]?\\p{UppercaseLetter}[\\p{UppercaseLetter}0-9-]+[*+]?$"
+   string))

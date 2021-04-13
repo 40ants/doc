@@ -200,8 +200,8 @@
   "A list of blocks of links to be display on the sidebar on the left,
   above the table of contents. A block is of the form `(&KEY TITLE ID
   LINKS)`, where TITLE will be displayed at the top of the block in a
-  HTML `DIV` with `ID`, followed by the links. LINKS is a list
-  of `(URI LABEL) elements.`")
+  HTML `div` with `id`, followed by the links. LINKS is a list
+  of `(URI LABEL)` elements.`")
 
 (defvar *document-html-bottom-blocks-of-links* ()
   "Like *DOCUMENT-HTML-TOP-BLOCKS-OF-LINKS*, only it is displayed

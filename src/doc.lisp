@@ -37,7 +37,13 @@
                                    "URL"
                                    "URLs"
                                    "LISP"
-                                   "SBCL"))
+                                   "SBCL"
+                                   "FOO"
+                                   "FOO-SLOT"
+                                   "FOO-EXAMPLE"
+                                   "*FOO-STATE*"
+                                   "BAZ"
+                                   "OTHER-PACKAGE:SOMETHING"))
   "
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
 
@@ -91,7 +97,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 ")
 
 
-(defsection @background (:export nil :title "Background")
+(defsection @background (:export nil :title "Background"
+                         :ignore-words ("OAOO"))
   "As a user, I frequently run into documentation that's incomplete
   and out of date, so I tend to stay in the editor and explore the
   code by jumping around with SLIME's [`M-.`][slime-M-.]. As a library
@@ -302,7 +309,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
   More fancy markdown or HTML output with automatic markup and linking
   of uppercase symbol names found in docstrings, section numbering,
-  table of contents, etc is possible by calling the `40ANTS-DOCUMENT::DOCUMENT`
+  table of contents, etc is possible by calling the `40ANTS-DOC/DOCUMENT::DOCUMENT`
   function.
 
   One can even generate documentation for different, but related
@@ -520,7 +527,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   "We have covered the basic building blocks of reference based
   extensions. Now let's see how the obscure
   40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE and
-  40ANTS-DOC/LOCATIVES/DEFINE-DEFINERS::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
+  40ANTS-DOC/LOCATIVES/DEFINE-DEFINER::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
   simplify the common task of associating definition and documentation
   with symbols in a certain context."
   (40ants-doc/locatives/definers::define-symbol-locative-type macro)

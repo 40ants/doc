@@ -9,7 +9,7 @@
 
 (defmethod 40ants-doc/document::document-object ((reference 40ants-doc/reference::reference) stream)
   "If REFERENCE can be resolved to a non-reference, call
-  40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT with it, else call 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT-OBJECT on the
+  40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT with it, else call 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT on the
   object, locative-type, locative-args of REFERENCE"
   (let* ((reference (40ants-doc/reference-api::canonical-reference reference))
          (resolved-object (40ants-doc/reference::resolve reference)))

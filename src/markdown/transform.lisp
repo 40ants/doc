@@ -23,6 +23,23 @@
       (values (40ants-doc/reference::references-for-symbol symbol refs n-chars-read) n-chars-read))))
 
 
+(defun warn-about-name (message name)
+  (when (and (40ants-doc/utils::symbol-name-p name)
+             (not (40ants-doc/warn::ignore-p name)))
+    (let* ((reference 40ants-doc/reference::*reference-being-documented*)
+           (obj (40ants-doc/reference::reference-object reference))
+           (locative (40ants-doc/reference::reference-locative reference))
+           ;; To print symbols with their packages
+           (*package* (find-package "COMMON-LISP")))
+      (when (string-equal name
+                          "40ANTS-DOC::SECTION")
+        (break))
+      (warn message
+            name
+            obj
+            locative))))
+
+
 ;;; This is called by MAP-NAMES so the return values are NEW-TREE,
 ;;; SLICE, N-CHARS-READ. Also called by TRANSLATE-TAGGED that expects
 ;;; only a single return value: the new tree.
@@ -38,16 +55,8 @@
                   (values `(,(40ants-doc/utils::code-fragment (40ants-doc/builder/printer::maybe-downcase name)))
                           t n-chars-read))
                  (t
-                  (unless (40ants-doc/warn::ignore-p name)
-                    (let* ((reference 40ants-doc/reference::*reference-being-documented*)
-                           (obj (40ants-doc/reference::reference-object reference))
-                           (locative (40ants-doc/reference::reference-locative reference))
-                           ;; To print symbols with their packages
-                           (*package* (find-package "COMMON-LISP")))
-                      (warn "Unable to find symbol ~S mentioned in (~S ~A)"
-                            name
-                            obj
-                            locative))))))))
+                  (warn-about-name "Unable to find symbol ~S mentioned in (~S ~A)"
+                                   name))))))
       (let ((emph (and (listp tree) (eq :emph (first tree)))))
         (cond ((and emph (eql #\\ (alexandria:first-elt name)))
                (values (list `(:emph ,(40ants-doc/builder/printer::maybe-downcase (subseq name 1))))
@@ -146,8 +155,11 @@
        (if translation
            (values translation nil t)
            (progn
-             ;; (warn "Reference not found 1: ~A"
-             ;;       name)
+             (unless (40ants-doc/warn::ignore-p name)
+               ;; TODO: Здесь мы предупреждаем о всех ссылках для кода, которые не удалось найти
+               ;; может стоит это делать только для того, что похоже на символ?
+               (warn-about-name "Unable to find symbol ~S mentioned at (~S ~A)"
+                                name))
              tree))))
     ;; [section][type], [`section`][type], [*var*][variable], [section][]
     ((and (eq :reference-link (first tree)))
@@ -160,8 +172,8 @@
                           nil)))
          (if (not symbol)
              (progn
-               ;; (warn "Reference not found 2: ~A"
-               ;;       name)
+               (warn-about-name "Unable to find symbol ~S mentioned at (~S ~A)"
+                                name)
                tree)
              (let* ((references (remove symbol known-references
                                         :test-not #'eq
@@ -182,12 +194,12 @@
                (if references
                    (values (40ants-doc/page::format-references name references) nil t)
                    (progn
-                     ;; (warn "Reference not found 3: ~A"
-                     ;;       name)
+                     (warn-about-name "Unable to find symbol ~S mentioned at (~S ~A)"
+                                      name)
                      tree)))))))
     (t
-     ;; (warn "Reference not found 4: ~S"
-     ;;       tree)
+     (warn-about-name "Unable to find symbol ~S mentioned at (~S ~A)"
+                      tree)
      tree)))
 
 (defun extract-name-from-label (label)
@@ -260,15 +272,8 @@
               (setq filtered-refs (list reference)))))
 
         (unless filtered-refs
-          (let* ((reference 40ants-doc/reference::*reference-being-documented*)
-                 (obj (40ants-doc/reference::reference-object reference))
-                 (locative (40ants-doc/reference::reference-locative reference))
-                 ;; To print symbols with their packages
-                 (*package* (find-package "COMMON-LISP")))
-            (warn "Unable to find a reference for ~S mentioned at (~S ~A)"
-                  name
-                  obj
-                  locative)))
+          (warn-about-name "Unable to find a reference for ~S mentioned at (~S ~A)"
+                           name))
 
         (values (40ants-doc/page::format-references
                  (40ants-doc/builder/printer::maybe-downcase (subseq name 0 n-chars-read))

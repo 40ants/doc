@@ -8,7 +8,8 @@
                 #:ok
                 #:deftest
                 #:testing)
-  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/utils
+                #:symbol-name-p)
   (:import-from #:40ants-doc-test/utils
                 #:get-files-diff))
 (in-package 40ants-doc-test/test)
@@ -236,6 +237,28 @@
 
 
 (defvar *muffle-warnings* t)
+
+
+(deftest test-symbol-name-predicate
+  (testing "Symbol names"
+    (ok (symbol-name-p "LOCATIVE"))
+    (ok (symbol-name-p "40ANTS-DOC::SECTION"))
+    (ok (symbol-name-p "DOCUMENT-OBJECT"))
+    (ok (symbol-name-p "*DOCUMENT-UPPERCASE-IS-CODE*"))
+    (ok (symbol-name-p "WITH/PACKAGE:*DOCUMENT-UPPERCASE-IS-CODE*")))
+  
+  (testing "Not symbol names"
+    (ok (not (symbol-name-p "1")))
+    (ok (not (symbol-name-p "100500")))
+    (ok (not (symbol-name-p "Section")))
+    (ok (not (symbol-name-p "colorize")))
+    (ok (not (symbol-name-p "M-.")))
+    (ok (not (symbol-name-p "==>")))
+    (ok (not (symbol-name-p "..")))
+    (ok (not (symbol-name-p "-->")))
+    (ok (not (symbol-name-p "elisp/transcribe.el")))
+    (ok (not (symbol-name-p "#\\|")))
+    (ok (not (symbol-name-p "(UP DIRECTION)")))))
 
 
 (deftest test-package-qualifed-replacer

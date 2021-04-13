@@ -9,7 +9,7 @@
 
 
 (defmacro define-locative-type (locative-type lambda-list &body docstring)
-  """Declare LOCATIVE-TYPE as a [LOCATIVE][locative]. One gets two
+  """Declare LOCATIVE-TYPE as a locative. One gets two
   things in return: first, a place to document the format and
   semantics of LOCATIVE-TYPE (in LAMBDA-LIST and DOCSTRING); second,
   being able to reference `(LOCATIVE-TYPE LOCATIVE)`. For example, if

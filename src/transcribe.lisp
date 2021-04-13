@@ -115,7 +115,7 @@
   lines containing output and values of an evaluated form.
 
   A syntax is a list of of the form `(SYNTAX-ID &REST PREFIXES)` where
-  `PREFIXES` is a list of `(PREFIX-ID PREFIX-STRING)` elements. For
+  `prefixes` is a list of `(PREFIX-ID PREFIX-STRING)` elements. For
   example the syntax :COMMENTED-1 looks like this:
 
   ```commonlisp
@@ -1061,7 +1061,7 @@
           2)
       ^
 
-  then invoke the elisp function `40ants-doc-retranscribe-region` to get:
+  then invoke the elisp function `40ANTS-DOC-RETRANSCRIBE-REGION` to get:
 
       (values (princ :hello-world) (list 1 2))
       .. HELLO-WORLD

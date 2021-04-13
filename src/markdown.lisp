@@ -35,7 +35,7 @@
   indented
   differently")
 
-  See [DOCUMENT-OBJECT][(method () (string t))] for the details.""")
+  See [40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT][(method () (string t))] for the details.""")
 
 (defsection @markdown-syntax-highlighting (:title "Syntax highlighting")
   "For syntax highlighting, github's [fenced code
