@@ -298,7 +298,7 @@ For this example, the generated markdown would look like this:
 
 More fancy markdown or HTML output with automatic markup and linking
 of uppercase symbol names found in docstrings, section numbering,
-table of contents, etc is possible by calling the `40ANTS-DOCUMENT::DOCUMENT`
+table of contents, etc is possible by calling the [`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25]
 function.
 
 One can even generate documentation for different, but related
@@ -527,7 +527,7 @@ Now let's examine the most important pieces in detail.
     
     Note that not only first class objects can have documentation. For
     instance, variables and deftypes are not represented by objects.
-    That's why `CL:DOCUMENTATION` has a `DOC-TYPE` argument. [`DOCUMENT`][da25] does
+    That's why `CL:DOCUMENTATION` has a :DOC-TYPE argument. [`DOCUMENT`][da25] does
     not have anything like that, instead it relies on [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] objects
     to carry the extra information. We are going to see later how
     references and locatives work. Until then, here is an example on how
@@ -535,7 +535,7 @@ Now let's examine the most important pieces in detail.
     
         (document (locate 'foo 'type))
     
-    One can call `DESCRIBE` on [SECTION][class] objects to get
+    One can call `DESCRIBE` on [`40ANTS-DOC:SECTION`][a456] objects to get
     documentation in markdown format with less markup than the default.
     See [`DESCRIBE-OBJECT`][d833] `(METHOD () (SECTION T))`.
     
@@ -550,14 +550,14 @@ Now let's examine the most important pieces in detail.
     list of page specification elements. A page spec is a plist with
     keys `:OBJECTS`, `:OUTPUT`, `:URI-FRAGMENT`, `:SOURCE-URI-FN`, `:HEADER-FN`
     and `:FOOTER-FN`. `OBJECT`S is a list of objects (references are allowed
-    but not required) whose documentation is to be sent to `OUTPUT`.
+    but not required) whose documentation is to be sent to `:OUTPUT`.
     
     When documentation for an object is generated, the first matching
     page spec is used, where the object matches the page spec if it is
     contained in one of its `:OBJECTS` in the sense of
     [`40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS`][1ea8].
     
-    `OUTPUT` can be a number things:
+    `:OUTPUT` can be a number things:
     
     - If it's a list whose first element is a string or a pathname, then
       output will be sent to the file denoted by that and the rest of
@@ -573,7 +573,7 @@ Now let's examine the most important pieces in detail.
     - If it's a stream, then output will be sent to that stream.
     
     If some pages are specified, [`DOCUMENT`][da25] returns a list of designators
-    for generated output. If a page whose `OUTPUT` refers to a file that
+    for generated output. If a page whose `:OUTPUT` refers to a file that
     was created (which doesn't happen if nothing would be written to
     it), then the corresponding pathname is included in the list. For
     strings the string itself, while for streams the stream object is
@@ -603,7 +603,7 @@ Now let's examine the most important pieces in detail.
     
     `:URI-FRAGMENT` is a string such as `"doc/manual.html"` that specifies
     where the page will be deployed on a webserver. It defines how links
-    between pages will look. If it's not specified and `OUTPUT` refers
+    between pages will look. If it's not specified and `:OUTPUT` refers
     to a file, then it defaults to the name of the file. If `:URI-FRAGMENT`
     is `NIL`, then no links will be made to or from that page.
     
@@ -722,8 +722,8 @@ HTML documentation and the default css stylesheet.
     A list of blocks of links to be display on the sidebar on the left,
     above the table of contents. A block is of the form `(&KEY TITLE ID
     LINKS)`, where `TITLE` will be displayed at the top of the block in a
-    HTML `DIV` with `ID`, followed by the links. `LINKS` is a list
-    of `(URI LABEL) elements.`
+    HTML `div` with `id`, followed by the links. `LINKS` is a list
+    of `(URI LABEL)` elements.\`
 
 <a id='x-2840ANTS-DOC-2FBUILDER-3A-2ADOCUMENT-HTML-BOTTOM-BLOCKS-OF-LINKS-2A-20-28VARIABLE-29-29'></a>
 
@@ -840,7 +840,7 @@ to
 indented
 differently")
 
-See [DOCUMENT-OBJECT][(method () (string t))] for the details.
+See [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a7e3] for the details.
 
 <a id='x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-SYNTAX-HIGHLIGHTING-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
@@ -953,7 +953,7 @@ described below.
 - [variable] **40ANTS-DOC/LINK::\*DOCUMENT-LINK-CODE\*** *T*
 
     When true, during the process of generating documentation for a
-    [`40ANTS-DOC::SECTION`][a456], HTML anchors are added before the documentation of
+    [`40ANTS-DOC::SECTION`][a456] class, HTML anchors are added before the documentation of
     every reference that's not to a section. Also, markdown style
     reference links are added when a piece of inline code found in a
     docstring refers to a symbol that's referenced by one of the
@@ -1000,8 +1000,8 @@ described below.
             Calls `BAR`([`1`][link-id-1] [`2`][link-id-2]) on `X`.
     
     This situation occurs with [`40ANTS-DOC::SECTION`][a456] which is both a class (see
-    [`40ANTS-DOC::SECTION`][a456]) and a locative type denoted by a symbol (see
-    [40ANTS-DOC::SECTION][locative]). Back in the example above, clearly,
+    [`40ANTS-DOC::SECTION`][a456] class) and a locative type denoted by a symbol (see
+    [`40ANTS-DOC/LOCATIVES:SECTION`][ba26] locative). Back in the example above, clearly,
     there is no reason to link to type `BAR`, so one may wish to select
     the function locative. There are two ways to do that. One is to
     specify the locative explicitly as the id of a reference link:
@@ -1021,7 +1021,7 @@ described below.
     single symbol.
     
     Note that [`*DOCUMENT-LINK-CODE*`][c686] can be combined with
-    [`*DOCUMENT-UPPERCASE-IS-CODE*`][] to have links generated for
+    [`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-UPPERCASE-IS-CODE*`][684b] to have links generated for
     uppercase names with no quoting required.
 
 <a id='x-2840ANTS-DOC-2FLINK-3A-3A-2ADOCUMENT-LINK-SECTIONS-2A-20-28VARIABLE-29-29'></a>
@@ -1551,7 +1551,7 @@ for [`ASDF:SYSTEM:`][3ab8]
 
 - [macro] **40ANTS-DOC/LOCATIVES/BASE::DEFINE-LOCATIVE-TYPE** *LOCATIVE-TYPE LAMBDA-LIST &BODY DOCSTRING*
 
-    Declare `LOCATIVE-TYPE` as a [LOCATIVE][locative]. One gets two
+    Declare `LOCATIVE-TYPE` as a locative. One gets two
     things in return: first, a place to document the format and
     semantics of `LOCATIVE-TYPE` (in `LAMBDA-LIST` and `DOCSTRING`); second,
     being able to reference `(LOCATIVE-TYPE LOCATIVE)`. For example, if
@@ -1746,7 +1746,7 @@ of how the [`VARIABLE`][b8a4] locative is defined:
 - [method] **40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT** *(REFERENCE REFERENCE) STREAM*
 
     If `REFERENCE` can be resolved to a non-reference, call
-    [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a4f0] with it, else call `40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT-OBJECT` on the
+    [`40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT`][a4f0] with it, else call [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT`][d85a] on the
     object, locative-type, locative-args of `REFERENCE`
 
 <a id='x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-AND-DOCUMENT-20GENERIC-FUNCTION-29'></a>
@@ -1785,7 +1785,7 @@ of how the [`VARIABLE`][b8a4] locative is defined:
 We have covered the basic building blocks of reference based
 extensions. Now let's see how the obscure
 [`40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE`][fd5e] and
-`40ANTS-DOC/LOCATIVES/DEFINE-DEFINERS::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE` macros work together to
+[`40ANTS-DOC/LOCATIVES/DEFINE-DEFINER::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE`][82a8] macros work together to
 simplify the common task of associating definition and documentation
 with symbols in a certain context.
 
@@ -1823,7 +1823,7 @@ with symbols in a certain context.
     a lambda-list and source location to a symbol in the context of
     `LOCATIVE-TYPE`. The defined macro's arglist is (`SYMBOL` `LAMBDA-LIST`
     `&OPTIONAL` `DOCSTRING`). `LOCATIVE-TYPE` is assumed to have been defined
-    with `40ANTS/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE`.
+    with [`40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE`][fd5e].
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40SECTIONS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
@@ -1990,7 +1990,7 @@ the example:
         2)
     ^
 
-then invoke the elisp function `40ants-doc-retranscribe-region` to get:
+then invoke the elisp function `40ANTS-DOC-RETRANSCRIBE-REGION` to get:
 
     (values (princ :hello-world) (list 1 2))
     .. HELLO-WORLD
@@ -2294,7 +2294,7 @@ changed."
     lines containing output and values of an evaluated form.
     
     A syntax is a list of of the form `(SYNTAX-ID &REST PREFIXES)` where
-    `PREFIXES` is a list of `(PREFIX-ID PREFIX-STRING)` elements. For
+    `prefixes` is a list of `(PREFIX-ID PREFIX-STRING)` elements. For
     example the syntax `:COMMENTED-1` looks like this:
     
     ```commonlisp
@@ -2416,6 +2416,7 @@ changed."
   [a18b]: #x-2840ANTS-DOC-2FTRANSCRIBE-3A-40TRANSCRIPT-EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Transcribing with Emacs"
   [a456]: #x-2840ANTS-DOC-3ASECTION-20CLASS-29 "(40ANTS-DOC:SECTION CLASS)"
   [a4f0]: #x-2840ANTS-DOC-2FDOCUMENT-3A-3ADOCUMENT-OBJECT-20GENERIC-FUNCTION-29 "(40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT GENERIC-FUNCTION)"
+  [a7e3]: #x-2840ANTS-DOC-2FDOCUMENT-3A-3ADOCUMENT-OBJECT-20-28METHOD-20NIL-20-28STRING-20T-29-29-29 "(40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT (METHOD NIL (STRING T)))"
   [b316]: #x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3A-3ALOCATE-ERROR-20CONDITION-29 "(40ANTS-DOC/LOCATIVES/BASE::LOCATE-ERROR CONDITION)"
   [b5ed]: #x-2840ANTS-DOC-2FDOC-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "About this fork"
   [b62a]: #x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29 "(#A((10) BASE-CHAR . \"40ants-doc\") ASDF/SYSTEM:SYSTEM)"
