@@ -12,7 +12,9 @@
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc/locatives/dislocated)
   (:import-from #:40ants-doc/swank)
-  (:import-from #:40ants-doc/core))
+  (:import-from #:40ants-doc/core)
+  (:import-from #:cl-ppcre)
+  (:import-from #:cl-ppcre-unicode))
 (in-package 40ants-doc/markdown/transform)
 
 
