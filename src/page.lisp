@@ -169,7 +169,8 @@
                             40ants-doc/link::*document-link-code*)
                         (let* ((ref-page (40ants-doc/link::reference-page ref))
                                (current-page *page*)
-                               (current-page-uri (40ants-doc/page::page-uri-fragment current-page))
+                               (current-page-uri (when current-page
+                                                  (40ants-doc/page::page-uri-fragment current-page)))
                                (ref-page-uri (when ref-page
                                                (40ants-doc/page::page-uri-fragment ref-page)))
                                (ref-locative-type (40ants-doc/reference::reference-locative-type ref)))
