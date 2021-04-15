@@ -67,7 +67,7 @@
   40ANTS-DOC/DOC:@EXTENSION-API) until documentation is generated, so it is
   allowed to refer to things yet to be defined.
 
-  If EXPORT is true (the default), the referenced symbols and NAME are
+  If :EXPORT is true (the default), the referenced symbols and NAME are
   candidates for exporting. A candidate symbol is exported if
 
   - it is accessible in PACKAGE (it's not `OTHER-PACKAGE:SOMETHING`)
@@ -77,13 +77,13 @@
     locative whose type is approved by EXPORTABLE-LOCATIVE-TYPE-P.
 
   The idea with confounding documentation and exporting is to force
-  documentation of all exported symbols. EXPORT argument will cause
+  documentation of all exported symbols. :EXPORT argument will cause
   [package variance](http://www.sbcl.org/manual/#Package-Variance)
   error on SBCL. To prevent it, use UIOP:DEFINE-PACKAGE instead
   of CL:DEFPACKAGE.
 
-  TITLE is a non-marked-up string or NIL. If non-NIL, it determines
-  the text of the heading in the generated output. LINK-TITLE-TO is a
+  :TITLE is a non-marked-up string or NIL. If non-NIL, it determines
+  the text of the heading in the generated output. :LINK-TITLE-TO is a
   reference given as an
   `(OBJECT LOCATIVE)` pair or NIL, to which the heading will link when
   generating HTML. If not specified, the heading will link to its own

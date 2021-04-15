@@ -23,7 +23,7 @@
 (defsection @generating-documentation
     (:title "Generating Documentation")
   "Two convenience functions are provided to serve the common case of
-  having an ASDF system with some readmes and a directory with for the
+  having an ASDF system with some readmes and a directory for the
   HTML documentation and the default css stylesheet."
   (update-asdf-system-html-docs function)
   (update-asdf-system-readme function)
