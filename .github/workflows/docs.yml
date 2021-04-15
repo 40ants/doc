@@ -31,7 +31,8 @@
           "name": "Build Docs",
           "uses": "40ants/build-docs@v1",
           "with": {
-            "asdf-system": "40ants-doc/doc"
+            "asdf-system": "40ants-doc/doc",
+            "error-on-warnings": true
           }
         }
       ]
