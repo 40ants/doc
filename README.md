@@ -475,7 +475,7 @@ Now let's examine the most important pieces in detail.
     [Extension API][6980]) until documentation is generated, so it is
     allowed to refer to things yet to be defined.
     
-    If `EXPORT` is true (the default), the referenced symbols and `NAME` are
+    If `:EXPORT` is true (the default), the referenced symbols and `NAME` are
     candidates for exporting. A candidate symbol is exported if
     
     - it is accessible in [`PACKAGE`][dc19] (it's not `OTHER-PACKAGE:SOMETHING`)
@@ -485,13 +485,13 @@ Now let's examine the most important pieces in detail.
       locative whose type is approved by [`EXPORTABLE-LOCATIVE-TYPE-P`][b812].
     
     The idea with confounding documentation and exporting is to force
-    documentation of all exported symbols. `EXPORT` argument will cause
+    documentation of all exported symbols. `:EXPORT` argument will cause
     [package variance](http://www.sbcl.org/manual/#Package-Variance)
     error on SBCL. To prevent it, use `UIOP:DEFINE-PACKAGE` instead
     of `CL:DEFPACKAGE`.
     
-    `TITLE` is a non-marked-up string or `NIL`. If non-NIL, it determines
-    the text of the heading in the generated output. `LINK-TITLE-TO` is a
+    `:TITLE` is a non-marked-up string or `NIL`. If non-NIL, it determines
+    the text of the heading in the generated output. `:LINK-TITLE-TO` is a
     reference given as an
     `(OBJECT LOCATIVE)` pair or `NIL`, to which the heading will link when
     generating HTML. If not specified, the heading will link to its own
@@ -657,7 +657,7 @@ Now let's examine the most important pieces in detail.
 
 ###### \[in package 40ANTS-DOC/BUILDER\]
 Two convenience functions are provided to serve the common case of
-having an `ASDF` system with some readmes and a directory with for the
+having an `ASDF` system with some readmes and a directory for the
 HTML documentation and the default css stylesheet.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-HTML-DOCS-20FUNCTION-29'></a>
