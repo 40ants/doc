@@ -43,6 +43,7 @@
                                    "FOO-EXAMPLE"
                                    "*FOO-STATE*"
                                    "BAZ"
+                                   "BAR"
                                    "OTHER-PACKAGE:SOMETHING"))
   "
 [![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
@@ -504,7 +505,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 
 
 (defsection @reference-based-extensions
-    (:title "Reference Based Extensions")
+    (:title "Reference Based Extensions"
+     :ignore-words ("DEFINE-DIRECTION"))
   "Let's see how to extend 40ANTS-DOC/DOCUMENT::DOCUMENT and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
   that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case. 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
