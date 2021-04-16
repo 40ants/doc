@@ -2354,7 +2354,9 @@ changed."
 
 ## 14 TODO
 
-- Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.
+- --Refactor code and make a core package with only a few dependencies.--
+
+- --Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.--
 
 - Support custom HTML themes.
 
@@ -2363,6 +2365,8 @@ changed."
 - Add a search facility which will build an index for static file like Sphinx does.
 
 - Separate markup parsing and result rendering code to support markups other than Markdown and HTML.
+
+- Add a new section type to render ChangeLog.
 
 
   [0333]: #x-2840ANTS-DOC-2FTRANSCRIBE-3ATRANSCRIPTION-CONSISTENCY-ERROR-20CONDITION-29 "(40ANTS-DOC/TRANSCRIBE:TRANSCRIPTION-CONSISTENCY-ERROR CONDITION)"
