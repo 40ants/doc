@@ -557,7 +557,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
                                   "UPPERCASED"
                                   "HTML"))
   "
-- Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.
+- --Refactor code and make a core package with only a few dependencies.--
+- --Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.--
 - Support custom HTML themes.
 - Support SLY and make both SLIME and SLY integrations optional.
 - Add a search facility which will build an index for static file like Sphinx does.
