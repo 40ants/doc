@@ -557,8 +557,8 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
                                   "UPPERCASED"
                                   "HTML"))
   "
-- --Refactor code and make a core package with only a few dependencies.--
-- --Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.--
+- <s>Refactor code and make a core package with only a few dependencies.</s>
+- <s>Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
 - Support custom HTML themes.
 - Support SLY and make both SLIME and SLY integrations optional.
 - Add a search facility which will build an index for static file like Sphinx does.
@@ -566,13 +566,3 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 - Add a new section type to render ChangeLog.
 ")
 
-
-(defun render ()
-  (40ants-doc/builder::update-asdf-system-html-docs
-   @index :40ants-doc
-   :pages
-   (list (list :objects
-               (list @index)
-               :source-uri-fn
-               (40ants-doc/github::make-github-source-uri-fn
-                :40ants-doc "https://github.com/40ants/doc")))))
