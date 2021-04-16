@@ -563,6 +563,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
 - Support SLY and make both SLIME and SLY integrations optional.
 - Add a search facility which will build an index for static file like Sphinx does.
 - Separate markup parsing and result rendering code to support markups other than Markdown and HTML.
+- Add a new section type to render ChangeLog.
 ")
 
 
