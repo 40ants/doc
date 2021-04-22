@@ -2354,9 +2354,9 @@ changed."
 
 ## 14 TODO
 
-- --Refactor code and make a core package with only a few dependencies.--
+- <s>Refactor code and make a core package with only a few dependencies.</s>
 
-- --Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.--
+- <s>Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
 
 - Support custom HTML themes.
 
