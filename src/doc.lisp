@@ -84,8 +84,33 @@ a smaller modules to make navigation easier. This will help any person
 who will decide to learn how the documentation builder works. Also,
 granular design will make it possible loading subsystems like SLIME or SLY
 integration.
+"
+  (@difference-from-mgl-pax section))
 
-In future I'm planning to extend this fork. Learn more in the @TODO section.")
+(defsection @difference-from-mgl-pax (:title "Why this fork is different"
+                                      :ignore-words ("NAMED-READTABLES"
+                                                     "PYTHONIC-STRING-READER"))
+  "
+Here is features already implemented in this fork:
+
+* Core system `40ANTS-DOC` now has only two dependencies on `NAMED-READTABLES`
+  and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
+  `40ANTS-DOC/FULL` system which will download such dependencies as markdown
+  parser and more.
+* Now you don't have to import any locative symbols into your package. Import
+  only a DEFSECTIO macro and it will be enough to define documentation for
+  your library!
+* Added a warning mechanism, which will issue such warnings on words which looks
+  like a symbol, but when real symbol or reference is absent:
+
+  ```
+   WARNING: Unable to find symbol \"API\" mentioned in (CL-INFO:@INDEX SECTION)
+  ```
+
+I'm planning to extend this fork even more. Read @TODO section to learn about
+proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)
+on the GitHub to suggest a new feature.
+")
 
 
 (defsection @links (:title "Links")
@@ -559,6 +584,7 @@ In future I'm planning to extend this fork. Learn more in the @TODO section.")
   "
 - <s>Refactor code and make a core package with only a few dependencies.</s>
 - <s>Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
+- Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 - Support custom HTML themes.
 - Support SLY and make both SLIME and SLY integrations optional.
 - Add a search facility which will build an index for static file like Sphinx does.
