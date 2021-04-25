@@ -153,7 +153,7 @@
 
 (defmethod print-object ((section section) stream)
   (print-unreadable-object (section stream :type t)
-    (format stream "~a" (section-name section))))
+    (format stream "~S" (section-name section))))
 
 
 ;; This function is from alexandria, to not
