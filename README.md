@@ -32,11 +32,12 @@
 - [14 TODO][0ef6]
 
 ###### \[in package 40ANTS-DOC/DOC\]
-[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests)](https://github.com/40ants/doc/actions/workflows/ci.yml)
-
-[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter)](https://github.com/40ants/doc/actions/workflows/linter.yml)
-
-[![Coverage Status](https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master)](https://coveralls.io/github/40ants/doc?branch=master)
+<table>
+<tr>
+<td><a href="https://github.com/40ants/doc/actions/workflows/ci.yml"><img src="http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests"/></a></td>
+<td><a href="https://github.com/40ants/doc/actions/workflows/linter.yml"><img src="http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter"/></a></td><td><a href="https://coveralls.io/github/40ants/doc?branch=master"><img src="https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master"></a></td>
+</tr>
+</table>
 
 <a id='x-2840ANTS-DOC-2FDOC-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
 
