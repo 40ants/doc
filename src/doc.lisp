@@ -46,7 +46,9 @@
                                    "BAR"
                                    "OTHER-PACKAGE:SOMETHING"))
   "
-[![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
+[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests)](https://github.com/40ants/doc/actions/workflows/ci.yml)
+
+[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter)](https://github.com/40ants/doc/actions/workflows/linter.yml)
 
 [![Coverage Status](https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master)](https://coveralls.io/github/40ants/doc?branch=master)
 
