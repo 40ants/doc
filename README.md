@@ -32,7 +32,9 @@
 - [14 TODO][0ef6]
 
 ###### \[in package 40ANTS-DOC/DOC\]
-[![](http://github-actions.40ants.com/40ants/doc/matrix.svg)](https://github.com/40ants/doc)
+[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests)](https://github.com/40ants/doc/actions/workflows/ci.yml)
+
+[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter)](https://github.com/40ants/doc/actions/workflows/linter.yml)
 
 [![Coverage Status](https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master)](https://coveralls.io/github/40ants/doc?branch=master)
 
@@ -87,7 +89,7 @@ on the GitHub to suggest a new feature.
 ## 2 40ants-doc ASDF System Details
 
 - Version: 0.1.0
-- Description: Exploratory programming tool and documentation generator, based on MGL-PAX.
+- Description: Documentation generator, based on MGL-PAX. Allows to put documentation inside lisp files and cross-reference between different entities.
 - Licence: MIT
 - Author: Alexander Artemenko
 - Mailto: [svetlyak.40wt@gmail.com](mailto:svetlyak.40wt@gmail.com)
