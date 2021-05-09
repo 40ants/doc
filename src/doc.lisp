@@ -98,7 +98,7 @@ Here is features already implemented in this fork:
   `40ANTS-DOC/FULL` system which will download such dependencies as markdown
   parser and more.
 * Now you don't have to import any locative symbols into your package. Import
-  only a DEFSECTIO macro and it will be enough to define documentation for
+  only a DEFSECTION macro and it will be enough to define documentation for
   your library!
 * Added a warning mechanism, which will issue such warnings on words which looks
   like a symbol, but when real symbol or reference is absent:
