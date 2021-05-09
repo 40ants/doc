@@ -5,6 +5,7 @@
 ## Table of Contents
 
 - [1 About this fork][b5ed]
+    - [1.1 Why this fork is different][0d0f]
 - [2 40ants-doc ASDF System Details][b62a]
 - [3 Links][f967]
 - [4 Background][98a8]
@@ -55,7 +56,31 @@ who will decide to learn how the documentation builder works. Also,
 granular design will make it possible loading subsystems like SLIME or SLY
 integration.
 
-In future I'm planning to extend this fork. Learn more in the [TODO][0ef6] section.
+<a id='x-2840ANTS-DOC-2FDOC-3A-40DIFFERENCE-FROM-MGL-PAX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29'></a>
+
+### 1.1 Why this fork is different
+
+Here is features already implemented in this fork:
+
+- Core system [`40ANTS-DOC`][b62a] now has only two dependencies on `NAMED-READTABLES`
+  and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
+  `40ANTS-DOC/FULL` system which will download such dependencies as markdown
+  parser and more.
+
+- Now you don't have to import any locative symbols into your package. Import
+  only a [`DEFSECTION`][79c1] macro and it will be enough to define documentation for
+  your library!
+
+- Added a warning mechanism, which will issue such warnings on words which looks
+  like a symbol, but when real symbol or reference is absent:
+
+`
+   WARNING: Unable to find symbol "API" mentioned in (CL-INFO:@INDEX SECTION)
+`
+
+I'm planning to extend this fork even more. Read [TODO][0ef6] section to learn about
+proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)
+on the GitHub to suggest a new feature.
 
 <a id='x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29'></a>
 
@@ -2358,6 +2383,8 @@ changed."
 
 - <s>Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
 
+- Make some warnings compile-time for defsection and show them in the Emacs, if possible.
+
 - Support custom HTML themes.
 
 - Support SLY and make both SLIME and SLY integrations optional.
@@ -2371,6 +2398,7 @@ changed."
 
   [0333]: #x-2840ANTS-DOC-2FTRANSCRIBE-3ATRANSCRIPTION-CONSISTENCY-ERROR-20CONDITION-29 "(40ANTS-DOC/TRANSCRIBE:TRANSCRIPTION-CONSISTENCY-ERROR CONDITION)"
   [062e]: #x-2840ANTS-DOC-2FGLOSSARY-3A-3ADEFINE-GLOSSARY-TERM-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29 "(40ANTS-DOC/GLOSSARY::DEFINE-GLOSSARY-TERM (40ANTS-DOC/LOCATIVES:MACRO))"
+  [0d0f]: #x-2840ANTS-DOC-2FDOC-3A-40DIFFERENCE-FROM-MGL-PAX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Why this fork is different"
   [0ef6]: #x-2840ANTS-DOC-2FDOC-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "TODO"
   [1052]: #x-2840ANTS-DOC-2FBUILDER-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Generating Documentation"
   [10a2]: #x-2840ANTS-DOC-2FMARKDOWN-3A-40MARKDOWN-INDENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29 "Indentation"
