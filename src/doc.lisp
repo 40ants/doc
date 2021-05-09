@@ -46,12 +46,15 @@
                                    "BAR"
                                    "OTHER-PACKAGE:SOMETHING"))
   "
-[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests)](https://github.com/40ants/doc/actions/workflows/ci.yml)
+<table>
+<tr>
+<td><a href=\"https://github.com/40ants/doc/actions/workflows/ci.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests\"/></a></td>
 
-[![](http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter)](https://github.com/40ants/doc/actions/workflows/linter.yml)
+<td><a href=\"https://github.com/40ants/doc/actions/workflows/linter.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter\"/></a></td>
 
-[![Coverage Status](https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master)](https://coveralls.io/github/40ants/doc?branch=master)
-
+<td><a href=\"https://coveralls.io/github/40ants/doc?branch=master\"><img src=\"https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master\"></a></td>
+</tr>
+</table>
 "
   (@about section)
   (40ants-doc system)
