@@ -38,7 +38,8 @@
 (defmethod document-object ((system asdf:system) stream)
   (40ants-doc/builder/heading::with-heading (stream system
                                              (format nil "~A ASDF System Details"
-                                                     (asdf::primary-system-name system)))
+                                                     (string-upcase
+                                                      (asdf::primary-system-name system))))
     (flet ((foo (name fn &key type)
              (let ((value (funcall fn system)))
                (when value
