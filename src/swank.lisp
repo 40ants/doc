@@ -83,8 +83,8 @@
 
 
 ;;; Like READ-FROM-STRING, but try to avoid interning symbols.
-(defun read-locative-from-string (string)
-  (let ((swank::*buffer-package* *package*))
+(defun read-locative-from-string (string &key (package *package*))
+  (let ((swank::*buffer-package* package))
     (multiple-value-bind (symbol found)
         (with-swank ()
           (swank::find-definitions-find-symbol-or-package string))

@@ -8,12 +8,17 @@
 ;;; that location. Matching is performed by substring search on the
 ;;; stringified first element of the location.
 (defun find-one-location (locations filter-strings)
-  (let ((n-matches ())
-        (locations (remove-if #'from-quicklisp-p
-                              locations)))
+  (let ((n-matches ()))
     (loop for filter-string in filter-strings
-          do (let ((filtered-locations
-                     (filter-locations locations filter-string)))
+          do (let* ((filtered-locations
+                      (filter-locations locations filter-string))
+                    ;; LispWorks can return a multiple locations of the same kind
+                    ;; when you first load system from quicklisp and then from other
+                    ;; directory:
+                    (filtered-locations (if (> (length filtered-locations) 1)
+                                            (remove-if #'from-quicklisp-p
+                                                       filtered-locations)
+                                            filtered-locations)))
                (cond ((= 1 (length filtered-locations))
                       ;; A location looks like this in SBCL:
                       ;;
