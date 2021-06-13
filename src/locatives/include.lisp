@@ -92,7 +92,7 @@
 (defmethod locate-object (symbol (locative-type (eql 'include))
                           locative-args)
   (destructuring-bind (source &key line-prefix header footer
-                       header-nl footer-nl) locative-args
+                                   header-nl footer-nl) locative-args
     (declare (ignore source line-prefix header footer header-nl footer-nl))
     (40ants-doc/reference::make-reference symbol (cons locative-type locative-args))))
 

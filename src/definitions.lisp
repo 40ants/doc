@@ -7,15 +7,22 @@
 
 
 (defun find-definitions-find-symbol-or-package (name)
-  (flet ((do-find (name n)
+  (flet ((do-find (original-name n)
            (multiple-value-bind (symbol found name)
                (40ants-doc/swank::with-swank ()
                  (swank::with-buffer-syntax (*package*)
                    ;; TODO: Replace with custom parsing
-                   (swank::parse-symbol name)))
+                   (swank::parse-symbol original-name)))
              (cond (found
                     (return-from find-definitions-find-symbol-or-package
                       (values symbol n)))
+                   ;; Some locative types may be refered using keywords
+                   ;; TODO: Probably we should rethink the way of finding
+                   ;;       references by name to not rely on symbols only?
+                   ((find-symbol original-name :keyword)
+                    (return-from find-definitions-find-symbol-or-package
+                      (values (find-symbol original-name :keyword)
+                              n)))
                    ;; Packages are not named by symbols, so
                    ;; not-interned symbols can refer to packages
                    ((find-package name)

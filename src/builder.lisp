@@ -354,6 +354,7 @@
                     (funcall (40ants-doc/page::page-footer-fn page) stream)))))
             (push (40ants-doc/utils::unmake-stream-spec (40ants-doc/page::page-final-stream-spec page))
                   outputs))
+
           (if (and stream
                    (endp pages))
               (first outputs)
