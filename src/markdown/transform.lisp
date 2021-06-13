@@ -33,9 +33,6 @@
            (locative (40ants-doc/reference::reference-locative reference))
            ;; To print symbols with their packages
            (*package* (find-package "COMMON-LISP")))
-      (when (string-equal name
-                          "40ANTS-DOC::SECTION")
-        (break))
       (warn message
             name
             obj
@@ -323,8 +320,6 @@
 
 
 (defun massage-docstring (docstring &key (indentation "    "))
-  ;; (when (str:contains? "BAR function" docstring)
-  ;;   (break))
   (if 40ants-doc/builder/vars::*table-of-contents-stream*
       ;; The output is going to /dev/null and this is a costly
       ;; operation, skip it.

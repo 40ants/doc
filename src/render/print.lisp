@@ -7,7 +7,7 @@
 ;;; Print (DOCUMENTATION OBJECT DOC-TYPE) to STREAM in FORMAT. Clean
 ;;; up docstring indentation, then indent it by four spaces.
 ;;; Automarkup symbols.
-(defun maybe-print-docstring (object doc-type stream &key break)
+(defun maybe-print-docstring (object doc-type stream)
   (let* ((package (40ants-doc/utils::object-package object))
          (*package* package
            ;; We need to set the package to the object's package
@@ -18,9 +18,6 @@
            ;; (40ants-doc/utils::object-package object)
            ))
     (let ((docstring (filter-documentation object doc-type)))
-      ;; TODO: remove after debug
-      (when break
-        (break))
       (when docstring
         (format stream "~%~A~%"
                 (40ants-doc/markdown/transform::massage-docstring docstring))))))
