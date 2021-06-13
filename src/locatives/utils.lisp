@@ -1,5 +1,6 @@
 (defpackage #:40ants-doc/locatives/utils
-  (:use #:cl))
+  (:use #:cl)
+  (:import-from #:str))
 (in-package 40ants-doc/locatives/utils)
 
 ;;; A utility for writing FIND-SOURCE methods. Try FILTER-STRINGS one
