@@ -195,7 +195,7 @@ etc, all of which should probably have their own docstrings.
 The primary focus is on making code easily explorable by using
 SLIME's `M-.` (`slime-edit-definition`). See how to enable some
 fanciness in [Emacs Integration][f4b9]. Generating documentation
-from sections and all the referenced items in Markdown or HTML
+from sections and all the referenced items in Markdown or `HTML`
 format is also implemented.
 
 With the simplistic tools provided, one may accomplish similar
@@ -324,7 +324,7 @@ For this example, the generated markdown would look like this:
     
     ```
 
-More fancy markdown or HTML output with automatic markup and linking
+More fancy markdown or `HTML` output with automatic markup and linking
 of uppercase symbol names found in docstrings, section numbering,
 table of contents, etc is possible by calling the [`40ANTS-DOC/DOCUMENT::DOCUMENT`][da25]
 function.
@@ -515,14 +515,14 @@ Now let's examine the most important pieces in detail.
     The idea with confounding documentation and exporting is to force
     documentation of all exported symbols. `:EXPORT` argument will cause
     [package variance](http://www.sbcl.org/manual/#Package-Variance)
-    error on SBCL. To prevent it, use `UIOP:DEFINE-PACKAGE` instead
+    error on `SBCL`. To prevent it, use `UIOP:DEFINE-PACKAGE` instead
     of `CL:DEFPACKAGE`.
     
     `:TITLE` is a non-marked-up string or `NIL`. If non-NIL, it determines
     the text of the heading in the generated output. `:LINK-TITLE-TO` is a
     reference given as an
     `(OBJECT LOCATIVE)` pair or `NIL`, to which the heading will link when
-    generating HTML. If not specified, the heading will link to its own
+    generating `HTML`. If not specified, the heading will link to its own
     anchor.
     
     When `:DISCARD-DOCUMENTATION-P` (defaults to [`*DISCARD-DOCUMENTATION-P*`][1e69])
@@ -530,7 +530,7 @@ Now let's examine the most important pieces in detail.
     
     `:IGNORE-WORDS` allows to pass a list of string which will not cause
     warnings. Usually these as uppercased words which are not symbols
-    in the current package, like SLIME, LISP, etc.
+    in the current package, like SLIME, `LISP`, etc.
 
 <a id='x-2840ANTS-DOC-2FDOCUMENT-3A-3ADOCUMENT-20GENERIC-FUNCTION-29'></a>
 
@@ -577,7 +577,7 @@ Now let's examine the most important pieces in detail.
     of the generated output to files, strings or streams. `PAGES` is a
     list of page specification elements. A page spec is a plist with
     keys `:OBJECTS`, `:OUTPUT`, `:URI-FRAGMENT`, `:SOURCE-URI-FN`, `:HEADER-FN`
-    and `:FOOTER-FN`. `OBJECT`S is a list of objects (references are allowed
+    and `:FOOTER-FN`. `OBJECTS` is a list of objects (references are allowed
     but not required) whose documentation is to be sent to `:OUTPUT`.
     
     When documentation for an object is generated, the first matching
@@ -622,12 +622,12 @@ Now let's examine the most important pieces in detail.
     
     `:HEADER-FN`, if not `NIL`, is a function of a single stream argument
     which is called just before the first write to the page.
-    Since `:FORMAT` `:HTML` only generates HTML fragments, this makes it
+    Since `:FORMAT` `:HTML` only generates `HTML` fragments, this makes it
     possible to print arbitrary headers, typically setting the title,
     css stylesheet, or charset.
     
     `:FOOTER-FN` is similar to `:HEADER-FN`, but it's called after the last
-    write to the page. For HTML, it typically just closes the body.
+    write to the page. For `HTML`, it typically just closes the body.
     
     `:URI-FRAGMENT` is a string such as `"doc/manual.html"` that specifies
     where the page will be deployed on a webserver. It defines how links
@@ -686,13 +686,13 @@ Now let's examine the most important pieces in detail.
 ###### \[in package 40ANTS-DOC/BUILDER\]
 Two convenience functions are provided to serve the common case of
 having an `ASDF` system with some readmes and a directory for the
-HTML documentation and the default css stylesheet.
+`HTML` documentation and the default css stylesheet.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-HTML-DOCS-20FUNCTION-29'></a>
 
 - [function] **UPDATE-ASDF-SYSTEM-HTML-DOCS** *SECTIONS ASDF-SYSTEM &KEY PAGES (TARGET-DIR (ASDF/SYSTEM:SYSTEM-RELATIVE-PATHNAME ASDF-SYSTEM "doc/")) (UPDATE-CSS-P T)*
 
-    Generate pretty HTML documentation for a single `ASDF` system,
+    Generate pretty `HTML` documentation for a single `ASDF` system,
     possibly linking to github. If `UPDATE-CSS-P`, copy the CSS style
     sheet to `TARGET-DIR`, as well. Example usage:
     
@@ -740,7 +740,7 @@ HTML documentation and the default css stylesheet.
 - [variable] **\*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL\*** *NIL*
 
     `NIL` or a non-negative integer. If non-NIL, it overrides
-    [`40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MAX-NUMBERING-LEVEL*`][27fc] in dynamic HTML table of contents on
+    [`40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MAX-NUMBERING-LEVEL*`][27fc] in dynamic `HTML` table of contents on
     the left of the page.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-3A-2ADOCUMENT-HTML-TOP-BLOCKS-OF-LINKS-2A-20-28VARIABLE-29-29'></a>
@@ -750,7 +750,7 @@ HTML documentation and the default css stylesheet.
     A list of blocks of links to be display on the sidebar on the left,
     above the table of contents. A block is of the form `(&KEY TITLE ID
     LINKS)`, where `TITLE` will be displayed at the top of the block in a
-    HTML `div` with `id`, followed by the links. `LINKS` is a list
+    `HTML` `div` with `id`, followed by the links. `LINKS` is a list
     of `(URI LABEL)` elements.\`
 
 <a id='x-2840ANTS-DOC-2FBUILDER-3A-2ADOCUMENT-HTML-BOTTOM-BLOCKS-OF-LINKS-2A-20-28VARIABLE-29-29'></a>
@@ -769,13 +769,13 @@ It is generally recommended to commit generated readmes (see
 [`40ANTS-DOC/BUILDER::UPDATE-ASDF-SYSTEM-README`][b7df]) so that users have something to read
 without reading the code and sites like github can display them.
 
-HTML documentation can also be committed, but there is an issue with
+`HTML` documentation can also be committed, but there is an issue with
 that: when linking to the sources (see [`MAKE-GITHUB-SOURCE-URI-FN`][8e3c]),
 the commit id is in the link. This means that code changes need to
-be committed first, then HTML documentation regenerated and
+be committed first, then `HTML` documentation regenerated and
 committed in a followup commit.
 
-The second issue is that github is not very good at serving HTMLs
+The second issue is that github is not very good at serving `HTML`s
 files from the repository itself (and
 [http://htmlpreview.github.io](http://htmlpreview.github.io) chokes
 on links to the sources).
@@ -788,7 +788,7 @@ good description of this process is
 [http://sangsoonam.github.io/2019/02/08/using-git-worktree-to-deploy-github-pages.html](http://sangsoonam.github.io/2019/02/08/using-git-worktree-to-deploy-github-pages.html).
 Two commits needed still, but it is somewhat less painful.
 
-This way the HTML documentation will be available at
+This way the `HTML` documentation will be available at
 `http://<username>.github.io/<repo-name>`. It is probably a good
 idea to add section like the [Links][f967] section to allow jumping
 between the repository and the gh-pages site.
@@ -823,7 +823,7 @@ between the repository and the gh-pages site.
 
 ###### \[in package 40ANTS-DOC/WORLD\]
 MGL-PAX supported a "World" which was a registry of documents, which can generate
-cross-linked HTML documentation pages for all the registered
+cross-linked `HTML` documentation pages for all the registered
 documents.
 
 But I decided to drop this feature for now, because usually build libraries documentation
@@ -833,7 +833,7 @@ If somebody want's cross referencing between different libraries, then instead
 of building their docs simultaneously, I'd suggest to create an index of entities,
 provided by libraries and to store them as a JSON file along with a library documentation.
 
-This way it will be possible to enumerate such sources of cross references as usual URLs.
+This way it will be possible to enumerate such sources of cross references as usual `URL`s.
 
 Such feature is not implemented in the [`40ANTS-DOC`][b62a] system yet, but probably it will be
 useful for libraries built around the [Weblocks](https://40ants.com/weblocks/).
@@ -883,7 +883,7 @@ write:
     (defun foo ())
     ```
 
-to get syntactically marked up HTML output. Copy `src/style.css`
+to get syntactically marked up `HTML` output. Copy `src/style.css`
 from [`40ANTS-DOC`][b62a] and you are set. The language tag, `elisp` in this example,
 is optional and defaults to `common-lisp`.
 
@@ -981,7 +981,7 @@ described below.
 - [variable] **40ANTS-DOC/LINK::\*DOCUMENT-LINK-CODE\*** *T*
 
     When true, during the process of generating documentation for a
-    [`40ANTS-DOC::SECTION`][a456] class, HTML anchors are added before the documentation of
+    [`40ANTS-DOC::SECTION`][a456] class, `HTML` anchors are added before the documentation of
     every reference that's not to a section. Also, markdown style
     reference links are added when a piece of inline code found in a
     docstring refers to a symbol that's referenced by one of the
@@ -1056,7 +1056,7 @@ described below.
 
 - [variable] **40ANTS-DOC/LINK::\*DOCUMENT-LINK-SECTIONS\*** *T*
 
-    When true, HTML anchors are generated before the heading of
+    When true, `HTML` anchors are generated before the heading of
     sections which allows the table of contents to contain links and
     also code-like references to sections (like `@FOO-MANUAL`) to be
     translated to links with the section title being the name of the
@@ -1078,7 +1078,7 @@ described below.
     of characters, then the length of the hash of the colliding
     reference is increased.
     
-    This variable has no effect on the HTML generated from markdown, but
+    This variable has no effect on the `HTML` generated from markdown, but
     it can make markdown output more readable.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-2ADOCUMENT-MARK-UP-SIGNATURES-2A-20-28VARIABLE-29-29'></a>
@@ -1098,7 +1098,7 @@ described below.
     
         - [function] **foo** *x y*
     
-    Also, in HTML `**foo**` will be a link to that very entry and
+    Also, in `HTML` `**foo**` will be a link to that very entry and
     `[function]` may turn into a link to sources.
 
 <a id='x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-3A-2ADOCUMENT-MAX-NUMBERING-LEVEL-2A-20-28VARIABLE-29-29'></a>
@@ -1131,7 +1131,7 @@ described below.
 
 - [variable] **40ANTS-DOC/BUILDER/VARS::\*DOCUMENT-FANCY-HTML-NAVIGATION\*** *T*
 
-    If true and the output format is HTML, then headings get a
+    If true and the output format is `HTML`, then headings get a
     navigation component that consists of links to the previous, parent,
     next section and a permalink. This component is normally hidden, it
     is visible only when the mouse is over the heading. Needs
@@ -1417,7 +1417,7 @@ While Common Lisp has rather good introspective abilities, not
 everything is first class. For example, there is no object
 representing the variable defined with `(DEFVAR
 FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a [`40ANTS-DOC/REFERENCE::REFERENCE`][5011] that
-captures the path to take from an object (the symbol FOO) to an
+captures the path to take from an object (the symbol `FOO`) to an
 entity of interest (for example, the documentation of the variable).
 The path is called the locative. A locative can be applied to an
 object like this:
@@ -2389,13 +2389,13 @@ changed."
 
 - Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 
-- Support custom HTML themes.
+- Support custom `HTML` themes.
 
 - Support SLY and make both SLIME and SLY integrations optional.
 
 - Add a search facility which will build an index for static file like Sphinx does.
 
-- Separate markup parsing and result rendering code to support markups other than Markdown and HTML.
+- Separate markup parsing and result rendering code to support markups other than Markdown and `HTML`.
 
 - Add a new section type to render ChangeLog.
 
