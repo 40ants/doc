@@ -6,7 +6,7 @@
 
 - [1 About this fork][b5ed]
     - [1.1 Why this fork is different][0d0f]
-- [2 40ants-doc ASDF System Details][b62a]
+- [2 40ANTS-DOC ASDF System Details][b62a]
 - [3 Links][f967]
 - [4 Background][98a8]
 - [5 Tutorial][2ae8]
@@ -87,7 +87,7 @@ on the GitHub to suggest a new feature.
 
 <a id='x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29'></a>
 
-## 2 40ants-doc ASDF System Details
+## 2 40ANTS-DOC ASDF System Details
 
 - Version: 0.1.0
 - Description: Documentation generator, based on MGL-PAX. Allows to put documentation inside lisp files and cross-reference between different entities.
@@ -1540,7 +1540,8 @@ for [`ASDF:SYSTEM:`][3ab8]
 (defmethod document-object ((system asdf:system) stream)
   (40ants-doc/builder/heading::with-heading (stream system
                                              (format nil "~A ASDF System Details"
-                                                     (asdf::primary-system-name system)))
+                                                     (string-upcase
+                                                      (asdf::primary-system-name system))))
     (flet ((foo (name fn &key type)
              (let ((value (funcall fn system)))
                (when value
