@@ -7,7 +7,9 @@
 ;;; that location. Matching is performed by substring search on the
 ;;; stringified first element of the location.
 (defun find-one-location (locations filter-strings)
-  (let ((n-matches ()))
+  (let ((n-matches ())
+        (locations (remove-if #'from-quicklisp-p
+                              locations)))
     (loop for filter-string in filter-strings
           do (let ((filtered-locations
                      (filter-locations locations filter-string)))
@@ -34,3 +36,11 @@
                      (search filter-string location-as-string
                              :test #'equalp)))
                  locations))
+
+
+(defun from-quicklisp-p (location)
+  (let ((filename (getf (getf (second location)
+                              :location)
+                        :file)))
+    (str:containsp "quicklisp/dists"
+                   filename)))
