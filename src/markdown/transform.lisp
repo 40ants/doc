@@ -128,7 +128,11 @@
 
 (defun find-reference-by-locative-string (locative-string possible-references
                                           &key if-dislocated)
-  (let ((locative (40ants-doc/swank::read-locative-from-string locative-string)))
+  (let ((locative
+         (find-symbol (string-upcase locative-string)
+                      (find-package "40ANTS-DOC/LOCATIVES"))
+         ;; (40ants-doc/swank::read-locative-from-string locative-string)
+         ))
     (when locative
       ;; This won't find [SECTION][TYPE] because SECTION is a class.
       ;;
