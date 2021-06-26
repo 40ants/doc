@@ -15,7 +15,8 @@
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page))
+  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/commondoc/bullet))
 (in-package 40ants-doc/locatives/class)
 
 (define-locative-type class ())
@@ -59,6 +60,28 @@
     (40ants-doc/builder/bullet::print-end-bullet stream)
     (40ants-doc/args::with-dislocated-symbols ((list symbol))
       (40ants-doc/render/print::maybe-print-docstring class t stream))))
+
+
+(defmethod 40ants-doc/commondoc/builder:to-commondoc ((class class))
+  (let* ((conditionp (subtypep class 'condition))
+         (symbol (class-name class))
+         (superclasses
+           (remove-if (lambda (name)
+                        (or (eq name 'standard-object)
+                            (and conditionp (eq name 'condition))))
+                      (mapcar #'class-name
+                              (swank-mop:class-direct-superclasses class))))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                      (with-output-to-string (stream)
+                        (40ants-doc/render/print::maybe-print-docstring class t stream))))
+         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+
+    (40ants-doc/commondoc/bullet::make-bullet (canonical-reference class)
+                                              ;; TODO: support 40ants-doc/builder/vars::*document-mark-up-signatures* here
+                                              ;; and rewrite mark-up-superclasses
+                                              :arglist superclasses
+                                              :children children)))
+
 
 (defun mark-up-superclasses (superclasses)
   (with-output-to-string (stream)

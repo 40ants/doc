@@ -110,16 +110,24 @@
   (the-macro macro))
 
 
-(defclass user ()
+(defclass the-object ()
+  ()
+  (:documentation "Base class for all objects in the system"))
+
+
+(defclass user (the-object)
   ((nickname :reader user-nickname
              :initform :unauthorized
              :documentation "User's nickname")
    (email :accessor user-email
           :type (or string null)
           :initform nil
-          :documentation "User's Email. Can be empty")))
+          :documentation "User's Email. Can be empty"))
+  (:documentation "Class for all users except admins."))
+
 
 (40ants-doc:defsection @class (:title "Classes")
+  (the-object class)
   (user class)
   (user-nickname (reader user))
   (user-email (accessor user)))
