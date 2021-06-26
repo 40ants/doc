@@ -16,7 +16,14 @@
   (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/builder/heading))
+  (:import-from #:40ants-doc/builder/heading)
+  (:import-from #:common-doc
+                #:make-unordered-list
+                #:make-section
+                #:make-list-item
+                #:make-content
+                #:make-web-link
+                #:make-text))
 (in-package 40ants-doc/locatives/asdf-system)
 
 (define-locative-type asdf:system ()
@@ -65,6 +72,69 @@
       (foo "Source control" 'asdf/system:system-source-control
            :type :source-control)
       (terpri stream))))
+
+
+(defmethod 40ants-doc/commondoc/builder:to-commondoc ((system asdf:system))
+  (let ((title (format nil "~A ASDF System Details"
+                       (string-upcase
+                        (asdf::primary-system-name system)))))
+    (flet ((item (name getter &key type)
+             (let* ((value (funcall getter system))
+                    (href nil))
+               (case type
+                 (:link (setf href value))
+                 (:mailto (setf href (format nil "mailto:~A"
+                                             value)))
+                 (:source-control (psetf value (format nil "~A"
+                                                       (first value))
+                                         href (second value))))
+               (make-list-item
+                (if href
+                    (make-content
+                     (list (make-text
+                            (format nil "~A: "
+                                    name))
+                           (make-web-link href
+                                          (make-text value))))
+                    (make-text
+                     (format nil "~A: ~A"
+                             name
+                             value)))))))
+      
+      (make-section title
+                    :children (make-unordered-list
+                               (list (item "Version" 'asdf/component:component-version)
+                                     (item "Description" 'asdf/system:system-description)
+                                     (item "Licence" 'asdf/system:system-licence)
+                                     (item "Author" 'asdf/system:system-author)
+                                     (item "Maintainer" 'asdf/system:system-maintainer)
+                                     (item "Mailto" 'asdf/system:system-mailto
+                                           :type :mailto)
+                                     (item "Homepage" 'asdf/system:system-homepage
+                                           :type :link)
+                                     (item "Bug tracker" 'asdf/system:system-bug-tracker
+                                           :type :link)
+                                     (item "Source control" 'asdf/system:system-source-control
+                                           :type :source-control)))))
+    ;; (flet ((foo (name fn &key type)
+    ;;          (let ((value (funcall fn system)))
+    ;;            (when value
+    ;;              (case type
+    ;;                ((:link)
+    ;;                 (format stream "- ~A: [~A](~A)~%" name value value))
+    ;;                ((:mailto)
+    ;;                 (format stream "- ~A: [~A](mailto:~A)~%"
+    ;;                         name value value))
+    ;;                ((:source-control)
+    ;;                 (format stream "- ~A: [~A](~A)"
+    ;;                         name (first value) (second value)))
+    ;;                ((nil)
+    ;;                 (format stream "- ~A: ~A~%" name value)))))))
+    ;;   (foo "Version" 'asdf/component:component-version)
+    ;;   (foo "Description" 'asdf/system:system-description)
+      
+    ;;   (terpri stream))
+    ))
 
 (defmethod find-source ((system asdf:system))
   `(:location

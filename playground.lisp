@@ -4,7 +4,7 @@
 
 (defun user ()
   "Just to check locatives in docstrings"
-  )
+  (values))
 
 (define-compiler-macro bar (&whole form arg)
   "A custom dostring for a compiler macro"
@@ -254,7 +254,11 @@
       (sort (rec system-name)
             #'string<))))
 
+;; To load:
 #+nil
+(load (asdf:system-relative-pathname :40ants-doc "playground.lisp"))
+
+;; #+nil
 (defun render ()
   (40ants-doc/builder::update-asdf-system-html-docs
    playground::@index :40ants-doc
@@ -264,6 +268,13 @@
       :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
+
+(defun new-render ()
+  (alexandria:write-string-into-file (commondoc-markdown-test/core::rr
+                                      (40ants-doc/commondoc/builder:to-commondoc
+                                       @index))
+                                     "/tmp/index.html"
+                                     :if-exists :supersede))
 
 
 #+nil

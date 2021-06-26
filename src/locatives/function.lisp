@@ -15,7 +15,8 @@
                 #:document-object)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/render/print))
+  (:import-from #:40ants-doc/render/print)
+  (:import-from #:40ants-doc/commondoc/builder))
 (in-package 40ants-doc/locatives/function)
 
 
@@ -36,6 +37,7 @@
 (defmethod canonical-reference ((function function))
   (40ants-doc/reference::make-reference (swank-backend:function-name function) 'function))
 
+;; TODO: remove after refactoring
 (defmethod document-object ((function function) stream)
   (let ((reference (canonical-reference function)))
     (40ants-doc/builder/bullet::print-bullet reference stream)
@@ -47,3 +49,17 @@
         (40ants-doc/render/print::maybe-print-docstring (40ants-doc/reference::reference-object reference)
                                                         'function
                                                         stream)))))
+
+
+(defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj function))
+  (let* ((arglist (swank-backend:arglist obj))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
+                      (with-output-to-string (stream)
+                        (40ants-doc/render/print::maybe-print-docstring
+                         obj 'function stream))))
+         ;; TODO:  we should move text transfromation after it will be parsed
+         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+
+    (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
+                                              :arglist arglist
+                                              :children children)))

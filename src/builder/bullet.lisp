@@ -42,7 +42,8 @@
       (format stream "~%")))
 
 (defun source-uri (reference)
-  (let ((fn (40ants-doc/page::page-source-uri-fn 40ants-doc/page::*page*)))
+  (let ((fn (when 40ants-doc/page::*page*
+              (40ants-doc/page::page-source-uri-fn 40ants-doc/page::*page*))))
     (if fn
         (funcall fn reference)
         nil)))
