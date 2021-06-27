@@ -13,3 +13,4 @@
   :pathname "src"
   :depends-on ("40ants-doc/full")
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))
+

@@ -12,7 +12,8 @@
   (:import-from #:common-html.emitter
                 #:with-tag)
   (:import-from #:40ants-doc/render/args
-                #:arglist-to-string))
+                #:arglist-to-string)
+  (:import-from #:40ants-doc/commondoc/arglist))
 (in-package 40ants-doc/commondoc/bullet)
 
 
@@ -26,15 +27,26 @@
 (defun make-bullet (reference &key arglist children)
   (make-instance 'bullet
                  :bullet-reference  reference
-                 :arglist arglist
+                 ;; This argument should be a list of
+                 ;; ARGLIST objects.
+                 :arglist (etypecase arglist
+                            (list (cond
+                                    ((null arglist)
+                                     arglist)
+                                    ((typep (first arglist) '40ants-doc/commondoc/arglist::arglist)
+                                     arglist)
+                                    (t (list
+                                        (40ants-doc/commondoc/arglist::make-arglist
+                                         (arglist-to-string arglist))))))
+                            (40ants-doc/commondoc/arglist::arglist
+                             (list arglist)))
                  :children (uiop:ensure-list children) ))
 
 
 (common-html.emitter::define-emitter (obj bullet)
   "Emit an image."
   (let* ((reference (bullet-reference obj))
-         (arglist (arglist-to-string
-                   (bullet-arglist obj)))
+         (arglists (bullet-arglist obj))
          (locative-type (string-downcase
                          (40ants-doc/reference::reference-locative-type reference)))
          (name (prin1-to-string (40ants-doc/reference::reference-object reference)))
@@ -57,9 +69,9 @@
                                               (40ants-doc/utils::html-safe-name
                                                (40ants-doc/reference::reference-to-anchor reference)))
                                 name)))
-              (when arglist
-                (:span :class "locative-args"
-                       arglist))
+
+              (mapc #'common-html.emitter::emit
+                    arglists)
 
               (mapc #'common-html.emitter::emit
                     (common-doc::children obj)))))))

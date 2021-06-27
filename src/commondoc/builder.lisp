@@ -1,5 +1,6 @@
 (defpackage #:40ants-doc/commondoc/builder
   (:use #:cl)
+  (:import-from #:commondoc-markdown)
   (:export
    #:to-commondoc))
 (in-package 40ants-doc/commondoc/builder)
@@ -7,7 +8,7 @@
 
 (defgeneric to-commondoc (obj))
 
-(defgeneric reference-to-commondoc (obj locative))
+(defgeneric reference-to-commondoc (obj locative locative-args))
 
 
 (defun parse-markdown (text)
@@ -28,11 +29,19 @@
 
 
 (defmethod to-commondoc ((obj 40ants-doc/reference::reference))
-  (let ((resolved (40ants-doc/reference::resolve obj)))
+  (let* ((resolved (40ants-doc/reference::resolve obj))
+         (locative (40ants-doc/reference::reference-locative obj))
+         (locative-name (etypecase locative
+                          (list (car locative))
+                          (symbol locative)))
+         (locative-args (etypecase locative
+                          (list (cdr locative))
+                          (symbol locative))))
     (typecase resolved
       (40ants-doc/reference::reference
        (reference-to-commondoc (40ants-doc/reference::reference-object obj)
-                               (40ants-doc/reference::reference-locative obj)))
+                               locative-name
+                               locative-args))
       (t (to-commondoc resolved)))))
 
 
@@ -43,12 +52,12 @@
                           (type-of obj))))
 
 
-(defmethod reference-to-commondoc ((obj t) (locative t))
+(defmethod reference-to-commondoc ((obj t) (locative t) locative-args)
   (let ((locative-name (etypecase locative
                          (list (first locative))
                          (symbol locative))))
     (parse-markdown (format nil "Don't know how to render reference `~S` (`~S`). ~
-                               Implement a `REFERENCE-TO-COMMONDOC` (`~S` `~S`) method."
+                               Implement a `REFERENCE-TO-COMMONDOC` (`~S` `~S` T) method."
                             obj
                             locative
                             (type-of obj)

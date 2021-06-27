@@ -16,7 +16,8 @@
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/render/print)
-  (:import-from #:40ants-doc/commondoc/builder))
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/commondoc/bullet))
 (in-package 40ants-doc/locatives/function)
 
 

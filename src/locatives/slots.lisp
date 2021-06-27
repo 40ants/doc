@@ -24,7 +24,10 @@
                 #:accessor
                 #:reader
                 #:writer)
-  (:import-from #:40ants-doc/markdown/transform))
+  (:import-from #:40ants-doc/markdown/transform)
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/commondoc/arglist
+                #:make-arglist))
 (in-package 40ants-doc/locatives/slots)
 
 
@@ -111,6 +114,58 @@
    symbol (find-writer-slot-definition symbol (first locative-args))
    locative-type locative-args stream))
 
+
+(defvar *definition-finders*
+  (list 'reader #'find-reader-slot-definition
+        'writer #'find-writer-slot-definition
+        'accessor #'find-accessor-slot-definition))
+
+
+(defun inner-reference-to-commondoc (symbol locative-type locative-args)
+  (let* ((reference (canonical-reference
+                     (40ants-doc/reference::make-reference
+                      symbol (cons locative-type locative-args))))
+         (definition-finder (getf *definition-finders* locative-type))
+         (slot-def (funcall definition-finder symbol (first locative-args)))
+         (initarg-strings
+           (when (swank-mop:slot-definition-initargs slot-def)
+             (mapcar #'40ants-doc/utils::prin1-and-escape-markdown
+                     (swank-mop:slot-definition-initargs slot-def))))
+         (arglist (list (make-arglist (list locative-args))
+                        ;; TODO: make a special node for this kind of data where NAME = SOME-DATA or DEFAULT IS SOME-DATA
+                        (make-arglist (format nil "(~{~A~^ ~}~A)"
+                                              initarg-strings
+                                              (if (swank-mop:slot-definition-initfunction slot-def)
+                                                  (format nil "~A= ~A"
+                                                          (if initarg-strings " " "")
+                                                          (40ants-doc/markdown/transform::replace-known-references
+                                                           (40ants-doc/utils::prin1-and-escape-markdown
+                                                            (swank-mop:slot-definition-initform
+                                                             slot-def))))
+                                                  "")))))
+         (children (40ants-doc/commondoc/builder::parse-markdown
+                    (with-output-to-string (stream)
+                      (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                        (unless (subtypep (find-class (first locative-args)) 'condition)
+                          (let ((docstring (swank-mop:slot-definition-documentation slot-def)))
+                            (when docstring
+                              (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring))))))))))
+    (40ants-doc/commondoc/bullet::make-bullet reference
+                                              :arglist arglist
+                                              :children children)))
+
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'reader)) locative-args)
+  (inner-reference-to-commondoc symbol locative-type locative-args))
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'writer)) locative-args)
+  (inner-reference-to-commondoc symbol locative-type locative-args))
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'accessor)) locative-args)
+  (inner-reference-to-commondoc symbol locative-type locative-args))
+
+
+;; TODO: remove after refactoring
 (defun generate-documentation-for-slot-definition
     (symbol slot-def locative-type locative-args stream)
   (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)

@@ -122,7 +122,11 @@
    (email :accessor user-email
           :type (or string null)
           :initform nil
-          :documentation "User's Email. Can be empty"))
+          :documentation "User's Email. Can be empty")
+   (processed :writer user-processed
+              :initform nil
+              ;; :documentation "Sets a \"PROCESSED\" flag."
+              ))
   (:documentation "Class for all users except admins."))
 
 
@@ -130,7 +134,8 @@
   (the-object class)
   (user class)
   (user-nickname (reader user))
-  (user-email (accessor user)))
+  (user-email (accessor user))
+  (user-processed (writer user)))
 
 (defgeneric get-address (entity)
   (:documentation "Docstring of the generic function."))
