@@ -92,8 +92,8 @@
 (defmethod locate-object (symbol (locative-type (eql 'include))
                           locative-args)
   (destructuring-bind (source &key line-prefix header footer
-                                   header-nl footer-nl) locative-args
-    (declare (ignore source line-prefix header footer header-nl footer-nl))
+                                   header-nl footer-nl lang) locative-args
+    (declare (ignore source line-prefix header footer header-nl footer-nl lang))
     (40ants-doc/reference::make-reference symbol (cons locative-type locative-args))))
 
 
@@ -113,8 +113,10 @@
                                    header
                                    footer
                                    header-nl
-                                   footer-nl)
+                                   footer-nl
+                                   lang)
       locative-args
+    (declare (ignore lang))
     
     (when header
       (format stream "~A" header))
@@ -128,6 +130,24 @@
       (format stream "~A" footer))
     (when footer-nl
       (format stream "~A~%" footer-nl))))
+
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'include)) locative-args)
+  (destructuring-bind (source &key 
+                              lang
+                              ;; TODO: remove after refactoring.
+                              ;;       These args as they are not supported anymore.
+                              header
+                              footer
+                              header-nl
+                              footer-nl)
+      locative-args
+    (declare (ignore header footer header-nl footer-nl))
+    (common-doc:make-code-block lang
+                                (common-doc:make-text
+                                 (multiple-value-call #'file-subseq
+                                   (include-region source))))))
+
 
 ;;; Return the filename and start, end positions of the region to be
 ;;; included.

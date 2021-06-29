@@ -40,6 +40,23 @@
         (when docstring
           (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring)))))))
 
+
+(defmethod 40ants-doc/commondoc/builder:to-commondoc ((glossary-term 40ants-doc/glossary::glossary-term))
+  (let* ((symbol (40ants-doc/glossary::glossary-term-name glossary-term))
+         (reference
+           (40ants-doc/reference::canonical-reference (40ants-doc/reference::make-reference
+                                                       symbol '(glossary-term))))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                      (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
+                        (when docstring
+                          (40ants-doc/markdown/transform::massage-docstring docstring)))))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+
+    (40ants-doc/commondoc/bullet::make-bullet reference
+                                              :name (glossary-term-title-or-name glossary-term)
+                                              :children children)))
+
 (defmethod 40ants-doc/reference-api::canonical-reference ((glossary-term 40ants-doc/glossary::glossary-term))
   (40ants-doc/reference::make-reference (40ants-doc/glossary::glossary-term-name glossary-term) 'glossary-term))
 

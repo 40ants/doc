@@ -302,6 +302,8 @@
 ;;; explicit links with locatives (always). Return the transformed
 ;;; string.
 (defun replace-known-references (string &key (known-references 40ants-doc/reference::*references*))
+  ;; TODO: This entire function should be replaced to work with commondoc documents
+  ;;       and to modify them instead of working on a markdown level.
   (when string
     (let* ((string (replace-upcased-package-qualified-names string))
            (string
@@ -332,3 +334,7 @@
       (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
         (40ants-doc/utils::prefix-lines indentation
                                         (replace-known-references docstring)))))
+
+(defun massage-docstring2 (docstring)
+  (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
+    (replace-known-references docstring)))

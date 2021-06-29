@@ -18,7 +18,9 @@
                 #:locative)
   (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page))
+  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/commondoc/bullet))
 (in-package 40ants-doc/locatives/locative)
 
 
@@ -52,6 +54,22 @@
       (40ants-doc/args::with-dislocated-symbols ((list symbol))
         (40ants-doc/render/print::maybe-print-docstring method t stream))))
   (format stream "~&"))
+
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'locative)) locative-args)
+  (let* ((reference (canonical-reference
+                     (40ants-doc/reference::make-reference
+                      symbol (cons locative-type locative-args))))
+         (method (locative-lambda-list-method-for-symbol symbol))
+         (arglist (40ants-doc/locatives/base::locative-lambda-list symbol))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                      (40ants-doc/render/print::get-docstring method t)))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+
+    (40ants-doc/commondoc/bullet::make-bullet reference
+                                              :arglist arglist
+                                              :children children)))
 
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'locative))

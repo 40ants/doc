@@ -24,7 +24,9 @@
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/locatives
                 #:structure-accessor)
-  (:import-from #:40ants-doc/locatives/utils))
+  (:import-from #:40ants-doc/locatives/utils)
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/commondoc/bullet))
 (in-package 40ants-doc/locatives/structure-accessor)
 
 
@@ -50,6 +52,21 @@
   (40ants-doc/builder/bullet::print-end-bullet stream)
   (40ants-doc/args::with-dislocated-symbols ((list symbol))
     (40ants-doc/render/print::maybe-print-docstring symbol 'function stream)))
+
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'structure-accessor)) locative-args)
+  (let* ((reference (canonical-reference
+                     (40ants-doc/reference::make-reference
+                      symbol (cons locative-type locative-args))))
+         (docstring (with-output-to-string (stream)
+                      (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                        (40ants-doc/render/print::maybe-print-docstring symbol 'function stream))))
+         ;; TODO:  we should move text transfromation after it will be parsed
+         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+
+    (40ants-doc/commondoc/bullet::make-bullet reference
+                                              :arglist locative-args
+                                              :children children)))
 
 
 (defmethod locate-and-find-source (symbol

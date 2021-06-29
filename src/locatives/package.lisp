@@ -19,7 +19,9 @@
   (:import-from #:swank-backend)
   (:import-from #:swank-mop)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/commondoc/builder))
 (in-package 40ants-doc/locatives/package)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -40,3 +42,14 @@
     (40ants-doc/builder/bullet::print-end-bullet stream)
     (40ants-doc/args::with-dislocated-symbols ((list symbol))
       (40ants-doc/render/print::maybe-print-docstring package t stream))))
+
+
+(defmethod 40ants-doc/commondoc/builder:to-commondoc ((package package))
+  (let* ((reference (canonical-reference package))
+         (symbol (package-name package))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                      (40ants-doc/render/print::get-docstring package t)))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+    (40ants-doc/commondoc/bullet::make-bullet reference
+                                              :children children)))

@@ -21,7 +21,9 @@
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:swank-backend)
-  (:import-from #:40ants-doc/locatives/utils))
+  (:import-from #:40ants-doc/locatives/utils)
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/commondoc/bullet))
 (in-package 40ants-doc/locatives/variable)
 
 
@@ -46,6 +48,27 @@
     (40ants-doc/builder/bullet::print-end-bullet stream)
     (with-dislocated-symbols ((list symbol))
       (40ants-doc/render/print::maybe-print-docstring symbol locative-type stream))))
+
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'variable)) locative-args)
+  (destructuring-bind (&optional (initform nil initformp)) locative-args
+    (let* ((reference (canonical-reference
+                       (40ants-doc/reference::make-reference
+                        symbol (cons locative-type locative-args))))
+           (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                        (40ants-doc/render/print::get-docstring symbol 'variable)))
+           (arglist (multiple-value-bind (value unboundp) (40ants-doc/utils::symbol-global-value symbol)
+                      (cond (initformp
+                             (prin1-to-string initform))
+                            (unboundp "-unbound-")
+                            (t
+                             (prin1-to-string value)))))
+           (children (when docstring
+                       (40ants-doc/commondoc/builder::parse-markdown docstring))))
+
+      (40ants-doc/commondoc/bullet::make-bullet reference
+                                                :arglist arglist
+                                                :children children))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'variable))
                                    locative-args)

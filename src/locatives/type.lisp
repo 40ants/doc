@@ -20,7 +20,9 @@
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
-  (:import-from #:40ants-doc/locatives/utils))
+  (:import-from #:40ants-doc/locatives/utils)
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/commondoc/bullet))
 (in-package 40ants-doc/locatives/type)
 
 
@@ -51,6 +53,20 @@
   (40ants-doc/builder/bullet::print-end-bullet stream)
   (40ants-doc/args::with-dislocated-symbols ((list symbol))
     (40ants-doc/render/print::maybe-print-docstring symbol 'type stream)))
+
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'type)) locative-args)
+  (let* ((reference (40ants-doc/reference::make-reference
+                     symbol (cons locative-type locative-args)))
+         (arglist (swank-backend:type-specifier-arglist symbol))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                      (40ants-doc/render/print::get-docstring symbol 'type)))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+
+    (40ants-doc/commondoc/bullet::make-bullet reference
+                                              :arglist arglist
+                                              :children children)))
 
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'type))

@@ -55,11 +55,11 @@
 (defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj function))
   (let* ((arglist (swank-backend:arglist obj))
          (docstring (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
-                      (with-output-to-string (stream)
-                        (40ants-doc/render/print::maybe-print-docstring
-                         obj 'function stream))))
-         ;; TODO:  we should move text transfromation after it will be parsed
-         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+                      (40ants-doc/render/print::get-docstring
+                       obj 'function)))
+         ;; TODO:  we should move text transformation after it will be parsed
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
                                               :arglist arglist

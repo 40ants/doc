@@ -36,7 +36,7 @@
                           (symbol locative)))
          (locative-args (etypecase locative
                           (list (cdr locative))
-                          (symbol locative))))
+                          (symbol nil))))
     (typecase resolved
       (40ants-doc/reference::reference
        (reference-to-commondoc (40ants-doc/reference::reference-object obj)

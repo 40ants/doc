@@ -86,7 +86,7 @@
   (*var-c* variable))
 
 
-(40ants-doc/glossary::define-glossary-term lisp (:title "The Best Programmin Language")
+(40ants-doc/glossary::define-glossary-term lisp (:title "The Best Programming Language")
                                            "You really should use LISP!")
 
 (40ants-doc:defsection @glossary (:title "Glossary")
@@ -151,6 +151,8 @@
 
 
 (40ants-doc:defsection @structure (:title "Structures")
+  ;; No support for structure type yet (MGL-PAX lack it too)
+  ;; (box structure)
   (box-width structure-accessor)
   (box-height structure-accessor))
 
@@ -200,6 +202,8 @@
    (include
     (:start (user function)
      :end (bar function))
+    :lang "commonlist"
+    ;; TODO: remove after refactoring
     :header-nl "```commonlisp"
     :footer-nl "```")))
 

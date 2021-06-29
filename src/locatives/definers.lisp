@@ -7,7 +7,10 @@
   (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/render/print)
-  (:import-from #:40ants-doc/render/args))
+  (:import-from #:40ants-doc/render/args)
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/reference))
 (in-package 40ants-doc/locatives/definers)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -62,6 +65,21 @@
            (40ants-doc/builder/bullet::print-end-bullet stream)
            (40ants-doc/render/print::maybe-print-docstring method t stream)))
        (format stream "~&"))
+
+
+     (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql ',locative-type)) locative-args)
+       (let* ((method (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type))
+              (arglist (40ants-doc/locatives/base::symbol-lambda-list symbol ',locative-type))
+              (reference (40ants-doc/reference::make-reference
+                          symbol (cons locative-type locative-args)))
+              (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                           (40ants-doc/render/print::get-docstring method t)))
+              (children (when docstring
+                          (40ants-doc/commondoc/builder::parse-markdown docstring))))
+
+         (40ants-doc/commondoc/bullet::make-bullet reference
+                                                   :arglist arglist
+                                                   :children children)))
      
      (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
        (40ants-doc/source-api::find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))
