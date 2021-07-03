@@ -37,13 +37,13 @@
 (deftest test-reference-replacing
   (testing "Simple case"
     (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
-           (doc (40ants-doc/commondoc/builder::parse-markdown "[FOO][function]")))
+           (doc (40ants-doc/commondoc/markdown::parse-markdown "[FOO][function]")))
       
       (flet ((first-child ()
                (first (common-doc:children doc))))
         (testing "Before replacing we should have a paragraph with internal link"
           (ok (typep doc 'common-doc:paragraph))
-          (ok (typep (first-child) 'commondoc-markdown/core:markdown-link)))
+          (ok (typep (first-child) '40ants-doc/commondoc/xref:xref)))
       
         (let ((result (40ants-doc/commondoc/xref::replace-references doc (list reference))))
           (testing "Resulting document should remain the same, because only paragraph's child should be changed"

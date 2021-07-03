@@ -1,6 +1,7 @@
 (defpackage #:40ants-doc/commondoc/builder
   (:use #:cl)
-  (:import-from #:commondoc-markdown)
+  (:import-from #:40ants-doc/commondoc/markdown
+                #:parse-markdown)
   (:export
    #:to-commondoc))
 (in-package 40ants-doc/commondoc/builder)
@@ -9,11 +10,6 @@
 (defgeneric to-commondoc (obj))
 
 (defgeneric reference-to-commondoc (obj locative locative-args))
-
-
-(defun parse-markdown (text)
-  (common-doc.format:parse-document (make-instance 'commondoc-markdown:markdown)
-                                    text))
 
 (defun make-section-body (section)
   (loop for entry in (40ants-doc:section-entries section)
