@@ -30,8 +30,10 @@
   (when (and (40ants-doc/utils::symbol-name-p name)
              (not (40ants-doc/warn::ignore-p name)))
     (let* ((reference 40ants-doc/reference::*reference-being-documented*)
-           (obj (40ants-doc/reference::reference-object reference))
-           (locative (40ants-doc/reference::reference-locative reference))
+           (obj (when reference
+                  (40ants-doc/reference::reference-object reference)))
+           (locative (when reference
+                       (40ants-doc/reference::reference-locative reference)))
            ;; To print symbols with their packages
            (*package* (find-package "COMMON-LISP")))
       (warn message

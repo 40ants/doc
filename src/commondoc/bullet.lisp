@@ -66,6 +66,9 @@
          (spinneret:*html* common-html.emitter::*output-stream*))
     (spinneret:with-html
       (:li
+       (when (common-doc:reference obj)
+         (:a :href (format nil "#~A"
+                           (common-doc:reference obj))))
        (:span :class "reference-bullet"
               (:span :class "reference"
                      (if source-uri
