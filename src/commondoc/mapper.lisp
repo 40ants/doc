@@ -12,6 +12,13 @@
     (funcall func node))
   
   (:method ((node common-doc:content-node) func)
-    (setf (common-doc:children node)
-          (mapcar func (common-doc:children node)))
+    (let ((children (common-doc:children node)))
+      (setf (common-doc:children node)
+            (etypecase children
+              (list (loop for child in (common-doc:children node)
+                          collect (map-nodes child func)))
+              ;; Sometimes (children) contains an object like
+              ;; COMMON-DOC:UNORDERED-LIST
+              (common-doc:document-node
+               (map-nodes children func)))))
     (funcall func node)))

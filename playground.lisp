@@ -14,7 +14,7 @@
 
 ;; Надо разобраться почему не работает явное указание locatives
 (defun bar (user)
-  "Cool! This function prints its USER argument of BAR function."
+  "Cool! This function prints its USER argument of [BAR][] function."
   (format t "BAR: ~S~%"
           user))
 
@@ -287,11 +287,13 @@
                        "https://github.com/40ants/doc")))))
 
 (defun new-render ()
-  (alexandria:write-string-into-file (commondoc-markdown-test/core::rr
-                                      (40ants-doc/commondoc/builder:to-commondoc
-                                       @index))
-                                     "/tmp/index.html"
-                                     :if-exists :supersede))
+  (let* ((document (40ants-doc/commondoc/builder:to-commondoc
+                    @index))
+         (references (40ants-doc/commondoc/xref::collect-references document))
+         (document (40ants-doc/commondoc/xref::replace-references document references)))
+    (alexandria:write-string-into-file (commondoc-markdown-test/core::rr document)
+                                       "/tmp/index.html"
+                                       :if-exists :supersede)))
 
 
 #+nil

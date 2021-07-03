@@ -3,6 +3,10 @@
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:common-doc
                 #:define-node)
+  (:import-from #:40ants-doc/commondoc/html
+                #:with-html)
+  (:import-from #:common-html.emitter
+                #:define-emitter)
   (:export
    #:make-xref
    #:xref
@@ -47,7 +51,10 @@
 
 
 (defun replace-references (node known-references)
-  "Replaces COMMON-DOC:DOCUMENT-LINK with COMMON-DOC:WEB-LINK."
+  "Replaces XREF with COMMON-DOC:WEB-LINK.
+
+   Returns links which were not replaced because there wasn't
+   a corresponding reference in the KNOWN-REFERENCES argument."
   
   (flet ((replacer (node)
            (typecase node
@@ -65,13 +72,28 @@
                              collect reference)))
                 (cond
                   (found-references
-                   (assert (= (length found-references)
-                              1))
-                   (common-doc:make-document-link nil
-                                                  (40ants-doc/utils::html-safe-name
-                                                   (40ants-doc/reference::reference-to-anchor
-                                                    (first found-references)))
-                                                  (common-doc:make-text text)))
+                   (labels ((reference-to-uri (reference)
+                              (40ants-doc/utils::html-safe-name
+                               (40ants-doc/reference::reference-to-anchor reference)))
+                            (make-link (reference text)
+                              (common-doc:make-document-link nil
+                                                        (reference-to-uri reference)
+                                                        (common-doc:make-code
+                                                         (common-doc:make-text text)))))
+                     (if (= (length found-references) 1)
+                         (make-link (first found-references)
+                                    text)
+                         (common-doc:make-content
+                          (append (list (common-doc:make-code
+                                         (common-doc:make-text text))
+                                        (common-doc:make-text " ("))
+                                  (loop for reference in found-references
+                                        for index upfrom 1
+                                        for text = (format nil "~A" index)
+                                        collect (make-link reference text)
+                                        unless (= index (length found-references))
+                                        collect (common-doc:make-text " "))
+                                  (list (common-doc:make-text ")")))))))
                   
                   (t node))))
              (t
@@ -90,3 +112,13 @@
     (40ants-doc/commondoc/mapper:map-nodes node #'collector))
 
   results)
+
+
+
+(define-emitter (obj xref)
+                "Emit an reference which was not processed by REPLACE-REFERENCES."
+                (with-html
+                  (:code :class "unresolved-reference"
+                         ;; Later we'll need to create a separate CSS with color theme
+                         :style "color: magenta"
+                         (xref-name obj))))

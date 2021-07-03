@@ -207,10 +207,17 @@
           location '(:file :position)))
 
 (defun location-file (location)
-  (second (find :file (rest location) :key #'first)))
+  (or (second (find :file (rest location) :key #'first))
+      ;; If function was redefined using C-c C-c in Emacs, then
+      ;; location will have :BUFFER-AND-FILE instead of :FILE.
+      (second (find :buffer-and-file (rest location) :key #'first))))
 
 (defun location-position (location)
-  (1- (second (find :position (rest location) :key #'first))))
+  (or (fare-utils:aif (second (find :position (rest location) :key #'first))
+                      (1- fare-utils:it))
+      ;; If function was redefined using C-c C-c in Emacs, then
+      ;; location will have :OFFSET instead of :POSITION.
+      (second (find :offset (rest location) :key #'first))))
 
 ;; TODO: Find why this get called three times when I have only one include in my document :(
 (defun file-subseq (pathname &optional start end)

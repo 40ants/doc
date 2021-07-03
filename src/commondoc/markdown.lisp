@@ -19,8 +19,9 @@
                 (let* ((text (common-doc:text first-child))
                        (symbol (40ants-doc/swank::read-locative-from-string text))
                        (locative-name (commondoc-markdown:markdown-link-definition node))
-                       (locative (40ants-doc/swank::read-locative-from-string locative-name
-                                                                              :package (find-package "40ANTS-DOC/LOCATIVES"))))
+                       (locative (when locative-name
+                                   (40ants-doc/swank::read-locative-from-string locative-name
+                                                                                :package (find-package "40ANTS-DOC/LOCATIVES")))))
                   (40ants-doc/commondoc/xref:make-xref text
                                                        :symbol symbol
                                                        :locative locative))))

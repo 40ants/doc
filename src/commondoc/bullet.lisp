@@ -55,7 +55,7 @@
 
 
 (common-html.emitter::define-emitter (obj bullet)
-  "Emit an image."
+  "Emit an piece of documentation."
   (let* ((reference (bullet-reference obj))
          (arglists (bullet-arglist obj))
          (locative-type (string-downcase
@@ -80,10 +80,11 @@
                                 (format nil "[~A]"
                                         locative-type)))
                      (:span :class "reference-object"
-                            (:a :href (format nil "#~A"
-                                              (40ants-doc/utils::html-safe-name
-                                               (40ants-doc/reference::reference-to-anchor reference)))
-                                name)))
+                            (let ((uri (40ants-doc/utils::html-safe-name
+                                        (40ants-doc/reference::reference-to-anchor reference))))
+                              (:a :href (format nil "#~A" uri)
+                                  :id uri
+                                  name))))
 
               (mapc #'common-html.emitter::emit
                     arglists)
