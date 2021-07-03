@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/commondoc/markdown
+(uiop:define-package #:40ants-doc/commondoc/markdown
   (:use #:cl)
   (:import-from #:commondoc-markdown)
   (:import-from #:common-doc)

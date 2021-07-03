@@ -51,7 +51,7 @@
                       symbol (cons locative-type locative-args))))
          (arglist (swank-backend:arglist symbol))
          (docstring (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::macro-arg-names arglist))
-                      (40ants-doc/render/print::get-docstring symbol 'function)))
+                      (40ants-doc/render/print::get-docstring symbol 'compiler-macro)))
          ;; TODO:  we should move text transformation out from get-docstring to after it will be parsed
          (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
 

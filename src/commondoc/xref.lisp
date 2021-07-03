@@ -7,12 +7,17 @@
                 #:with-html)
   (:import-from #:common-html.emitter
                 #:define-emitter)
+  (:import-from #:40ants-doc/commondoc/utils
+                #:read-locative
+                #:left-word
+                #:right-word)
   (:export
    #:make-xref
    #:xref
    #:xref-name
    #:xref-symbol
-   #:xref-locative))
+   #:xref-locative
+   #:fill-locatives))
 (in-package 40ants-doc/commondoc/xref)
 
 
@@ -49,6 +54,40 @@
                  :locative locative))
 
 
+(defun fill-locatives (node)
+  "This goes through nodes tree and fills LOCATIVE slot of XREF objects
+   in case if this XREF is prepended or followed by a locative word like
+   \"macro\" or \"function\"."
+
+  (let ((locative-on-the-left nil)
+        (prev-xref nil))
+    (labels ((filler (node)
+               (typecase node
+                 (common-doc:text-node
+                  (cond
+                    ((null prev-xref)
+                     (setf locative-on-the-left
+                           (read-locative (right-word node))))
+                    ((null (xref-locative prev-xref))
+                     (setf (xref-locative prev-xref)
+                           (read-locative (left-word node)))
+                     (setf prev-xref
+                           nil))))
+                 (xref
+                  (cond
+                    (locative-on-the-left
+                     (setf (xref-locative node)
+                           locative-on-the-left)
+                     (setf locative-on-the-left
+                           nil))
+                    (t
+                     (setf prev-xref
+                           node)))))
+               (values node)))
+      (40ants-doc/commondoc/mapper:map-nodes node
+                                             #'filler)))
+  node)
+
 
 (defun replace-references (node known-references)
   "Replaces XREF with COMMON-DOC:WEB-LINK.
@@ -67,9 +106,10 @@
                              when (and (eql (40ants-doc/reference::reference-object reference)
                                             symbol)
                                        (or (null locative)
-                                           (eql (40ants-doc/reference::reference-locative reference)
+                                           (eql (40ants-doc/reference::reference-locative-type reference)
                                                 locative)))
                              collect reference)))
+
                 (cond
                   (found-references
                    (labels ((reference-to-uri (reference)
@@ -77,9 +117,10 @@
                                (40ants-doc/reference::reference-to-anchor reference)))
                             (make-link (reference text)
                               (common-doc:make-document-link nil
-                                                        (reference-to-uri reference)
-                                                        (common-doc:make-code
-                                                         (common-doc:make-text text)))))
+                                                             (reference-to-uri reference)
+                                                             (common-doc:make-code
+                                                              (common-doc:make-text text)))))
+
                      (if (= (length found-references) 1)
                          (make-link (first found-references)
                                     text)

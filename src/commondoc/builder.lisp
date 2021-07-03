@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/commondoc/builder
+(uiop:define-package #:40ants-doc/commondoc/builder
   (:use #:cl)
   (:import-from #:40ants-doc/commondoc/markdown
                 #:parse-markdown)

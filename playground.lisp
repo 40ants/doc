@@ -7,14 +7,14 @@
   (values))
 
 (define-compiler-macro bar (&whole form arg)
-  "A custom dostring for a compiler macro"
+  "A custom dostring for a compiler macro. Optimizes a call to the BAR function, when arg is an atom."
   (if (atom arg)
       arg
       form))
 
 ;; Надо разобраться почему не работает явное указание locatives
 (defun bar (user)
-  "Cool! This function prints its USER argument of [BAR][] function."
+  "Cool! This function prints its USER argument. It is also exists as [BAR][] compiler-macro."
   (format t "BAR: ~S~%"
           user))
 
@@ -290,6 +290,7 @@
   (let* ((document (40ants-doc/commondoc/builder:to-commondoc
                     @index))
          (references (40ants-doc/commondoc/xref::collect-references document))
+         (document (40ants-doc/commondoc/xref:fill-locatives document))
          (document (40ants-doc/commondoc/xref::replace-references document references)))
     (alexandria:write-string-into-file (commondoc-markdown-test/core::rr document)
                                        "/tmp/index.html"
