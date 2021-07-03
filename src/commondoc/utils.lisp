@@ -30,6 +30,7 @@
 
 (defun read-locative (text)
   (let* ((package (find-package "40ANTS-DOC/LOCATIVES"))
+         (text (string-right-trim ".,!?" text ))
          (symbol (40ants-doc/swank::read-locative-from-string
                   text
                   :package package)))

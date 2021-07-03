@@ -9,6 +9,8 @@
                 #:make-text
                 #:make-content)
   (:import-from #:40ants-doc/commondoc/xref
+                #:xref-name
+                #:extract-symbols
                 #:fill-locatives
                 #:xref-locative
                 #:make-xref))
@@ -89,3 +91,61 @@
       (fill-locatives doc)
       (ok (eql (xref-locative xref)
                '40ants-doc/locatives:class)))))
+
+
+(defun foo-bar ()
+  )
+
+
+(deftest test-symbol-extraction
+  (testing "When TEXT-NODE contains an uppercased symbol name, it should be transformed into the XREF node."
+    (let* ((doc (make-content
+                 (list (make-text "This is a FOO-BAR function."))))
+           (result (extract-symbols doc)))
+      (let* ((content (first (common-doc:children result)))
+             (children (common-doc:children content)))
+        (testing "Now text node should be replaced with a content-node"
+          (ok (typep content 'common-doc:content-node)))
+
+        (testing "Instead of one text node there should be 3 nodes now"
+          (ok (= (length children) 3))
+          (ok (typep (first children) 'common-doc:text-node))
+          (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+          (ok (typep (third children) 'common-doc:text-node))))))
+  
+  (testing "This also should work for variables"
+    (let* ((doc (make-text "This is a *SOME-VAR* var."))
+           (result (extract-symbols doc))
+           (children (common-doc:children result)))
+      (ok (= (length children) 3))
+      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (string= (xref-name (second children))
+                   "*SOME-VAR*"))))
+
+  (testing "And for constants"
+    (let* ((doc (make-text "This is a +SOME-VAR+ const."))
+           (result (extract-symbols doc))
+           (children (common-doc:children result)))
+      (ok (= (length children) 3))
+      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (string= (xref-name (second children))
+                   "+SOME-VAR+"))))
+
+  
+  (testing "Also, it might be prepended with a package name"
+    (let* ((doc (make-text "This is a SOME-PACKAGE:+SOME-VAR+ const."))
+           (result (extract-symbols doc))
+           (children (common-doc:children result)))
+      (ok (= (length children) 3))
+      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (string= (xref-name (second children))
+                   "SOME-PACKAGE:+SOME-VAR+"))))
+  
+  (testing "And not external symbols are allowed too (but this is a bad taste :))"
+    (let* ((doc (make-text "This is a SOME-PACKAGE::+SOME-VAR+ const."))
+           (result (extract-symbols doc))
+           (children (common-doc:children result)))
+      (ok (= (length children) 3))
+      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (string= (xref-name (second children))
+                   "SOME-PACKAGE::+SOME-VAR+")))))

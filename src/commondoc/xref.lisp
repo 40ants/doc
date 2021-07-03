@@ -11,13 +11,15 @@
                 #:read-locative
                 #:left-word
                 #:right-word)
+  (:import-from #:40ants-doc/swank)
   (:export
    #:make-xref
    #:xref
    #:xref-name
    #:xref-symbol
    #:xref-locative
-   #:fill-locatives))
+   #:fill-locatives
+   #:extract-symbols))
 (in-package 40ants-doc/commondoc/xref)
 
 
@@ -87,6 +89,44 @@
       (40ants-doc/commondoc/mapper:map-nodes node
                                              #'filler)))
   node)
+
+
+(defun extract-symbols-from-text (node)
+  ;; TODO: Find if this a replacement for FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE.
+  (let ((text (common-doc:text node))
+        (new-nodes nil)
+        (processed-to-idx 0))
+    
+    (cl-ppcre:do-matches (start end "([A-Z][A-Z-]+::?)?(\\*|\\+)?[A-Z][A-Z-]+(\\*|\\+)?" text)
+      (when (> start processed-to-idx)
+        (push (common-doc:make-text (subseq text processed-to-idx start))
+              new-nodes))
+
+      (let* ((symbol-name (subseq text start end))
+             (symbol (40ants-doc/swank::read-locative-from-string symbol-name)))
+        (push (make-xref symbol-name
+                         :symbol symbol)
+              new-nodes))
+
+      (setf processed-to-idx end))
+
+    (when (< processed-to-idx
+             (1- (length text)))
+      (push (common-doc:make-text (subseq text processed-to-idx))
+            new-nodes))
+
+    (if new-nodes
+        (common-doc:make-content (nreverse new-nodes))
+        node)))
+
+
+(defun extract-symbols (node)
+  "Extracts non marked up symbols from COMMON-DOC:TEXT-NODE and replaces them with XREF objects."
+  (flet ((extractor (node)
+           (typecase node
+             (common-doc:text-node (extract-symbols-from-text node))
+             (t node))))
+    (40ants-doc/commondoc/mapper:map-nodes node #'extractor)))
 
 
 (defun replace-references (node known-references)
