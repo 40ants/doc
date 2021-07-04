@@ -7,7 +7,11 @@
   (:import-from #:40ants-doc/link)
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/locatives/dislocated))
+  (:import-from #:40ants-doc/locatives/dislocated)
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:export
+   #:make-page2
+   #:ensure-page))
 (in-package 40ants-doc/page)
 
 
@@ -277,3 +281,27 @@
                  (call-next-method object stream))))))))
 
 
+;; TODO: check objects and functions above
+;; if we are still need them
+
+(defclass page2 ()
+  ((sections :initarg :sections
+             :reader page-sections)))
+
+
+(defun make-page2 (sections)
+  (make-instance 'page2
+                 :sections (uiop:ensure-list sections)))
+
+
+(defun ensure-page (obj)
+  (check-type obj (or 40ants-doc:section page2))
+  (typecase obj
+    (page2 obj)
+    (t (make-page2 obj))))
+
+
+(defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj page2))
+  (40ants-doc/commondoc/page:make-page
+   (mapcar #'40ants-doc/commondoc/builder:to-commondoc
+           (page-sections obj))))

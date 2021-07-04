@@ -15,7 +15,10 @@
   (:import-from #:40ants-doc
                 #:defsection)
   (:import-from #:40ants-doc/github)
-  (:import-from #:40ants-doc/world))
+  (:import-from #:40ants-doc/world)
+  (:import-from #:40ants-doc/themes/default)
+  (:export
+   #:single-page-to-html))
 (in-package 40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -127,6 +130,8 @@
   (document-html sections pages target-dir update-css-p nil))
 
 ;;; Generate with the default HTML look
+
+;;; TODO: remove and replace with single-page-to-html
 (defun document-html (sections page-specs target-dir update-css-p
                       link-to-pax-world-p)
   (when update-css-p
@@ -135,8 +140,39 @@
                 (alexandria:ensure-list sections)
                 page-specs target-dir link-to-pax-world-p)))
     (40ants-doc/document::document sections
-                                  :pages pages
-                                  :format :html)))
+                                   :pages pages
+                                   :format :html)))
+
+
+(defun single-page-to-html (section &key (theme '40ants-doc/themes/default:default-theme)
+                                         (base-dir #P"./"))
+  (let* ((theme (make-instance theme))
+         (page (40ants-doc/page:ensure-page section))
+         (document (40ants-doc/commondoc/builder:to-commondoc
+                    page))
+         (references (40ants-doc/commondoc/xref::collect-references document))
+         (document (40ants-doc/commondoc/xref::extract-symbols document))
+         (document (40ants-doc/commondoc/xref:fill-locatives document))
+         (document (40ants-doc/commondoc/xref::replace-references document references))
+         (absolute-dir (uiop:ensure-absolute-pathname base-dir
+                                                      (probe-file ".")))
+         (html-filename (uiop:merge-pathnames* #P"index.html" absolute-dir))
+         (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir)))
+
+    (ensure-directories-exist absolute-dir)
+    
+    (uiop:with-output-file (stream html-filename
+                                   :if-exists :supersede)
+      (common-doc.format:emit-document (make-instance 'common-html:html) document stream))
+    
+    (uiop:with-output-file (stream css-filename
+                                   :if-exists :supersede)
+      (write-string (40ants-doc/themes/api:render-css theme)
+                    stream)
+      (terpri stream))
+    
+    (values absolute-dir)))
+
 
 (defun add-html-defaults-to-page-specs (sections page-specs dir
                                         link-to-pax-world-p)

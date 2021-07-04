@@ -65,30 +65,32 @@
          (source-uri (40ants-doc/builder/bullet::source-uri reference))
          (spinneret:*html* common-html.emitter::*output-stream*))
     (spinneret:with-html
-      (:li
-       (when (common-doc:reference obj)
-         (:a :href (format nil "#~A"
-                           (common-doc:reference obj))))
-       (:span :class "reference-bullet"
-              (:span :class "reference"
-                     (if source-uri
-                         (:a :href source-uri
-                             :class "locative-type"
-                             (format nil "[~A]"
-                                     locative-type))
-                         (:span :class "locative-type"
-                                (format nil "[~A]"
-                                        locative-type)))
-                     (:span :class "reference-object"
+      (:ul
+       (:li
+        (when (common-doc:reference obj)
+          (:a :href (format nil "#~A"
+                            (common-doc:reference obj))))
+        (:span :class "reference-bullet"
+               (:span :class "reference"
+                      (if source-uri
+                          (:a :href source-uri
+                              :class "locative-type"
+                              (format nil "[~A]"
+                                      locative-type))
+                          (:span :class "locative-type"
+                                 (format nil "[~A]"
+                                         locative-type)))
+                      (:div :class "reference-object"
+                            :style "display: inline-block"
                             (let ((uri (40ants-doc/utils::html-safe-name
                                         (40ants-doc/reference::reference-to-anchor reference))))
                               (:a :href (format nil "#~A" uri)
                                   :id uri
                                   name))))
+               
+               (mapc #'common-html.emitter::emit
+                     arglists)
 
-              (mapc #'common-html.emitter::emit
-                    arglists)
-
-              (mapc #'common-html.emitter::emit
-                    (common-doc::children obj)))))))
+               (mapc #'common-html.emitter::emit
+                     (common-doc::children obj))))))))
 

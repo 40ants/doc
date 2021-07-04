@@ -287,15 +287,8 @@
                        "https://github.com/40ants/doc")))))
 
 (defun new-render ()
-  (let* ((document (40ants-doc/commondoc/builder:to-commondoc
-                    @index))
-         (references (40ants-doc/commondoc/xref::collect-references document))
-         (document (40ants-doc/commondoc/xref::extract-symbols document))
-         (document (40ants-doc/commondoc/xref:fill-locatives document))
-         (document (40ants-doc/commondoc/xref::replace-references document references)))
-    (alexandria:write-string-into-file (commondoc-markdown-test/core::rr document)
-                                       "/tmp/index.html"
-                                       :if-exists :supersede)))
+  (40ants-doc/builder:single-page-to-html @index
+                                          :base-dir "./new-docs/"))
 
 
 #+nil
