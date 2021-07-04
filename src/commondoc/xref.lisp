@@ -12,6 +12,7 @@
                 #:left-word
                 #:right-word)
   (:import-from #:40ants-doc/swank)
+  (:import-from #:cl-ppcre)
   (:export
    #:make-xref
    #:xref
@@ -97,7 +98,7 @@
         (new-nodes nil)
         (processed-to-idx 0))
     
-    (cl-ppcre:do-matches (start end "([A-Z][A-Z-]+::?)?(\\*|\\+)?[A-Z][A-Z-]+(\\*|\\+)?" text)
+    (cl-ppcre:do-matches (start end "([A-Z][A-Z-]+::?)?[+*@]?[A-Z][A-Z-]+[+*]?" text)
       (when (> start processed-to-idx)
         (push (common-doc:make-text (subseq text processed-to-idx start))
               new-nodes))

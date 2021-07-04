@@ -24,23 +24,25 @@
 
 
 (40ants-doc:defsection @index (:title "Playground")
-  "Hello World!"
-  (@asdf 40ants-doc/core::section)
-  (@function 40ants-doc/core::section)
-  (@class 40ants-doc/core::section)
-  (@structure 40ants-doc/core::section)
-  (@compiler-macro 40ants-doc/core::section)
-  (@constant 40ants-doc/core::section)
-  (@vars 40ants-doc/core::section)
-  (@glossary 40ants-doc/core::section)
-  (@locative 40ants-doc/core::section)
-  (@macro 40ants-doc/core::section)
-  (@methods 40ants-doc/core::section)
-  (@package 40ants-doc/core::section)
-  (@restart 40ants-doc/core::section)
-  (@type 40ants-doc/core::section)
-  (@include 40ants-doc/core::section)
-  (@todo 40ants-doc/core::section))
+  "Hello World!
+
+   And here is a link to @METHODS section."
+  (@asdf section)
+  (@function section)
+  (@class section)
+  (@structure section)
+  (@compiler-macro section)
+  (@constant section)
+  (@vars section)
+  (@glossary section)
+  (@locative section)
+  (@macro section)
+  (@METHODS section)
+  (@package section)
+  (@restart section)
+  (@type section)
+  (@include section)
+  (@todo section))
 
 
 (40ants-doc:defsection @function (:title "Functions")
@@ -177,7 +179,7 @@
   :foo-bar)
 
 
-(40ants-doc:defsection @methods (:title "Generic and methods")
+(40ants-doc:defsection @METHODS (:title "Generic and methods")
   (get-address generic-function)
   (get-address (method () (user))))
 
