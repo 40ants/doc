@@ -58,11 +58,11 @@
   (let* ((reference (canonical-reference
                      (40ants-doc/reference::make-reference
                       symbol (cons locative-type locative-args))))
-         (docstring (with-output-to-string (stream)
-                      (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                        (40ants-doc/render/print::maybe-print-docstring symbol 'function stream))))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                      (40ants-doc/render/print::get-docstring symbol 'function)))
          ;; TODO:  we should move text transfromation after it will be parsed
-         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist locative-args

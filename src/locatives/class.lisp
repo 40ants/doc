@@ -72,8 +72,7 @@
                       (mapcar #'class-name
                               (swank-mop:class-direct-superclasses class))))
          (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                      (with-output-to-string (stream)
-                        (40ants-doc/render/print::maybe-print-docstring class t stream))))
+                      (40ants-doc/render/print::get-docstring class t)))
          (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference class)

@@ -145,13 +145,13 @@
                                                             (swank-mop:slot-definition-initform
                                                              slot-def))))
                                                   "")))))
-         (children (40ants-doc/commondoc/builder::parse-markdown
-                    (with-output-to-string (stream)
-                      (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                        (unless (subtypep (find-class (first locative-args)) 'condition)
-                          (let ((docstring (swank-mop:slot-definition-documentation slot-def)))
-                            (when docstring
-                              (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring))))))))))
+         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
+                      (unless (subtypep (find-class (first locative-args)) 'condition)
+                        (let ((docstring (swank-mop:slot-definition-documentation slot-def)))
+                          (when docstring
+                            (40ants-doc/markdown/transform::massage-docstring2 docstring))))))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist arglist
                                               :children children)))

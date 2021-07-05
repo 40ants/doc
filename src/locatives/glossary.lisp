@@ -49,7 +49,7 @@
          (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
                       (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
                         (when docstring
-                          (40ants-doc/markdown/transform::massage-docstring docstring)))))
+                          (40ants-doc/markdown/transform::massage-docstring2 docstring)))))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
