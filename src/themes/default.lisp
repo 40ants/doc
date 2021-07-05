@@ -24,7 +24,19 @@
       :font-family "serif"
       :font-weight "bold"
       :text-shadow "0.05em 0.05em 0.02em #DDDDDD"
-      (a :border-bottom "none"))
+      (a.header-link
+       :color "#DDD"
+       :padding 0 4px
+       :text-decoration none
+       :border-bottom none
+       :text-shadow none
+       :visibility hidden))
+
+     ((:and
+       (:or h1 h2 h3 h4 h5 h6)
+       :hover)
+      (a.header-link
+       :visibility visible))
 
      (h1
       :font-size 250%)
@@ -77,7 +89,9 @@
       :color "#222222")
      
      (a
-      :color "#222222")
+      :color "#222222"
+      :text-decoration none
+      :border-bottom 1px solid)
 
      (.locative-type
       (a

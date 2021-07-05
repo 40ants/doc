@@ -36,11 +36,14 @@
     (let* ((doc (40ants-doc/commondoc/builder::to-commondoc @foo-n-bar))
            (references (40ants-doc/commondoc/xref::collect-references doc)))
       (ok (= (length references)
-             2))
+             3))
       (let ((objects (sort (mapcar #'40ants-doc/reference::reference-object references)
                            #'string<)))
         (ok (equal objects
-                   '(bar foo)))))))
+                   ;; Sections also should be collected as references
+                   '(@foo-n-bar
+                     bar
+                     foo)))))))
 
 
 (deftest test-reference-replacing

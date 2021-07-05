@@ -18,3 +18,5 @@
   One only has to specialize this for new container-like objects."))
 
 (defgeneric format-reference (obj name ref link))
+
+(defgeneric reference-name (obj name ref link))

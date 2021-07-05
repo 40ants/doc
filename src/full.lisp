@@ -29,5 +29,6 @@
   
   (:import-from #:40ants-doc/render/navigation)
   (:import-from #:40ants-doc/document/string)
-  (:import-from #:40ants-doc/github))
+  (:import-from #:40ants-doc/github)
+  (:import-from #:40ants-doc/commondoc/section))
 (in-package 40ants-doc/full)

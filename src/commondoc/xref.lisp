@@ -1,8 +1,7 @@
 (uiop:define-package #:40ants-doc/commondoc/xref
   (:use #:cl)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:common-doc
-                #:define-node)
+  (:import-from #:common-doc)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
   (:import-from #:common-html.emitter
@@ -24,26 +23,26 @@
 (in-package 40ants-doc/commondoc/xref)
 
 
-(define-node xref (common-doc:document-node)
-             ((name :accessor xref-name
-                    :initarg :name
-                    :type string
-                    :documentation "Original text, found in a documentation string")
-              (symbol :accessor xref-symbol
-                      :initarg :symbol
-                      :type (or null symbol)
-                      :documentation "A symbol, matched to a XREF-NAME.
+(defclass xref (common-doc:document-node)
+  ((name :accessor xref-name
+         :initarg :name
+         :type string
+         :documentation "Original text, found in a documentation string")
+   (symbol :accessor xref-symbol
+           :initarg :symbol
+           :type (or null symbol)
+           :documentation "A symbol, matched to a XREF-NAME.
 
-                                      I can be NIL if no symbol was found.
-                                      In this case a warning will be shown.")
-              (locative :accessor xref-locative
-                        :initarg :locative
-                        :type (or null symbol)
-                        :documentation "Sometime xref might be followed by a locative name.
-                                        In this case this slot will be filled with a corresponding
-                                        locative symbol from 40ANTS-DOC/LOCATIVES package."))
-             (:documentation "A link some entity, refered in markdown as a link like [Some text][the-id]
-                              or just being UPPERCASED-SYMBOL mentioned."))
+                           I can be NIL if no symbol was found.
+                           In this case a warning will be shown.")
+   (locative :accessor xref-locative
+             :initarg :locative
+             :type (or null symbol)
+             :documentation "Sometime xref might be followed by a locative name.
+                             In this case this slot will be filled with a corresponding
+                             locative symbol from 40ANTS-DOC/LOCATIVES package."))
+  (:documentation "A link some entity, refered in markdown as a link like [Some text][the-id]
+                   or just being UPPERCASED-SYMBOL mentioned."))
 
 
 (defun make-xref (name &key symbol locative)
@@ -130,6 +129,15 @@
     (40ants-doc/commondoc/mapper:map-nodes node #'extractor)))
 
 
+(defgeneric link-text (object)
+  (:documentation "Returns a string to be used as a text of `<a href=\"\">(link-text object)</a>` element.
+
+                   By default, a symbol name will be used.")
+  
+  (:method ((object t))
+    nil))
+
+
 (defun replace-references (node known-references)
   "Replaces XREF with COMMON-DOC:WEB-LINK.
 
@@ -162,20 +170,25 @@
                                                              (common-doc:make-code
                                                               (common-doc:make-text text)))))
 
-                     (if (= (length found-references) 1)
-                         (make-link (first found-references)
-                                    text)
-                         (common-doc:make-content
-                          (append (list (common-doc:make-code
-                                         (common-doc:make-text text))
-                                        (common-doc:make-text " ("))
-                                  (loop for reference in found-references
-                                        for index upfrom 1
-                                        for text = (format nil "~A" index)
-                                        collect (make-link reference text)
-                                        unless (= index (length found-references))
-                                        collect (common-doc:make-text " "))
-                                  (list (common-doc:make-text ")")))))))
+                     (cond ((= (length found-references) 1)
+                            (let* ((reference (first found-references))
+                                   (object (40ants-doc/reference::resolve reference))
+                                   (text (or (link-text object)
+                                             text)))
+                              (make-link (first found-references)
+                                         text)))
+                           (t
+                            (common-doc:make-content
+                             (append (list (common-doc:make-code
+                                            (common-doc:make-text text))
+                                           (common-doc:make-text " ("))
+                                     (loop for reference in found-references
+                                           for index upfrom 1
+                                           for text = (format nil "~A" index)
+                                           collect (make-link reference text)
+                                           unless (= index (length found-references))
+                                           collect (common-doc:make-text " "))
+                                     (list (common-doc:make-text ")"))))))))
                   
                   (t node))))
              (t
@@ -189,6 +202,10 @@
   (flet ((collector (node)
            (when (typep node '40ants-doc/commondoc/bullet::bullet)
              (push (40ants-doc/commondoc/bullet::bullet-reference node)
+                   results))
+           (when (typep node '40ants-doc/commondoc/section::documentation-section)
+             (push (40ants-doc/reference-api::canonical-reference
+                    (40ants-doc/commondoc/section:section-definition node))
                    results))
            node))
     (40ants-doc/commondoc/mapper:map-nodes node #'collector))

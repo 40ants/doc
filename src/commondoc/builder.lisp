@@ -11,14 +11,6 @@
 
 (defgeneric reference-to-commondoc (obj locative locative-args))
 
-(defun make-section-body (section)
-  (loop for entry in (40ants-doc:section-entries section)
-        collect (to-commondoc entry)))
-
-
-(defmethod to-commondoc ((obj 40ants-doc:section))
-  (common-doc:make-section (40ants-doc:section-title obj)
-                           :children (make-section-body obj)))
 
 (defmethod to-commondoc ((obj string))
   (parse-markdown obj))
