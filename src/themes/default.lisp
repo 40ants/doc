@@ -36,7 +36,11 @@
        (:or h1 h2 h3 h4 h5 h6)
        :hover)
       (a.header-link
-       :visibility visible))
+       :visibility visible)
+      ((:and
+        a.header-link
+        :hover)
+       :color "#777"))
 
      (h1
       :font-size 250%)
