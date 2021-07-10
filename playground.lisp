@@ -45,9 +45,7 @@
   (@type section)
   (@include section)
   (@todo section)
-  "
-
-Finally the other @SECOND-PAGE section link.")
+  "Finally the other @SECOND-PAGE section link.")
 
 
 (40ants-doc:defsection @function (:title "Functions")

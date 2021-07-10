@@ -191,8 +191,9 @@
          (full-document (40ants-doc/commondoc/xref::replace-references full-document references))
          (absolute-dir (uiop:ensure-absolute-pathname base-dir
                                                       (probe-file ".")))
-         (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir)))
-    (declare (ignore full-document))
+         (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
+         (40ants-doc/commondoc/toc:*main-toc*
+           (40ants-doc/commondoc/toc:make-toc full-document)))
     
     (ensure-directories-exist absolute-dir)
     

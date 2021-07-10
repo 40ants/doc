@@ -35,7 +35,8 @@
 
 (define-emitter (obj page)
   "Emit an piece of documentation."
-  (let ((toc (40ants-doc/commondoc/toc:make-toc obj)))
+  (let ((toc (or 40ants-doc/commondoc/toc:*main-toc*
+                 (40ants-doc/commondoc/toc:make-toc obj))))
     (with-html
       (:html
        (:head
