@@ -17,7 +17,8 @@
   (:import-from #:40ants-doc/commondoc/xref)
   (:export
    #:documentation-section
-   #:section-definition))
+   #:section-definition
+   #:documentation-section-uri-fragment))
 (in-package 40ants-doc/commondoc/section)
 
 
@@ -49,25 +50,31 @@
   (make-documentation-section obj))
 
 
-(common-html.emitter::define-emitter (obj documentation-section)
-  "Emit a documentation section with a link."
+(defun documentation-section-uri-fragment (obj)
+  (check-type obj documentation-section)
+  
   (let* ((definition (section-definition obj))
          (reference (40ants-doc/reference-api::canonical-reference definition)))
+    (40ants-doc/utils::html-safe-name
+     (40ants-doc/reference::reference-to-anchor reference))))
+
+
+(common-html.emitter::define-emitter (obj documentation-section)
+  "Emit a documentation section with a link."
+  (let ((uri-fragment (documentation-section-uri-fragment obj)))
     (with-html
-      (let ((uri (40ants-doc/utils::html-safe-name
-                  (40ants-doc/reference::reference-to-anchor reference))))
-        (:tag :name (format nil "h~A" *section-depth*)
-              (progn
-                    (emit (common-doc:title obj))
-                    (values))
-              (:a :href (format nil "#~A" uri)
-                  :title "Permalink to this headline"
-                  :id uri
-                  :class "header-link"
-                  "¶"))
-        (incf *section-depth*)
-        (emit (common-doc:children obj))
-        (decf *section-depth*)))))
+      (:tag :name (format nil "h~A" *section-depth*)
+            (progn
+              (emit (common-doc:title obj))
+              (values))
+            (:a :href (format nil "#~A" uri-fragment)
+                :title "Permalink to this headline"
+                :id uri-fragment
+                :class "header-link"
+                "¶"))
+      (incf *section-depth*)
+      (emit (common-doc:children obj))
+      (decf *section-depth*))))
 
 
 (defmethod 40ants-doc/commondoc/xref::link-text ((obj 40ants-doc:section))

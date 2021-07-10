@@ -1,6 +1,5 @@
 (uiop:define-package #:40ants-doc/commondoc/bullet
   (:use #:cl)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:common-html.emitter
                 #:with-tag)
   (:import-from #:common-html.emitter
@@ -62,7 +61,8 @@
                          (40ants-doc/reference::reference-locative-type reference)))
          (name (or (bullet-name obj)
                    (prin1-to-string (40ants-doc/reference::reference-object reference))))
-         (source-uri (40ants-doc/builder/bullet::source-uri reference))
+         ;; TODO: move source-uri to reference-api
+         (source-uri (uiop:symbol-call :40ants-doc/builder/bullet :source-uri reference))
          (spinneret:*html* common-html.emitter::*output-stream*))
     (spinneret:with-html
       (:ul

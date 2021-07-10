@@ -9,6 +9,8 @@
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/locatives/dislocated)
   (:import-from #:40ants-doc/commondoc/builder)
+  ;; TODO: solve circular dependency :(
+  ;; (:import-from #:40ants-doc/commondoc/page)
   (:export
    #:make-page2
    #:ensure-page))
@@ -301,7 +303,20 @@
     (t (make-page2 obj))))
 
 
+(defun html-filename (page)
+  (let ((sections (40ants-doc/page::page-sections page)))
+    (unless sections
+      (error "Page should have at least one section."))
+    (concatenate 'string
+                 (string-downcase
+                  (string-trim "@"
+                               (40ants-doc:section-name
+                                (first sections))))
+                 ".html")))
+
+
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj page2))
-  (40ants-doc/commondoc/page:make-page
+  (uiop:symbol-call :40ants-doc/commondoc/page :make-page
    (mapcar #'40ants-doc/commondoc/builder:to-commondoc
-           (page-sections obj))))
+           (page-sections obj))
+   (html-filename obj)))

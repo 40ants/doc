@@ -26,7 +26,9 @@
 (40ants-doc:defsection @index (:title "Playground")
   "Hello World!
 
-   And here is a link to @METHODS section."
+   And here is a link to @METHODS section.
+
+   And there can be the @SECOND-PAGE section."
   (@asdf section)
   (@function section)
   (@class section)
@@ -42,7 +44,10 @@
   (@restart section)
   (@type section)
   (@include section)
-  (@todo section))
+  (@todo section)
+  "
+
+Finally the other @SECOND-PAGE section link.")
 
 
 (40ants-doc:defsection @function (:title "Functions")
@@ -186,7 +191,8 @@
 
 (40ants-doc:defsection @package (:title "Package")
   (40ants-doc package)
-  (40ants-doc/full package))
+  (40ants-doc/full package)
+  (playground package))
 
 
 
@@ -288,8 +294,41 @@
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
 
+
+(40ants-doc:defsection @second-page (:title "Second Page")
+  "This is a second page.
+
+It mentions only the:
+"
+  (playground package)
+  
+  "But can also refer @INDEX section or @MACRO.")
+
+
+(defun render-multi ()
+  (40ants-doc/builder::update-asdf-system-html-docs
+   (list playground::@index
+         playground::@second-page)
+   :40ants-doc
+   :pages
+   `((:objects
+      (,playground::@index)
+      :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
+                       :40ants-doc
+                       "https://github.com/40ants/doc"))
+     (:objects
+      (,playground::@second-page)
+      :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
+                       :40ants-doc
+                       "https://github.com/40ants/doc")))))
+
 (defun new-render ()
   (40ants-doc/builder:single-page-to-html @index
+                                          :base-dir "./new-docs/"))
+
+(defun new-render-multi ()
+  (40ants-doc/builder::multi-page-to-html (list @index
+                                                @second-page)
                                           :base-dir "./new-docs/"))
 
 

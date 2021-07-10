@@ -12,6 +12,7 @@
                 #:right-word)
   (:import-from #:40ants-doc/swank)
   (:import-from #:cl-ppcre)
+  (:import-from #:40ants-doc/page)
   (:export
    #:make-xref
    #:xref
@@ -40,7 +41,12 @@
              :type (or null symbol)
              :documentation "Sometime xref might be followed by a locative name.
                              In this case this slot will be filled with a corresponding
-                             locative symbol from 40ANTS-DOC/LOCATIVES package."))
+                             locative symbol from 40ANTS-DOC/LOCATIVES package.")
+   ;; (page :accessor xref-page
+   ;;       :initform nil
+   ;;       :type (or null 40ants-doc/page::page2)
+   ;;       :documentation "This field will be filled by FILL-PAGES function.")
+   )
   (:documentation "A link some entity, refered in markdown as a link like [Some text][the-id]
                    or just being UPPERCASED-SYMBOL mentioned."))
 
@@ -89,6 +95,27 @@
       (40ants-doc/commondoc/mapper:map-nodes node
                                              #'filler)))
   node)
+
+;; (defun fill-pages (node)
+;;   "This goes through nodes tree and fills LOCATIVE slot of XREF objects
+;;    in case if this XREF is prepended or followed by a locative word like
+;;    \"macro\" or \"function\"."
+
+;;   (let ((page nil))
+;;     (labels ((set-page (node)
+;;                (typecase node
+;;                  (40ants-doc/commondoc/page:page
+;;                   (setf page node))))
+;;              (filler (node)
+;;                (typecase node
+;;                  (xref
+;;                   (setf (xref-page node)
+;;                         page)))
+;;                node))
+;;       (40ants-doc/commondoc/mapper:map-nodes node
+;;                                              #'filler
+;;                                              :on-going-down #'set-page)))
+;;   node)
 
 
 (defun extract-symbols-from-text (node)
@@ -142,7 +169,11 @@
   "Replaces XREF with COMMON-DOC:WEB-LINK.
 
    Returns links which were not replaced because there wasn't
-   a corresponding reference in the KNOWN-REFERENCES argument."
+   a corresponding reference in the KNOWN-REFERENCES argument.
+
+   KNOWING-REFERENCE argument should be a list of pairs
+   of a COMMON-DOC:REFERENCE and a 40ANTS-DOC/COMMON-DOC/PAGE:PAGE objects.
+  "
   
   (flet ((replacer (node)
            (typecase node
@@ -151,41 +182,48 @@
                      (symbol (xref-symbol node))
                      (locative (xref-locative node))
                      (found-references
-                       (loop for reference in known-references
+                       (loop for (reference . page) in known-references
                              when (and (eql (40ants-doc/reference::reference-object reference)
                                             symbol)
                                        (or (null locative)
                                            (eql (40ants-doc/reference::reference-locative-type reference)
                                                 locative)))
-                             collect reference)))
+                             collect (cons reference
+                                           page))))
 
                 (cond
                   (found-references
-                   (labels ((reference-to-uri (reference)
-                              (40ants-doc/utils::html-safe-name
-                               (40ants-doc/reference::reference-to-anchor reference)))
-                            (make-link (reference text)
-                              (common-doc:make-document-link nil
-                                                             (reference-to-uri reference)
-                                                             (common-doc:make-code
-                                                              (common-doc:make-text text)))))
+                   (labels ((make-link (reference page text)
+                              (let ((page-uri
+                                      (when page
+                                        (format nil "~A"
+                                                (40ants-doc/commondoc/page::html-filename page))))
+                                    (html-fragment
+                                      (40ants-doc/utils::html-safe-name
+                                       (40ants-doc/reference::reference-to-anchor reference))))
+                                (common-doc:make-document-link page-uri
+                                                               html-fragment
+                                                               (common-doc:make-code
+                                                                (common-doc:make-text text))))))
 
                      (cond ((= (length found-references) 1)
-                            (let* ((reference (first found-references))
-                                   (object (40ants-doc/reference::resolve reference))
-                                   (text (or (link-text object)
-                                             text)))
-                              (make-link (first found-references)
-                                         text)))
+                            (destructuring-bind (reference . page)
+                                (first found-references)
+                              (let* ((object (40ants-doc/reference::resolve reference))
+                                     (text (or (link-text object)
+                                               text)))
+                                (make-link reference
+                                           page
+                                           text))))
                            (t
                             (common-doc:make-content
                              (append (list (common-doc:make-code
                                             (common-doc:make-text text))
                                            (common-doc:make-text " ("))
-                                     (loop for reference in found-references
+                                     (loop for (reference . page) in found-references
                                            for index upfrom 1
                                            for text = (format nil "~A" index)
-                                           collect (make-link reference text)
+                                           collect (make-link reference page text)
                                            unless (= index (length found-references))
                                            collect (common-doc:make-text " "))
                                      (list (common-doc:make-text ")"))))))))
@@ -196,19 +234,30 @@
     (40ants-doc/commondoc/mapper:map-nodes node #'replacer)))
 
 
-(defun collect-references (node &aux results)
-  "Returns a list of 40ANTS-DOC/REFERENCE:REFERENCE objects"
+(defun collect-references (node &aux current-page results)
+  "Returns a list of pairs where the CAR is 40ANTS-DOC/REFERENCE:REFERENCE object
+   and CDR is 40ANTS-DOC/COMMONDOC/PAGE:PAGE."
   
-  (flet ((collector (node)
-           (when (typep node '40ants-doc/commondoc/bullet::bullet)
-             (push (40ants-doc/commondoc/bullet::bullet-reference node)
-                   results))
-           (when (typep node '40ants-doc/commondoc/section::documentation-section)
-             (push (40ants-doc/reference-api::canonical-reference
-                    (40ants-doc/commondoc/section:section-definition node))
-                   results))
+  (flet ((track-page (node)
+           (typecase node
+             (40ants-doc/commondoc/page:page
+              (setf current-page
+                    node))))
+         (collector (node)
+           (let ((node
+                   (typecase node
+                     (40ants-doc/commondoc/bullet::bullet
+                      (40ants-doc/commondoc/bullet::bullet-reference node))
+                     (40ants-doc/commondoc/section::documentation-section
+                      (40ants-doc/reference-api::canonical-reference
+                       (40ants-doc/commondoc/section:section-definition node))))))
+             (when node
+               (push (cons node
+                           current-page)
+                     results)))
            node))
-    (40ants-doc/commondoc/mapper:map-nodes node #'collector))
+    (40ants-doc/commondoc/mapper:map-nodes node #'collector
+                                           :on-going-down #'track-page))
 
   results)
 
