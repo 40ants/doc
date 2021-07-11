@@ -649,6 +649,13 @@
   
   (:method ((object symbol))
     (symbol-package object))
+  
+  (:method ((object package))
+    object)
+
+  (:method ((object function))
+    (object-package
+     (swank-backend:function-name object)))
 
   (:method ((object generic-function))
     (object-package

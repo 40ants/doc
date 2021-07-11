@@ -121,26 +121,33 @@
 
 (defclass section ()
   ((name
-    :initarg :name :reader section-name
+    :initarg :name
+    :reader section-name
+    :type symbol
     :documentation "The name of the global variable whose value is
     this SECTION object.")
    (package
-    :initarg :package :reader section-package
+    :initarg :package
+    :reader section-package
     :documentation "*PACKAGE* will be bound to this package when
     generating documentation for this section.")
    (readtable
-    :initarg :readtable :reader section-readtable
+    :initarg :readtable
+    :reader section-readtable
     :documentation "*READTABLE* will be bound to this when generating
     documentation for this section.")
    (title
-    :initarg :title :reader section-title
+    :initarg :title
+    :reader section-title
     :documentation "STRING or NIL. Used in generated documentation.")
    (link-title-to
     :initform nil
-    :initarg :link-title-to :reader section-link-title-to
+    :initarg :link-title-to
+    :reader section-link-title-to
     :documentation "A 40ANTS-DOC/REFERENCE::REFERENCE or NIL. Used in generated documentation.")
    (entries
-    :initarg :entries :reader section-entries
+    :initarg :entries
+    :reader section-entries
     :documentation "A list of strings and 40ANTS-DOC/REFERENCE::REFERENCE objects in the
     order they occurred in DEFSECTION.")
    (ignore-words

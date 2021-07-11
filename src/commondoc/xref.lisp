@@ -16,6 +16,7 @@
   (:import-from #:40ants-doc/ignored-words
                 #:ignored-words
                 #:supports-ignored-words-p)
+  (:import-from #:40ants-doc/utils)
   (:export
    #:make-xref
    #:xref
@@ -44,12 +45,7 @@
              :type (or null symbol)
              :documentation "Sometime xref might be followed by a locative name.
                              In this case this slot will be filled with a corresponding
-                             locative symbol from 40ANTS-DOC/LOCATIVES package.")
-   ;; (page :accessor xref-page
-   ;;       :initform nil
-   ;;       :type (or null 40ants-doc/page::page2)
-   ;;       :documentation "This field will be filled by FILL-PAGES function.")
-   )
+                             locative symbol from 40ANTS-DOC/LOCATIVES package."))
   (:documentation "A link some entity, refered in markdown as a link like [Some text][the-id]
                    or just being UPPERCASED-SYMBOL mentioned."))
 
@@ -129,13 +125,46 @@
         node)))
 
 
+;; (defmethod 40ants-doc/utils::object-package ((obj common-doc:text-node))
+;;   *package*)
+
+(defmethod 40ants-doc/utils::object-package ((obj common-doc:document))
+  *package*)
+
+(defmethod 40ants-doc/utils::object-package ((obj common-doc:document-node))
+  *package*)
+
+;; (defmethod 40ants-doc/utils::object-package ((obj 40ants-doc/commondoc/bullet::bullet))
+;;   *package*)
+
+(defmethod 40ants-doc/utils::object-package ((obj 40ants-doc/commondoc/section:documentation-section))
+  (let* ((section (40ants-doc/commondoc/section:section-definition obj))
+         (name (40ants-doc:section-name section)))
+    (40ants-doc/utils::object-package name)))
+
+
 (defun extract-symbols (node)
   "Extracts non marked up symbols from COMMON-DOC:TEXT-NODE and replaces them with XREF objects."
-  (flet ((extractor (node)
-           (typecase node
-             (common-doc:text-node (extract-symbols-from-text node))
-             (t node))))
-    (40ants-doc/commondoc/mapper:map-nodes node #'extractor)))
+  (let ((*package* *package*)
+        (packages-stack nil))
+    ;; Here we we need to change *package*
+    ;; to make sure, that all symbol mentions are parsed as if we being
+    ;; in the package where DOCUMENTATION-SECTION was defined.
+    (flet ((set-package (node)
+             (let ((package (40ants-doc/utils::object-package node)))
+               (push *package* packages-stack)
+               (setf *package* package)))
+           (reset-package (node)
+             (declare (ignore node))
+             (setf *package*
+                   (pop packages-stack)))
+           (extractor (node)
+             (typecase node
+               (common-doc:text-node (extract-symbols-from-text node))
+               (t node))))
+      (40ants-doc/commondoc/mapper:map-nodes node #'extractor
+                                             :on-going-down #'set-package
+                                             :on-going-up #'reset-package))))
 
 
 (defgeneric link-text (object)

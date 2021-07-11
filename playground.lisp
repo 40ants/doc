@@ -216,7 +216,7 @@
     :header-nl "```commonlisp"
     :footer-nl "```")))
 
-(40ants-doc:defsection @todo2 (:title "TODO"
+(40ants-doc:defsection @todo (:title "TODO"
                               :ignore-words ("SLIME"
                                              "SLY"
                                              "M-."))
@@ -230,10 +230,6 @@
 - create integration with `SLY`
 "
   )
-
-(40ants-doc:defsection @todo (:title "TODO2")
-  "Just `M-.` code.")
-
 
 
 (defun print-dependency-graph (system-name &key (level 0)
