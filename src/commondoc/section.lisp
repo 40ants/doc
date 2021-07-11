@@ -15,6 +15,7 @@
   (:import-from #:common-html.emitter
                 #:emit)
   (:import-from #:40ants-doc/commondoc/xref)
+  (:import-from #:40ants-doc/ignored-words)
   (:export
    #:documentation-section
    #:section-definition
@@ -44,6 +45,15 @@
                    :definition definition
                    :title title
                    :children children)))
+
+
+(defmethod 40ants-doc/ignored-words:supports-ignored-words-p ((obj documentation-section))
+  t)
+
+
+(defmethod 40ants-doc/ignored-words:ignored-words ((obj documentation-section))
+  (let ((definition (section-definition obj)))
+    (40ants-doc::section-ignore-words definition)))
 
 
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj 40ants-doc:section))

@@ -49,14 +49,14 @@
                      (40ants-doc/reference::make-reference
                       symbol (cons locative-type locative-args))))
          (arglist (swank-backend:arglist symbol))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::macro-arg-names arglist))
-                      (40ants-doc/render/print::get-docstring symbol 'function)))
+         (docstring (40ants-doc/render/print::get-docstring symbol 'function))
          ;; TODO:  we should move text transformation out from get-docstring to after it will be parsed
          (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist locative-args
-                                              :children children)))
+                                              :children children
+                                              :ignore-words (40ants-doc/args::macro-arg-names arglist))))
 
 
 (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql 'macro))

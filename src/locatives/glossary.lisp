@@ -46,16 +46,18 @@
          (reference
            (40ants-doc/reference::canonical-reference (40ants-doc/reference::make-reference
                                                        symbol '(glossary-term))))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                      (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
-                        (when docstring
-                          (40ants-doc/markdown/transform::massage-docstring2 docstring)))))
+         (docstring (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
+                      (when docstring
+                        (40ants-doc/utils::strip-docstring-indentation docstring)
+                        ;; (40ants-doc/markdown/transform::massage-docstring2 docstring)
+                        )))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :name (glossary-term-title-or-name glossary-term)
-                                              :children children)))
+                                              :children children
+                                              :ignore-words symbol)))
 
 (defmethod 40ants-doc/reference-api::canonical-reference ((glossary-term 40ants-doc/glossary::glossary-term))
   (40ants-doc/reference::make-reference (40ants-doc/glossary::glossary-term-name glossary-term) 'glossary-term))

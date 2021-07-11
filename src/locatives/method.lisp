@@ -83,15 +83,15 @@
 
 (defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj method))
   (let* ((arglist (rest (method-for-inspect-value obj)))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
-                      (40ants-doc/render/print::get-docstring
-                       obj t)))
+         (docstring (40ants-doc/render/print::get-docstring
+                     obj t))
          ;; TODO:  we should move text transfromation after it will be parsed
          (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
                                               :arglist arglist
-                                              :children children)))
+                                              :children children
+                                              :ignore-words (40ants-doc/args::function-arg-names arglist))))
 
 ;;;; These were lifted from the fancy inspector contrib and then
 ;;;; tweaked.

@@ -11,7 +11,8 @@
   (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
-  (:import-from #:40ants-doc/args)
+  (:import-from #:40ants-doc/args
+                #:function-arg-names)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/locatives
@@ -62,13 +63,14 @@
                       symbol (cons locative-type locative-args))))
          (method (locative-lambda-list-method-for-symbol symbol))
          (arglist (40ants-doc/locatives/base::locative-lambda-list symbol))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                      (40ants-doc/render/print::get-docstring method t)))
+         (docstring (40ants-doc/render/print::get-docstring method t))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist arglist
+                                              :ignore-words (list* symbol
+                                                                   (function-arg-names arglist))
                                               :children children)))
 
 

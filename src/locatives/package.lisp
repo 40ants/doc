@@ -47,9 +47,9 @@
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((package package))
   (let* ((reference (canonical-reference package))
          (symbol (package-name package))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                      (40ants-doc/render/print::get-docstring package t)))
+         (docstring (40ants-doc/render/print::get-docstring package t))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
     (40ants-doc/commondoc/bullet::make-bullet reference
-                                              :children children)))
+                                              :children children
+                                              :ignore-words symbol)))

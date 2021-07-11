@@ -1,5 +1,5 @@
 (uiop:define-package #:40ants-doc
-  (:documentation "See 40ants-doc:@index.")
+  (:documentation "See 40ANTS-DOC:@INDEX.")
   (:use #:cl)
   (:nicknames #:40ants-doc/core)
   (:import-from #:40ants-doc/reference)

@@ -72,14 +72,14 @@
               (arglist (40ants-doc/locatives/base::symbol-lambda-list symbol ',locative-type))
               (reference (40ants-doc/reference::make-reference
                           symbol (cons locative-type locative-args)))
-              (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                           (40ants-doc/render/print::get-docstring method t)))
+              (docstring (40ants-doc/render/print::get-docstring method t))
               (children (when docstring
                           (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
          (40ants-doc/commondoc/bullet::make-bullet reference
                                                    :arglist arglist
-                                                   :children children)))
+                                                   :children children
+                                                   :ignore-words symbol)))
      
      (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
        (40ants-doc/source-api::find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))

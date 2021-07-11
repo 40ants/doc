@@ -71,15 +71,15 @@
                             (and conditionp (eq name 'condition))))
                       (mapcar #'class-name
                               (swank-mop:class-direct-superclasses class))))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                      (40ants-doc/render/print::get-docstring class t)))
+         (docstring (40ants-doc/render/print::get-docstring class t))
          (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference class)
                                               ;; TODO: support 40ants-doc/builder/vars::*document-mark-up-signatures* here
                                               ;; and rewrite mark-up-superclasses
                                               :arglist superclasses
-                                              :children children)))
+                                              :children children
+                                              :ignore-words symbol)))
 
 
 (defun mark-up-superclasses (superclasses)

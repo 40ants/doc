@@ -12,7 +12,9 @@
                 #:with-tag)
   (:import-from #:40ants-doc/render/args
                 #:arglist-to-string)
-  (:import-from #:40ants-doc/commondoc/arglist))
+  (:import-from #:40ants-doc/commondoc/arglist)
+  (:import-from #:40ants-doc/ignored-words
+                #:ignored-words))
 (in-package 40ants-doc/commondoc/bullet)
 
 
@@ -24,10 +26,17 @@
          :reader bullet-name)
    (arglist :initarg :arglist
             :initform nil
-            :reader bullet-arglist)))
+            :reader bullet-arglist)
+   (ignored-words :initarg :ignore-words
+                  :initform nil
+                  :reader ignored-words)))
 
 
-(defun make-bullet (reference &key arglist children name)
+(defmethod 40ants-doc/ignored-words:supports-ignored-words-p ((obj bullet))
+  t)
+
+
+(defun make-bullet (reference &key arglist children name ignore-words)
   ;; TODO: remove this printer format and reference resolving on this stage.
   ;; we only need to know format to render arglist to a string, but this
   ;; shouldn't be necessary on this stage.
@@ -35,6 +44,7 @@
     (make-instance 'bullet
                    :name name
                    :bullet-reference  reference
+                   :ignore-words (uiop:ensure-list ignore-words)
                    ;; This argument should be a list of
                    ;; ARGLIST objects.
                    :arglist (etypecase arglist

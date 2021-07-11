@@ -59,14 +59,14 @@
   (let* ((reference (40ants-doc/reference::make-reference
                      symbol (cons locative-type locative-args)))
          (arglist (swank-backend:type-specifier-arglist symbol))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                      (40ants-doc/render/print::get-docstring symbol 'type)))
+         (docstring (40ants-doc/render/print::get-docstring symbol 'type))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist arglist
-                                              :children children)))
+                                              :children children
+                                              :ignore-words symbol)))
 
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'type))

@@ -54,13 +54,12 @@
 
 (defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj function))
   (let* ((arglist (swank-backend:arglist obj))
-         (docstring (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
-                      (40ants-doc/render/print::get-docstring
-                       obj 'function)))
-         ;; TODO:  we should move text transformation after it will be parsed
+         (docstring (40ants-doc/render/print::get-docstring
+                     obj 'function))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
                                               :arglist arglist
-                                              :children children)))
+                                              :children children
+                                              :ignore-words (40ants-doc/args::function-arg-names arglist))))

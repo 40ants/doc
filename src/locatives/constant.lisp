@@ -68,21 +68,20 @@
     (let* ((reference (canonical-reference
                        (40ants-doc/reference::make-reference
                         symbol (cons locative-type locative-args))))
-           (docstring (40ants-doc/args::with-dislocated-symbols ((list symbol))
-                        (40ants-doc/render/print::get-docstring symbol 'variable)))
+           (docstring (40ants-doc/render/print::get-docstring symbol 'variable))
            (arglist (cond (initformp
                            (prin1-to-string initform))
                           ((boundp symbol)
                            (prin1-to-string
                             (symbol-value symbol)))
                           (t "-unbound-")))
-           ;; TODO:  we should move text transfromation after it will be parsed
            (children (when docstring
                        (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
       (40ants-doc/commondoc/bullet::make-bullet reference
                                                 :arglist arglist
-                                                :children children))))
+                                                :children children
+                                                :ignore-words symbol))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'constant))
                                    locative-args)

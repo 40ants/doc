@@ -23,7 +23,10 @@
   (bar arg))
 
 
-(40ants-doc:defsection @index (:title "Playground")
+(40ants-doc:defsection @index (:title "Playground"
+                               :ignore-words ("MGL-PAX"
+                                              "GIT"
+                                              "MIT"))
   "Hello World!
 
    And here is a link to @METHODS section.
@@ -156,7 +159,7 @@
 
 
 (40ants-doc:defsection @structure (:title "Structures")
-  ;; No support for structure type yet (MGL-PAX lack it too)
+  "No support for structure type yet (`MGL-PAX` lack it too)"
   ;; (box structure)
   (box-width structure-accessor)
   (box-height structure-accessor))
@@ -213,15 +216,18 @@
     :header-nl "```commonlisp"
     :footer-nl "```")))
 
-(40ants-doc:defsection @todo (:title "TODO")
+(40ants-doc:defsection @todo (:title "TODO"
+                              :ignore-words ("SLIME"
+                                             "SLY"
+                                             "M-."))
   "Here what I need to check and fix:
 
 - enable all locatives
 - check dependencies of core
 - reenable tests suite
-- fix how do M-. work in SLIME
+- fix how do `M-.` work in `SLIME`
 - fix transcribe
-- create integration with SLY
+- create integration with `SLY`
 "
   )
 
