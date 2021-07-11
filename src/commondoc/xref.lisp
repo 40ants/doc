@@ -127,7 +127,7 @@
         (new-nodes nil)
         (processed-to-idx 0))
     
-    (cl-ppcre:do-matches (start end "([A-Z][A-Z-]+::?)?[+*@]?[A-Z][A-Z-]+[+*]?" text)
+    (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-]+::?)?[+*@]?[A-Z][A-Z-]+[+*]?" text)
       (when (> start processed-to-idx)
         (push (common-doc:make-text (subseq text processed-to-idx start))
               new-nodes))
