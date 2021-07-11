@@ -161,3 +161,28 @@
       (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "SOME-PACKAGE:@SOME-SECTION")))))
+
+
+(deftest test-symbol-extraction-can-remove-punctuation-only-if-symbol-found 
+  (testing "When uppercased text corresponds to a known symbol and ends with a punctuation, then we should extract into xref only a symbol name"
+    (let* ((doc (make-content
+                 (list (make-text "This is a FOO-BAR."))))
+           (result (extract-symbols doc)))
+      (let* ((content (first (common-doc:children result)))
+             (children (common-doc:children content)))
+        (testing "Now text node should be replaced with a content-node"
+          (ok (typep content 'common-doc:content-node)))
+
+        (testing "Instead of one text node there should be 3 nodes now"
+          (ok (= (length children) 3))
+          (ok (typep (first children) 'common-doc:text-node))
+          (ok (string= (common-doc:text (first children))
+                       "This is a "))
+          
+          (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+          (ok (string= (xref-name (second children))
+                       "FOO-BAR"))
+          
+          (ok (typep (third children) 'common-doc:text-node))
+          (ok (string= (common-doc:text (third children))
+                       ".")))))))

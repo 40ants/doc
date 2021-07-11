@@ -99,35 +99,14 @@
                                              #'filler)))
   node)
 
-;; (defun fill-pages (node)
-;;   "This goes through nodes tree and fills LOCATIVE slot of XREF objects
-;;    in case if this XREF is prepended or followed by a locative word like
-;;    \"macro\" or \"function\"."
-
-;;   (let ((page nil))
-;;     (labels ((set-page (node)
-;;                (typecase node
-;;                  (40ants-doc/commondoc/page:page
-;;                   (setf page node))))
-;;              (filler (node)
-;;                (typecase node
-;;                  (xref
-;;                   (setf (xref-page node)
-;;                         page)))
-;;                node))
-;;       (40ants-doc/commondoc/mapper:map-nodes node
-;;                                              #'filler
-;;                                              :on-going-down #'set-page)))
-;;   node)
-
 
 (defun extract-symbols-from-text (node)
   ;; TODO: Find if this a replacement for FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE.
   (let ((text (common-doc:text node))
         (new-nodes nil)
         (processed-to-idx 0))
-    
-    (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-]+::?)?[+*@]?[A-Z][A-Z-]+[+*]?" text)
+
+    (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-]+::?)?[+*@]?[A-Z][A-Z0-9-]*[A-Z0-9]+[+*]?" text)
       (when (> start processed-to-idx)
         (push (common-doc:make-text (subseq text processed-to-idx start))
               new-nodes))
@@ -141,7 +120,7 @@
       (setf processed-to-idx end))
 
     (when (< processed-to-idx
-             (1- (length text)))
+             (length text))
       (push (common-doc:make-text (subseq text processed-to-idx))
             new-nodes))
 
@@ -289,9 +268,8 @@
 
 
 (define-emitter (obj xref)
-                "Emit an reference which was not processed by REPLACE-REFERENCES."
-                (with-html
-                  (:code :class "unresolved-reference"
-                         ;; Later we'll need to create a separate CSS with color theme
-                         :style "color: magenta"
-                         (xref-name obj))))
+  "Emit an reference which was not processed by REPLACE-REFERENCES."
+  (with-html
+    (:code :class "unresolved-reference"
+           :title "Reference not found."
+           (xref-name obj))))

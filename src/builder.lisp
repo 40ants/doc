@@ -145,6 +145,7 @@
                                    :format :html)))
 
 
+;; TODO: move logic into MULTI-PAGE-TO-HTML 
 (defun single-page-to-html (section &key (theme '40ants-doc/themes/default:default-theme)
                                          (base-dir #P"./"))
   (let* ((theme (make-instance theme))

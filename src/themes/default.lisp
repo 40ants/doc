@@ -255,4 +255,7 @@
       :margin-top 2em
       (a
        :font-size 80%
-       :color "#777777")))))
+       :color "#777777"))
+
+     (.unresolved-reference
+      :color magenta))))
