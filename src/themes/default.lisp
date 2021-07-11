@@ -251,7 +251,8 @@
        :color "#777777"))
 
      (|#toc-footer|
-      :text-align center
+      :margin-left 0.5em
+      :margin-top 2em
       (a
        :font-size 80%
        :color "#777777")))))
