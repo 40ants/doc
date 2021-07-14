@@ -13,7 +13,8 @@
                 #:extract-symbols
                 #:fill-locatives
                 #:xref-locative
-                #:make-xref))
+                #:make-xref)
+  (:import-from #:40ants-doc/commondoc/page))
 (in-package 40ants-doc-test/xref)
 
 
@@ -34,7 +35,8 @@
 (deftest test-reference-collection
   (testing "Checking if this section includes two references"
     (let* ((doc (40ants-doc/commondoc/builder::to-commondoc @foo-n-bar))
-           (references (40ants-doc/commondoc/xref::collect-references doc)))
+           (references-and-pages (40ants-doc/commondoc/page::collect-references doc))
+           (references (mapcar #'car references-and-pages)))
       (ok (= (length references)
              3))
       (let ((objects (sort (mapcar #'40ants-doc/reference::reference-object references)
@@ -57,7 +59,8 @@
           (ok (typep doc 'common-doc:paragraph))
           (ok (typep (first-child) '40ants-doc/commondoc/xref:xref)))
       
-        (let ((result (40ants-doc/commondoc/xref::replace-references doc (list reference))))
+        (let ((result (40ants-doc/commondoc/page::replace-references doc (list (cons reference
+                                                                                     :no-page)))))
           (testing "Resulting document should remain the same, because only paragraph's child should be changed"
             (ok (eql doc result)))
 

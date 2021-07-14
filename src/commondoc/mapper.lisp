@@ -14,24 +14,44 @@
                                              (on-going-down #'do-nothing)
                                              (on-going-up #'do-nothing))
   (let* ((result (funcall func node))
-         (children (common-doc:children result)))
+         (children (when (node-supports-children result)
+                     (common-doc:children result))))
       
-    (funcall on-going-down result)
-    (setf (common-doc:children result)
-          (etypecase children
-            (list (loop for child in (common-doc:children result)
-                        collect (map-nodes child func
-                                           :on-going-up on-going-up
-                                           :on-going-down on-going-down)))
-            ;; Sometimes (children) contains an object like
-            ;; COMMON-DOC:UNORDERED-LIST
-            (common-doc:document-node
-             (map-nodes children func
-                        :on-going-up on-going-up
-                        :on-going-down on-going-down))))
+    (when (node-supports-children result)
+      (funcall on-going-down result)
+      (setf (common-doc:children result)
+            (etypecase children
+              (list (loop for child in (common-doc:children result)
+                          collect (map-nodes child func
+                                             :on-going-up on-going-up
+                                             :on-going-down on-going-down)))
+              ;; Sometimes (children) contains an object like
+              ;; COMMON-DOC:UNORDERED-LIST
+              (common-doc:document-node
+               (map-nodes children func
+                          :on-going-up on-going-up
+                          :on-going-down on-going-down))))
       
-    (funcall on-going-up result)
+      (funcall on-going-up result))
+    
     (values result)))
+
+
+(defgeneric node-supports-children (node)
+  (:documentation "We have to use this function because some common-doc node types
+                   supporting COMMON-DOC:CHILDREN do not share a common type.")
+  
+  (:method (node)
+    nil)
+  
+  (:method ((node common-doc:base-list))
+    t)
+  
+  (:method ((node common-doc:document))
+    t)
+  
+  (:method ((node common-doc:content-node))
+    t))
 
 
 (defgeneric map-nodes (node func &key)

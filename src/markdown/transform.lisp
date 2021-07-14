@@ -8,7 +8,10 @@
   (:import-from #:40ants-doc/markdown)
   (:import-from #:40ants-doc/transcribe)
   (:import-from #:40ants-doc/definitions)
-  (:import-from #:40ants-doc/page)
+  ;; I've to fix circular dependency here.
+  ;; After the complete moving to CommonDoc this code
+  ;; will be removed completely.
+  ;; (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc/locatives/dislocated)
   (:import-from #:40ants-doc/swank)
@@ -186,7 +189,8 @@
                                         :key #'40ants-doc/reference::reference-object))
                     (references (if (and (zerop (length definition))
                                          (equal tail "[]"))
-                                    (40ants-doc/page::filter-references references)
+                                    (uiop:symbol-call :40ants-doc/page :filter-references
+                                                      references)
                                     (alexandria:ensure-list
                                      (find-reference-by-locative-string
                                       definition
@@ -194,11 +198,14 @@
                                       ;; need heuristic conflict
                                       ;; resolution so we don't call
                                       ;; FILTER-REFERENCES.
-                                      (40ants-doc/page::filter-references-by-format
-                                       references)
+                                      (uiop:symbol-call :40ants-doc/page :filter-references-by-format
+                                                        references)
                                       :if-dislocated symbol)))))
                (if references
-                   (values (40ants-doc/page::format-references name references) nil t)
+                   (values (uiop:symbol-call :40ants-doc/page :format-references
+                                             name references)
+                           nil
+                           t)
                    (progn
                      (warn-about-name "Unable to find symbol ~S mentioned at (~S ~A)"
                                       name)
@@ -266,7 +273,8 @@
   (multiple-value-bind (refs n-chars-read)
       (references-for-similar-names name known-references)
     (when refs
-      (let ((filtered-refs (40ants-doc/page::filter-references refs)))
+      (let ((filtered-refs (uiop:symbol-call :40ants-doc/page :filter-references
+                                             refs)))
 
         ;; If necessary, try to find a locative before or after NAME
         ;; to disambiguate.
@@ -281,9 +289,9 @@
           (warn-about-name "Unable to find a reference for ~S mentioned at (~S ~A)"
                            name))
 
-        (values (40ants-doc/page::format-references
-                 (40ants-doc/builder/printer::maybe-downcase (subseq name 0 n-chars-read))
-                 filtered-refs)
+        (values (uiop:symbol-call :40ants-doc/page :format-references
+                                  (40ants-doc/builder/printer::maybe-downcase (subseq name 0 n-chars-read))
+                                  filtered-refs)
                 t
                 n-chars-read)))))
 

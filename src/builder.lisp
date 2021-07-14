@@ -18,6 +18,8 @@
   (:import-from #:40ants-doc/github)
   (:import-from #:40ants-doc/world)
   (:import-from #:40ants-doc/themes/default)
+  (:import-from #:40ants-doc/commondoc/page)
+  (:import-from #:40ants-doc/commondoc/toc)
   (:export
    #:single-page-to-html))
 (in-package 40ants-doc/builder)
@@ -152,10 +154,10 @@
          (page (40ants-doc/page:ensure-page section))
          (document (40ants-doc/commondoc/builder:to-commondoc
                     page))
-         (references (40ants-doc/commondoc/xref::collect-references document))
+         (references (40ants-doc/commondoc/page::collect-references document))
          (document (40ants-doc/commondoc/xref::extract-symbols document))
          (document (40ants-doc/commondoc/xref:fill-locatives document))
-         (document (40ants-doc/commondoc/xref::replace-references document references))
+         (document (40ants-doc/commondoc/page::replace-references document references))
          (absolute-dir (uiop:ensure-absolute-pathname base-dir
                                                       (probe-file ".")))
          (html-filename (uiop:merge-pathnames* #P"index.html" absolute-dir))
@@ -186,10 +188,10 @@
                           pages))
          (full-document (common-doc:make-document "Documentation"
                                                   :children page-documents))
-         (references (40ants-doc/commondoc/xref::collect-references full-document))
+         (references (40ants-doc/commondoc/page::collect-references full-document))
          (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
          (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
-         (full-document (40ants-doc/commondoc/xref::replace-references full-document references))
+         (full-document (40ants-doc/commondoc/page::replace-references full-document references))
          (absolute-dir (uiop:ensure-absolute-pathname base-dir
                                                       (probe-file ".")))
          (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))

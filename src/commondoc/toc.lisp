@@ -65,3 +65,8 @@
              node))
       (40ants-doc/commondoc/mapper:map-nodes (car current-sublist)
                                              #'remove-empty-sublists))))
+
+
+(defmethod 40ants-doc/commondoc/page:make-page-toc ((obj 40ants-doc/commondoc/page:page))
+  (or *main-toc*
+      (make-toc obj)))

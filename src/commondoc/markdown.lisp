@@ -2,6 +2,7 @@
   (:use #:cl)
   (:import-from #:commondoc-markdown)
   (:import-from #:common-doc)
+  (:import-from #:40ants-doc/commondoc/xref)
   (:export
    #:parse-markdown))
 (in-package 40ants-doc/commondoc/markdown)

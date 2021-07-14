@@ -6,7 +6,8 @@
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/document)
-  (:import-from #:40ants-doc/warn))
+  (:import-from #:40ants-doc/warn)
+  (:import-from #:40ants-doc/builder/heading))
 (in-package 40ants-doc/builder/section)
 
 

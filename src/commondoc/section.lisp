@@ -16,6 +16,7 @@
                 #:emit)
   (:import-from #:40ants-doc/commondoc/xref)
   (:import-from #:40ants-doc/ignored-words)
+  (:import-from #:40ants-doc/utils)
   (:export
    #:documentation-section
    #:section-definition
@@ -89,3 +90,9 @@
 
 (defmethod 40ants-doc/commondoc/xref::link-text ((obj 40ants-doc:section))
   (40ants-doc:section-title obj))
+
+
+(defmethod 40ants-doc/utils::object-package ((obj documentation-section))
+  (let* ((section (section-definition obj))
+         (name (40ants-doc:section-name section)))
+    (40ants-doc/utils::object-package name)))

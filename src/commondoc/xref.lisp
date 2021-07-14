@@ -12,11 +12,11 @@
                 #:right-word)
   (:import-from #:40ants-doc/swank)
   (:import-from #:cl-ppcre)
-  (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/ignored-words
                 #:ignored-words
                 #:supports-ignored-words-p)
   (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/commondoc/mapper)
   (:export
    #:make-xref
    #:xref
@@ -24,7 +24,8 @@
    #:xref-symbol
    #:xref-locative
    #:fill-locatives
-   #:extract-symbols))
+   #:extract-symbols
+   #:link-text))
 (in-package 40ants-doc/commondoc/xref)
 
 
@@ -137,11 +138,6 @@
 ;; (defmethod 40ants-doc/utils::object-package ((obj 40ants-doc/commondoc/bullet::bullet))
 ;;   *package*)
 
-(defmethod 40ants-doc/utils::object-package ((obj 40ants-doc/commondoc/section:documentation-section))
-  (let* ((section (40ants-doc/commondoc/section:section-definition obj))
-         (name (40ants-doc:section-name section)))
-    (40ants-doc/utils::object-package name)))
-
 
 (defun extract-symbols (node)
   "Extracts non marked up symbols from COMMON-DOC:TEXT-NODE and replaces them with XREF objects."
@@ -176,128 +172,8 @@
     nil))
 
 
-(defun replace-references (node known-references &aux ignored-words)
-  "Replaces XREF with COMMON-DOC:WEB-LINK.
-
-   Returns links which were not replaced because there wasn't
-   a corresponding reference in the KNOWN-REFERENCES argument.
-
-   KNOWING-REFERENCE argument should be a list of pairs
-   of a COMMON-DOC:REFERENCE and a 40ANTS-DOC/COMMON-DOC/PAGE:PAGE objects.
-
-   IGNORED-WORDS will be a list of list of strings where each sublist
-   contains words, specified as IGNORE-WORDS argument of the 40ANTS-DOC:DEFSECTION macro.
-  "
-  
-  (labels ((collect-ignored-words (node)
-             (when (supports-ignored-words-p node)
-               (let ((words (ignored-words node)))
-                 (push words
-                       ignored-words))))
-           (pop-ignored-words (node)
-             (when (supports-ignored-words-p node)
-               (pop ignored-words)))
-           (should-be-ignored-p (text)
-             (loop for sublist in ignored-words
-                   thereis (member text sublist
-                                   :test #'string=)))
-           (replacer (node)
-             (typecase node
-               (xref
-                (let* ((text (xref-name node))
-                       (symbol (xref-symbol node))
-                       (locative (xref-locative node))
-                       (should-be-ignored
-                         (should-be-ignored-p text))
-                       (found-references
-                         (unless should-be-ignored
-                           (loop for (reference . page) in known-references
-                                 when (and (eql (40ants-doc/reference::reference-object reference)
-                                                symbol)
-                                           (or (null locative)
-                                               (eql (40ants-doc/reference::reference-locative-type reference)
-                                                    locative)))
-                                 collect (cons reference
-                                               page)))))
-
-                  (cond
-                    (should-be-ignored
-                     (common-doc:make-text text))
-                    (found-references
-                     (labels ((make-link (reference page text)
-                                (let ((page-uri
-                                        (when page
-                                          (format nil "~A"
-                                                  (40ants-doc/commondoc/page::html-filename page))))
-                                      (html-fragment
-                                        (40ants-doc/utils::html-safe-name
-                                         (40ants-doc/reference::reference-to-anchor reference))))
-                                  (common-doc:make-document-link page-uri
-                                                                 html-fragment
-                                                                 (common-doc:make-code
-                                                                  (common-doc:make-text text))))))
-
-                       (cond ((= (length found-references) 1)
-                              (destructuring-bind (reference . page)
-                                  (first found-references)
-                                (let* ((object (40ants-doc/reference::resolve reference))
-                                       (text (or (link-text object)
-                                                 text)))
-                                  (make-link reference
-                                             page
-                                             text))))
-                             (t
-                              (common-doc:make-content
-                               (append (list (common-doc:make-code
-                                              (common-doc:make-text text))
-                                             (common-doc:make-text " ("))
-                                       (loop for (reference . page) in found-references
-                                             for index upfrom 1
-                                             for text = (format nil "~A" index)
-                                             collect (make-link reference page text)
-                                             unless (= index (length found-references))
-                                             collect (common-doc:make-text " "))
-                                       (list (common-doc:make-text ")"))))))))
-                    
-                    (t node))))
-               (t
-                node))))
-    (40ants-doc/commondoc/mapper:map-nodes node #'replacer
-                                           :on-going-down #'collect-ignored-words
-                                           :on-going-up #'pop-ignored-words)))
-
-
-(defun collect-references (node &aux current-page results)
-  "Returns a list of pairs where the CAR is 40ANTS-DOC/REFERENCE:REFERENCE object
-   and CDR is 40ANTS-DOC/COMMONDOC/PAGE:PAGE."
-  
-  (flet ((track-page (node)
-           (typecase node
-             (40ants-doc/commondoc/page:page
-              (setf current-page
-                    node))))
-         (collector (node)
-           (let ((node
-                   (typecase node
-                     (40ants-doc/commondoc/bullet::bullet
-                      (40ants-doc/commondoc/bullet::bullet-reference node))
-                     (40ants-doc/commondoc/section::documentation-section
-                      (40ants-doc/reference-api::canonical-reference
-                       (40ants-doc/commondoc/section:section-definition node))))))
-             (when node
-               (push (cons node
-                           current-page)
-                     results)))
-           node))
-    (40ants-doc/commondoc/mapper:map-nodes node #'collector
-                                           :on-going-down #'track-page))
-
-  results)
-
-
-
 (define-emitter (obj xref)
-  "Emit an reference which was not processed by REPLACE-REFERENCES."
+  "Emit an reference which was not processed by 40ANTS-DOC/COMMONDOC/PAGE::REPLACE-REFERENCES."
   (with-html
     (:code :class "unresolved-reference"
            :title "Reference not found."

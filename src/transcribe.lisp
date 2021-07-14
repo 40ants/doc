@@ -23,7 +23,7 @@
                 #:read-line*
                 #:whitespacep)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/page)
+  ;; (:import-from #:40ants-doc/page)
   (:import-from #:swank))
 (in-package 40ants-doc/transcribe)
 
