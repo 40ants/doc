@@ -222,6 +222,26 @@
     (values absolute-dir)))
 
 
+(defun page-to-markdown (sections filename)
+  (let* ((parts (mapcar
+                 #'40ants-doc/commondoc/builder:to-commondoc
+                 (uiop:ensure-list sections)))
+         (full-document (common-doc:make-document "Documentation"
+                                                  :children parts))
+         (references (40ants-doc/commondoc/page::collect-references full-document))
+         (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
+         (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
+         (full-document (40ants-doc/commondoc/page::replace-references full-document references)))
+    
+    (uiop:with-output-file (stream filename
+                                   :if-exists :supersede)
+      (common-doc.format:emit-document (make-instance 'commondoc-markdown:markdown)
+                                       full-document
+                                       stream))
+    
+    (values)))
+
+
 (defun add-html-defaults-to-page-specs (sections page-specs dir
                                         link-to-pax-world-p)
   (flet ((section-has-page-spec-p (section)

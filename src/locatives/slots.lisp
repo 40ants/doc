@@ -131,7 +131,7 @@
            (when (swank-mop:slot-definition-initargs slot-def)
              (mapcar #'40ants-doc/utils::prin1-and-escape-markdown
                      (swank-mop:slot-definition-initargs slot-def))))
-         (arglist (list (make-arglist (list locative-args))
+         (arglist (list (make-arglist locative-args)
                         ;; TODO: make a special node for this kind of data where NAME = SOME-DATA or DEFAULT IS SOME-DATA
                         (make-arglist (format nil "(~{~A~^ ~}~A)"
                                               initarg-strings

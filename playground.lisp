@@ -303,7 +303,8 @@
 
 It mentions only the:
 "
-  (playground package)
+  ;; (playground package)
+  (user-nickname (reader user))
   
   "But can also refer @INDEX section or @MACRO.")
 
@@ -333,6 +334,13 @@ It mentions only the:
   (40ants-doc/builder::multi-page-to-html (list @index
                                                 @second-page)
                                           :base-dir "./new-docs/"))
+
+
+(defun render-readme ()
+  (40ants-doc/builder::page-to-markdown
+   (list @index
+         @second-page)
+   "NEW.md"))
 
 
 #+nil

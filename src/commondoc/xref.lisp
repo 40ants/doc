@@ -17,6 +17,7 @@
                 #:supports-ignored-words-p)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/commondoc/mapper)
+  (:import-from #:commondoc-markdown)
   (:export
    #:make-xref
    #:xref
@@ -178,3 +179,10 @@
     (:code :class "unresolved-reference"
            :title "Reference not found."
            (xref-name obj))))
+
+
+(defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
+                                            (node xref)
+                                            stream)
+  (format stream "`~A`"
+          (xref-name node)))

@@ -70,7 +70,7 @@
          (locative-type (string-downcase
                          (40ants-doc/reference::reference-locative-type reference)))
          (name (or (bullet-name obj)
-                   (prin1-to-string (40ants-doc/reference::reference-object reference))))
+                   (princ-to-string (40ants-doc/reference::reference-object reference))))
          ;; TODO: move source-uri to reference-api
          (source-uri (uiop:symbol-call :40ants-doc/builder/bullet :source-uri reference))
          (spinneret:*html* common-html.emitter::*output-stream*))
@@ -104,3 +104,45 @@
                (mapc #'common-html.emitter::emit
                      (common-doc::children obj))))))))
 
+
+(defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
+                                            (node bullet)
+                                            stream)
+  (let* ((reference (bullet-reference node))
+         (arglists (bullet-arglist node))
+         (locative-type (string-downcase
+                         (40ants-doc/reference::reference-locative-type reference)))
+         (name (or (bullet-name node)
+                   (princ-to-string (40ants-doc/reference::reference-object reference))))
+         ;; TODO: move source-uri to reference-api
+         (source-uri (uiop:symbol-call :40ants-doc/builder/bullet :source-uri reference)))
+
+    (let ((commondoc-markdown/emitter::*header-level* (or (and (boundp 'commondoc-markdown/emitter::*header-level*)
+                                                               (1+ commondoc-markdown/emitter::*header-level*))
+                                                          1)))
+
+      (commondoc-markdown/emitter::write-header
+       format
+       (list* (if source-uri
+                  (format nil "[~A](~A) `~A`"
+                          locative-type
+                          source-uri
+                          name)
+                  (format nil "[~A] `~A`"
+                          locative-type
+                          name))
+              arglists)
+       stream)
+
+      (terpri stream)
+      (terpri stream)
+      
+      (call-next-method)
+      (terpri stream)
+      (terpri stream))
+    
+    
+    ;; (loop for arglist in arglists
+    ;;       do (common-doc.format:emit-document format arglist stream))
+
+    ))
