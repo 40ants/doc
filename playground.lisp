@@ -135,7 +135,18 @@
               :initform nil
               ;; :documentation "Sets a \"PROCESSED\" flag."
               ))
-  (:documentation "Class for all users except admins."))
+  (:documentation "Class for all users except admins.
+
+
+
+                   ```python
+                   def foo():
+                       pass
+                   ```
+                   
+                   This was the `Python` code.
+
+"))
 
 
 (40ants-doc:defsection @class (:title "Classes")
@@ -211,9 +222,9 @@
    (include
     (:start (user function)
      :end (bar function))
-    :lang "commonlist"
+    :lang "lisp"
     ;; TODO: remove after refactoring
-    :header-nl "```commonlisp"
+    :header-nl "```lisp"
     :footer-nl "```")))
 
 (40ants-doc:defsection @todo (:title "TODO"
@@ -299,14 +310,17 @@
 
 
 (40ants-doc:defsection @second-page (:title "Second Page")
-  "This is a second page.
+;;   "This is a second page.
 
-It mentions only the:
-"
+;; It mentions only the:
+
+;; "
   ;; (playground package)
-  (user-nickname (reader user))
+  (user class)
+  ;; (user-nickname (reader user))
   
-  "But can also refer @INDEX section or @MACRO.")
+  ;; "But can also refer @INDEX section or @MACRO."
+  )
 
 
 (defun render-multi ()
@@ -338,8 +352,9 @@ It mentions only the:
 
 (defun render-readme ()
   (40ants-doc/builder::page-to-markdown
-   (list @index
-         @second-page)
+   (list
+    ;; @index
+    @second-page)
    "NEW.md"))
 
 

@@ -16,7 +16,8 @@
   (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/commondoc/bullet))
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/commondoc/arglist))
 (in-package 40ants-doc/locatives/class)
 
 (define-locative-type class ())
@@ -77,7 +78,7 @@
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference class)
                                               ;; TODO: support 40ants-doc/builder/vars::*document-mark-up-signatures* here
                                               ;; and rewrite mark-up-superclasses
-                                              :arglist superclasses
+                                              :arglist (40ants-doc/commondoc/arglist::make-arglist superclasses)
                                               :children children
                                               :ignore-words symbol)))
 

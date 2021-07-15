@@ -347,7 +347,13 @@
 
 (defun massage-docstring2 (docstring)
   ;; (40ants-doc/utils::strip-docstring-indentation docstring)
-  ;; TODO: remove completely
-  (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
-    (replace-known-references docstring))
+
+  (40ants-doc/utils::strip-docstring-indentation docstring)
+
+  ;; We need this code only for old version of the builder
+  ;; New version replaces references on the separate stage:
+  ;; 
+  ;; (replace-known-references docstring)
+  ;; (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
+  ;;   (replace-known-references docstring))
   )
