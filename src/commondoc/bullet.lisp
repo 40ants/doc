@@ -40,7 +40,9 @@
   ;; TODO: remove this printer format and reference resolving on this stage.
   ;; we only need to know format to render arglist to a string, but this
   ;; shouldn't be necessary on this stage.
-  (let ((40ants-doc/builder/printer::*format* :plain))
+  (let ((40ants-doc/builder/printer::*format* :plain)
+        (html-fragment (40ants-doc/utils::html-safe-name
+                        (40ants-doc/reference::reference-to-anchor reference))))
     (make-instance 'bullet
                    :name name
                    :bullet-reference  reference
@@ -60,6 +62,7 @@
                                (list (40ants-doc/commondoc/arglist::make-arglist arglist)))
                               (40ants-doc/commondoc/arglist::arglist
                                (list arglist)))
+                   :reference html-fragment
                    :children (uiop:ensure-list children) )))
 
 
@@ -92,8 +95,7 @@
                                          locative-type)))
                       (:div :class "reference-object"
                             :style "display: inline-block"
-                            (let ((uri (40ants-doc/utils::html-safe-name
-                                        (40ants-doc/reference::reference-to-anchor reference))))
+                            (let ((uri (common-doc:reference obj)))
                               (:a :href (format nil "#~A" uri)
                                   :id uri
                                   name))))

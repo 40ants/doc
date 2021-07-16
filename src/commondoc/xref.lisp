@@ -174,7 +174,7 @@
 
 
 (define-emitter (obj xref)
-  "Emit an reference which was not processed by 40ANTS-DOC/COMMONDOC/PAGE::REPLACE-REFERENCES."
+  "Emit an reference which was not processed by 40ANTS-DOC/COMMONDOC/PAGE::REPLACE-XREFS."
   (with-html
     (:code :class "unresolved-reference"
            :title "Reference not found."

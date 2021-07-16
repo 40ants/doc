@@ -97,7 +97,7 @@
   results)
 
 
-(defun replace-references (node known-references &aux ignored-words)
+(defun replace-xrefs (node known-references &aux ignored-words)
   "Replaces XREF with COMMON-DOC:WEB-LINK.
 
    Returns links which were not replaced because there wasn't

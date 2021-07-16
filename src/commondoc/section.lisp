@@ -42,10 +42,16 @@
   
   (let ((title (common-doc:make-text (40ants-doc:section-title definition)))
         (children (make-section-body definition)))
-    (make-instance 'documentation-section
-                   :definition definition
-                   :title title
-                   :children children)))
+
+    (let* ((reference (40ants-doc/reference-api::canonical-reference definition))
+           (html-fragment (40ants-doc/utils::html-safe-name
+                           (40ants-doc/reference::reference-to-anchor reference))))
+    
+      (make-instance 'documentation-section
+                     :definition definition
+                     :title title
+                     :reference html-fragment
+                     :children children))))
 
 
 (defmethod 40ants-doc/ignored-words:supports-ignored-words-p ((obj documentation-section))

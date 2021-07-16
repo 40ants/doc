@@ -59,8 +59,8 @@
           (ok (typep doc 'common-doc:paragraph))
           (ok (typep (first-child) '40ants-doc/commondoc/xref:xref)))
       
-        (let ((result (40ants-doc/commondoc/page::replace-references doc (list (cons reference
-                                                                                     :no-page)))))
+        (let ((result (40ants-doc/commondoc/page::replace-xrefs doc (list (cons reference
+                                                                                :no-page)))))
           (testing "Resulting document should remain the same, because only paragraph's child should be changed"
             (ok (eql doc result)))
 

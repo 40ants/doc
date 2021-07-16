@@ -157,7 +157,7 @@
          (references (40ants-doc/commondoc/page::collect-references document))
          (document (40ants-doc/commondoc/xref::extract-symbols document))
          (document (40ants-doc/commondoc/xref:fill-locatives document))
-         (document (40ants-doc/commondoc/page::replace-references document references))
+         (document (40ants-doc/commondoc/page::replace-xrefs document references))
          (absolute-dir (uiop:ensure-absolute-pathname base-dir
                                                       (probe-file ".")))
          (html-filename (uiop:merge-pathnames* #P"index.html" absolute-dir))
@@ -191,7 +191,7 @@
          (references (40ants-doc/commondoc/page::collect-references full-document))
          (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
          (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
-         (full-document (40ants-doc/commondoc/page::replace-references full-document references))
+         (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references))
          (absolute-dir (uiop:ensure-absolute-pathname base-dir
                                                       (probe-file ".")))
          (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
@@ -231,7 +231,7 @@
          (references (40ants-doc/commondoc/page::collect-references full-document))
          (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
          (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
-         (full-document (40ants-doc/commondoc/page::replace-references full-document references)))
+         (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references)))
 
     (uiop:with-output-file (stream filename
                                    :if-exists :supersede)
