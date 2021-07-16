@@ -135,12 +135,11 @@
               arglists)
        stream)
 
-      (terpri stream)
-      (terpri stream)
+      (format stream "~2&")
       
       (call-next-method)
-      (terpri stream)
-      (terpri stream))
+
+      (format stream "~2&"))
     
     
     ;; (loop for arglist in arglists

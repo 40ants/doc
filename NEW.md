@@ -30,31 +30,24 @@ And there can be the `Second Page` section.
 
 * Source control: [GIT](https://github.com/40ants/doc)
 
-
 ### Functions
 
 #### [function] `FOO` ARG
 
 
-
 Cool! It calls `BAR` function!
-
 
 
 #### [function] `USER`
 
 
-
 Just to check locatives in docstrings
-
 
 
 #### [function] `BAR` USER
 
 
-
 Cool! This function prints its USER argument. It is also exists as `BAR` compiler-macro.
-
 
 
 ### Classes
@@ -62,13 +55,10 @@ Cool! This function prints its USER argument. It is also exists as `BAR` compile
 #### [class] `THE-OBJECT` ()
 
 
-
 Base class for all objects in the system
 
 
-
 #### [class] `USER` (THE-OBJECT)
-
 
 
 Class for all users except admins.
@@ -80,26 +70,19 @@ def foo():
 This was the `Python` code.
 
 
-
 #### [reader] `USER-NICKNAME` (USER) (= `:UNAUTHORIZED`)
-
 
 
 User's nickname
 
 
-
 #### [accessor] `USER-EMAIL` (USER) (= `NIL`)
-
 
 
 User's Email. Can be empty
 
 
-
 #### [writer] `USER-PROCESSED` (USER) (= `NIL`)
-
-
 
 
 
@@ -111,11 +94,7 @@ No support for structure type yet (`MGL-PAX` lack it too)
 
 
 
-
-
 #### [structure-accessor] `BOX-HEIGHT`
-
-
 
 
 
@@ -124,9 +103,7 @@ No support for structure type yet (`MGL-PAX` lack it too)
 #### [compiler-macro] `BAR`
 
 
-
 A custom dostring for a compiler macro. Optimizes a call to the `BAR` function, when arg is an atom.
-
 
 
 ### Constants
@@ -135,14 +112,10 @@ A custom dostring for a compiler macro. Optimizes a call to the `BAR` function, 
 
 
 
-
-
 #### [constant] `+THE-ANSWER+` 42
 
 
-
 The answer to everything
-
 
 
 ### Variables
@@ -151,22 +124,16 @@ The answer to everything
 
 
 
-
-
 #### [variable] `*VAR-B*` 100500
-
 
 
 Just a var with docstring.
 
 
-
 #### [variable] `*VAR-C*` -unbound-
 
 
-
 Unbound var with docstring. `LISP` allows us to define docstring separately.
-
 
 
 ### Glossary
@@ -174,9 +141,7 @@ Unbound var with docstring. `LISP` allows us to define docstring separately.
 #### [glossary-term] `The Best Programming Language`
 
 
-
 You really should use LISP!
-
 
 
 ### Locatives
@@ -184,10 +149,8 @@ You really should use LISP!
 #### [locative] `VARIABLE` &OPTIONAL INITFORM
 
 
-
 Refers to a global special variable. INITFORM, or if not specified,
 the global value of the variable is included in the documentation.
-
 
 
 ### Macro
@@ -195,11 +158,9 @@ the global value of the variable is included in the documentation.
 #### [macro] `THE-MACRO`
 
 
-
 Macro's docstring.
 
 We can refer `FOO` function from here.
-
 
 
 ### Generic and methods
@@ -207,17 +168,13 @@ We can refer `FOO` function from here.
 #### [generic-function] `GET-ADDRESS` ENTITY
 
 
-
 Docstring of the generic function.
-
 
 
 #### [method] `GET-ADDRESS` (USER USER)
 
 
-
 Returns user's address.
-
 
 
 ### Package
@@ -225,20 +182,14 @@ Returns user's address.
 #### [package] `40ANTS-DOC`
 
 
-
 See `40ANTS-DOC:@INDEX`.
-
 
 
 #### [package] `40ANTS-DOC-FULL`
 
 
 
-
-
 #### [package] `PLAYGROUND`
-
-
 
 
 
@@ -247,9 +198,7 @@ See `40ANTS-DOC:@INDEX`.
 #### [restart] `RETRY-THIS-ERROR`
 
 
-
 Some docstring for restart
-
 
 
 ### Types
@@ -257,9 +206,7 @@ Some docstring for restart
 #### [type] `A-FEW` &OPTIONAL (TYPE 'INTEGER)
 
 
-
 Very small integer, less or equal than 3.
-
 
 
 ### Inclusions
@@ -293,13 +240,11 @@ Here what I need to [check](https://yandex.ru) and fix:
 
 6. create integration with `SLY`
 
-
 Finally the other `Second Page` section link.
 
 ## Second Page
 
 ### [class] `USER` (THE-OBJECT)
-
 
 
 Class for all users except admins.
@@ -309,6 +254,5 @@ def foo():
     pass
 ```
 This was the `Python` code.
-
 
 
