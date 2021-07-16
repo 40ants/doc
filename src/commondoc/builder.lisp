@@ -2,6 +2,7 @@
   (:use #:cl)
   (:import-from #:40ants-doc/commondoc/markdown
                 #:parse-markdown)
+  (:import-from #:40ants-doc/utils)
   (:export
    #:to-commondoc))
 (in-package 40ants-doc/commondoc/builder)
@@ -13,7 +14,8 @@
 
 
 (defmethod to-commondoc ((obj string))
-  (parse-markdown obj))
+  (parse-markdown
+   (40ants-doc/utils::strip-docstring-indentation obj)))
 
 
 (defmethod to-commondoc ((obj 40ants-doc/reference::reference))

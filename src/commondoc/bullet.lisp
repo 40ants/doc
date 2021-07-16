@@ -121,7 +121,7 @@
                                                                (1+ commondoc-markdown/emitter::*header-level*))
                                                           1)))
 
-      (break)
+
       (commondoc-markdown/emitter::write-header
        format
        (list* (if source-uri

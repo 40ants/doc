@@ -231,14 +231,14 @@
                               :ignore-words ("SLIME"
                                              "SLY"
                                              "M-."))
-  "Here what I need to check and fix:
+    "Here what I need to [check](https://yandex.ru) and fix:
 
-- enable all locatives
-- check dependencies of core
-- reenable tests suite
-- fix how do `M-.` work in `SLIME`
-- fix transcribe
-- create integration with `SLY`
+     1. enable all locatives
+     1. check dependencies of core
+     1. reenable tests suite
+     1. fix how do `M-.` work in `SLIME`
+     1. fix transcribe
+     1. create integration with `SLY`
 "
   )
 
@@ -350,12 +350,32 @@
                                           :base-dir "./new-docs/"))
 
 
+
+(40ants-doc:defsection @inner (:title "Inner Section")
+  "This is the inner section")
+
+
+(40ants-doc:defsection @intermediate (:title "Intermediate")
+  "Intermediate"
+  (@inner section))
+
+(40ants-doc:defsection @experiment (:title "Experiment")
+  "Before"
+  (@inner section))
+
 (defun render-readme ()
   (40ants-doc/builder::page-to-markdown
    (list
-    ;; @index
-    @second-page)
-   "NEW.md"))
+    @index
+    @second-page
+    ;; @experiment
+
+    )
+   "NEW.md")
+
+  (format t "====~%~A~%====~%"
+          (alexandria:read-file-into-string "NEW.md"))
+  (values))
 
 
 #+nil

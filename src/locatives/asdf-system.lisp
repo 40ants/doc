@@ -18,6 +18,7 @@
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/builder/heading)
   (:import-from #:common-doc
+                #:make-paragraph
                 #:make-unordered-list
                 #:make-section
                 #:make-list-item
@@ -89,17 +90,18 @@
                                                        (first value))
                                          href (second value))))
                (make-list-item
-                (if href
-                    (make-content
-                     (list (make-text
-                            (format nil "~A: "
-                                    name))
-                           (make-web-link href
-                                          (make-text value))))
-                    (make-text
-                     (format nil "~A: ~A"
-                             name
-                             value)))))))
+                (make-paragraph
+                 (if href
+                     (make-content
+                      (list (make-text
+                             (format nil "~A: "
+                                     name))
+                            (make-web-link href
+                                           (make-text value))))
+                     (make-text
+                      (format nil "~A: ~A"
+                              name
+                              value))))))))
       
       (make-section title
                     :children (make-unordered-list
