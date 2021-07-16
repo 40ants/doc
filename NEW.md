@@ -4,9 +4,9 @@
 
 Hello World!
 
-And here is a link to `Generic and methods` section.
+And here is a link to [`Generic and methods`](#x-28PLAYGROUND-3A-40METHODS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section.
 
-And there can be the `Second Page` section.
+And there can be the [`Second Page`](#x-28PLAYGROUND-3A-40SECOND-PAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section.
 
 ### ASDF System
 
@@ -35,7 +35,7 @@ And there can be the `Second Page` section.
 #### [function] `FOO` ARG
 
 
-Cool! It calls `BAR` function!
+Cool! It calls [`BAR`](#x-28PLAYGROUND-3ABAR-20FUNCTION-29) function!
 
 
 #### [function] `USER`
@@ -47,7 +47,7 @@ Just to check locatives in docstrings
 #### [function] `BAR` USER
 
 
-Cool! This function prints its USER argument. It is also exists as `BAR` compiler-macro.
+Cool! This function prints its USER argument. It is also exists as [`BAR`](#x-28PLAYGROUND-3ABAR-20-28COMPILER-MACRO-29-29) compiler-macro.
 
 
 ### Classes
@@ -103,7 +103,7 @@ No support for structure type yet (`MGL-PAX` lack it too)
 #### [compiler-macro] `BAR`
 
 
-A custom dostring for a compiler macro. Optimizes a call to the `BAR` function, when arg is an atom.
+A custom dostring for a compiler macro. Optimizes a call to the [`BAR`](#x-28PLAYGROUND-3ABAR-20FUNCTION-29) function, when arg is an atom.
 
 
 ### Constants
@@ -133,7 +133,7 @@ Just a var with docstring.
 #### [variable] `*VAR-C*` -unbound-
 
 
-Unbound var with docstring. `LISP` allows us to define docstring separately.
+Unbound var with docstring. [`LISP`](#x-28PLAYGROUND-3ALISP-2040ANTS-DOC-2FLOCATIVES-3AGLOSSARY-TERM-29) allows us to define docstring separately.
 
 
 ### Glossary
@@ -160,7 +160,7 @@ the global value of the variable is included in the documentation.
 
 Macro's docstring.
 
-We can refer `FOO` function from here.
+We can refer [`FOO`](#x-28PLAYGROUND-3AFOO-20FUNCTION-29) function from here.
 
 
 ### Generic and methods
@@ -217,7 +217,7 @@ Very small integer, less or equal than 3.
   (values))
 
 (define-compiler-macro bar (&whole form arg)
-  "A custom dostring for a compiler macro. Optimizes a call to the `BAR` function, when arg is an atom."
+  "A custom dostring for a compiler macro. Optimizes a call to the [`BAR`](#x-28PLAYGROUND-3ABAR-20FUNCTION-29) function, when arg is an atom."
   (if (atom arg)
       arg
       form))
@@ -240,7 +240,7 @@ Here what I need to [check](https://yandex.ru) and fix:
 
 6. create integration with `SLY`
 
-Finally the other `Second Page` section link.
+Finally the other [`Second Page`](#x-28PLAYGROUND-3A-40SECOND-PAGE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section link.
 
 ## Second Page
 

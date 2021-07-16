@@ -350,18 +350,10 @@
                                           :base-dir "./new-docs/"))
 
 
-
-(40ants-doc:defsection @inner (:title "Inner Section")
-  "This is the inner section")
-
-
-(40ants-doc:defsection @intermediate (:title "Intermediate")
-  "Intermediate"
-  (@inner section))
-
 (40ants-doc:defsection @experiment (:title "Experiment")
-  "Before"
-  (@inner section))
+  "This section is about FOO function."
+  (foo function))
+
 
 (defun render-readme ()
   (40ants-doc/builder::page-to-markdown
@@ -369,7 +361,6 @@
     @index
     @second-page
     ;; @experiment
-
     )
    "NEW.md")
 
