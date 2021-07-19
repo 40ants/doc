@@ -181,45 +181,52 @@
 
 (defun multi-page-to-html (sections &key (theme '40ants-doc/themes/default:default-theme)
                                          (base-dir #P"./"))
-  (let* ((theme (make-instance theme))
-         (pages (mapcar #'40ants-doc/page:ensure-page sections))
-         (page-documents (mapcar
-                          #'40ants-doc/commondoc/builder:to-commondoc
-                          pages))
-         (full-document (common-doc:make-document "Documentation"
-                                                  :children page-documents))
-         (references (40ants-doc/commondoc/page::collect-references full-document))
-         (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
-         (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
-         (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references))
-         (absolute-dir (uiop:ensure-absolute-pathname base-dir
-                                                      (probe-file ".")))
-         (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
-         (40ants-doc/commondoc/toc:*main-toc*
-           (40ants-doc/commondoc/toc:make-toc full-document)))
-    
-    (ensure-directories-exist absolute-dir)
-    
-    (let ((common-html.emitter:*document-section-format-control*
-            ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
-            ;; be a slash after the .html
-            "~A#~A"))
-      (loop for document in page-documents
-            for filename = (40ants-doc/commondoc/page::html-filename document)
-            for full-filename = (uiop:merge-pathnames* filename absolute-dir)
-            do (uiop:with-output-file (stream full-filename
-                                              :if-exists :supersede)
-                 (common-doc.format:emit-document (make-instance 'common-html:html)
-                                                  document
-                                                  stream))))
-    
-    (uiop:with-output-file (stream css-filename
-                                   :if-exists :supersede)
-      (write-string (40ants-doc/themes/api:render-css theme)
-                    stream)
-      (terpri stream))
-    
-    (values absolute-dir)))
+  (let ((num-warnings 0))
+    (handler-bind ((warning (lambda (c)
+                              (declare (ignore c))
+                              (incf num-warnings))))
+      (let* ((theme (make-instance theme))
+             (pages (mapcar #'40ants-doc/page:ensure-page sections))
+             (page-documents (mapcar
+                              #'40ants-doc/commondoc/builder:to-commondoc
+                              pages))
+             (full-document (common-doc:make-document "Documentation"
+                                                      :children page-documents))
+             (references (40ants-doc/commondoc/page::collect-references full-document))
+             (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
+             (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
+             (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references))
+             (absolute-dir (uiop:ensure-absolute-pathname base-dir
+                                                          (probe-file ".")))
+             (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
+             (40ants-doc/commondoc/toc:*main-toc*
+               (40ants-doc/commondoc/toc:make-toc full-document)))
+       
+        (ensure-directories-exist absolute-dir)
+       
+        (let ((common-html.emitter:*document-section-format-control*
+                ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
+                ;; be a slash after the .html
+                "~A#~A"))
+          (loop for document in page-documents
+                for filename = (40ants-doc/commondoc/page::html-filename document)
+                for full-filename = (uiop:merge-pathnames* filename absolute-dir)
+                do (uiop:with-output-file (stream full-filename
+                                                  :if-exists :supersede)
+                     (common-doc.format:emit-document (make-instance 'common-html:html)
+                                                      document
+                                                      stream))))
+       
+        (uiop:with-output-file (stream css-filename
+                                       :if-exists :supersede)
+          (write-string (40ants-doc/themes/api:render-css theme)
+                        stream)
+          (terpri stream))
+
+        (unless (zerop num-warnings)
+          (warn "~A warning~:P were caught"
+                num-warnings))
+        (values absolute-dir)))))
 
 
 (defun page-to-markdown (sections filename)
