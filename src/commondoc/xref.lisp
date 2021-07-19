@@ -44,10 +44,14 @@
                            In this case a warning will be shown.")
    (locative :accessor xref-locative
              :initarg :locative
-             :type (or null symbol)
+             :type (or null symbol list)
              :documentation "Sometime xref might be followed by a locative name.
                              In this case this slot will be filled with a corresponding
-                             locative symbol from 40ANTS-DOC/LOCATIVES package."))
+                             locative symbol from 40ANTS-DOC/LOCATIVES package.
+
+                             In some cases locative might be a list. For example METHOD
+                             locative has a few arguments and XREFS to methods might
+                             be like that (METHOD :AFTER (STRING T))"))
   (:documentation "A link some entity, refered in markdown as a link like [Some text][the-id]
                    or just being UPPERCASED-SYMBOL mentioned."))
 
@@ -55,12 +59,25 @@
 (defun make-xref (name &key symbol locative)
   (check-type name string)
   (check-type symbol (or null symbol))
-  (check-type locative (or null symbol))
+  (check-type locative (or null symbol list))
+
+  (when (typep locative 'list)
+    (check-type (first locative)
+                symbol))
   
   (make-instance 'xref
                  :name name
                  :symbol symbol
                  :locative locative))
+
+
+(defmethod print-object ((xref xref) stream)
+  (print-unreadable-object (xref stream :type t)
+    (format stream "~S~:[~; ~A~]"
+            (or (xref-symbol xref)
+                (xref-name xref))
+            (xref-locative xref)
+            (xref-locative xref))))
 
 
 (defun fill-locatives (node)

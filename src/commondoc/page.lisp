@@ -97,7 +97,7 @@
   results)
 
 
-(defun replace-xrefs (node known-references &aux ignored-words)
+(defun replace-xrefs (node known-references &aux ignored-words sections)
   "Replaces XREF with COMMON-DOC:WEB-LINK.
 
    Returns links which were not replaced because there wasn't
@@ -118,6 +118,18 @@
            (pop-ignored-words (node)
              (when (supports-ignored-words-p node)
                (pop ignored-words)))
+           (collect-section (node)
+             (when (typep node '40ants-doc/commondoc/section:documentation-section)
+               (push node sections)))
+           (pop-section (node)
+             (when (typep node '40ants-doc/commondoc/section:documentation-section)
+               (pop sections)))
+           (go-down (node)
+             (collect-ignored-words node)
+             (collect-section node))
+           (go-up (node)
+             (pop-ignored-words node)
+             (pop-section node))
            (should-be-ignored-p (text)
              (loop for sublist in ignored-words
                    thereis (member text sublist
@@ -180,9 +192,16 @@
                                              collect (common-doc:make-text " "))
                                        (list (common-doc:make-text ")"))))))))
                     
-                    (t node))))
+                    (t
+                     (warn "Unable to find target for reference ~A mentioned at ~{~A~^ / ~}"
+                           node
+                           (loop for section in (reverse sections)
+                                 for title = (common-doc.ops:collect-all-text
+                                              (common-doc:title section))
+                                 collect title))
+                     node))))
                (t
                 node))))
     (40ants-doc/commondoc/mapper:map-nodes node #'replacer
-                                           :on-going-down #'collect-ignored-words
-                                           :on-going-up #'pop-ignored-words)))
+                                           :on-going-down #'go-down
+                                           :on-going-up #'go-up)))

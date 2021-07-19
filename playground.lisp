@@ -345,8 +345,10 @@
                                           :base-dir "./new-docs/"))
 
 (defun new-render-multi ()
-  (40ants-doc/builder::multi-page-to-html (list @index
-                                                @second-page)
+  (40ants-doc/builder::multi-page-to-html (list ;; @index
+                                                40ants-doc/doc::@index
+                                                ;; @second-page
+                                                )
                                           :base-dir "./new-docs/"))
 
 
@@ -358,8 +360,8 @@
 (defun render-readme ()
   (40ants-doc/builder::page-to-markdown
    (list
-    @index
-    @second-page
+    40ants-doc/doc::@index
+    ;; @second-page
     ;; @experiment
     )
    "NEW.md")

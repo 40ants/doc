@@ -104,8 +104,15 @@
                   (when found
                     ;; The rest of the symbols in the string need not be
                     ;; already interned, so let's just read it.
-                    (ignore-errors (let ((*read-eval* t))
-                                     (read-from-string string))))))))))))
+                    (ignore-errors
+                     (let* ((*read-eval* t)
+                            (result (read-from-string string)))
+                       ;; Some string may be read as cons,
+                       ;; for example, reading "'foo"
+                       ;; will result in (cons 'QUOTE 'FOO)
+                       ;; but we only want this function to return symbols.
+                       (when (typep result 'symbol)
+                         result))))))))))))
 
 (defun locate-reference-link-definition-for-emacs (string)
   (when (and (= 2 (count #\[ string))

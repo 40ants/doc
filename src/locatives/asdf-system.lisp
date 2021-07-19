@@ -117,26 +117,7 @@
                                      (item "Bug tracker" 'asdf/system:system-bug-tracker
                                            :type :link)
                                      (item "Source control" 'asdf/system:system-source-control
-                                           :type :source-control)))))
-    ;; (flet ((foo (name fn &key type)
-    ;;          (let ((value (funcall fn system)))
-    ;;            (when value
-    ;;              (case type
-    ;;                ((:link)
-    ;;                 (format stream "- ~A: [~A](~A)~%" name value value))
-    ;;                ((:mailto)
-    ;;                 (format stream "- ~A: [~A](mailto:~A)~%"
-    ;;                         name value value))
-    ;;                ((:source-control)
-    ;;                 (format stream "- ~A: [~A](~A)"
-    ;;                         name (first value) (second value)))
-    ;;                ((nil)
-    ;;                 (format stream "- ~A: ~A~%" name value)))))))
-    ;;   (foo "Version" 'asdf/component:component-version)
-    ;;   (foo "Description" 'asdf/system:system-description)
-      
-    ;;   (terpri stream))
-    ))
+                                           :type :source-control)))))))
 
 (defmethod find-source ((system asdf:system))
   `(:location
