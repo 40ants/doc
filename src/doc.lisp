@@ -78,7 +78,7 @@ This system is a fork of [MGL-PAX](https://github.com/melisgl/mgl-pax).
 
 There are a few reasons, why I've created the fork.
 
-The main goal is to extract a core features into the system 40ANTS-DOC
+The main goal is to extract a core features into the 40ANTS-DOC system
 with as little dependencies as possible. This is important, because with MGL-PAX's
 style, you define documentation sections in your library's code, which makes
 it dependent on the documentation system. However, heavy weight dependencies

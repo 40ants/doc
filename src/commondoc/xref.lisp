@@ -115,24 +115,30 @@
   node)
 
 
+(defun all-digits (text)
+  (loop for char across text
+        always (digit-char-p char)))
+
+
 (defun extract-symbols-from-text (node)
   ;; TODO: Find if this a replacement for FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE.
   (let ((text (common-doc:text node))
         (new-nodes nil)
         (processed-to-idx 0))
 
-    (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-]+::?)?[+*@]?[A-Z][A-Z0-9-]*[A-Z0-9]+[+*]?" text)
-      (when (> start processed-to-idx)
-        (push (common-doc:make-text (subseq text processed-to-idx start))
-              new-nodes))
+    (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-]+::?)?[+*@]?[A-Z0-9][A-Z0-9-]*[A-Z0-9]+[+*]?" text)
+      (let ((symbol-name (subseq text start end)))
+        (unless (all-digits symbol-name)
+          (when (> start processed-to-idx)
+            (push (common-doc:make-text (subseq text processed-to-idx start))
+                  new-nodes))
 
-      (let* ((symbol-name (subseq text start end))
-             (symbol (40ants-doc/swank::read-locative-from-string symbol-name)))
-        (push (make-xref symbol-name
-                         :symbol symbol)
-              new-nodes))
+          (let* ((symbol (40ants-doc/swank::read-locative-from-string symbol-name)))
+            (push (make-xref symbol-name
+                             :symbol symbol)
+                  new-nodes))
 
-      (setf processed-to-idx end))
+          (setf processed-to-idx end))))
 
     (when (< processed-to-idx
              (length text))

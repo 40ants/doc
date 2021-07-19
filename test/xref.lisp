@@ -118,6 +118,33 @@
           (ok (typep (first children) 'common-doc:text-node))
           (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
           (ok (typep (third children) 'common-doc:text-node))))))
+
+  (testing "Symbol name may start from numbers"
+    (let* ((doc (make-content
+                 (list (make-text "This is a 40ANTS-DOC system."))))
+           (result (extract-symbols doc)))
+      (let* ((content (first (common-doc:children result)))
+             (children (common-doc:children content)))
+        (testing "Now text node should be replaced with a content-node"
+          (ok (typep content 'common-doc:content-node)))
+
+        (testing "Instead of one text node there should be 3 nodes now"
+          (ok (= (length children) 3))
+          (ok (typep (first children) 'common-doc:text-node))
+          (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+          (ok (string= (xref-name (second children))
+                       "40ANTS-DOC"))
+          (ok (typep (third children) 'common-doc:text-node))))))
+
+  (testing "Numbers should not be considered symbols."
+    (let* ((doc (make-content
+                 (list (make-text "This is a magic 100500 number."))))
+           (result (extract-symbols doc)))
+      (let* ((content (first (common-doc:children result)))
+             (children (common-doc:children content)))
+        (testing "Now text node should not be replaced with a content-node"
+          (ok (= (length children) 1))
+          (ok (typep (first children) 'common-doc:text-node))))))
   
   (testing "This also should work for variables"
     (let* ((doc (make-text "This is a *SOME-VAR* var."))
