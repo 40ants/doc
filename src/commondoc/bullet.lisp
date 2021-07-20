@@ -14,14 +14,15 @@
                 #:arglist-to-string)
   (:import-from #:40ants-doc/commondoc/arglist)
   (:import-from #:40ants-doc/ignored-words
-                #:ignored-words))
+                #:ignored-words)
+  (:import-from #:40ants-doc/commondoc/piece
+                #:documentation-piece
+                #:doc-reference))
 (in-package 40ants-doc/commondoc/bullet)
 
 
-(defclass bullet (common-doc:content-node)
-  ((bullet-reference :initarg :bullet-reference
-                     :reader bullet-reference)
-   (name :initarg :name
+(defclass bullet (documentation-piece common-doc:content-node)
+  ((name :initarg :name
          :initform nil
          :reader bullet-name)
    (arglist :initarg :arglist
@@ -45,7 +46,7 @@
                         (40ants-doc/reference::reference-to-anchor reference))))
     (make-instance 'bullet
                    :name name
-                   :bullet-reference  reference
+                   :doc-reference reference
                    :ignore-words (uiop:ensure-list ignore-words)
                    ;; This argument should be a list of
                    ;; ARGLIST objects.
@@ -68,7 +69,7 @@
 
 (common-html.emitter::define-emitter (obj bullet)
   "Emit an piece of documentation."
-  (let* ((reference (bullet-reference obj))
+  (let* ((reference (doc-reference obj))
          (arglists (bullet-arglist obj))
          (locative-type (string-downcase
                          (40ants-doc/reference::reference-locative-type reference)))
@@ -110,7 +111,7 @@
 (defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
                                             (node bullet)
                                             stream)
-  (let* ((reference (bullet-reference node))
+  (let* ((reference (doc-reference node))
          (arglists (bullet-arglist node))
          (locative-type (string-downcase
                          (40ants-doc/reference::reference-locative-type reference)))

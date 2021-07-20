@@ -344,25 +344,26 @@
   (40ants-doc/builder:single-page-to-html @index
                                           :base-dir "./new-docs/"))
 
+(40ants-doc:defsection @experiment (:title "Experiment")
+  "This section is about 40ANTS-DOC system."
+  (40ants-doc system))
+
+
 (defun new-render-multi ()
   (40ants-doc/builder::multi-page-to-html (list ;; @index
-                                                40ants-doc/doc::@index
-                                                ;; @second-page
-                                                )
+                                           40ants-doc/doc::@index
+                                           ;; @second-page
+                                           ;; @experiment
+                                           )
                                           :base-dir "./new-docs/"))
-
-
-(40ants-doc:defsection @experiment (:title "Experiment")
-  "This section is about FOO function."
-  (foo function))
 
 
 (defun render-readme ()
   (40ants-doc/builder::page-to-markdown
    (list
-    40ants-doc/doc::@index
+    ;; 40ants-doc/doc::@index
     ;; @second-page
-    ;; @experiment
+    @experiment
     )
    "NEW.md")
 

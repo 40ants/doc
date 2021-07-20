@@ -13,6 +13,9 @@
   (:import-from #:40ants-doc/ignored-words
                 #:ignored-words
                 #:supports-ignored-words-p)
+  (:import-from #:40ants-doc/commondoc/piece
+                #:doc-reference
+                #:documentation-piece)
   (:export
    ;; #:ensure-page
    #:make-page
@@ -79,12 +82,8 @@
                     node))))
          (collector (node)
            (let ((node
-                   (typecase node
-                     (40ants-doc/commondoc/bullet::bullet
-                      (40ants-doc/commondoc/bullet::bullet-reference node))
-                     (40ants-doc/commondoc/section::documentation-section
-                      (40ants-doc/reference-api::canonical-reference
-                       (40ants-doc/commondoc/section:section-definition node))))))
+                   (when (typep node 'documentation-piece)
+                     (doc-reference node))))
              (when node
                (push (cons node
                            (or current-page
@@ -145,8 +144,25 @@
                        (found-references
                          (unless should-be-ignored
                            (loop for (reference . page) in known-references
-                                 when (and (eql (40ants-doc/reference::reference-object reference)
-                                                symbol)
+                                 ;; This can be a symbol or a string.
+                                 ;; For example, for SYSTEM locative, object
+                                 ;; is a string name of a system.
+                                 ;; 
+                                 ;; TODO: Think about a GENERIC to compare
+                                 ;;       XREF with references of different locative types.
+                                 for reference-object = (40ants-doc/reference::reference-object reference)
+                                 when (and (etypecase reference-object
+                                             (symbol
+                                              (eql reference-object
+                                                   symbol))
+                                             (string
+                                              ;; Here we intentionally use case insensitive
+                                              ;; comparison, because a canonical reference
+                                              ;; to ASDF system contains it's name in a lowercase,
+                                              ;; but some other locatives like a PACKAGE, might
+                                              ;; keep a name in the uppercase.
+                                              (string-equal reference-object
+                                                            text)))
                                            (or (null locative)
                                                (eql (40ants-doc/reference::reference-locative-type reference)
                                                     locative)))

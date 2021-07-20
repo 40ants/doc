@@ -24,7 +24,9 @@
                 #:make-list-item
                 #:make-content
                 #:make-web-link
-                #:make-text))
+                #:make-text)
+  (:import-from #:40ants-doc/commondoc/section
+                #:make-section-with-reference))
 (in-package 40ants-doc/locatives/asdf-system)
 
 (define-locative-type asdf:system ()
@@ -103,21 +105,24 @@
                               name
                               value))))))))
       
-      (make-section title
-                    :children (make-unordered-list
-                               (list (item "Version" 'asdf/component:component-version)
-                                     (item "Description" 'asdf/system:system-description)
-                                     (item "Licence" 'asdf/system:system-licence)
-                                     (item "Author" 'asdf/system:system-author)
-                                     (item "Maintainer" 'asdf/system:system-maintainer)
-                                     (item "Mailto" 'asdf/system:system-mailto
-                                           :type :mailto)
-                                     (item "Homepage" 'asdf/system:system-homepage
-                                           :type :link)
-                                     (item "Bug tracker" 'asdf/system:system-bug-tracker
-                                           :type :link)
-                                     (item "Source control" 'asdf/system:system-source-control
-                                           :type :source-control)))))))
+      (let ((children (make-unordered-list
+                       (list (item "Version" 'asdf/component:component-version)
+                             (item "Description" 'asdf/system:system-description)
+                             (item "Licence" 'asdf/system:system-licence)
+                             (item "Author" 'asdf/system:system-author)
+                             (item "Maintainer" 'asdf/system:system-maintainer)
+                             (item "Mailto" 'asdf/system:system-mailto
+                                   :type :mailto)
+                             (item "Homepage" 'asdf/system:system-homepage
+                                   :type :link)
+                             (item "Bug tracker" 'asdf/system:system-bug-tracker
+                                   :type :link)
+                             (item "Source control" 'asdf/system:system-source-control
+                                   :type :source-control))))
+            (reference (40ants-doc/reference-api::canonical-reference system)))
+        (make-section-with-reference title
+                                     children
+                                     reference)))))
 
 (defmethod find-source ((system asdf:system))
   `(:location

@@ -17,14 +17,22 @@
   (:import-from #:40ants-doc/commondoc/xref)
   (:import-from #:40ants-doc/ignored-words)
   (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/commondoc/piece
+                #:documentation-piece)
+  (:import-from #:40ants-doc/reference)
   (:export
    #:documentation-section
    #:section-definition
-   #:documentation-section-uri-fragment))
+   #:documentation-section-uri-fragment
+   #:make-section-with-reference))
 (in-package 40ants-doc/commondoc/section)
 
 
-(defclass documentation-section (common-doc:section)
+(defclass section-with-reference (documentation-piece common-doc:section)
+  ())
+
+
+(defclass documentation-section (section-with-reference)
   ((definition :initarg :definition
                :type 40ants-doc:section
                :reader section-definition))
@@ -35,6 +43,19 @@
 (defun make-section-body (section)
   (loop for entry in (40ants-doc:section-entries section)
         collect (40ants-doc/commondoc/builder:to-commondoc entry)))
+
+
+(defun make-section-with-reference (title children reference)
+  (check-type reference 40ants-doc/reference::reference)
+  
+  (let ((title (loop for item in (uiop:ensure-list title)
+                     collect (etypecase item
+                               (string (common-doc:make-text item))
+                               (common-doc:document-node item)))))
+    (make-instance 'section-with-reference
+                   :title title
+                   :doc-reference reference
+                   :children (uiop:ensure-list children))))
 
 
 (defun make-documentation-section (definition)
@@ -49,6 +70,8 @@
     
       (make-instance 'documentation-section
                      :definition definition
+                     :doc-reference (40ants-doc/reference-api::canonical-reference
+                                     definition)
                      :title title
                      :reference html-fragment
                      :children children))))

@@ -100,7 +100,7 @@ Here is features already implemented in this fork:
 
 * Core system `40ANTS-DOC` now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
-  `40ANTS-DOC/FULL` system which will download such dependencies as markdown
+  `40ANTS-DOC-FULL` system which will download such dependencies as markdown
   parser and more.
 * Now you don't have to import any locative symbols into your package. Import
   only a DEFSECTION macro and it will be enough to define documentation for
