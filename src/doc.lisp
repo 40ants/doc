@@ -44,7 +44,9 @@
                                    "*FOO-STATE*"
                                    "BAZ"
                                    "BAR"
-                                   "OTHER-PACKAGE:SOMETHING"))
+                                   "OTHER-PACKAGE:SOMETHING"
+                                   "MIT"
+                                   "GIT"))
   "
 <table>
 <tr>
@@ -58,6 +60,7 @@
 "
   (@about section)
   (40ants-doc system)
+  (40ants-doc-full system)
   (@links section)
   (@background section)
   (@tutorial section)
@@ -72,7 +75,9 @@
   (@todo section))
 
 
-(defsection @about (:title "About this fork")
+(defsection @about (:title "About this fork"
+                    :ignore-words ("IRONCLAD"
+                                   "3BMD"))
   "
 This system is a fork of [MGL-PAX](https://github.com/melisgl/mgl-pax).
 
@@ -94,7 +99,9 @@ integration.
 
 (defsection @difference-from-mgl-pax (:title "Why this fork is different"
                                       :ignore-words ("NAMED-READTABLES"
-                                                     "PYTHONIC-STRING-READER"))
+                                                     "PYTHONIC-STRING-READER"
+                                                     "API"
+                                                     "CL-INFO:@INDEX"))
   "
 Here is features already implemented in this fork:
 

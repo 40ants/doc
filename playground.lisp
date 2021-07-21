@@ -345,7 +345,7 @@
                                           :base-dir "./new-docs/"))
 
 (40ants-doc:defsection @experiment (:title "Experiment")
-  "This section is about 40ANTS-DOC system."
+  "This section is about NIL system."
   (40ants-doc system))
 
 

@@ -96,7 +96,9 @@
   results)
 
 
-(defun replace-xrefs (node known-references &aux ignored-words sections)
+(defun replace-xrefs (node known-references &aux ignored-words
+                                                 sections
+                                                 (common-lisp-package (find-package :common-lisp)))
   "Replaces XREF with COMMON-DOC:WEB-LINK.
 
    Returns links which were not replaced because there wasn't
@@ -129,10 +131,18 @@
            (go-up (node)
              (pop-ignored-words node)
              (pop-section node))
-           (should-be-ignored-p (text)
-             (loop for sublist in ignored-words
-                   thereis (member text sublist
-                                   :test #'string=)))
+           (should-be-ignored-p (text symbol)
+             (or (loop for sublist in ignored-words
+                       thereis (member text sublist
+                                       :test #'string=))
+                 ;; This is a special case
+                 ;; because we can't distinguish between absent SYMBOL
+                 ;; and NIL.
+                 (string= text
+                          "NIL")
+                 (and symbol
+                      (eql (symbol-package symbol)
+                           common-lisp-package))))
            (replacer (node)
              (typecase node
                (40ants-doc/commondoc/xref:xref
@@ -140,7 +150,7 @@
                        (symbol (40ants-doc/commondoc/xref:xref-symbol node))
                        (locative (40ants-doc/commondoc/xref:xref-locative node))
                        (should-be-ignored
-                         (should-be-ignored-p text))
+                         (should-be-ignored-p text symbol))
                        (found-references
                          (unless should-be-ignored
                            (loop for (reference . page) in known-references
