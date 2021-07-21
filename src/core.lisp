@@ -26,7 +26,7 @@
 ;;; Should this remove docstrings of referenced things?
 (defvar *discard-documentation-p* nil
   "The default value of DEFSECTION's DISCARD-DOCUMENTATION-P argument.
-  One may want to set *DISCARD-DOCUMENTATION-P* to true before
+  One may want to set `*DISCARD-DOCUMENTATION-P*` to true before
   building a binary application.")
 
 (defmacro defsection (name (&key (package-symbol '*package*)

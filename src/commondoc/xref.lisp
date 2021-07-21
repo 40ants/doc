@@ -95,10 +95,12 @@
                      (setf locative-on-the-left
                            (read-locative (right-word node))))
                     ((null (xref-locative prev-xref))
-                     (setf (xref-locative prev-xref)
-                           (read-locative (left-word node)))
-                     (setf prev-xref
-                           nil))))
+                     (let* ((word (left-word node))
+                            (locative-on-the-right (read-locative word)))
+                       (setf (xref-locative prev-xref)
+                             locative-on-the-right)
+                       (setf prev-xref
+                             nil)))))
                  (xref
                   (cond
                     (locative-on-the-left

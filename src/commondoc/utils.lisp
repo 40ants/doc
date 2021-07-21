@@ -13,7 +13,8 @@
 
 (defun left-word (node)
   (check-type node common-doc:text-node)
-  (let* ((text (common-doc:text node))
+  (let* ((text (str:replace-all '(#\Newline) " "
+                                (common-doc:text node)))
          (stripped (string-left-trim *whitespace-chars*
                                      text))
          (parts (str:split #\Space stripped :limit 2)))
@@ -22,7 +23,8 @@
 
 (defun right-word (node)
   (check-type node common-doc:text-node)
-  (let* ((text (common-doc:text node))
+  (let* ((text (str:replace-all '(#\Newline) " "
+                                (common-doc:text node)))
          (stripped (string-right-trim *whitespace-chars*
                                       text))
          (parts (str:rsplit #\Space stripped :limit 2)))

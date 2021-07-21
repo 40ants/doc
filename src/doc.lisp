@@ -378,7 +378,9 @@ on the GitHub to suggest a new feature.
   automatically checked for up-to-dateness. See
   `40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT`.""")
 
-(defsection @emacs-integration (:title "Emacs Integration")
+(defsection @emacs-integration (:title "Emacs Integration"
+                                :ignore-words ("SWANK-BACKEND:FIND-SOURCE-LOCATION"
+                                               "SWANK-BACKEND:FIND-DEFINITIONS"))
   "Integration into SLIME's `M-.` (`slime-edit-definition`) allows one
   to visit the source location of the thing that's identified by a
   symbol and the locative before or after the symbol in a buffer. With

@@ -131,8 +131,10 @@
            (go-up (node)
              (pop-ignored-words node)
              (pop-section node))
-           (should-be-ignored-p (text symbol)
-             (or (loop for sublist in ignored-words
+           (should-be-ignored-p (text symbol locative)
+             (or (eql locative
+                      '40ants-doc/locatives:argument)
+                 (loop for sublist in ignored-words
                        thereis (member text sublist
                                        :test #'string=))
                  ;; This is a special case
@@ -150,7 +152,7 @@
                        (symbol (40ants-doc/commondoc/xref:xref-symbol node))
                        (locative (40ants-doc/commondoc/xref:xref-locative node))
                        (should-be-ignored
-                         (should-be-ignored-p text symbol))
+                         (should-be-ignored-p text symbol locative))
                        (found-references
                          (unless should-be-ignored
                            (loop for (reference . page) in known-references

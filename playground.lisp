@@ -345,8 +345,9 @@
                                           :base-dir "./new-docs/"))
 
 (40ants-doc:defsection @experiment (:title "Experiment")
-  "This section is about NIL system."
-  (40ants-doc system))
+  "This SOME-SHIT argument for the system."
+  (40ants-doc::*discard-documentation-p* variable)
+  )
 
 
 (defun new-render-multi ()
