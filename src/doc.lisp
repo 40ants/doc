@@ -207,7 +207,8 @@ on the GitHub to suggest a new feature.
 
   [markdown]: https://daringfireball.net/projects/markdown/")
 
-(defsection @tutorial (:title "Tutorial")
+(defsection @tutorial (:title "Tutorial"
+                       :ignore-words ("UIOP:DEFINE-PACKAGE"))
   """40ANTS-DOC provides an extremely poor man's Explorable Programming
   environment. Narrative primarily lives in so called sections that
   mix markdown docstrings with references to functions, variables,
@@ -224,7 +225,7 @@ on the GitHub to suggest a new feature.
   from code, not vice versa and there is no support for chunking yet.
   Code is first, code must look pretty, documentation is code.
 
-  In typical use, using 40ANTS-DOC, packages have no :EXPORT's defined.
+  In typical use, using 40ANTS-DOC, packages have no `:EXPORT`'s defined.
   Instead the UIOP:DEFINE-PACKAGE form gets a docstring which may mention section
   names (defined with DEFSECTION). When the code is loaded into the
   lisp, pressing `M-.` in SLIME on the name of the section will take

@@ -181,7 +181,8 @@
 
                   (cond
                     (should-be-ignored
-                     (common-doc:make-text text))
+                     (common-doc:make-code
+                      (common-doc:make-text text)))
                     (found-references
                      (labels ((make-link (reference page text)
                                 (let ((page-uri
