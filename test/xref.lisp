@@ -182,6 +182,24 @@
       (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "SOME-PACKAGE::+SOME-VAR+"))))
+
+  (testing "And package name might contain slashes"
+    (let* ((doc (make-text "This is a SOME/PACKAGE::+SOME-VAR+ const."))
+           (result (extract-symbols doc))
+           (children (common-doc:children result)))
+      (ok (= (length children) 3))
+      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (string= (xref-name (second children))
+                   "SOME/PACKAGE::+SOME-VAR+"))))
+
+  (testing "And also dots"
+    (let* ((doc (make-text "This is a SOME.PACKAGE::+SOME-VAR+ const."))
+           (result (extract-symbols doc))
+           (children (common-doc:children result)))
+      (ok (= (length children) 3))
+      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (string= (xref-name (second children))
+                   "SOME.PACKAGE::+SOME-VAR+"))))
   
   (testing "Also, uppercased words starting from @ are matched"
     (let* ((doc (make-text "This is a SOME-PACKAGE:@SOME-SECTION const."))

@@ -208,7 +208,18 @@ on the GitHub to suggest a new feature.
   [markdown]: https://daringfireball.net/projects/markdown/")
 
 (defsection @tutorial (:title "Tutorial"
-                       :ignore-words ("UIOP:DEFINE-PACKAGE"))
+                       :ignore-words ("UIOP:DEFINE-PACKAGE"
+                                      "@FOO-RANDOM-MANUAL"
+                                      "LIMIT"
+                                      "STDDEV"
+                                      "HELLO"
+                                      "FOO-RANDOM-STATE"
+                                      "FOO-RANDOM"
+                                      "STATE"
+                                      "OBJECT"
+                                      "KEY"
+                                      "GAUSSIAN-RANDOM"
+                                      "UNIFORM-RANDOM"))
   """40ANTS-DOC provides an extremely poor man's Explorable Programming
   environment. Narrative primarily lives in so called sections that
   mix markdown docstrings with references to functions, variables,
@@ -349,7 +360,7 @@ on the GitHub to suggest a new feature.
   More fancy markdown or HTML output with automatic markup and linking
   of uppercase symbol names found in docstrings, section numbering,
   table of contents, etc is possible by calling the `40ANTS-DOC/DOCUMENT::DOCUMENT`
-  function.
+  generic.
 
   One can even generate documentation for different, but related
   libraries at the same time with the output going to different files,
