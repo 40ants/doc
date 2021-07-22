@@ -171,28 +171,46 @@
 ;;   *package*)
 
 
-(defun extract-symbols (node)
+(defun extract-symbols (node &aux inside-code-block)
   "Extracts non marked up symbols from COMMON-DOC:TEXT-NODE and replaces them with XREF objects."
   (let ((*package* *package*)
         (packages-stack nil))
     ;; Here we we need to change *package*
     ;; to make sure, that all symbol mentions are parsed as if we being
     ;; in the package where DOCUMENTATION-SECTION was defined.
-    (flet ((set-package (node)
-             (let ((package (40ants-doc/utils::object-package node)))
-               (push *package* packages-stack)
-               (setf *package* package)))
-           (reset-package (node)
-             (declare (ignore node))
-             (setf *package*
-                   (pop packages-stack)))
-           (extractor (node)
-             (typecase node
-               (common-doc:text-node (extract-symbols-from-text node))
-               (t node))))
+    (labels
+        ((set-package (node)
+           (let ((package (40ants-doc/utils::object-package node)))
+             (push *package* packages-stack)
+             (setf *package* package)))
+         (reset-package (node)
+           (declare (ignore node))
+           (setf *package*
+                 (pop packages-stack)))
+         (go-down (node)
+           (set-package node)
+
+           ;; We need this flag because we want to turn off
+           ;; symbol extraction inside code blocks
+           (when (typep node
+                        'common-doc:code-block)
+             (setf inside-code-block t)))
+         (go-up (node)
+           (reset-package node)
+
+           (when (typep node
+                        'common-doc:code-block)
+             (setf inside-code-block nil)))
+         (extractor (node)
+           (typecase node
+             (common-doc:text-node
+              (if inside-code-block
+                  node
+                  (extract-symbols-from-text node)))
+             (t node))))
       (40ants-doc/commondoc/mapper:map-nodes node #'extractor
-                                             :on-going-down #'set-package
-                                             :on-going-up #'reset-package))))
+                                             :on-going-down #'go-down
+                                             :on-going-up #'go-up))))
 
 
 (defgeneric link-text (object)
