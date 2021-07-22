@@ -24,3 +24,15 @@
              1))
       (ok (typep (first children)
                  'common-doc:text-node)))))
+
+
+(deftest test-variable-name-should-remain-text-instead-of-italic
+  (rove:testing "Star symbols denote italic in markdown, but they are often used to surround global var names in CL to let them be tranformed into a XREFs we need to make them back TEXT-NODEs"
+    (let* ((paragraph (40ants-doc/commondoc/markdown:parse-markdown "*SOME-VAR*"))
+           (children (common-doc:children paragraph)))
+      (ok (= (length children)
+             1))
+      (ok (typep (first children)
+                 'common-doc:text-node))
+      (ok (string= (common-doc:text (first children))
+                   "*SOME-VAR*")))))

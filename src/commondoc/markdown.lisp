@@ -119,8 +119,29 @@
     (40ants-doc/commondoc/mapper:map-nodes node #'replacer)))
 
 
+(defun transform-uppercase-italic-nodes-back-to-text (node)
+  (labels ((replacer (node)
+             (cond
+               ((and (typep node
+                            'common-doc:italic)
+                     (loop with text = (common-doc.ops:collect-all-text node)
+                           for char across text
+                           always (or (char= char
+                                             #\-)
+                                      (upper-case-p char))))
+                (common-doc:make-text
+                 (concatenate 'string
+                              "*"
+                              (common-doc.ops:collect-all-text node)
+                              "*")))
+               (t
+                node))))
+    (40ants-doc/commondoc/mapper:map-nodes node #'replacer)))
+
+
 (defun parse-markdown (text)
   (replace-markdown-links
-   (join-italic-var-names
-    (common-doc.format:parse-document (make-instance 'commondoc-markdown:markdown)
-                                      text))))
+   (transform-uppercase-italic-nodes-back-to-text
+    (join-italic-var-names
+     (common-doc.format:parse-document (make-instance 'commondoc-markdown:markdown)
+                                       text)))))
