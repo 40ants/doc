@@ -1,7 +1,8 @@
 (defpackage #:40ants-doc/commondoc/mapper
   (:use #:cl)
   (:export
-   #:map-nodes))
+   #:map-nodes
+   #:node-supports-children))
 (in-package 40ants-doc/commondoc/mapper)
 
 

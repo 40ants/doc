@@ -46,7 +46,9 @@
                                    "BAR"
                                    "OTHER-PACKAGE:SOMETHING"
                                    "MIT"
-                                   "GIT"))
+                                   "GIT"
+                                   "ASDF"
+                                   "CSS"))
   "
 <table>
 <tr>

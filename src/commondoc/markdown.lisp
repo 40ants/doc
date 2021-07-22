@@ -3,6 +3,8 @@
   (:import-from #:commondoc-markdown)
   (:import-from #:common-doc)
   (:import-from #:40ants-doc/commondoc/xref)
+  (:import-from #:40ants-doc/commondoc/mapper
+                #:node-supports-children)
   (:export
    #:parse-markdown))
 (in-package 40ants-doc/commondoc/markdown)
@@ -46,7 +48,79 @@
     (40ants-doc/commondoc/mapper:map-nodes node #'replacer)))
 
 
+(defun join-text-nodes (&rest nodes)
+  "Concatenates all consequent text nodes."
+  (loop with current-node = (car nodes)
+        with results = nil
+        for node in (cdr nodes)
+        do
+           (cond
+             ((and (typep current-node
+                          'common-doc:text-node)
+                   (or (typep node
+                              'common-doc:text-node)
+                       (typep node
+                              'string)))
+              (setf (common-doc:text current-node)
+                    (concatenate 'string
+                                 (common-doc:text current-node)
+                                 (etypecase node
+                                   (common-doc:text-node
+                                    (common-doc:text node))
+                                   (string node)))))
+             (t
+              (push current-node
+                    results)
+              (setf current-node
+                    node)))
+        finally (push current-node
+                      results)
+                (return (nreverse results))))
+
+
+(defun join-italic-var-names (node)
+  (labels ((text-node-ends-with (node char)
+             (str:ends-with-p char
+                              (common-doc:text node)))
+           (replacer (node)
+             (when (node-supports-children node)
+               (let* ((children (common-doc:children node)))
+                 (setf (common-doc:children node)
+                       (loop with skip-next = nil
+                             with results = nil
+                             for child in children
+                             for idx upfrom 0
+                             for next-node = (nth (1+ idx) children)
+                             do
+                                (if skip-next
+                                    (setf skip-next nil)
+                                    (cond
+                                      ((and (typep child
+                                                   'common-doc:text-node)
+                                            (text-node-ends-with child ":")
+                                            (typep next-node
+                                                   'common-doc:italic))
+                                       (setf results
+                                             (append
+                                              (nreverse
+                                               (apply #'join-text-nodes
+                                                      child
+                                                      (append (list "*")
+                                                              (common-doc:children
+                                                               next-node)
+                                                              (list "*"))))
+                                              results))
+                                       (setf skip-next t))
+                                      (t
+                                       (push child results))))
+                             finally
+                                (return (nreverse results))))))
+             (values node)))
+    (40ants-doc/commondoc/mapper:map-nodes node #'replacer)))
+
+
 (defun parse-markdown (text)
   (replace-markdown-links
-   (common-doc.format:parse-document (make-instance 'commondoc-markdown:markdown)
-                                     text)))
+   (join-italic-var-names
+    (common-doc.format:parse-document (make-instance 'commondoc-markdown:markdown)
+                                      text))))
