@@ -144,8 +144,9 @@
 
     (when (< processed-to-idx
              (length text))
-      (push (common-doc:make-text (subseq text processed-to-idx))
-            new-nodes))
+      (let ((text (subseq text processed-to-idx)))
+        (push (common-doc:make-text text)
+              new-nodes)))
 
     (if new-nodes
         (common-doc:make-content (nreverse new-nodes))

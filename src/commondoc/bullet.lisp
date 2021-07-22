@@ -17,7 +17,8 @@
                 #:ignored-words)
   (:import-from #:40ants-doc/commondoc/piece
                 #:documentation-piece
-                #:doc-reference))
+                #:doc-reference)
+  (:import-from #:40ants-doc/utils))
 (in-package 40ants-doc/commondoc/bullet)
 
 

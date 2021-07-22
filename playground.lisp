@@ -345,8 +345,9 @@
                                           :base-dir "./new-docs/"))
 
 (40ants-doc:defsection @experiment (:title "Experiment")
-  "This SOME-SHIT argument for the system."
-  (40ants-doc::*discard-documentation-p* variable)
+  ;; (40ants-doc::*discard-documentation-p* variable)
+  (40ants-doc::defsection macro)
+  (40ants-doc::section class)
   )
 
 

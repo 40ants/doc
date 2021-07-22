@@ -163,7 +163,6 @@
          (html-filename (uiop:merge-pathnames* #P"index.html" absolute-dir))
          (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir)))
 
-    
     (ensure-directories-exist absolute-dir)
     
     (uiop:with-output-file (stream html-filename
@@ -201,7 +200,7 @@
              (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
              (40ants-doc/commondoc/toc:*main-toc*
                (40ants-doc/commondoc/toc:make-toc full-document)))
-        
+
         (ensure-directories-exist absolute-dir)
        
         (let ((common-html.emitter:*document-section-format-control*
