@@ -429,7 +429,15 @@ on the GitHub to suggest a new feature.
                    :header-nl "```elisp" :footer-nl "```")))
 
 
-(defsection @basics (:title "Basics")
+(defsection @basics (:title "Basics"
+                     :ignore-words ("@BAR"
+                                    "UIOP:DEFINE-PACKAGE"
+                                    "OBJECT"
+                                    "LOCATIVE"
+                                    "3BMD"
+                                    "@MANUAL"
+                                    "@MGL-PAX-EXTENSION-API"
+                                    "SECTION"))
   "Now let's examine the most important pieces in detail."
   (40ants-doc::*discard-documentation-p* variable)
   (40ants-doc::defsection macro)

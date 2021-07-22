@@ -27,7 +27,8 @@
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 (defsection @generating-documentation
-    (:title "Generating Documentation")
+    (:title "Generating Documentation"
+     :ignore-words ("ASDF"))
   "Two convenience functions are provided to serve the common case of
   having an ASDF system with some readmes and a directory for the
   HTML documentation and the default css stylesheet."

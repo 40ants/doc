@@ -44,7 +44,7 @@
 
   One can call DESCRIBE on [40ANTS-DOC:SECTION][class] objects to get
   documentation in markdown format with less markup than the default.
-  See DESCRIBE-OBJECT `(METHOD () (SECTION T))`.
+  See [DESCRIBE-OBJECT][(METHOD () (40ANTS-DOC:SECTION T))].
 
   There are quite a few special variables that affect how output is
   generated, see 40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES.
@@ -56,7 +56,7 @@
   of the generated output to files, strings or streams. PAGES is a
   list of page specification elements. A page spec is a plist with
   keys :OBJECTS, :OUTPUT, :URI-FRAGMENT, :SOURCE-URI-FN, :HEADER-FN
-  and :FOOTER-FN. OBJECTS is a list of objects (references are allowed
+  and :FOOTER-FN. :OBJECTS is a list of objects (references are allowed
   but not required) whose documentation is to be sent to :OUTPUT.
 
   When documentation for an object is generated, the first matching
@@ -75,7 +75,7 @@
 
   - If it's NIL, then output will be collected in a string.
 
-  - If it's T, then output will be sent to *STANDARD-OUTPUT*.
+  - If it's T, then output will be sent to `*STANDARD-OUTPUT*`.
 
   - If it's a stream, then output will be sent to that stream.
 
@@ -117,7 +117,7 @@
   Finally, :SOURCE-URI-FN is a function of a single, 40ANTS-DOC/REFERENCE::REFERENCE
   argument. If it returns a value other than NIL, then it must be a
   string representing an URI. If FORMAT is :HTML and
-  40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MARK-UP-SIGNATURES* is true, then the locative as
+  `40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MARK-UP-SIGNATURES*` is true, then the locative as
   displayed in the signature will be a link to this uri. See
   40ANTS-DOC/GITHUB::MAKE-GITHUB-SOURCE-URI-FN.
 
