@@ -98,7 +98,8 @@
 
 (defun replace-xrefs (node known-references &aux ignored-words
                                                  sections
-                                                 (common-lisp-package (find-package :common-lisp)))
+                                                 (common-lisp-package (find-package :common-lisp))
+                                                 (keywords-package (find-package :keyword)))
   "Replaces XREF with COMMON-DOC:WEB-LINK.
 
    Returns links which were not replaced because there wasn't
@@ -143,8 +144,10 @@
                  (string= text
                           "NIL")
                  (and symbol
-                      (eql (symbol-package symbol)
-                           common-lisp-package))))
+                      (or (eql (symbol-package symbol)
+                               common-lisp-package)
+                          (eql (symbol-package symbol)
+                               keywords-package)))))
            (replacer (node)
              (typecase node
                (40ants-doc/commondoc/xref:xref

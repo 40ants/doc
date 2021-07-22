@@ -164,6 +164,15 @@
       (ok (string= (xref-name (second children))
                    "+SOME-VAR+"))))
 
+  (testing "It should be possible to parse keywords as well"
+    (let* ((doc (make-text "This is a :SOME-VAR const."))
+           (result (extract-symbols doc))
+           (children (common-doc:children result)))
+      (ok (= (length children) 3))
+      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (string= (xref-name (second children))
+                   ":SOME-VAR"))))
+
   
   (testing "Also, it might be prepended with a package name"
     (let* ((doc (make-text "This is a SOME-PACKAGE:+SOME-VAR+ const."))

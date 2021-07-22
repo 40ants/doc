@@ -128,7 +128,7 @@
         (new-nodes nil)
         (processed-to-idx 0))
 
-    (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-/.]+::?)?[+*@]?[A-Z0-9][A-Z0-9-]*[A-Z0-9]+[+*]?" text)
+    (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-/.]+::?)?[+*@:]?[A-Z0-9][A-Z0-9-]*[A-Z0-9]+[+*]?" text)
       (let ((symbol-name (subseq text start end)))
         (unless (all-digits symbol-name)
           (when (> start processed-to-idx)
