@@ -4,7 +4,11 @@
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/core
-                #:defsection))
+                #:defsection)
+  (:export
+   #:*document-uppercase-is-code*
+   #:*document-downcase-uppercase-code*
+   #:*document-normalize-packages*))
 (in-package 40ants-doc/builder/printer)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

@@ -6,7 +6,9 @@
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/source-api))
+  (:import-from #:40ants-doc/source-api)
+  (:export
+   #:make-github-source-uri-fn))
 (in-package 40ants-doc/github)
 
 

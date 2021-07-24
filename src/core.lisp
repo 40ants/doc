@@ -4,6 +4,7 @@
   (:nicknames #:40ants-doc/core)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives)
+  (:import-from #:40ants-doc/utils)
   (:export #:define-package
            #:defsection
            #:exportable-locative-type-p
@@ -19,7 +20,8 @@
            #:section-readtable
            #:section-title
            #:section-link-title-to
-           #:section-entries))
+           #:section-entries
+           #:*discard-documentation-p*))
 (in-package 40ants-doc)
 
 
@@ -31,7 +33,7 @@
 
 (defmacro defsection (name (&key (package-symbol '*package*)
                                  (readtable-symbol '*readtable*)
-                                 (export t)
+                                 (export nil)
                                  title
                                  link-title-to
                                  (discard-documentation-p *discard-documentation-p*)
@@ -57,7 +59,7 @@
   A locative in a reference can either be a symbol or it can be a list
   whose CAR is a symbol. In either case, the symbol is the called the
   type of the locative while the rest of the elements are the locative
-  arguments. See 40ANTS-DOC/DOC:@LOCATIVE-TYPES for the list of locative
+  arguments. See 40ANTS-DOC/DOC::@LOCATIVE-TYPES for the list of locative
   types available out of the box.
 
   The same symbol can occur multiple times in a reference, typically
@@ -161,6 +163,10 @@
 (defmethod print-object ((section section) stream)
   (print-unreadable-object (section stream :type t)
     (format stream "~S" (section-name section))))
+
+
+(defmethod 40ants-doc/utils:object-package ((obj section))
+  (section-package obj))
 
 
 ;; This function is from alexandria, to not

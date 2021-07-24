@@ -21,7 +21,12 @@
   (:import-from #:40ants-doc/commondoc/page)
   (:import-from #:40ants-doc/commondoc/toc)
   (:export
-   #:single-page-to-html))
+   #:single-page-to-html
+   #:update-asdf-system-html-docs
+   #:update-asdf-system-readme
+   #:*document-html-max-navigation-table-of-contents-level*
+   #:*document-html-top-blocks-of-links*
+   #:*document-html-bottom-blocks-of-links*))
 (in-package 40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -192,6 +197,7 @@
              (full-document (common-doc:make-document "Documentation"
                                                       :children page-documents))
              (references (40ants-doc/commondoc/page::collect-references full-document))
+             (full-document (40ants-doc/commondoc/page:warn-on-missing-exports full-document))
              (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
              (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
              (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references))
@@ -235,6 +241,7 @@
          (full-document (common-doc:make-document "Documentation"
                                                   :children parts))
          (references (40ants-doc/commondoc/page::collect-references full-document))
+         (full-document (40ants-doc/commondoc/page:warn-on-missing-exports full-document))
          (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
          (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
          (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references)))

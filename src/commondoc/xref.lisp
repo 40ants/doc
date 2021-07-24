@@ -180,7 +180,8 @@
     ;; in the package where DOCUMENTATION-SECTION was defined.
     (labels
         ((set-package (node)
-           (let ((package (40ants-doc/utils::object-package node)))
+           (let ((package (or (40ants-doc/utils::object-package node)
+                              *package*)))
              (push *package* packages-stack)
              (setf *package* package)))
          (reset-package (node)

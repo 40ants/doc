@@ -1,7 +1,11 @@
 (defpackage #:40ants-doc/builder/vars
   (:use #:cl)
   (:export
-   #:*document-mark-up-signatures*))
+   #:*document-mark-up-signatures*
+   #:*document-max-numbering-level*
+   #:*document-max-table-of-contents-level*
+   #:*document-text-navigation*
+   #:*document-fancy-html-navigation*))
 (in-package 40ants-doc/builder/vars)
 
 

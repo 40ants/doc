@@ -24,7 +24,14 @@
                 #:whitespacep)
   (:import-from #:40ants-doc/reference)
   ;; (:import-from #:40ants-doc/page)
-  (:import-from #:swank))
+  (:import-from #:swank)
+  (:export
+   #:transcribe
+   #:*syntaxes*
+   #:transcription-consistency-error
+   #:transcription-output-consistency-error
+   #:transcription-values-consistency-error
+   #:transcription-error))
 (in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

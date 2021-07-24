@@ -1,7 +1,10 @@
 (defpackage #:40ants-doc/document
   (:use #:cl)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:export
+   #:document
+   #:document-object))
 (in-package 40ants-doc/document)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

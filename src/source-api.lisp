@@ -1,7 +1,9 @@
 (defpackage #:40ants-doc/source-api
   (:use #:cl)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:export
+   #:find-source))
 (in-package 40ants-doc/source-api)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

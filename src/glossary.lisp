@@ -1,6 +1,8 @@
 (defpackage #:40ants-doc/glossary
   (:use #:cl)
-  (:import-from #:40ants-doc/core))
+  (:import-from #:40ants-doc/core)
+  (:export
+   #:define-glossary-term))
 (in-package 40ants-doc/glossary)
 
 

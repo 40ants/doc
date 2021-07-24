@@ -6,7 +6,10 @@
                 #:method-generic-function
                 #:generic-function-name)
   (:import-from #:swank)
-  (:import-from #:cl-ppcre))
+  (:import-from #:cl-ppcre)
+  (:export
+   #:object-package
+   #:is-external))
 (in-package 40ants-doc/utils)
 
 
@@ -645,13 +648,19 @@
   (:method ((object t))
     (warn "Unable to figure out *package* for object ~S"
           object)
-    *package*)
+    nil)
   
   (:method ((object symbol))
     (symbol-package object))
   
+  (:method ((object string))
+    nil)
+  
   (:method ((object package))
     object)
+  
+  (:method ((object asdf:system))
+    nil)
 
   (:method ((object function))
     (object-package
@@ -695,3 +704,12 @@
   (cl-ppcre:scan
    "^(?:[\\p{UppercaseLetter}\\/0-9-]+[:]{1,2})?[*+]?\\p{UppercaseLetter}[\\p{UppercaseLetter}0-9-]+[*+]?$"
    string))
+
+
+(defun is-external (symbol &optional (package (symbol-package symbol)))
+  "Checks if package is external in a package where it is defined."
+  (when package
+    (eql (nth-value 1
+                    (find-symbol (symbol-name symbol)
+                                 package))
+         :external)))

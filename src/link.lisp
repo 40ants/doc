@@ -4,7 +4,11 @@
   (:import-from #:named-readtables)
   (:import-from #:ironclad)
   (:import-from #:babel)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:export
+   #:*document-link-code*
+   #:*document-link-sections*
+   #:*document-min-link-hash-length*))
 (in-package 40ants-doc/link)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

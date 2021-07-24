@@ -291,6 +291,10 @@
              :reader page-sections)))
 
 
+(defmethod 40ants-doc/utils:object-package ((obj page2))
+  nil)
+
+
 (defun make-page2 (sections)
   (make-instance 'page2
                  :sections (uiop:ensure-list sections)))

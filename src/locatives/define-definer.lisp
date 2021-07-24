@@ -1,6 +1,8 @@
 (defpackage #:40ants-doc/locatives/define-definer
   (:use #:cl)
-  (:import-from #:40ants-doc/locatives/base))
+  (:import-from #:40ants-doc/locatives/base)
+  (:export
+   #:define-definer-for-symbol-locative-type))
 (in-package 40ants-doc/locatives/define-definer)
 
 

@@ -1,5 +1,7 @@
 (uiop:define-package #:playground
-  (:use #:cl))
+  (:use #:cl)
+  (:export
+   #:user))
 (in-package playground)
 
 (defun user ()
@@ -345,9 +347,11 @@
                                           :base-dir "./new-docs/"))
 
 (40ants-doc:defsection @experiment (:title "Experiment")
+  "Function USER."
+  (user function)
   ;; (40ants-doc::*discard-documentation-p* variable)
-  (40ants-doc::defsection macro)
-  (40ants-doc::section class)
+  ;; (40ants-doc::defsection macro)
+  ;; (40ants-doc::section class)
   )
 
 
@@ -363,9 +367,9 @@
 (defun render-readme ()
   (40ants-doc/builder::page-to-markdown
    (list
-    ;; 40ants-doc/doc::@index
+    40ants-doc/doc::@index
     ;; @second-page
-    @experiment
+    ;; @experiment
     )
    "NEW.md")
 

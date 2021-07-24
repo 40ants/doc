@@ -1,5 +1,8 @@
 (defpackage #:40ants-doc/reference-api
-  (:use #:cl))
+  (:use #:cl)
+  (:export
+   #:canonical-reference
+   #:collect-reachable-objects))
 (in-package 40ants-doc/reference-api)
 
 

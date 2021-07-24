@@ -16,11 +16,14 @@
   (:import-from #:40ants-doc/commondoc/piece
                 #:doc-reference
                 #:documentation-piece)
+  (:import-from #:40ants-doc/utils
+                #:is-external)
   (:export
    ;; #:ensure-page
    #:make-page
    #:page
-   #:make-page-toc))
+   #:make-page-toc
+   #:warn-on-missing-exports))
 (in-package 40ants-doc/commondoc/page)
 
 
@@ -96,6 +99,26 @@
   results)
 
 
+(defun warn-on-missing-exports (node)
+  "Checks all documentation pieces if there are some documented but not exported symbols."
+  
+  (flet ((checker (node)
+           (when (and (typep node 'documentation-piece)
+                      ;; It is OK to have some documentation section which are not
+                      ;; exported, because these can be some inner chapters.
+                      (not (typep node '40ants-doc/commondoc/section:documentation-section)))
+             (let* ((reference (40ants-doc/commondoc/piece::doc-reference node))
+                    (obj (40ants-doc/reference::reference-object reference)))
+               (typecase obj
+                 (symbol
+                  (unless (is-external obj)
+                    (warn "Symbol ~S is documented but not exported from it's package."
+                          obj))))))
+           node))
+    (40ants-doc/commondoc/mapper:map-nodes node #'checker))
+  node)
+
+
 (defun replace-xrefs (node known-references &aux ignored-words
                                                  sections
                                                  (common-lisp-package (find-package :common-lisp))
@@ -132,8 +155,14 @@
            (go-up (node)
              (pop-ignored-words node)
              (pop-section node))
+           (package-specified (text)
+             (find #\: text))
            (should-be-ignored-p (text symbol locative)
-             (or (eql locative
+             (or (and symbol
+                      (not (package-specified text))
+                      (not (40ants-doc/utils:is-external symbol)))
+
+                 (eql locative
                       '40ants-doc/locatives:argument)
                  (loop for sublist in ignored-words
                        thereis (member text sublist
@@ -154,35 +183,35 @@
                 (let* ((text (40ants-doc/commondoc/xref:xref-name node))
                        (symbol (40ants-doc/commondoc/xref:xref-symbol node))
                        (locative (40ants-doc/commondoc/xref:xref-locative node))
-                       (should-be-ignored
-                         (should-be-ignored-p text symbol locative))
                        (found-references
-                         (unless should-be-ignored
-                           (loop for (reference . page) in known-references
-                                 ;; This can be a symbol or a string.
-                                 ;; For example, for SYSTEM locative, object
-                                 ;; is a string name of a system.
-                                 ;; 
-                                 ;; TODO: Think about a GENERIC to compare
-                                 ;;       XREF with references of different locative types.
-                                 for reference-object = (40ants-doc/reference::reference-object reference)
-                                 when (and (etypecase reference-object
-                                             (symbol
-                                              (eql reference-object
-                                                   symbol))
-                                             (string
-                                              ;; Here we intentionally use case insensitive
-                                              ;; comparison, because a canonical reference
-                                              ;; to ASDF system contains it's name in a lowercase,
-                                              ;; but some other locatives like a PACKAGE, might
-                                              ;; keep a name in the uppercase.
-                                              (string-equal reference-object
-                                                            text)))
-                                           (or (null locative)
-                                               (eql (40ants-doc/reference::reference-locative-type reference)
-                                                    locative)))
-                                 collect (cons reference
-                                               page)))))
+                         (loop for (reference . page) in known-references
+                               ;; This can be a symbol or a string.
+                               ;; For example, for SYSTEM locative, object
+                               ;; is a string name of a system.
+                               ;; 
+                               ;; TODO: Think about a GENERIC to compare
+                               ;;       XREF with references of different locative types.
+                               for reference-object = (40ants-doc/reference::reference-object reference)
+                               when (and (etypecase reference-object
+                                           (symbol
+                                            (eql reference-object
+                                                 symbol))
+                                           (string
+                                            ;; Here we intentionally use case insensitive
+                                            ;; comparison, because a canonical reference
+                                            ;; to ASDF system contains it's name in a lowercase,
+                                            ;; but some other locatives like a PACKAGE, might
+                                            ;; keep a name in the uppercase.
+                                            (string-equal reference-object
+                                                          text)))
+                                         (or (null locative)
+                                             (eql (40ants-doc/reference::reference-locative-type reference)
+                                                  locative)))
+                               collect (cons reference
+                                             page)))
+                       (should-be-ignored
+                         (unless found-references
+                           (should-be-ignored-p text symbol locative))))
 
                   (cond
                     (should-be-ignored

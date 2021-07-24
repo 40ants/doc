@@ -10,7 +10,9 @@
   (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/reference))
+  (:import-from #:40ants-doc/reference)
+  (:export
+   #:define-symbol-locative-type))
 (in-package 40ants-doc/locatives/definers)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

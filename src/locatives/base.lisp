@@ -2,7 +2,20 @@
   (:use #:cl)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:export
+   #:locate
+   #:locate-error
+   #:locate-error-message
+   #:locate-error-object
+   #:locate-error-locative
+   #:locative-type
+   #:locative-args
+   #:define-locative-type
+   #:locate-object
+   #:locate-and-collect-reachable-objects
+   #:locate-and-find-source
+   #:locate-and-document))
 (in-package 40ants-doc/locatives/base)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
