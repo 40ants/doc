@@ -21,7 +21,6 @@
   (:import-from #:40ants-doc/commondoc/page)
   (:import-from #:40ants-doc/commondoc/toc)
   (:export
-   #:single-page-to-html
    #:update-asdf-system-html-docs
    #:update-asdf-system-readme
    #:*document-html-max-navigation-table-of-contents-level*
@@ -152,40 +151,11 @@
                                    :format :html)))
 
 
-;; TODO: move logic into MULTI-PAGE-TO-HTML 
-(defun single-page-to-html (section &key (theme '40ants-doc/themes/default:default-theme)
-                                         (base-dir #P"./"))
-  (let* ((theme (make-instance theme))
-         (page (40ants-doc/page:ensure-page section))
-         (document (40ants-doc/commondoc/builder:to-commondoc
-                    page))
-         (references (40ants-doc/commondoc/page::collect-references document))
-         (document (40ants-doc/commondoc/xref::extract-symbols document))
-         (document (40ants-doc/commondoc/xref:fill-locatives document))
-         (document (40ants-doc/commondoc/page::replace-xrefs document references))
-         (absolute-dir (uiop:ensure-absolute-pathname base-dir
-                                                      (probe-file ".")))
-         (html-filename (uiop:merge-pathnames* #P"index.html" absolute-dir))
-         (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir)))
-
-    (ensure-directories-exist absolute-dir)
-    
-    (uiop:with-output-file (stream html-filename
-                                   :if-exists :supersede)
-      (common-doc.format:emit-document (make-instance 'common-html:html) document stream))
-    
-    (uiop:with-output-file (stream css-filename
-                                   :if-exists :supersede)
-      (write-string (40ants-doc/themes/api:render-css theme)
-                    stream)
-      (terpri stream))
-    
-    (values absolute-dir)))
-
-
 (defun process-document (document)
   (let* ((references (40ants-doc/commondoc/page::collect-references document))
          (document (40ants-doc/commondoc/page:warn-on-missing-exports document))
+         (document (40ants-doc/commondoc/page:warn-on-undocumented-exports document
+                                                                           references))
          (document (40ants-doc/commondoc/xref::extract-symbols document))
          (document (40ants-doc/commondoc/xref:fill-locatives document))
          (document (40ants-doc/commondoc/page::replace-xrefs document references)))

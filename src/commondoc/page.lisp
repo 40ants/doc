@@ -23,7 +23,8 @@
    #:make-page
    #:page
    #:make-page-toc
-   #:warn-on-missing-exports))
+   #:warn-on-missing-exports
+   #:warn-on-undocumented-exports))
 (in-package 40ants-doc/commondoc/page)
 
 
@@ -116,6 +117,44 @@
                           obj))))))
            node))
     (40ants-doc/commondoc/mapper:map-nodes node #'checker))
+  node)
+
+
+(defun warn-on-undocumented-exports (node references)
+  "Checks all documentation pieces if there are some documented but not exported symbols."
+  
+  (let ((packages nil)
+        (common-lisp-package (find-package :common-lisp))
+        (references-symbols
+          (loop for (reference . page) in references
+                for obj = (40ants-doc/reference:reference-object reference)
+                when (typep obj 'symbol)
+                collect obj)))
+    (flet ((checker (node)
+             (let ((package (40ants-doc/utils:object-package node)))
+               (when (and package
+                          (not (eql package
+                                    common-lisp-package))
+                          (not (str:starts-with-p "ASDF/"
+                                                  (package-name package))))
+                 (pushnew package packages)))
+             node)
+           (documented-p (symbol)
+             (member symbol references-symbols)))
+      (40ants-doc/commondoc/mapper:map-nodes node #'checker)
+
+      ;; Now we'll check if some external symbols are absent from REFERENCES
+      (loop with undocumented-symbols = nil
+            for package in packages
+            do (do-external-symbols (symbol package)
+                 (unless (documented-p symbol)
+                   (push symbol undocumented-symbols)))
+            finally (when undocumented-symbols
+                      (let ((*package* (find-package :keyword)))
+                        (warn "These symbols are external, but not documented: ~{~S~^, ~}"
+                              (sort undocumented-symbols #'string<
+                                    :key #'symbol-name)))))))
+  
   node)
 
 

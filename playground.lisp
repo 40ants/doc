@@ -359,7 +359,7 @@
   (40ants-doc/builder::multi-page-to-html (list ;; @index
                                            40ants-doc/doc::@index
                                            ;; @second-page
-                                           ;; @experiment
+                                           @experiment
                                            )
                                           :base-dir "./new-docs/"))
 

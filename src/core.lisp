@@ -5,15 +5,8 @@
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives)
   (:import-from #:40ants-doc/utils)
-  (:export #:define-package
-           #:defsection
+  (:export #:defsection
            #:exportable-locative-type-p
-           #:locative-args
-           #:locative-type
-           #:make-reference
-           #:reference
-           #:reference-object
-           #:reference-locative
            #:section
            #:section-name
            #:section-package
