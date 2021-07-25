@@ -26,7 +26,8 @@
    #:xref-locative
    #:fill-locatives
    #:extract-symbols
-   #:link-text))
+   #:link-text
+   #:extract-xrefs))
 (in-package 40ants-doc/commondoc/xref)
 
 
@@ -117,6 +118,19 @@
   node)
 
 
+(defun extract-xrefs (node)
+  "Returns a list of XREF nodes. Useful for debugging."
+
+  (let ((results nil))
+    (labels ((extractor (node)
+               (when (typep node 'xref)
+                 (push node results))
+               (values node)))
+      (40ants-doc/commondoc/mapper:map-nodes node
+                                             #'extractor))
+    results))
+
+
 (defun all-digits (text)
   (loop for char across text
         always (digit-char-p char)))
@@ -140,7 +154,17 @@
             (push (common-doc:make-text (subseq text processed-to-idx start))
                   new-nodes))
 
-          (let* ((symbol (40ants-doc/swank::read-locative-from-string symbol-name)))
+          (let* (;; (*package* (or
+                 ;;             ;; For some reason, read-locative-from-string
+                 ;;             ;; does now work when current package is COMMON-LISP
+                 ;;             (40ants-doc/utils:get-package-from-symbol-name symbol-name)
+                 ;;             *package*))
+                 (symbol (40ants-doc/utils:get-symbol-from-string symbol-name)))
+
+            ;; (when (string-equal symbol-name
+            ;;                     "40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES")
+            ;;   (break))
+            
             (push (make-xref symbol-name
                              :symbol symbol)
                   new-nodes))

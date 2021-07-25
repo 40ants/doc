@@ -9,7 +9,10 @@
   (:import-from #:cl-ppcre)
   (:export
    #:object-package
-   #:is-external))
+   #:is-external
+   #:get-package-from-symbol-name
+   #:parse-symbol-name
+   #:get-symbol-from-string))
 (in-package 40ants-doc/utils)
 
 
@@ -713,3 +716,42 @@
                     (find-symbol (symbol-name symbol)
                                  package))
          :external)))
+
+
+(defun get-package-from-symbol-name (symbol-name)
+  "Returns a package if symbol-name is package qualified."
+  (when (find #\: symbol-name)
+    (let ((package-name (first (str:split #\: symbol-name))))
+      (find-package package-name))))
+
+
+(defun parse-symbol-name (symbol-name)
+  "Returns a symbol name and package object as a second value. Package might be nil if it is not found or not specified."
+  (let ((delimiter-position (position #\: symbol-name)))
+    (cond
+      ;; No package specified
+      ((null delimiter-position)
+       (values symbol-name nil))
+      
+      ((zerop delimiter-position)
+       (values (subseq symbol-name 1)
+               (find-package "KEYWORD")))
+      (t
+       (let* ((splitted (str:split #\: symbol-name))
+              (package-name (first splitted))
+              (symbol-name (car (last splitted))))
+         (values symbol-name
+                 (find-package package-name)))))))
+
+
+(defun get-symbol-from-string (symbol-name)
+  (multiple-value-bind (symbol-name package)
+      (parse-symbol-name symbol-name)
+  
+    (let ((package (or package
+                       *package*)))
+      (do-symbols (symbol package)
+        (when (string= (symbol-name symbol)
+                       symbol-name)
+          (return-from get-symbol-from-string
+            symbol))))))

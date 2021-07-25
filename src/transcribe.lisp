@@ -38,7 +38,10 @@
 
 (defsection @transcript (:title "Transcripts"
                          :ignore-words ("PAX"
-                                        "REPL"))
+                                        "REPL"
+                                        "PREFIX-STRING"
+                                        "PREFIXES"
+                                        "40ANTS-DOC-RETRANSCRIBE-REGION"))
   "What are transcripts for? When writing a tutorial, one often wants
   to include a REPL session with maybe a few defuns and a couple of
   forms whose output or return values are shown. Also, in a function's

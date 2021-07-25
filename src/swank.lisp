@@ -101,6 +101,7 @@
                     (swank::parse-symbol
                      (subseq string (1+ first-char-pos) delimiter-pos))
                   (declare (ignore symbol))
+                  
                   (when found
                     ;; The rest of the symbols in the string need not be
                     ;; already interned, so let's just read it.

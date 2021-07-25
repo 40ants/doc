@@ -5,7 +5,8 @@
 (in-package playground)
 
 (defun user ()
-  "Just to check locatives in docstrings"
+  ;; "Just to check locatives in docstrings"
+  "Var `40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`, turned off to reduce clutter."
   (values))
 
 (define-compiler-macro bar (&whole form arg)
@@ -347,8 +348,8 @@
                                           :base-dir "./new-docs/"))
 
 (40ants-doc:defsection @experiment (:title "Experiment")
-  "Function USER."
   (user function)
+  (40ants-doc/builder/printer::*document-normalize-packages* variable)
   ;; (40ants-doc::*discard-documentation-p* variable)
   ;; (40ants-doc::defsection macro)
   ;; (40ants-doc::section class)
@@ -359,7 +360,7 @@
   (40ants-doc/builder::multi-page-to-html (list ;; @index
                                            40ants-doc/doc::@index
                                            ;; @second-page
-                                           @experiment
+                                           ;; @experiment
                                            )
                                           :base-dir "./new-docs/"))
 

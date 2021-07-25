@@ -16,5 +16,7 @@
 
 
 (defmethod 40ants-doc/utils::object-package ((obj documentation-piece))
-  (let* ((reference (doc-reference obj)))
-    (40ants-doc/utils::object-package (40ants-doc/reference::reference-object reference))))
+  (let* ((reference (doc-reference obj))
+         (ref-object (40ants-doc/reference::reference-object reference))
+         (package (40ants-doc/utils::object-package ref-object)))
+    package))

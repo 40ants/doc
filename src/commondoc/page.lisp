@@ -252,6 +252,9 @@
                          (unless found-references
                            (should-be-ignored-p text symbol locative))))
 
+                  ;; (when (string-equal text
+                  ;;                     "40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES")
+                  ;;   (break))
                   (cond
                     (should-be-ignored
                      (common-doc:make-code

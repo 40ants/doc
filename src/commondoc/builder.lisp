@@ -4,7 +4,8 @@
                 #:parse-markdown)
   (:import-from #:40ants-doc/utils)
   (:export
-   #:to-commondoc))
+   #:to-commondoc
+   #:reference-to-commondoc))
 (in-package 40ants-doc/commondoc/builder)
 
 

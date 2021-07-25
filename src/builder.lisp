@@ -25,7 +25,8 @@
    #:update-asdf-system-readme
    #:*document-html-max-navigation-table-of-contents-level*
    #:*document-html-top-blocks-of-links*
-   #:*document-html-bottom-blocks-of-links*))
+   #:*document-html-bottom-blocks-of-links*
+   #:document-to-string))
 (in-package 40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -150,6 +151,9 @@
                                    :pages pages
                                    :format :html)))
 
+(defun append1 (s n)
+  (format nil "~A-~A"
+          s n))
 
 (defun process-document (document)
   (let* ((references (40ants-doc/commondoc/page::collect-references document))
@@ -161,6 +165,12 @@
          (document (40ants-doc/commondoc/page::replace-xrefs document references)))
     document))
 
+
+(defun document-to-string (document &key (format 'common-html:html))
+  (uiop/cl:with-output-to-string (stream)
+    (common-doc.format:emit-document (make-instance format)
+                                     document
+                                     stream)))
 
 (defun multi-page-to-html (sections &key (theme '40ants-doc/themes/default:default-theme)
                                          (base-dir #P"./"))
