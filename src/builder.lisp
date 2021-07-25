@@ -183,6 +183,15 @@
     (values absolute-dir)))
 
 
+(defun process-document (document)
+  (let* ((references (40ants-doc/commondoc/page::collect-references document))
+         (document (40ants-doc/commondoc/page:warn-on-missing-exports document))
+         (document (40ants-doc/commondoc/xref::extract-symbols document))
+         (document (40ants-doc/commondoc/xref:fill-locatives document))
+         (document (40ants-doc/commondoc/page::replace-xrefs document references)))
+    document))
+
+
 (defun multi-page-to-html (sections &key (theme '40ants-doc/themes/default:default-theme)
                                          (base-dir #P"./"))
   (let ((num-warnings 0))
@@ -194,13 +203,9 @@
              (page-documents (mapcar
                               #'40ants-doc/commondoc/builder:to-commondoc
                               pages))
-             (full-document (common-doc:make-document "Documentation"
-                                                      :children page-documents))
-             (references (40ants-doc/commondoc/page::collect-references full-document))
-             (full-document (40ants-doc/commondoc/page:warn-on-missing-exports full-document))
-             (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
-             (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
-             (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references))
+             (full-document (process-document
+                             (common-doc:make-document "Documentation"
+                                                       :children page-documents)))
              (absolute-dir (uiop:ensure-absolute-pathname base-dir
                                                           (probe-file ".")))
              (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
@@ -238,13 +243,9 @@
   (let* ((parts (mapcar
                  #'40ants-doc/commondoc/builder:to-commondoc
                  (uiop:ensure-list sections)))
-         (full-document (common-doc:make-document "Documentation"
-                                                  :children parts))
-         (references (40ants-doc/commondoc/page::collect-references full-document))
-         (full-document (40ants-doc/commondoc/page:warn-on-missing-exports full-document))
-         (full-document (40ants-doc/commondoc/xref::extract-symbols full-document))
-         (full-document (40ants-doc/commondoc/xref:fill-locatives full-document))
-         (full-document (40ants-doc/commondoc/page::replace-xrefs full-document references)))
+         (full-document (process-document
+                         (common-doc:make-document "Documentation"
+                                                   :children parts))))
 
     (uiop:with-output-file (stream filename
                                    :if-exists :supersede)

@@ -15,3 +15,5 @@ referenced objects are in different packages.
 * Allowed to reference objects using keywords.
 
 * Fixed docstring extraction for compiler macro.
+
+* Now defsection does not exports symbols by default
