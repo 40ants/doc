@@ -6,7 +6,9 @@
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/locatives/base)
-  (:import-from #:40ants-doc/source-api))
+  (:import-from #:40ants-doc/source-api)
+  (:export
+   #:locate-definition-for-emacs))
 (in-package 40ants-doc/swank)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

@@ -12,7 +12,7 @@
 
 
 (defsection @markdown-support (:title "Markdown Support")
-  "The [Markdown][markdown] in docstrings is processed with the
+  "The Markdown in docstrings is processed with the
   [3BMD][3bmd] library."
   (@markdown-indentation section)
   (@markdown-syntax-highlighting section)

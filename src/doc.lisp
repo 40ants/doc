@@ -48,7 +48,9 @@
                                    "MIT"
                                    "GIT"
                                    "ASDF"
-                                   "CSS"))
+                                   "CSS"
+                                   "3BMD"
+                                   "PYTHONIC-STRING-READER"))
   "
 <table>
 <tr>
@@ -78,8 +80,7 @@
 
 
 (defsection @about (:title "About this fork"
-                    :ignore-words ("IRONCLAD"
-                                   "3BMD"))
+                    :ignore-words ("IRONCLAD"))
   "
 This system is a fork of [MGL-PAX](https://github.com/melisgl/mgl-pax).
 
@@ -428,7 +429,8 @@ on the GitHub to suggest a new feature.
   The `M-.` extensions can be enabled by adding this to your Emacs
   initialization file (or loading `src/pax.el`):"
   (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
-                   :header-nl "```elisp" :footer-nl "```")))
+                   :header-nl "```elisp" :footer-nl "```"))
+  (40ANTS-DOC/SWANK::LOCATE-DEFINITION-FOR-EMACS function))
 
 
 (defsection @basics (:title "Basics"
@@ -443,7 +445,8 @@ on the GitHub to suggest a new feature.
   "Now let's examine the most important pieces in detail."
   (40ants-doc::*discard-documentation-p* variable)
   (40ants-doc::defsection macro)
-  (40ants-doc/document::document generic-function))
+  (40ants-doc/document::document generic-function)
+  (40ants-doc/builder:document-to-string function))
 
 
 (defsection @locatives-and-references
@@ -452,7 +455,7 @@ on the GitHub to suggest a new feature.
   "While Common Lisp has rather good introspective abilities, not
   everything is first class. For example, there is no object
   representing the variable defined with `(DEFVAR
-  FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a 40ANTS-DOC/REFERENCE::REFERENCE that
+  FOO)`. `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a 40ANTS-DOC/REFERENCE::REFERENCE that
   captures the path to take from an object (the symbol FOO) to an
   entity of interest (for example, the documentation of the variable).
   The path is called the locative. A locative can be applied to an
@@ -462,12 +465,12 @@ on the GitHub to suggest a new feature.
   (locate 'foo 'variable)
   ```
 
-  which will return the same reference as `(MAKE-REFERENCE 'FOO
+  which will return the same reference as `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO
   'VARIABLE)`. Operations need to know how to deal with references
   which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS,
   40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
 
-  Naturally, `(LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
+  Naturally, `(40ANTS-DOC/LOCATIVES/BASE:LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
   need to muck with references when there is a perfectly good object."
   (40ants-doc/locatives/base::locate function)
   (40ants-doc/locatives/base::locate-error condition)
@@ -484,7 +487,8 @@ on the GitHub to suggest a new feature.
 
 
 (defsection @documentation-printer-variables
-    (:title "Documentation Printer Variables")
+    (:title "Documentation Printer Variables"
+     :ignore-words ("@FOO-MANUAL"))
   "Docstrings are assumed to be in markdown format and they are pretty
   much copied verbatim to the documentation subject to a few knobs
   described below."
@@ -501,7 +505,10 @@ on the GitHub to suggest a new feature.
   (40ants-doc/builder/vars::*document-fancy-html-navigation* variable))
 
 
-(defsection @locative-types (:title "Locative Types")
+(defsection @locative-types (:title "Locative Types"
+                             :ignore-words ("SWANK-BACKEND:ARGLIST"
+                                            "START"
+                                            "END"))
   "These are the locatives type supported out of the box. As all
   locative types, they are symbols and their names should make it
   obvious what kind of things they refer to. Unless otherwise noted,
@@ -540,11 +547,12 @@ on the GitHub to suggest a new feature.
   (@sections section))
 
 
-(defsection @new-object-types (:title "Adding New Object Types")
-  "One may wish to make the 40ANTS-DOC/DOCUMENT::DOCUMENT function and `M-.` navigation
+(defsection @new-object-types (:title "Adding New Object Types"
+                               :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"))
+  "One may wish to make the 40ANTS-DOC/DOCUMENT::DOCUMENT generic-function and `M-.` navigation
   work with new object types. Extending 40ANTS-DOC/DOCUMENT::DOCUMENT can be done by
-  defining a 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT method. To allow these objects to be
-  referenced from DEFSECTION, a 40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT method is to be defined.
+  defining a method of 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT generic-function. To allow these objects to be
+  referenced from DEFSECTION, a method of 40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT generic-function is to be defined.
   Finally, for `M-.` 40ANTS-DOC/SOURCE-API::FIND-SOURCE can be specialized. Finally,
   40ANTS-DOC::EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
   makes sense. Here is a stripped down example of how all this is done
@@ -598,8 +606,8 @@ on the GitHub to suggest a new feature.
 
 
 (defsection @sections (:title "Sections")
-  "[Section][class] objects rarely need to be dissected since
-  40ANTS-DOC::DEFSECTION and `40ANTS-DOC/DOCUMENT::DOCUMENT` cover most needs. However, it is plausible
+  "40ANTS-DOC:SECTION objects rarely need to be dissected since
+  40ANTS-DOC::DEFSECTION and 40ANTS-DOC/DOCUMENT::DOCUMENT cover most needs. However, it is plausible
   that one wants to subclass them and maybe redefine how they are
   presented."
   (40ants-doc::section class)

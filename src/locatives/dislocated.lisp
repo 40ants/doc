@@ -19,8 +19,8 @@
 
       [`FOO`][dislocated]
 
-  will not be. On a dislocated locative 40ANTS-DOC/LOCATIVES/BASE::LOCATE always fails with a
-  LOCATE-ERROR condition.")
+  will not be. On a dislocated locative function 40ANTS-DOC/LOCATIVES/BASE::LOCATE always fails with a
+  40ANTS-DOC/LOCATIVES/BASE:LOCATE-ERROR condition.")
 
 (defmethod locate-object (symbol (locative-type (eql 'dislocated))
                           locative-args)

@@ -32,7 +32,8 @@
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 (defsection @generating-documentation
-    (:title "Generating Documentation")
+    (:title "Generating Documentation"
+     :ignore-words ("LABEL"))
   "Two convenience functions are provided to serve the common case of
   having an ASDF system with some readmes and a directory for the
   HTML documentation and the default css stylesheet."
@@ -167,6 +168,9 @@
 
 
 (defun document-to-string (document &key (format 'common-html:html))
+  "Renders given CommonDoc node into the string using specified format.
+
+   This function is useful for debugging 40ANTS-DOC itself."
   (uiop/cl:with-output-to-string (stream)
     (common-doc.format:emit-document (make-instance format)
                                      document

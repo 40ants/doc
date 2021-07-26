@@ -60,7 +60,7 @@
 
 (defun locate-error (&rest format-and-args)
   "Call this function to signal a LOCATE-ERROR condition from a
-  LOCATE-OBJECT method. FORMAT-AND-ARGS contains a format string and
+  LOCATE-OBJECT generic-function. FORMAT-AND-ARGS contains a format string and
   args suitable for FORMAT from which the LOCATE-ERROR-MESSAGE is
   constructed. If FORMAT-AND-ARGS is NIL, then the message will be NIL
   too.

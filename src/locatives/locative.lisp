@@ -28,7 +28,7 @@
 (define-locative-type locative (lambda-list)
   "This is the locative for locatives. When `M-.` is pressed on
   `VARIABLE` in `(VARIABLE LOCATIVE)`, this is what makes it possible
-  to land at the `(DEFINE-LOCATIVE-TYPE VARIABLE ...)` form.
+  to land at the `(40ANTS-DOC/LOCATIVES/BASE:DEFINE-LOCATIVE-TYPE VARIABLE ...)` form.
   Similarly, `(LOCATIVE LOCATIVE)` leads to this very definition.")
 
 (defmethod locate-object (symbol (locative-type (eql 'locative)) locative-args)
