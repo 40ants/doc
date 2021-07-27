@@ -23,7 +23,7 @@
                       (page-uri
                         (when current-page
                           (format nil "~A"
-                                  (40ants-doc/commondoc/page::html-filename current-page))))
+                                  (40ants-doc/commondoc/page::full-filename current-page))))
                       
                       (text (common-doc:make-document-link page-uri
                                                            html-fragment

@@ -343,9 +343,6 @@
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
 
-(defun new-render ()
-  (40ants-doc/builder:single-page-to-html @index
-                                          :base-dir "./new-docs/"))
 
 (40ants-doc:defsection @experiment (:title "Experiment")
   "See [DESCRIBE-OBJECT][(METHOD () (40ANTS-DOC:SECTION T))]."
@@ -358,12 +355,13 @@
 
 
 (defun new-render-multi ()
-  (40ants-doc/builder::multi-page-to-html (list ;; @index
-                                           40ants-doc/doc::@index
-                                           ;; @second-page
-                                           ;; @experiment
-                                           )
-                                          :base-dir "./new-docs/"))
+  (40ants-doc/builder:render-to-files (list ;; @index
+                                       40ants-doc/doc::@index
+                                       @second-page
+                                       @experiment
+                                       )
+                                      :base-dir "./new-docs/"
+                                      :format 'commondoc-markdown:markdown))
 
 
 (defun render-readme ()

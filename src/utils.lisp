@@ -569,6 +569,7 @@
         (n (length string)))
     (flet ((add (a)
              (if (and (stringp a)
+
                       (stringp (first translated)))
                  (setf (first translated)
                        (concatenate 'string (first translated) a))

@@ -289,16 +289,36 @@
 
 (defclass page2 ()
   ((sections :initarg :sections
-             :reader page-sections)))
+             :reader page-sections)
+   (base-filename :initarg :base-filename
+                  :reader base-filename
+                  :type string
+                  :documentation "Keeps a filename without extension.
+                                  Extension will be added later during
+                                  documentation generation phase.")))
 
 
 (defmethod 40ants-doc/object-package:object-package ((obj page2))
   nil)
 
 
-(defun make-page2 (sections)
-  (make-instance 'page2
-                 :sections (uiop:ensure-list sections)))
+(defun make-base-filename (sections)
+  (unless sections
+    (error "Page should have at least one section."))
+  (concatenate 'string
+               (string-downcase
+                (string-trim "@"
+                             (40ants-doc:section-name
+                              (first sections))))))
+
+
+(defun make-page2 (sections &key base-filename)
+  (let* ((sections (uiop:ensure-list sections))
+         (base-filename (or base-filename
+                            (make-base-filename sections))))
+    (make-instance 'page2
+                   :sections sections
+                   :base-filename base-filename)))
 
 
 (defun ensure-page (obj)
@@ -308,20 +328,8 @@
     (t (make-page2 obj))))
 
 
-(defun html-filename (page)
-  (let ((sections (40ants-doc/page::page-sections page)))
-    (unless sections
-      (error "Page should have at least one section."))
-    (concatenate 'string
-                 (string-downcase
-                  (string-trim "@"
-                               (40ants-doc:section-name
-                                (first sections))))
-                 ".html")))
-
-
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj page2))
   (uiop:symbol-call :40ants-doc/commondoc/page :make-page
    (mapcar #'40ants-doc/commondoc/builder:to-commondoc
            (page-sections obj))
-   (html-filename obj)))
+   (base-filename obj)))

@@ -448,22 +448,30 @@
   (flet ((rebase (pathname)
            (merge-pathnames pathname
                             (make-pathname
-                             :type (if (eq format :markdown) "md" "html")
+                             :type (if (eq format :markdown)
+                                       "md"
+                                       "html")
                              :directory (pathname-directory basedir)))))
     (let ((open-args '(:if-exists :supersede :ensure-directories-exist t))
-          (40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html)))
-      (40ants-doc/document::document
-       @test
-       :pages `((:objects
-                 ,(list @test-examples)
-                 :output (nil))
-                (:objects
-                 ,(list @test-other)
-                 :output (,(rebase "other/test-other") ,@open-args))
-                (:objects
-                 ,(list @test)
-                 :output (,(rebase "test") ,@open-args)))
-       :format format))))
+          (40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html))
+          (pages (list (40ants-doc/page:make-page2 @test-examples)
+                       (40ants-doc/page:make-page2 @test-other))))
+
+      (multi-page-to-html pages)
+      
+      (when nil
+        (40ants-doc/document::document
+         @test
+         :pages `((:objects
+                   ,(list @test-examples)
+                   :output (nil))
+                  (:objects
+                   ,(list @test-other)
+                   :output (,(rebase "other/test-other") ,@open-args))
+                  (:objects
+                   ,(list @test)
+                   :output (,(rebase "test") ,@open-args)))
+         :format format)))))
 
 (defun update-test-document-baseline (format)
   (write-test-document-files

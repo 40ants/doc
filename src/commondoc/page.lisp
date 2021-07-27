@@ -19,6 +19,7 @@
   (:import-from #:40ants-doc/utils
                 #:is-external)
   (:import-from #:40ants-doc/object-package)
+  (:import-from #:40ants-doc/commondoc/format)
   (:export
    ;; #:ensure-page
    #:make-page
@@ -30,20 +31,28 @@
 
 
 (defclass page (common-doc:content-node)
-  ((html-filename :type pathname
-                  :reader html-filename
-                  :initarg :html-filename)))
+  ((base-filename :type pathname
+                  :reader base-filename
+                  :initarg :base-filename)))
 
 
-(defmethod html-filename ((obj (eql :no-page)))
+(defgeneric full-filename (page)
+  (:method (page)
+    (concatenate 'string
+                 (base-filename page)
+                 "."
+                 (40ants-doc/commondoc/format:current-files-extension))))
+
+
+(defmethod base-filename ((obj (eql :no-page)))
   "If page is unknown, then we'll return an empty name for a file. We need this for unit-tests only."
   "")
 
 
-(defun make-page (sections html-filename)
+(defun make-page (sections base-filename)
   (make-instance 'page
                  :children (uiop:ensure-list sections)
-                 :html-filename html-filename))
+                 :base-filename base-filename))
 
 
 (defgeneric make-page-toc (page)
@@ -265,7 +274,7 @@
                                 (let ((page-uri
                                         (when page
                                           (format nil "~A"
-                                                  (40ants-doc/commondoc/page::html-filename page))))
+                                                  (full-filename page))))
                                       (html-fragment
                                         (40ants-doc/utils::html-safe-name
                                          (40ants-doc/reference::reference-to-anchor reference))))

@@ -20,13 +20,15 @@
   (:import-from #:40ants-doc/themes/default)
   (:import-from #:40ants-doc/commondoc/page)
   (:import-from #:40ants-doc/commondoc/toc)
+  (:import-from #:40ants-doc/commondoc/format)
   (:export
    #:update-asdf-system-html-docs
    #:update-asdf-system-readme
    #:*document-html-max-navigation-table-of-contents-level*
    #:*document-html-top-blocks-of-links*
    #:*document-html-bottom-blocks-of-links*
-   #:document-to-string))
+   #:document-to-string
+   #:render-to-files))
 (in-package 40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -176,68 +178,72 @@
                                      document
                                      stream)))
 
-(defun multi-page-to-html (sections &key (theme '40ants-doc/themes/default:default-theme)
-                                         (base-dir #P"./"))
+(defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
+                                      (base-dir #P"./")
+                                      (format 'common-html:html))
   (let ((num-warnings 0))
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
                               (incf num-warnings))))
-      (let* ((theme (make-instance theme))
-             (pages (mapcar #'40ants-doc/page:ensure-page sections))
-             (page-documents (mapcar
-                              #'40ants-doc/commondoc/builder:to-commondoc
-                              pages))
-             (full-document (process-document
-                             (common-doc:make-document "Documentation"
-                                                       :children page-documents)))
-             (absolute-dir (uiop:ensure-absolute-pathname base-dir
-                                                          (probe-file ".")))
-             (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
-             (40ants-doc/commondoc/toc:*main-toc*
-               (40ants-doc/commondoc/toc:make-toc full-document)))
+      (40ants-doc/commondoc/format:with-format (format)
+          (let* ((theme (make-instance theme))
+                 (pages (mapcar #'40ants-doc/page:ensure-page sections))
+                 (page-documents (mapcar
+                                  #'40ants-doc/commondoc/builder:to-commondoc
+                                  pages))
+                 (full-document (process-document
+                                 (common-doc:make-document "Documentation"
+                                                           :children page-documents)))
+                 (absolute-dir (uiop:ensure-absolute-pathname base-dir
+                                                              (probe-file ".")))
+                 (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
+                 (40ants-doc/commondoc/toc:*main-toc*
+                   (40ants-doc/commondoc/toc:make-toc full-document)))
 
-        (ensure-directories-exist absolute-dir)
-       
-        (let ((common-html.emitter:*document-section-format-control*
-                ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
-                ;; be a slash after the .html
-                "~A#~A"))
-          (loop for document in page-documents
-                for filename = (40ants-doc/commondoc/page::html-filename document)
-                for full-filename = (uiop:merge-pathnames* filename absolute-dir)
-                do (uiop:with-output-file (stream full-filename
-                                                  :if-exists :supersede)
-                     (common-doc.format:emit-document (make-instance 'common-html:html)
-                                                      document
-                                                      stream))))
-       
-        (uiop:with-output-file (stream css-filename
-                                       :if-exists :supersede)
-          (write-string (40ants-doc/themes/api:render-css theme)
-                        stream)
-          (terpri stream))
+            (ensure-directories-exist absolute-dir)
+         
+            (let ((common-html.emitter:*document-section-format-control*
+                    ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
+                    ;; be a slash after the .html
+                    "~A#~A"))
+              (loop for document in page-documents
+                    for filename = (40ants-doc/commondoc/page::full-filename document)
+                    for full-filename = (uiop:merge-pathnames* filename absolute-dir)
+                    do (uiop:with-output-file (stream full-filename
+                                                      :if-exists :supersede)
+                         (common-doc.format:emit-document (make-instance format)
+                                                          document
+                                                          stream))))
+         
+            (when (eql format
+                       'common-html:html)
+              (uiop:with-output-file (stream css-filename
+                                             :if-exists :supersede)
+                (write-string (40ants-doc/themes/api:render-css theme)
+                              stream)
+                (terpri stream)))
 
-        (unless (zerop num-warnings)
-          (warn "~A warning~:P were caught"
-                num-warnings))
-        (values absolute-dir)))))
+            (unless (zerop num-warnings)
+              (warn "~A warning~:P were caught"
+                    num-warnings))
+            (values absolute-dir))))))
 
 
-(defun page-to-markdown (sections filename)
-  (let* ((parts (mapcar
-                 #'40ants-doc/commondoc/builder:to-commondoc
-                 (uiop:ensure-list sections)))
-         (full-document (process-document
-                         (common-doc:make-document "Documentation"
-                                                   :children parts))))
+;; (defun page-to-markdown (sections filename)
+;;   (let* ((parts (mapcar
+;;                  #'40ants-doc/commondoc/builder:to-commondoc
+;;                  (uiop:ensure-list sections)))
+;;          (full-document (process-document
+;;                          (common-doc:make-document "Documentation"
+;;                                                    :children parts))))
 
-    (uiop:with-output-file (stream filename
-                                   :if-exists :supersede)
-      (common-doc.format:emit-document (make-instance 'commondoc-markdown:markdown)
-                                       full-document
-                                       stream))
+;;     (uiop:with-output-file (stream filename
+;;                                    :if-exists :supersede)
+;;       (common-doc.format:emit-document (make-instance 'commondoc-markdown:markdown)
+;;                                        full-document
+;;                                        stream))
     
-    (values)))
+;;     (values)))
 
 
 (defun add-html-defaults-to-page-specs (sections page-specs dir
