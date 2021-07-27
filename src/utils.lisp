@@ -7,6 +7,7 @@
                 #:generic-function-name)
   (:import-from #:swank)
   (:import-from #:cl-ppcre)
+  (:import-from #:str)
   (:export
    #:object-package
    #:is-external
