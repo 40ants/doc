@@ -348,8 +348,9 @@
                                           :base-dir "./new-docs/"))
 
 (40ants-doc:defsection @experiment (:title "Experiment")
-  (user function)
-  (40ants-doc/builder/printer::*document-normalize-packages* variable)
+  "See [DESCRIBE-OBJECT][(METHOD () (40ANTS-DOC:SECTION T))]."
+
+  (describe-object (method () (40ANTS-DOC:SECTION T)))
   ;; (40ants-doc::*discard-documentation-p* variable)
   ;; (40ants-doc::defsection macro)
   ;; (40ants-doc::section class)
