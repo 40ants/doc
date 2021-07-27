@@ -18,6 +18,7 @@
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/commondoc/mapper)
   (:import-from #:commondoc-markdown)
+  (:import-from #:40ants-doc/object-package)
   (:export
    #:make-xref
    #:xref
@@ -182,17 +183,11 @@
         node)))
 
 
-;; (defmethod 40ants-doc/utils::object-package ((obj common-doc:text-node))
-;;   *package*)
-
-(defmethod 40ants-doc/utils::object-package ((obj common-doc:document))
+(defmethod 40ants-doc/object-package:object-package ((obj common-doc:document))
   *package*)
 
-(defmethod 40ants-doc/utils::object-package ((obj common-doc:document-node))
+(defmethod 40ants-doc/object-package:object-package ((obj common-doc:document-node))
   *package*)
-
-;; (defmethod 40ants-doc/utils::object-package ((obj 40ants-doc/commondoc/bullet::bullet))
-;;   *package*)
 
 
 (defun extract-symbols (node &aux inside-code-block)
@@ -204,7 +199,7 @@
     ;; in the package where DOCUMENTATION-SECTION was defined.
     (labels
         ((set-package (node)
-           (let ((package (or (40ants-doc/utils::object-package node)
+           (let ((package (or (40ants-doc/object-package:object-package node)
                               *package*)))
              (push *package* packages-stack)
              (setf *package* package)))

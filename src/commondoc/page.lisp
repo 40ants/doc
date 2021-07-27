@@ -18,6 +18,7 @@
                 #:documentation-piece)
   (:import-from #:40ants-doc/utils
                 #:is-external)
+  (:import-from #:40ants-doc/object-package)
   (:export
    ;; #:ensure-page
    #:make-page
@@ -131,7 +132,7 @@
                 when (typep obj 'symbol)
                 collect obj)))
     (flet ((checker (node)
-             (let ((package (40ants-doc/utils:object-package node)))
+             (let ((package (40ants-doc/object-package:object-package node)))
                (when (and package
                           (not (eql package
                                     common-lisp-package))

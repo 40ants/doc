@@ -2,14 +2,9 @@
   (:use #:cl)
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:alexandria)
-  (:import-from #:closer-mop
-                #:method-generic-function
-                #:generic-function-name)
-  (:import-from #:swank)
   (:import-from #:cl-ppcre)
   (:import-from #:str)
   (:export
-   #:object-package
    #:is-external
    #:get-package-from-symbol-name
    #:parse-symbol-name
@@ -646,57 +641,6 @@
                              'in-package))
               do (return (find-package
                           (second form))))))))
-
-
-(defgeneric object-package (object)
-  (:method ((object t))
-    (warn "Unable to figure out *package* for object ~S"
-          object)
-    nil)
-  
-  (:method ((object symbol))
-    (symbol-package object))
-  
-  (:method ((object string))
-    nil)
-  
-  (:method ((object package))
-    object)
-  
-  (:method ((object asdf:system))
-    nil)
-
-  (:method ((object function))
-    (object-package
-     (swank-backend:function-name object)))
-
-  (:method ((object generic-function))
-    (object-package
-     (generic-function-name object)))
-
-  (:method ((object standard-method))
-    ;; Method can be defined in other package than
-    ;; a generic function.
-    ;; Thus we need to find it's file and package
-    (let* ((swank-response
-             (swank:find-definition-for-thing object))
-           (filename
-             (getf (getf swank-response :location) :file))
-           (package
-             (when filename
-               (file-package filename))))
-      (if package
-          package
-          (call-next-method))))
-  
-  (:method ((object standard-class))
-    (object-package
-     (class-name object)))
-
-  #+sbcl
-  (:method ((object sb-pcl::condition-class))
-    (object-package
-     (slot-value object 'sb-pcl::name))))
 
 
 (defun symbol-name-p (string)

@@ -4,7 +4,7 @@
   (:nicknames #:40ants-doc/core)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives)
-  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/object-package)
   (:export #:defsection
            #:exportable-locative-type-p
            #:section
@@ -158,7 +158,7 @@
     (format stream "~S" (section-name section))))
 
 
-(defmethod 40ants-doc/utils:object-package ((obj section))
+(defmethod 40ants-doc/object-package:object-package ((obj section))
   (section-package obj))
 
 

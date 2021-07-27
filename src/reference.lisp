@@ -7,7 +7,7 @@
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/locatives/dislocated)
-  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/object-package)
   (:export
    #:resolve
    #:reference
@@ -31,8 +31,8 @@
     (format stream "~S ~S" (reference-object object)
             (reference-locative object))))
 
-(defmethod 40ants-doc/utils:object-package ((obj reference))
-  (40ants-doc/utils:object-package (reference-object obj)))
+(defmethod 40ants-doc/object-package:object-package ((obj reference))
+  (40ants-doc/object-package:object-package (reference-object obj)))
 
 (defun reference= (reference-1 reference-2)
   (and (equal (reference-object reference-1)

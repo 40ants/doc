@@ -20,6 +20,7 @@
   (:import-from #:40ants-doc/commondoc/piece
                 #:documentation-piece)
   (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/object-package)
   (:export
    #:documentation-section
    #:section-definition
@@ -121,7 +122,7 @@
   (40ants-doc:section-title obj))
 
 
-(defmethod 40ants-doc/utils::object-package ((obj documentation-section))
+(defmethod 40ants-doc/object-package:object-package ((obj documentation-section))
   (let* ((section (section-definition obj))
          (name (40ants-doc:section-name section)))
-    (40ants-doc/utils::object-package name)))
+    (40ants-doc/object-package:object-package name)))
