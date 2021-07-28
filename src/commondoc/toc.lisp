@@ -2,16 +2,20 @@
   (:use #:cl)
   (:import-from #:40ants-doc/commondoc/section
                 #:documentation-section-uri-fragment)
+  (:import-from #:40ants-doc/utils
+                #:make-relative-path)
+  (:import-from #:40ants-doc/commondoc/page
+                #:full-filename
+                #:base-filename)
   (:export
-   #:*main-toc*
    #:make-toc))
 (in-package 40ants-doc/commondoc/toc)
 
 
-(defvar *main-toc*)
+(defvar *full-document*)
 
 
-(defun make-toc (document)
+(defun make-toc (document page)
   "Collects toplevel objects of 40ANTS-DOC/COMMONDOC/SECTION:DOCUMENTATION-SECTION class
    and returns a table of content CommonDoc node."
   (let* ((current-sublist (list (common-doc:make-unordered-list (list))))
@@ -23,11 +27,14 @@
                       (page-uri
                         (when current-page
                           (format nil "~A"
-                                  (40ants-doc/commondoc/page::full-filename current-page))))
+                                  (full-filename current-page))))
                       
-                      (text (common-doc:make-document-link page-uri
-                                                           html-fragment
-                                                           (common-doc:title node)))
+                      (text (if page-uri
+                                (common-doc:make-document-link (make-relative-path (full-filename page)
+                                                                                   page-uri)
+                                                               html-fragment
+                                                               (common-doc:title node))
+                                (common-doc:title node)))
                       (p (common-doc:make-paragraph text))
                       (li (common-doc:make-list-item p)))
                  (setf (common-doc:children (car current-sublist))
@@ -68,5 +75,7 @@
 
 
 (defmethod 40ants-doc/commondoc/page:make-page-toc ((obj 40ants-doc/commondoc/page:page))
-  (or *main-toc*
-      (make-toc obj)))
+  (unless (boundp '*full-document*)
+    (error "Please, set 40ANTS-DOC/COMMONDOC/TOC:*FULL-DOCUMENT* variable to generate TOC."))
+  
+  (make-toc *full-document* obj))

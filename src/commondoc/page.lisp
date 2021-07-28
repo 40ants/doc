@@ -27,7 +27,9 @@
    #:page
    #:make-page-toc
    #:warn-on-missing-exports
-   #:warn-on-undocumented-exports))
+   #:warn-on-undocumented-exports
+   #:base-filename
+   #:full-filename))
 (in-package 40ants-doc/commondoc/page)
 
 
