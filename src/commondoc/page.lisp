@@ -31,7 +31,7 @@
 
 
 (defclass page (common-doc:content-node)
-  ((base-filename :type pathname
+  ((base-filename :type string
                   :reader base-filename
                   :initarg :base-filename)))
 

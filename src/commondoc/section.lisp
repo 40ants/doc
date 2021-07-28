@@ -62,8 +62,9 @@
 (defun make-documentation-section (definition)
   (check-type definition 40ants-doc:section)
   
-  (let ((title (common-doc:make-text (or (40ants-doc:section-title definition)
-                                         "Untitled")))
+  (let ((title (list
+                (common-doc:make-text (or (40ants-doc:section-title definition)
+                                          "Untitled"))))
         (children (make-section-body definition)))
 
     (let* ((reference (40ants-doc/reference-api::canonical-reference definition))
