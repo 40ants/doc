@@ -704,26 +704,6 @@
             symbol))))))
 
 
-
-(defun make-relative-path (from to)
-  (check-type from string)
-  (check-type to string)
-
-  (let* ((prefix (str:prefix (list from to)))
-         ;; We only interested if these paths have
-         ;; complete parts in common
-         (prefix-len (if (str:ends-with-p "/" prefix)
-                         (length prefix)
-                         0))
-         (from (subseq from prefix-len))
-         (to (subseq to prefix-len))
-         (num-slashes (count #\/ from)))
-    (with-output-to-string (s)
-      (loop repeat num-slashes
-            do (write-string "../" s))
-      (write-string to s))))
-
-
 (defun make-relative-path (from to)
   (check-type from string)
   (check-type to string)
