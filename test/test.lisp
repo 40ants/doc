@@ -134,6 +134,7 @@
   "Same link in docstring to @TEST.")
 
 (defsection @test-tricky-title
+    ;; TODO: new builder version should parse section titles as markdown
     (:export nil :title "`CODE` *italic* _italic2_ *bold* [link][sdf] <thing>")
   "backlink @TEST")
 

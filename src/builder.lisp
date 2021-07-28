@@ -218,7 +218,8 @@
             (loop for document in page-documents
                   for filename = (40ants-doc/commondoc/page::full-filename document)
                   for full-filename = (uiop:merge-pathnames* filename absolute-dir)
-                  do (uiop:with-output-file (stream full-filename
+                  do (ensure-directories-exist full-filename)
+                     (uiop:with-output-file (stream full-filename
                                                     :if-exists :supersede)
                        (common-doc.format:emit-document (make-instance format)
                                                         document

@@ -17,6 +17,7 @@
                 #:doc-reference
                 #:documentation-piece)
   (:import-from #:40ants-doc/utils
+                #:make-relative-path
                 #:is-external)
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/commondoc/format)
@@ -71,7 +72,8 @@
 
 (define-emitter (obj page)
   "Emit an piece of documentation."
-  (let ((toc (make-page-toc obj)))
+  (let ((toc (make-page-toc obj))
+        (theme-uri (make-relative-path (base-filename obj) "theme.css")))
     (with-html
       (:html
        (:head
@@ -80,7 +82,7 @@
         (:title "Example page")
         (:link :rel "stylesheet"
                :type "text/css"
-               :href "theme.css"))
+               :href theme-uri))
        (:body
         (:div :id "content-container"
               (:div :id "toc"
