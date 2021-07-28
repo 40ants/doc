@@ -1,0 +1,377 @@
+body{
+    font-family: sans-serif;
+    margin: auto;
+    background-color: #FFFEFB;
+    color: #000000;
+}
+
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6{
+    font-family: serif;
+    font-weight: bold;
+    text-shadow: 0.05em 0.05em 0.02em #DDDDDD;
+}
+
+body h1 a.header-link,
+body h2 a.header-link,
+body h3 a.header-link,
+body h4 a.header-link,
+body h5 a.header-link,
+body h6 a.header-link{
+    color: #DDD;
+    padding: 0 4px;
+    text-decoration: none;
+    border-bottom: none;
+    text-shadow: none;
+    visibility: hidden;
+}
+
+
+
+body h1:hover a.header-link,
+body h2:hover a.header-link,
+body h3:hover a.header-link,
+body h4:hover a.header-link,
+body h5:hover a.header-link,
+body h6:hover a.header-link{
+    visibility: visible;
+}
+
+body h1:hover a.header-link:hover,
+body h2:hover a.header-link:hover,
+body h3:hover a.header-link:hover,
+body h4:hover a.header-link:hover,
+body h5:hover a.header-link:hover,
+body h6:hover a.header-link:hover{
+    color: #777;
+}
+
+body h1{
+    font-size: 250%;
+}
+
+body h2{
+    font-size: 200%;
+    border-bottom: 0.05em solid #CCCCCC;
+}
+
+body h3{
+    font-size: 150%;
+}
+
+body h4{
+    font-size: 130%;
+}
+
+body h5{
+    font-size: 110%;
+    margin-top: 0.75em;
+    margin-bottom: 0.5em;
+}
+
+body h6{
+    font-size: 100%;
+    background-color: inherit;
+    color: #777777;
+}
+
+body h6 a{
+    color: #777777;
+}
+
+body hr{
+    height: 0.2em;
+    border: 0;
+    color: #CCCCCC;
+    background-color: #CCCCCC;
+}
+
+body p,
+body blockquote,
+body table,
+body pre{
+    line-height: 1.5;
+    margin: 0.5em 0 0 0;
+}
+
+body ul,
+body ol,
+body dl{
+    padding-left: 1.1em;
+    list-style-position: outside;
+}
+
+body li{
+    line-height: 1.5;
+    margin: 0 0 0 0;
+}
+
+body pre{
+    background-color: #F5F3ED;
+    color: #000000;
+    border: 0.1em solid #CCCCCC;
+    line-height: 1.25em;
+    overflow: auto;
+    margin: 0.5em 0 0 0;
+    padding: 0.2em;
+}
+
+body code{
+    color: #222222;
+}
+
+body a{
+    color: #222222;
+    text-decoration: none;
+    border-bottom: 1px solid;
+}
+
+
+
+body .locative-type a{
+    text-decoration: none;
+    border-bottom: 0;
+    font-weight: bold;
+}
+
+body .reference-object{
+    background-color: #EBE8E2;
+    padding: 0.1em;
+    border: solid 1px;
+    font-weight: bold;
+}
+
+body .reference-object a{
+    border-bottom: none;
+}
+
+body .locative-args{
+    font-style: italic;
+}
+
+body .locative-args code{
+    font-family: sans-serif;
+}
+
+body navigation{
+    display: block;
+    visibility: hidden;
+    margin-bottom: -1.5em;
+}
+
+body navigation a{
+    color: #CCCCCC;
+    text-shadow: none;
+    border-bottomi: none;
+}
+
+
+
+body .outer-navigation:hover .navigation{
+    visibility: visible;
+}
+
+body .symbol{
+    color: #770055;
+    background-color: transparent;
+    text-decoration: none;
+    border: 0px;
+    margin: 0px;
+}
+
+body a.symbol:link{
+    color: #229955;
+}
+
+body a.symbol:active{
+    color: #229955;
+}
+
+body a.symbol:visited{
+    color: #229955;
+}
+
+body a.symbol:hover{
+    color: #229955;
+}
+
+body .special{
+    color: #FF5000;
+    background-color: inherit;
+}
+
+body .keyword{
+    color: #770000;
+    background-color: inherit;
+}
+
+body .comment{
+    color: #007777;
+    background-color: inherit;
+}
+
+body .string{
+    color: #777777;
+    background-color: inherit;
+}
+
+body .atom{
+    color: #314F4F;
+    background-color: inherit;
+}
+
+body .macro{
+    color: #FF5000;
+    background-color: inherit;
+}
+
+body .variable{
+    color: #36648B;
+    background-color: inherit;
+}
+
+body .function{
+    color: #8B4789;
+    background-color: inherit;
+}
+
+body .attribute{
+    color: #FF5000;
+    background-color: inherit;
+}
+
+body .character{
+    color: #0055AA;
+    background-color: inherit;
+}
+
+body .syntaxerror{
+    color: #FF0000;
+    background-color: inherit;
+}
+
+body .diff-deleted{
+    color: #5F2121;
+    background-color: inherit;
+}
+
+body .diff-added{
+    color: #215F21;
+    background-color: inherit;
+}
+
+body #content-container{
+    margin: 0;
+    padding: 0;
+}
+
+body #content{
+    margin-left: 40ex;
+    padding-left: 2.5em;
+    max-width: 85ex;
+}
+
+body #toc{
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 40ex;
+    max-width: 33%;
+    position: fixed;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #333;
+    -moz-box-shadow: inset -5px 0 5px 0px #000;
+    -o-box-shadow: inset -5px 0 5px 0px #000;
+    -webkit-box-shadow: inset -5px 0 5px 0px #000;
+    -ms-box-shadow: inset -5px 0 5px 0px #000;
+    box-shadow: inset -5px 0 5px 0px #000;
+    color: #aaa;
+}
+
+body #toc ul{
+    font-size: 80%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body #toc li{
+    line-height: 1.0;
+    padding: 5px 10px;
+}
+
+body #toc a{
+    border-bottom: none;
+}
+
+body #toc hr{
+    height: 0.05em;
+    border: 0;
+    background: #777;
+}
+
+body #toc .toc-h2{
+    padding-left: 10px;
+}
+
+body #toc .toc-h3{
+    padding-left: 20px;
+}
+
+body #toc .toc-h4{
+    padding-left: 30px;
+}
+
+body #toc .toc-active{
+    background: #336699;
+    -moz-box-shadow: inset -5px 0px 10px -5px #000;
+    -o-box-shadow: inset -5px 0px 10px -5px #000;
+    -webkit-box-shadow: inset -5px 0px 10px -5px #000;
+    -ms-box-shadow: inset -5px 0px 10px -5px #000;
+    box-shadow: inset -5px 0px 10px -5px #000;
+}
+
+
+
+body #page-toc a{
+    color: #fff;
+}
+
+body .menu-block{
+    padding-left: 10px;
+    margin-bottom: 1em;
+}
+
+body .menu-block a{
+    color: #fff;
+    border-bottom: none;
+}
+
+body .menu-block-title{
+    font-size: 90%;
+}
+
+
+
+body #toc-header a{
+    color: #777777;
+}
+
+body #toc-footer{
+    margin-left: 0.5em;
+    margin-top: 2em;
+}
+
+body #toc-footer a{
+    font-size: 80%;
+    color: #777777;
+}
+
+body .unresolved-reference{
+    color: magenta;
+}
