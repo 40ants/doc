@@ -86,7 +86,8 @@
          (docstring (40ants-doc/render/print::get-docstring
                      obj t))
          ;; TODO:  we should move text transfromation after it will be parsed
-         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
                                               :arglist arglist

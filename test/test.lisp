@@ -411,29 +411,28 @@
 
 
 (defun test-document (format)
-  (let ((outputs (write-test-document-files
-                  (asdf:system-relative-pathname :40ants-doc "test/data/tmp/")
-                  format)))
-    (ok (= 4 (length outputs)))
-    ;; the default page corresponding to :STREAM is empty
-    (ok (string= "" (first outputs)))
-    (ok (= 2 (count-if #'pathnamep outputs)))
+  (destructuring-bind (output-dir &rest pages-pathnames)
+      (multiple-value-list
+       (write-test-document-files
+        (asdf:system-relative-pathname :40ants-doc "test/data/tmp/")
+        format))
     
-    (dolist (output outputs)
-      (when (pathnamep output)
-        (let ((baseline (make-pathname
-                         :directory (substitute "baseline" "tmp"
-                                                (pathname-directory output)
-                                                :test #'equal)
-                         :defaults output)))
-          (unless (string= (alexandria:read-file-into-string baseline)
-                           (alexandria:read-file-into-string output))
-            (cerror "Update output file."
-                    "~@<Output ~S ~_differs from baseline ~S:~2%~A~@:>"
-                    output baseline
-                    (get-files-diff baseline
-                                    output))
-            (update-test-document-baseline format)))))))
+    (ok (pathnamep output-dir))
+    
+    (dolist (output pages-pathnames)
+      (let ((baseline (make-pathname
+                       :directory (substitute "baseline" "tmp"
+                                              (pathname-directory output)
+                                              :test #'equal)
+                       :defaults output)))
+        (unless (string= (alexandria:read-file-into-string baseline)
+                         (alexandria:read-file-into-string output))
+          (cerror "Update output file."
+                  "~@<Output ~S ~_differs from baseline ~S:~2%~A~@:>"
+                  output baseline
+                  (get-files-diff baseline
+                                  output))
+          (update-test-document-baseline format))))))
 
 
 (deftest test-markdown-document
@@ -445,33 +444,17 @@
 
 
 (defun write-test-document-files (basedir format)
-  (flet ((rebase (pathname)
-           (merge-pathnames pathname
-                            (make-pathname
-                             :type (if (eq format :markdown)
-                                       "md"
-                                       "html")
-                             :directory (pathname-directory basedir)))))
-    (let ((open-args '(:if-exists :supersede :ensure-directories-exist t))
-          (40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html))
-          (pages (list (40ants-doc/page:make-page2 @test-examples)
-                       (40ants-doc/page:make-page2 @test-other))))
+  (let ((40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html))
+        (pages (list (40ants-doc/page:make-page2 @test-other
+                                                 :base-filename "other/test-other")
+                     (40ants-doc/page:make-page2 @test
+                                                 :base-filename "test"))))
 
-      (multi-page-to-html pages)
-      
-      (when nil
-        (40ants-doc/document::document
-         @test
-         :pages `((:objects
-                   ,(list @test-examples)
-                   :output (nil))
-                  (:objects
-                   ,(list @test-other)
-                   :output (,(rebase "other/test-other") ,@open-args))
-                  (:objects
-                   ,(list @test)
-                   :output (,(rebase "test") ,@open-args)))
-         :format format)))))
+    (40ants-doc/builder:render-to-files pages
+                                        :base-dir basedir
+                                        :format (ecase format
+                                                  (:markdown 'commondoc-markdown:markdown)
+                                                  (:html 'common-html:html)))))
 
 (defun update-test-document-baseline (format)
   (write-test-document-files

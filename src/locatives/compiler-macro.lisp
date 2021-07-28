@@ -51,7 +51,8 @@
                       symbol (cons locative-type locative-args))))
          (arglist (swank-backend:arglist symbol))
          (docstring (40ants-doc/render/print::get-docstring symbol 'compiler-macro))
-         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist locative-args

@@ -181,52 +181,64 @@
 (defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
                                       (base-dir #P"./")
                                       (format 'common-html:html))
+  "Renders given sections or pages into a files on disk.
+
+   By default, it renders in to HTML, but you can specify FORMAT argument,
+   and pass other CommonDoc's format class, supported by the 40ANTS-DOC system.
+
+   Returns an absolute pathname to the output directory as the first value
+   and pathnames corresponding to each of given sections."
+  
   (let ((num-warnings 0))
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
                               (incf num-warnings))))
       (40ants-doc/commondoc/format:with-format (format)
-          (let* ((theme (make-instance theme))
-                 (pages (mapcar #'40ants-doc/page:ensure-page sections))
-                 (page-documents (mapcar
-                                  #'40ants-doc/commondoc/builder:to-commondoc
-                                  pages))
-                 (full-document (process-document
-                                 (common-doc:make-document "Documentation"
-                                                           :children page-documents)))
-                 (absolute-dir (uiop:ensure-absolute-pathname base-dir
-                                                              (probe-file ".")))
-                 (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
-                 (40ants-doc/commondoc/toc:*main-toc*
-                   (40ants-doc/commondoc/toc:make-toc full-document)))
+        (let* ((theme (make-instance theme))
+               (pages (mapcar #'40ants-doc/page:ensure-page sections))
+               (page-documents (mapcar
+                                #'40ants-doc/commondoc/builder:to-commondoc
+                                pages))
+               (full-document (process-document
+                               (common-doc:make-document "Documentation"
+                                                         :children page-documents)))
+               (absolute-dir (uiop:ensure-absolute-pathname base-dir
+                                                            (probe-file ".")))
+               (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
+               (40ants-doc/commondoc/toc:*main-toc*
+                 (40ants-doc/commondoc/toc:make-toc full-document))
+               (output-paths nil))
 
-            (ensure-directories-exist absolute-dir)
+          (ensure-directories-exist absolute-dir)
          
-            (let ((common-html.emitter:*document-section-format-control*
-                    ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
-                    ;; be a slash after the .html
-                    "~A#~A"))
-              (loop for document in page-documents
-                    for filename = (40ants-doc/commondoc/page::full-filename document)
-                    for full-filename = (uiop:merge-pathnames* filename absolute-dir)
-                    do (uiop:with-output-file (stream full-filename
-                                                      :if-exists :supersede)
-                         (common-doc.format:emit-document (make-instance format)
-                                                          document
-                                                          stream))))
+          (let ((common-html.emitter:*document-section-format-control*
+                  ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
+                  ;; be a slash after the .html
+                  "~A#~A"))
+            (loop for document in page-documents
+                  for filename = (40ants-doc/commondoc/page::full-filename document)
+                  for full-filename = (uiop:merge-pathnames* filename absolute-dir)
+                  do (uiop:with-output-file (stream full-filename
+                                                    :if-exists :supersede)
+                       (common-doc.format:emit-document (make-instance format)
+                                                        document
+                                                        stream)
+                       (push full-filename output-paths))))
          
-            (when (eql format
-                       'common-html:html)
-              (uiop:with-output-file (stream css-filename
-                                             :if-exists :supersede)
-                (write-string (40ants-doc/themes/api:render-css theme)
-                              stream)
-                (terpri stream)))
+          (when (eql format
+                     'common-html:html)
+            (uiop:with-output-file (stream css-filename
+                                           :if-exists :supersede)
+              (write-string (40ants-doc/themes/api:render-css theme)
+                            stream)
+              (terpri stream)))
 
-            (unless (zerop num-warnings)
-              (warn "~A warning~:P were caught"
-                    num-warnings))
-            (values absolute-dir))))))
+          (unless (zerop num-warnings)
+            (warn "~A warning~:P were caught"
+                  num-warnings))
+          (apply #'values
+                 absolute-dir
+                 (nreverse output-paths)))))))
 
 
 ;; (defun page-to-markdown (sections filename)

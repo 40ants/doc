@@ -8,7 +8,8 @@
    #:is-external
    #:get-package-from-symbol-name
    #:parse-symbol-name
-   #:get-symbol-from-string))
+   #:get-symbol-from-string
+   #:make-relative-path))
 (in-package 40ants-doc/utils)
 
 
@@ -701,3 +702,41 @@
                        symbol-name)
           (return-from get-symbol-from-string
             symbol))))))
+
+
+
+(defun make-relative-path (from to)
+  (check-type from string)
+  (check-type to string)
+
+  (let* ((prefix (str:prefix (list from to)))
+         ;; We only interested if these paths have
+         ;; complete parts in common
+         (prefix-len (if (str:ends-with-p "/" prefix)
+                         (length prefix)
+                         0))
+         (from (subseq from prefix-len))
+         (to (subseq to prefix-len))
+         (num-slashes (count #\/ from)))
+    (with-output-to-string (s)
+      (loop repeat num-slashes
+            do (write-string "../" s))
+      (write-string to s))))
+
+
+(defun make-relative-path (from to)
+  (check-type from string)
+  (check-type to string)
+
+  (let* ((from-parts (str:split "/" from))
+         (to-parts (str:split "/" to)))
+    (with-output-to-string (s)
+      (loop for (from-part . rest-from-parts) on from-parts
+            for (to-part . rest-to-parts) on to-parts
+            while (string= from-part
+                           to-part)
+            finally
+               (loop repeat (length rest-from-parts)
+                     do (write-string "../" s))
+               (push to-part rest-to-parts)
+               (format s "~{~A~^/~}" rest-to-parts)))))

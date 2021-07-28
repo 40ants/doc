@@ -36,10 +36,19 @@
                   :initarg :base-filename)))
 
 
-(defgeneric full-filename (page)
-  (:method (page)
+(defgeneric full-filename (page &key from)
+  (:method ((page (eql :no-page)) &key from)
+    (declare (ignore from))
+    "")
+  
+  (:method ((page page) &key from)
+    (check-type from (or page
+                         null))
     (concatenate 'string
-                 (base-filename page)
+                 (if from
+                     (40ants-doc/utils:make-relative-path (base-filename from)
+                                                          (base-filename page))
+                     (base-filename page))
                  "."
                  (40ants-doc/commondoc/format:current-files-extension))))
 
@@ -170,6 +179,8 @@
 
 (defun replace-xrefs (node known-references &aux ignored-words
                                                  sections
+                                                 current-page
+                                                 pages-stack
                                                  (common-lisp-package (find-package :common-lisp))
                                                  (keywords-package (find-package :keyword)))
   "Replaces XREF with COMMON-DOC:WEB-LINK.
@@ -198,12 +209,23 @@
            (pop-section (node)
              (when (typep node '40ants-doc/commondoc/section:documentation-section)
                (pop sections)))
+           (push-page (node)
+             (when (typep node 'page)
+               (push node pages-stack)
+               (setf current-page node)))
+           (pop-page (node)
+             (when (typep node 'page)
+               (pop pages-stack)
+               (setf current-page
+                     (car pages-stack))))
            (go-down (node)
              (collect-ignored-words node)
-             (collect-section node))
+             (collect-section node)
+             (push-page node))
            (go-up (node)
              (pop-ignored-words node)
-             (pop-section node))
+             (pop-section node)
+             (pop-page node))
            (package-specified (text)
              (find #\: text))
            (should-be-ignored-p (text symbol locative)
@@ -274,7 +296,7 @@
                                 (let ((page-uri
                                         (when page
                                           (format nil "~A"
-                                                  (full-filename page))))
+                                                  (full-filename page :from current-page))))
                                       (html-fragment
                                         (40ants-doc/utils::html-safe-name
                                          (40ants-doc/reference::reference-to-anchor reference))))
