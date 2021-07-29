@@ -65,7 +65,36 @@
             (ok (eql doc result)))
 
           (testing "But it's child should be changed to a real web link"
-            (ok (typep (first-child) 'common-doc:document-link))))))))
+            (ok (typep (first-child) 'common-doc:document-link)))))))
+  
+  (testing "XREF nested in CODE block shouldn't not be replaced with yet another code block."
+    (let* ((original-xref (make-xref "FOO"))
+           (doc (common-doc:make-code original-xref)))
+      
+      (let ((result (40ants-doc/commondoc/page::replace-xrefs doc nil)))
+        (testing "Resulting document should remain the same"
+          (ok (eql doc result)))
+
+        (testing "And it's child should be remain original XREF"
+          (ok (eql (first (common-doc:children doc))
+                   original-xref))))))
+  
+  (testing "XREF not-nested in CODE block should be surrounded by one"
+    (let* ((original-xref (make-xref "FOO"))
+           (doc (common-doc:make-content original-xref)))
+      
+      (let ((result (40ants-doc/commondoc/page::replace-xrefs doc nil)))
+        (testing "Resulting document should remain the same"
+          (ok (eql doc result)))
+
+        (testing "And now it should contain an inline code block"
+          (ok (typep (first (common-doc:children doc))
+                     'common-doc:code)))
+        
+        (testing "And this code block should contain original XREF"
+          (let ((code-block (first (common-doc:children doc))))
+            (ok (eql (first (common-doc:children code-block))
+                     original-xref))))))))
 
 
 (deftest test-filling-locatives

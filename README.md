@@ -39,9 +39,9 @@ integration.
 
 Here is features already implemented in this fork:
 
-* Core system `[`40ANTS-DOC`](readme.md#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29)` now has only two dependencies on ``NAMED-READTABLES``
-  and ``PYTHONIC-STRING-READER``. If you want to compile a documentation, load
-  `[`40ANTS-DOC-FULL`](readme.md#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29)` system which will download such dependencies as markdown
+* Core system `[40ANTS-DOC](readme.md#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29)` now has only two dependencies on `NAMED-READTABLES`
+  and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
+  `[40ANTS-DOC-FULL](readme.md#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29)` system which will download such dependencies as markdown
   parser and more.
 
 * Now you don't have to import any locative symbols into your package. Import
@@ -52,7 +52,7 @@ Here is features already implemented in this fork:
   like a symbol, but when real symbol or reference is absent:
 
 `
-   `WARNING`: Unable to find symbol "`API`" mentioned in ([`40Ants Doc Manual`](readme.md#x-2840ANTS-DOC-2FDOC-3A-40INDEX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) [`SECTION`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ASECTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))
+   WARNING: Unable to find symbol "API" mentioned in ([40Ants Doc Manual](readme.md#x-2840ANTS-DOC-2FDOC-3A-40INDEX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) [SECTION](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ASECTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))
 `
 
 I'm planning to extend this fork even more. Read [`TODO`](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section to learn about
@@ -195,7 +195,7 @@ effects as with Literate Programming, but documentation is generated
 from code, not vice versa and there is no support for chunking yet.
 Code is first, code must look pretty, documentation is code.
 
-In typical use, using [`40ANTS-DOC`](readme.md#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29), packages have no ``:EXPORT``'s defined.
+In typical use, using [`40ANTS-DOC`](readme.md#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29), packages have no `:EXPORT`'s defined.
 Instead the `UIOP:DEFINE-PACKAGE` form gets a docstring which may mention section
 names (defined with [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29)). When the code is loaded into the
 lisp, pressing `M-.` in `SLIME` on the name of the section will take
@@ -317,24 +317,24 @@ with FOO:
 ```
 More fancy markdown or `HTML` output with automatic markup and linking
 of uppercase symbol names found in docstrings, section numbering,
-table of contents, etc is possible by calling the `[`40ANTS-DOC/DOCUMENT::DOCUMENT`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29)`
+table of contents, etc is possible by calling the `[40ANTS-DOC/DOCUMENT::DOCUMENT](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29)`
 generic.
 
 One can even generate documentation for different, but related
 libraries at the same time with the output going to different files,
 but with cross-page links being automatically added for symbols
-mentioned in docstrings. See `[`Generating Documentation`](readme.md#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)` for
+mentioned in docstrings. See `[Generating Documentation](readme.md#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)` for
 some convenience functions to cover the most common cases.
 
-Note how `([`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) `*FOO-STATE*`)` in the [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) form both
-exports ``*FOO-STATE*`` and includes its documentation in
-``@FOO-RANDOM-MANUAL``. The symbols [`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) and [`FUNCTION`](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) are just two
+Note how `([VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) *FOO-STATE*)` in the [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) form both
+exports `*FOO-STATE*` and includes its documentation in
+`@FOO-RANDOM-MANUAL`. The symbols [`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) and [`FUNCTION`](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) are just two
 instances of 'locatives' which are used in [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to refer to
 definitions tied to symbols. See [`Locative Types`](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
 
 The transcript in the code block tagged with `cl-transcript` is
 automatically checked for up-to-dateness. See
-`[`Transcripts`](readme.md#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)`.
+`[Transcripts](readme.md#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)`.
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -356,8 +356,8 @@ Note that the this feature is implemented in terms of
 implementations.
 
 In the following examples, pressing `M-.` when the cursor is on one
-of the characters of ``FOO`` or just after ``FOO``, will visit the
-definition of function ``FOO``:
+of the characters of `FOO` or just after `FOO`, will visit the
+definition of function `FOO`:
 
 ```text
 function foo
@@ -369,7 +369,7 @@ In particular, references in a [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECT
 [`LOCATIVE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29)) format so `M-.` will work just fine there.
 
 Just like vanilla `M-.`, this works in comments and docstrings. In
-this example pressing `M-.` on ``FOO`` will visit ``FOO``'s default
+this example pressing `M-.` on `FOO` will visit `FOO`'s default
 method:
 
 ```commonlisp
@@ -461,7 +461,7 @@ Now let's examine the most important pieces in detail.
 
 
 The default value of [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29)'s `DISCARD-DOCUMENTATION-P` argument.
-One may want to set `[`*DISCARD-DOCUMENTATION-P*`](readme.md#x-2840ANTS-DOC-3A-2ADISCARD-DOCUMENTATION-P-2A-20-28VARIABLE-29-29)` to true before
+One may want to set `[*DISCARD-DOCUMENTATION-P*](readme.md#x-2840ANTS-DOC-3A-2ADISCARD-DOCUMENTATION-P-2A-20-28VARIABLE-29-29)` to true before
 building a binary application.
 
 
@@ -473,7 +473,7 @@ building a binary application.
 Define a documentation section and maybe export referenced symbols.
 A bit behind the scenes, a global variable with `NAME` is defined and
 is bound to a [`SECTION`](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29) object. By convention, section names
-start with the character `@`. See `[`Tutorial`](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)` for an example.
+start with the character `@`. See `[Tutorial](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)` for an example.
 
 `ENTRIES` consists of docstrings and references. Docstrings are
 arbitrary strings in markdown format, references are defined in the
@@ -482,11 +482,11 @@ form:
 ```text
 (symbol locative)
 ```
-For example, `(`FOO` [`FUNCTION`](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` refers to the function ``FOO``, `(`@BAR`
-[`SECTION`](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29))` says that ``@BAR`` is a subsection of this
-one. `(`BAZ` ([`METHOD`](readme.md#x-28METHOD-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) () (T T T)))` refers to the default method of the
-three argument generic function ``BAZ``. `(`FOO` [`FUNCTION`](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` is
-equivalent to `(`FOO` ([`FUNCTION`](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29)))`.
+For example, `(FOO [FUNCTION](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` refers to the function `FOO`, `(@BAR
+[SECTION](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29))` says that `@BAR` is a subsection of this
+one. `(BAZ ([METHOD](readme.md#x-28METHOD-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) () (T T T)))` refers to the default method of the
+three argument generic function `BAZ`. `(FOO [FUNCTION](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` is
+equivalent to `(FOO ([FUNCTION](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29)))`.
 
 A locative in a reference can either be a symbol or it can be a list
 whose `CAR` is a symbol. In either case, the symbol is the called the
@@ -504,7 +504,7 @@ allowed to refer to things yet to be defined.
 If `:EXPORT` is true (the default), the referenced symbols and `NAME` are
 candidates for exporting. A candidate symbol is exported if
 
-* it is accessible in [`PACKAGE`](readme.md#x-28PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) (it's not ``OTHER-PACKAGE:SOMETHING``)
+* it is accessible in [`PACKAGE`](readme.md#x-28PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) (it's not `OTHER-PACKAGE:SOMETHING`)
   and
 
 * there is a reference to it in the section being defined with a
@@ -519,7 +519,7 @@ of `CL:DEFPACKAGE`.
 `:TITLE` is a non-marked-up string or `NIL`. If non-`NIL`, it determines
 the text of the heading in the generated output. `:LINK-TITLE-TO` is a
 reference given as an
-`(`OBJECT` `LOCATIVE`)` pair or `NIL`, to which the heading will link when
+`(OBJECT LOCATIVE)` pair or `NIL`, to which the heading will link when
 generating `HTML`. If not specified, the heading will link to its own
 anchor.
 
@@ -542,7 +542,7 @@ currently `:MARKDOWN`, `:HTML` and `:PLAIN`. `STREAM` may be a stream
 object, T or `NIL` as with `CL:FORMAT`.
 
 Most often, this function is called on section objects
-like `([`DOCUMENT`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29) `@MANUAL`)`, but it supports all kinds of
+like `([DOCUMENT](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29) @MANUAL)`, but it supports all kinds of
 objects for which `DOCUMENT-OBJECT` ([`1`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-OBJECT-20-28METHOD-20NIL-20-2840ANTS-DOC-2FREFERENCE-3AREFERENCE-20T-29-29-29) [`2`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-OBJECT-20-28METHOD-20NIL-20-28STRING-20T-29-29-29) [`3`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-OBJECT-20GENERIC-FUNCTION-29)) is defined. To look up the
 documentation of function [`DOCUMENT`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29):
 
@@ -561,7 +561,7 @@ That's why `CL:DOCUMENTATION` has a `:DOC-TYPE` argument. [`DOCUMENT`](readme.md
 not have anything like that, instead it relies on [`40ANTS-DOC/REFERENCE::REFERENCE`](readme.md#x-2840ANTS-DOC-2FREFERENCE-3AREFERENCE-20CLASS-29) objects
 to carry the extra information. We are going to see later how
 references and locatives work. Until then, here is an example on how
-to look up the documentation of type ``FOO``:
+to look up the documentation of type `FOO`:
 
 ```text
 (document (locate 'foo 'type))
@@ -599,7 +599,7 @@ contained in one of its `:OBJECTS` in the sense of
 
 * If it's `NIL`, then output will be collected in a string.
 
-* If it's T, then output will be sent to ``*STANDARD-OUTPUT*``.
+* If it's T, then output will be sent to `*STANDARD-OUTPUT*`.
 
 * If it's a stream, then output will be sent to that stream.
 
@@ -641,7 +641,7 @@ is `NIL`, then no links will be made to or from that page.
 Finally, `:SOURCE-URI-FN` is a function of a single, `40ANTS-DOC/REFERENCE::REFERENCE`
 argument. If it returns a value other than `NIL`, then it must be a
 string representing an `URI`. If `FORMAT` is `:HTML` and
-`[`40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MARK-UP-SIGNATURES*`](readme.md#x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-2ADOCUMENT-MARK-UP-SIGNATURES-2A-20-28VARIABLE-29-29)` is true, then the locative as
+`[40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MARK-UP-SIGNATURES*](readme.md#x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-2ADOCUMENT-MARK-UP-SIGNATURES-2A-20-28VARIABLE-29-29)` is true, then the locative as
 displayed in the signature will be a link to this uri. See
 [`40ANTS-DOC/GITHUB::MAKE-GITHUB-SOURCE-URI-FN`](readme.md#x-2840ANTS-DOC-2FGITHUB-3AMAKE-GITHUB-SOURCE-URI-FN-20FUNCTION-29).
 
@@ -749,7 +749,7 @@ By default, `README`.md is generated. It has anchors, links, inline code,
 and other markup added. Not necessarily the easiest on the eye in an editor,
 but looks good on github.
 
-You can provide ``:FORMAT` `:PLAIN`` argument to generate `README` instead.
+You can provide `:FORMAT :PLAIN` argument to generate `README` instead.
 It will be optimized for reading in text format. Has no links and
 cluttery markup.
 
@@ -776,9 +776,9 @@ the left of the page.
 
 A list of blocks of links to be display on the sidebar on the left,
 above the table of contents. A block is of the form
-`(`&KEY` `TITLE` `ID` `LINKS`)`, where ``TITLE`` will be displayed at the top of the block in a
+`(&KEY TITLE ID LINKS)`, where `TITLE` will be displayed at the top of the block in a
 `HTML` `div` with `id`, followed by the links. `LINKS` is a list
-of `(`URI` `LABEL`)` elements.`
+of `(URI LABEL)` elements.`
 
 
 <a id="x-2840ANTS-DOC-2FBUILDER-3A-2ADOCUMENT-HTML-BOTTOM-BLOCKS-OF-LINKS-2A-20-28VARIABLE-29-29"></a>
@@ -976,7 +976,7 @@ is equivalent to this:
 ```text
 "`FOO` and `FOO`."
 ```
-if ``FOO`` is an interned symbol. To suppress this behavior, add a
+if `FOO` is an interned symbol. To suppress this behavior, add a
 backslash to the beginning of the symbol or right after the leading
 * if it would otherwise be parsed as markdown emphasis:
 
@@ -1005,7 +1005,7 @@ markup (e.g. it's `:PLAIN`), then no downcasing is performed.
 ### [variable] `*DOCUMENT-NORMALIZE-PACKAGES*` T
 
 
-If true, symbols are printed relative to `[`40ANTS-DOC::SECTION-PACKAGE`](readme.md#x-2840ANTS-DOC-3ASECTION-PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-2040ANTS-DOC-3ASECTION-29-29)` of the
+If true, symbols are printed relative to `[40ANTS-DOC::SECTION-PACKAGE](readme.md#x-2840ANTS-DOC-3ASECTION-PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-2040ANTS-DOC-3ASECTION-29-29)` of the
 innermost containing section or with full package names if there is
 no containing section. To eliminate ambiguity `[in package ...]`
 messages are printed right after the section heading if necessary.
@@ -1023,7 +1023,7 @@ When true, during the process of generating documentation for a
 every reference that's not to a section. Also, markdown style
 reference links are added when a piece of inline code found in a
 docstring refers to a symbol that's referenced by one of the
-sections being documented. Assuming ``BAR`` is defined, the
+sections being documented. Assuming `BAR` is defined, the
 documentation for:
 
 ```commonlisp
@@ -1042,11 +1042,11 @@ would look like this:
 
     Calls [`BAR`][1] on `X`.
 ```
-Instead of ``BAR``, one can write `[bar][]` or `[`bar`][]` as well.
+Instead of `BAR`, one can write `[bar][]` or `[`bar`][]` as well.
 Since symbol names are parsed according to `READTABLE-CASE`, character
 case rarely matters.
 
-Now, if ``BAR`` has references with different locatives:
+Now, if `BAR` has references with different locatives:
 
 ```commonlisp
 (defsection @foo
@@ -1068,7 +1068,7 @@ then documentation would link to all interpretations:
 This situation occurs with [`40ANTS-DOC::SECTION`](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29) which is both a class (see
 [`40ANTS-DOC::SECTION`](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29) class) and a locative type denoted by a symbol (see
 [`40ANTS-DOC/LOCATIVES:SECTION`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ASECTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) locative). Back in the example above, clearly,
-there is no reason to link to type ``BAR``, so one may wish to select
+there is no reason to link to type `BAR`, so one may wish to select
 the function locative. There are two ways to do that. One is to
 specify the locative explicitly as the id of a reference link:
 
@@ -1100,7 +1100,7 @@ uppercase names with no quoting required.
 
 When true, `HTML` anchors are generated before the heading of
 sections which allows the table of contents to contain links and
-also code-like references to sections (like ``@FOO-MANUAL``) to be
+also code-like references to sections (like `@FOO-MANUAL`) to be
 translated to links with the section title being the name of the
 link.
 
@@ -1275,7 +1275,7 @@ values of optional and keyword arguments are missing.
 
 See `CL:FIND-METHOD` for the description of the arguments.
 To refer to the default method of the three argument generic
-function ``FOO``:
+function `FOO`:
 
 ```text
 (foo (method () (t t t)))
@@ -1286,8 +1286,8 @@ function ``FOO``:
 ### [locative] `ACCESSOR` CLASS-NAME
 
 
-To refer to an accessor named ``FOO-SLOT`` of class
-``FOO``:
+To refer to an accessor named `FOO-SLOT` of class
+`FOO`:
 
 ```text
 (foo-slot (accessor foo))
@@ -1298,8 +1298,8 @@ To refer to an accessor named ``FOO-SLOT`` of class
 ### [locative] `READER` CLASS-NAME
 
 
-To refer to a reader named ``FOO-SLOT`` of class
-``FOO``:
+To refer to a reader named `FOO-SLOT` of class
+`FOO`:
 
 ```text
 (foo-slot (reader foo))
@@ -1310,8 +1310,8 @@ To refer to a reader named ``FOO-SLOT`` of class
 ### [locative] `WRITER` CLASS-NAME
 
 
-To refer to a writer named ``FOO-SLOT`` of class
-``FOO``:
+To refer to a writer named `FOO-SLOT` of class
+`FOO`:
 
 ```text
 (foo-slot (writer foo))
@@ -1361,7 +1361,7 @@ specifiers.
 
 
 Refers to a symbol in a non-specific context. Useful for preventing
-autolinking. For example, if there is a function called ``FOO`` then
+autolinking. For example, if there is a function called `FOO` then
 
 ```text
 `FOO`
@@ -1400,9 +1400,9 @@ Since [`ARGUMENT`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3AARGUMENT-20-2840ANTS-D
 
 
 This is the locative for locatives. When `M-.` is pressed on
-`[`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29)` in `([`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) [`LOCATIVE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))`, this is what makes it possible
-to land at the `([`40ANTS-DOC/LOCATIVES/BASE:DEFINE-LOCATIVE-TYPE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ADEFINE-LOCATIVE-TYPE-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) [`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) ...)` form.
-Similarly, `([`LOCATIVE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) [`LOCATIVE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` leads to this very definition.
+`[VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29)` in `([VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) [LOCATIVE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))`, this is what makes it possible
+to land at the `([40ANTS-DOC/LOCATIVES/BASE:DEFINE-LOCATIVE-TYPE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ADEFINE-LOCATIVE-TYPE-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) [VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) ...)` form.
+Similarly, `([LOCATIVE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) [LOCATIVE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` leads to this very definition.
 
 
 <a id="x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29"></a>
@@ -1441,14 +1441,14 @@ reduce clutter and duplication.
 ```
 In the above example, pressing `M-.` on `pax.el` will open the
 `src/pax.el` file and put the cursor on its first character. `M-.`
-on ``FOO-EXAMPLE`` will go to the source location of the `(asdf:system
+on `FOO-EXAMPLE` will go to the source location of the `(asdf:system
 locative)` locative.
 
 When documentation is generated, the entire `pax.el` file is
 included in the markdown surrounded by the strings given as
 `HEADER-NL` and `FOOTER-NL` (if any). The trailing newline character is
 assumed implicitly. If that's undesirable, then use `HEADER` and
-`FOOTER` instead. The documentation of ``FOO-EXAMPLE`` will be the
+`FOOTER` instead. The documentation of `FOO-EXAMPLE` will be the
 region of the file from the source location of the `START`
 locative (inclusive) to the source location of the `END`
 locative (exclusive). `START` and `END` default to the beginning and end
@@ -1519,8 +1519,8 @@ Refers to a glossary term defined by [`40ANTS-DOC/GLOSSARY::DEFINE-GLOSSARY-TERM
 
 While Common Lisp has rather good introspective abilities, not
 everything is first class. For example, there is no object
-representing the variable defined with `(`DEFVAR`
-`FOO`)`. `([`40ANTS-DOC/REFERENCE:MAKE-REFERENCE`](readme.md#x-2840ANTS-DOC-2FREFERENCE-3AMAKE-REFERENCE-20FUNCTION-29) '`FOO` '[`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` constructs a [`40ANTS-DOC/REFERENCE::REFERENCE`](readme.md#x-2840ANTS-DOC-2FREFERENCE-3AREFERENCE-20CLASS-29) that
+representing the variable defined with `(DEFVAR
+FOO)`. `([40ANTS-DOC/REFERENCE:MAKE-REFERENCE](readme.md#x-2840ANTS-DOC-2FREFERENCE-3AMAKE-REFERENCE-20FUNCTION-29) 'FOO '[VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` constructs a [`40ANTS-DOC/REFERENCE::REFERENCE`](readme.md#x-2840ANTS-DOC-2FREFERENCE-3AREFERENCE-20CLASS-29) that
 captures the path to take from an object (the symbol `FOO`) to an
 entity of interest (for example, the documentation of the variable).
 The path is called the locative. A locative can be applied to an
@@ -1529,12 +1529,12 @@ object like this:
 ```
 (locate 'foo 'variable)
 ```
-which will return the same reference as `([`40ANTS-DOC/REFERENCE:MAKE-REFERENCE`](readme.md#x-2840ANTS-DOC-2FREFERENCE-3AMAKE-REFERENCE-20FUNCTION-29) '`FOO`
-'[`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))`. Operations need to know how to deal with references
+which will return the same reference as `([40ANTS-DOC/REFERENCE:MAKE-REFERENCE](readme.md#x-2840ANTS-DOC-2FREFERENCE-3AMAKE-REFERENCE-20FUNCTION-29) 'FOO
+'[VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))`. Operations need to know how to deal with references
 which we will see in `40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS` ([`1`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-AND-COLLECT-REACHABLE-OBJECTS-20-28METHOD-20NIL-20-28T-20T-20T-29-29-29) [`2`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-AND-COLLECT-REACHABLE-OBJECTS-20GENERIC-FUNCTION-29)),
 [`40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-AND-DOCUMENT-20GENERIC-FUNCTION-29) and `40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE` ([`1`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-AND-FIND-SOURCE-20-28METHOD-20NIL-20-28T-20T-20T-29-29-29) [`2`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-AND-FIND-SOURCE-20GENERIC-FUNCTION-29)).
 
-Naturally, `([`40ANTS-DOC/LOCATIVES/BASE:LOCATE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-20FUNCTION-29) '`FOO` '[`FUNCTION`](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` will simply return `#'`FOO``, no
+Naturally, `([40ANTS-DOC/LOCATIVES/BASE:LOCATE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-20FUNCTION-29) 'FOO '[FUNCTION](readme.md#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` will simply return `#'FOO`, no
 need to muck with references when there is a perfectly good object.
 
 <a id="x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-20FUNCTION-29"></a>
@@ -1756,14 +1756,14 @@ for [`ASDF:SYSTEM`](readme.md#x-28ASDF-2FSYSTEM-3ASYSTEM-20-2840ANTS-DOC-2FLOCAT
 Declare [`LOCATIVE-TYPE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-TYPE-20FUNCTION-29) as a locative. One gets two
 things in return: first, a place to document the format and
 semantics of [`LOCATIVE-TYPE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-TYPE-20FUNCTION-29) (in `LAMBDA-LIST` and `DOCSTRING`); second,
-being able to reference `([`LOCATIVE-TYPE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-TYPE-20FUNCTION-29) `LOCATIVE`)`. For example, if
+being able to reference `([LOCATIVE-TYPE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-TYPE-20FUNCTION-29) LOCATIVE)`. For example, if
 you have:
 
 ```common-lisp
 (define-locative-type variable (&optional initform)
   "Dummy docstring.")
 ```
-then `([`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) `LOCATIVE`)` refers to this form.
+then `([VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) LOCATIVE)` refers to this form.
 
 
 <a id="x-2840ANTS-DOC-3AEXPORTABLE-LOCATIVE-TYPE-P-20GENERIC-FUNCTION-29"></a>
@@ -1787,7 +1787,7 @@ its `EXPORT` argument is true.
 
 Return the object, to which `OBJECT` and the locative
 refer. For example, if [`LOCATIVE-TYPE`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-TYPE-20FUNCTION-29) is the symbol [`PACKAGE`](readme.md#x-28PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29), this
-returns `(`FIND-PACKAGE` `SYMBOL`)`. Signal a `LOCATE-ERROR` ([`1`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-ERROR-20FUNCTION-29) [`2`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-ERROR-20CONDITION-29)) condition by
+returns `(FIND-PACKAGE SYMBOL)`. Signal a `LOCATE-ERROR` ([`1`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-ERROR-20FUNCTION-29) [`2`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-ERROR-20CONDITION-29)) condition by
 calling the [`LOCATE-ERROR`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATE-ERROR-20FUNCTION-29) function if the lookup fails. Signal other
 errors if the types of the argument are bad, for instance
 [`LOCATIVE-ARGS`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-ARGS-20FUNCTION-29) is not the empty list in the package example. If a
@@ -2063,7 +2063,7 @@ interpreted as a direction.")
 (define-direction up ()
   "UP is equivalent to a coordinate delta of (0, -1).")
 ```
-After all this, `(`UP` `DIRECTION`)` refers to the ``DEFINE-DIRECTION``
+After all this, `(UP DIRECTION)` refers to the `DEFINE-DIRECTION`
 form above.
 
 
@@ -2156,7 +2156,7 @@ order they occurred in [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2
 
 [`40ANTS-DOC:SECTION`](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29) objects are printed by calling [`40ANTS-DOC/DOCUMENT::DOCUMENT`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29) on them
 with all [`Documentation Printer Variables`](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40DOCUMENTATION-PRINTER-VARIABLES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29), except for
-`[`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`](readme.md#x-2840ANTS-DOC-2FBUILDER-2FPRINTER-3A-2ADOCUMENT-NORMALIZE-PACKAGES-2A-20-28VARIABLE-29-29)`, turned off to reduce clutter.
+`[40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*](readme.md#x-2840ANTS-DOC-2FBUILDER-2FPRINTER-3A-2ADOCUMENT-NORMALIZE-PACKAGES-2A-20-28VARIABLE-29-29)`, turned off to reduce clutter.
 
 
 <a id="x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
@@ -2261,7 +2261,7 @@ the example:
     2)
 ^
 ```
-then invoke the elisp function ``40ANTS-DOC-RETRANSCRIBE-REGION`` to get:
+then invoke the elisp function `40ANTS-DOC-RETRANSCRIBE-REGION` to get:
 
 ```text
 (values (princ :hello-world) (list 1 2))
@@ -2555,8 +2555,8 @@ as much as possible.
 The default syntaxes used by [`TRANSCRIBE`](readme.md#x-2840ANTS-DOC-2FTRANSCRIBE-3ATRANSCRIBE-20FUNCTION-29) for reading and writing
 lines containing output and values of an evaluated form.
 
-A syntax is a list of of the form `(`SYNTAX-ID` `&REST` `PREFIXES`)` where
-`prefixes` is a list of `(`PREFIX-ID` `PREFIX-STRING`)` elements. For
+A syntax is a list of of the form `(SYNTAX-ID &REST PREFIXES)` where
+`prefixes` is a list of `(PREFIX-ID PREFIX-STRING)` elements. For
 example the syntax `:COMMENTED-1` looks like this:
 
 ```commonlisp

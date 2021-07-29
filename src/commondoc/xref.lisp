@@ -243,9 +243,9 @@
 
 
 (define-emitter (obj xref)
-  "Emit an reference which was not processed by 40ANTS-DOC/COMMONDOC/PAGE::REPLACE-XREFS."
+  "Emit an reference which was not processed by 40ANTS-DOC/COMMONDOC/PAGE::REPLACE-XREFS function."
   (with-html
-    (:code :class "unresolved-reference"
+    (:span :class "unresolved-reference"
            :title "Reference not found."
            (xref-name obj))))
 
@@ -253,5 +253,5 @@
 (defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
                                             (node xref)
                                             stream)
-  (format stream "`~A`"
+  (format stream "~A"
           (xref-name node)))

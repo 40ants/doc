@@ -184,6 +184,7 @@
 (defun replace-xrefs (node known-references &aux ignored-words
                                                  sections
                                                  current-page
+                                                 inside-code-block
                                                  pages-stack
                                                  (common-lisp-package (find-package :common-lisp))
                                                  (keywords-package (find-package :keyword)))
@@ -222,14 +223,26 @@
                (pop pages-stack)
                (setf current-page
                      (car pages-stack))))
+           (set-inside-code-block-if-needed (node)
+             (when (typep node 'common-doc:code)
+               (setf inside-code-block t)))
+           (unset-inside-code-block-if-needed (node)
+             (when (typep node 'common-doc:code)
+               (setf inside-code-block nil)))
            (go-down (node)
              (collect-ignored-words node)
              (collect-section node)
-             (push-page node))
+             (push-page node)
+             (set-inside-code-block-if-needed node))
            (go-up (node)
              (pop-ignored-words node)
              (pop-section node)
-             (pop-page node))
+             (pop-page node)
+             (unset-inside-code-block-if-needed node))
+           (make-code-if-needed (node)
+             (if inside-code-block
+                 node
+                 (common-doc:make-code node)))
            (package-specified (text)
              (find #\: text))
            (should-be-ignored-p (text symbol locative)
@@ -288,12 +301,9 @@
                          (unless found-references
                            (should-be-ignored-p text symbol locative))))
 
-                  ;; (when (string-equal text
-                  ;;                     "40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES")
-                  ;;   (break))
                   (cond
                     (should-be-ignored
-                     (common-doc:make-code
+                     (make-code-if-needed
                       (common-doc:make-text text)))
                     (found-references
                      (labels ((make-link (reference page text)
@@ -306,7 +316,7 @@
                                          (40ants-doc/reference::reference-to-anchor reference))))
                                   (common-doc:make-document-link page-uri
                                                                  html-fragment
-                                                                 (common-doc:make-code
+                                                                 (make-code-if-needed
                                                                   (common-doc:make-text text))))))
 
                        (cond ((= (length found-references) 1)
@@ -320,7 +330,7 @@
                                              text))))
                              (t
                               (common-doc:make-content
-                               (append (list (common-doc:make-code
+                               (append (list (make-code-if-needed
                                               (common-doc:make-text text))
                                              (common-doc:make-text " ("))
                                        (loop for (reference . page) in found-references
@@ -338,7 +348,7 @@
                                  for title = (common-doc.ops:collect-all-text
                                               (common-doc:title section))
                                  collect title))
-                     node))))
+                     (make-code-if-needed node)))))
                (t
                 node))))
     (40ants-doc/commondoc/mapper:map-nodes node #'replacer
