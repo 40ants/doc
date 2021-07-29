@@ -18,7 +18,9 @@
   (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/source-api)
-  (:import-from #:40ants-doc/document))
+  (:import-from #:40ants-doc/document)
+  (:export
+   #:@index))
 (in-package 40ants-doc/doc)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -446,7 +448,8 @@ on the GitHub to suggest a new feature.
   (40ants-doc::*discard-documentation-p* variable)
   (40ants-doc::defsection macro)
   (40ants-doc/document::document generic-function)
-  (40ants-doc/builder:document-to-string function))
+  (40ants-doc/builder:document-to-string function)
+  (40ants-doc/builder:render-to-files function))
 
 
 (defsection @locatives-and-references
@@ -575,7 +578,9 @@ on the GitHub to suggest a new feature.
 
 (defsection @reference-based-extensions
     (:title "Reference Based Extensions"
-     :ignore-words ("DEFINE-DIRECTION"))
+     :ignore-words ("DEFINE-DIRECTION"
+                    "UP"
+                    "DIRECTION"))
   "Let's see how to extend 40ANTS-DOC/DOCUMENT::DOCUMENT and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
   that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case. 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT

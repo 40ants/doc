@@ -195,6 +195,7 @@
                               (incf num-warnings))))
       (40ants-doc/commondoc/format:with-format (format)
         (let* ((theme (make-instance theme))
+               (sections (uiop:ensure-list sections))
                (pages (mapcar #'40ants-doc/page:ensure-page sections))
                (page-documents (mapcar
                                 #'40ants-doc/commondoc/builder:to-commondoc
