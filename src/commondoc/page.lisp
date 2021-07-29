@@ -47,13 +47,19 @@
   (:method ((page page) &key from)
     (check-type from (or page
                          null))
-    (concatenate 'string
-                 (if from
-                     (40ants-doc/utils:make-relative-path (base-filename from)
-                                                          (base-filename page))
-                     (base-filename page))
-                 "."
-                 (40ants-doc/commondoc/format:current-files-extension))))
+    (let ((base (if from
+                    (40ants-doc/utils:make-relative-path (base-filename from)
+                                                         (base-filename page))
+                    (base-filename page))))
+      ;; Base name can be empty only if FROM argument was given and
+      ;; we are generating a link for a cross reference. In this case
+      ;; we need to return an empty string to make links use only HTML fragment.
+      (if (string= base "")
+          base
+          (concatenate 'string
+                       base
+                       "."
+                       (40ants-doc/commondoc/format:current-files-extension))))))
 
 
 (defmethod base-filename ((obj (eql :no-page)))

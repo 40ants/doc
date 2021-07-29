@@ -8,6 +8,9 @@
 
 (deftest test-relative-paths
   (ok (string= (40ants-doc/utils:make-relative-path "foo"
+                                                    "foo")
+               ""))
+  (ok (string= (40ants-doc/utils:make-relative-path "foo"
                                                     "bar")
                "bar"))
   (ok (string= (40ants-doc/utils:make-relative-path "blah/minor"

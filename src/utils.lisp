@@ -716,7 +716,14 @@
             while (string= from-part
                            to-part)
             finally
-               (loop repeat (length rest-from-parts)
-                     do (write-string "../" s))
-               (push to-part rest-to-parts)
-               (format s "~{~A~^/~}" rest-to-parts)))))
+               (cond
+                 ((and (null rest-from-parts)
+                       (null rest-to-parts)
+                       (equal from-part
+                              to-part))
+                  "")
+                 (t
+                  (loop repeat (length rest-from-parts)
+                        do (write-string "../" s))
+                  (push to-part rest-to-parts)
+                  (format s "~{~A~^/~}" rest-to-parts)))))))
