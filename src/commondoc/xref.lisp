@@ -178,9 +178,13 @@
         (push (common-doc:make-text text)
               new-nodes)))
 
-    (if new-nodes
-        (common-doc:make-content (nreverse new-nodes))
-        node)))
+    (cond
+      ((> (length new-nodes) 1)
+       (common-doc:make-content (nreverse new-nodes)))
+      ((= (length new-nodes) 1)
+       (first new-nodes))
+      (t
+       node))))
 
 
 (defmethod 40ants-doc/object-package:object-package ((obj common-doc:document))
@@ -245,7 +249,7 @@
 (define-emitter (obj xref)
   "Emit an reference which was not processed by 40ANTS-DOC/COMMONDOC/PAGE::REPLACE-XREFS function."
   (with-html
-    (:span :class "unresolved-reference"
+    (:code :class "unresolved-reference"
            :title "Reference not found."
            (xref-name obj))))
 
@@ -253,5 +257,5 @@
 (defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
                                             (node xref)
                                             stream)
-  (format stream "~A"
+  (format stream "`~A`"
           (xref-name node)))

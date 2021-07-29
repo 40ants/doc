@@ -265,8 +265,23 @@
                                common-lisp-package)
                           (eql (symbol-package symbol)
                                keywords-package)))))
+           (apply-replacer (node)
+             (40ants-doc/commondoc/mapper:map-nodes node #'replacer
+                                                    :on-going-down #'go-down
+                                                    :on-going-up #'go-up))
            (replacer (node)
              (typecase node
+               (common-doc:code
+                ;; Here we replace CODE nodes having only one XREF child
+                ;; with this child
+                (let* ((children (common-doc:children node))
+                       (first-child (first children)))
+                  ;; We also need to continue replacing on results
+                  (cond
+                    ((and (= (length children) 1)
+                          (typep first-child '40ants-doc/commondoc/xref::xref))
+                     (replacer first-child))
+                    (t node))))
                (40ants-doc/commondoc/xref:xref
                 (let* ((text (40ants-doc/commondoc/xref:xref-name node))
                        (symbol (40ants-doc/commondoc/xref:xref-symbol node))
@@ -348,9 +363,7 @@
                                  for title = (common-doc.ops:collect-all-text
                                               (common-doc:title section))
                                  collect title))
-                     (make-code-if-needed node)))))
+                     node))))
                (t
                 node))))
-    (40ants-doc/commondoc/mapper:map-nodes node #'replacer
-                                           :on-going-down #'go-down
-                                           :on-going-up #'go-up)))
+    (apply-replacer node)))

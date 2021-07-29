@@ -39,9 +39,9 @@ integration.
 
 Here is features already implemented in this fork:
 
-* Core system `[40ANTS-DOC](readme.md#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29)` now has only two dependencies on `NAMED-READTABLES`
+* Core system [`40ANTS-DOC`](readme.md#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
-  `[40ANTS-DOC-FULL](readme.md#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29)` system which will download such dependencies as markdown
+  [`40ANTS-DOC-FULL`](readme.md#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system which will download such dependencies as markdown
   parser and more.
 
 * Now you don't have to import any locative symbols into your package. Import
@@ -317,13 +317,13 @@ with FOO:
 ```
 More fancy markdown or `HTML` output with automatic markup and linking
 of uppercase symbol names found in docstrings, section numbering,
-table of contents, etc is possible by calling the `[40ANTS-DOC/DOCUMENT::DOCUMENT](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29)`
+table of contents, etc is possible by calling the [`40ANTS-DOC/DOCUMENT::DOCUMENT`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29)
 generic.
 
 One can even generate documentation for different, but related
 libraries at the same time with the output going to different files,
 but with cross-page links being automatically added for symbols
-mentioned in docstrings. See `[Generating Documentation](readme.md#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)` for
+mentioned in docstrings. See [`Generating Documentation`](readme.md#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) for
 some convenience functions to cover the most common cases.
 
 Note how `([VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) *FOO-STATE*)` in the [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) form both
@@ -334,7 +334,7 @@ definitions tied to symbols. See [`Locative Types`](readme.md#x-2840ANTS-DOC-2FD
 
 The transcript in the code block tagged with `cl-transcript` is
 automatically checked for up-to-dateness. See
-`[Transcripts](readme.md#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)`.
+[`Transcripts`](readme.md#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -461,7 +461,7 @@ Now let's examine the most important pieces in detail.
 
 
 The default value of [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29)'s `DISCARD-DOCUMENTATION-P` argument.
-One may want to set `[*DISCARD-DOCUMENTATION-P*](readme.md#x-2840ANTS-DOC-3A-2ADISCARD-DOCUMENTATION-P-2A-20-28VARIABLE-29-29)` to true before
+One may want to set [`*DISCARD-DOCUMENTATION-P*`](readme.md#x-2840ANTS-DOC-3A-2ADISCARD-DOCUMENTATION-P-2A-20-28VARIABLE-29-29) to true before
 building a binary application.
 
 
@@ -473,7 +473,7 @@ building a binary application.
 Define a documentation section and maybe export referenced symbols.
 A bit behind the scenes, a global variable with `NAME` is defined and
 is bound to a [`SECTION`](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29) object. By convention, section names
-start with the character `@`. See `[Tutorial](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29)` for an example.
+start with the character `@`. See [`Tutorial`](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) for an example.
 
 `ENTRIES` consists of docstrings and references. Docstrings are
 arbitrary strings in markdown format, references are defined in the
@@ -641,7 +641,7 @@ is `NIL`, then no links will be made to or from that page.
 Finally, `:SOURCE-URI-FN` is a function of a single, `40ANTS-DOC/REFERENCE::REFERENCE`
 argument. If it returns a value other than `NIL`, then it must be a
 string representing an `URI`. If `FORMAT` is `:HTML` and
-`[40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MARK-UP-SIGNATURES*](readme.md#x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-2ADOCUMENT-MARK-UP-SIGNATURES-2A-20-28VARIABLE-29-29)` is true, then the locative as
+[`40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MARK-UP-SIGNATURES*`](readme.md#x-2840ANTS-DOC-2FBUILDER-2FVARS-3A-2ADOCUMENT-MARK-UP-SIGNATURES-2A-20-28VARIABLE-29-29) is true, then the locative as
 displayed in the signature will be a link to this uri. See
 [`40ANTS-DOC/GITHUB::MAKE-GITHUB-SOURCE-URI-FN`](readme.md#x-2840ANTS-DOC-2FGITHUB-3AMAKE-GITHUB-SOURCE-URI-FN-20FUNCTION-29).
 
@@ -1005,7 +1005,7 @@ markup (e.g. it's `:PLAIN`), then no downcasing is performed.
 ### [variable] `*DOCUMENT-NORMALIZE-PACKAGES*` T
 
 
-If true, symbols are printed relative to `[40ANTS-DOC::SECTION-PACKAGE](readme.md#x-2840ANTS-DOC-3ASECTION-PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-2040ANTS-DOC-3ASECTION-29-29)` of the
+If true, symbols are printed relative to [`40ANTS-DOC::SECTION-PACKAGE`](readme.md#x-2840ANTS-DOC-3ASECTION-PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-2040ANTS-DOC-3ASECTION-29-29) of the
 innermost containing section or with full package names if there is
 no containing section. To eliminate ambiguity `[in package ...]`
 messages are printed right after the section heading if necessary.
@@ -1400,7 +1400,7 @@ Since [`ARGUMENT`](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3AARGUMENT-20-2840ANTS-D
 
 
 This is the locative for locatives. When `M-.` is pressed on
-`[VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29)` in `([VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) [LOCATIVE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))`, this is what makes it possible
+[`VARIABLE`](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) in `([VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) [LOCATIVE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))`, this is what makes it possible
 to land at the `([40ANTS-DOC/LOCATIVES/BASE:DEFINE-LOCATIVE-TYPE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ADEFINE-LOCATIVE-TYPE-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) [VARIABLE](readme.md#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) ...)` form.
 Similarly, `([LOCATIVE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) [LOCATIVE](readme.md#x-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` leads to this very definition.
 
@@ -2156,7 +2156,7 @@ order they occurred in [`DEFSECTION`](readme.md#x-2840ANTS-DOC-3ADEFSECTION-20-2
 
 [`40ANTS-DOC:SECTION`](readme.md#x-2840ANTS-DOC-3ASECTION-20CLASS-29) objects are printed by calling [`40ANTS-DOC/DOCUMENT::DOCUMENT`](readme.md#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29) on them
 with all [`Documentation Printer Variables`](readme.md#x-2840ANTS-DOC-2FDOC-3A-3A-40DOCUMENTATION-PRINTER-VARIABLES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29), except for
-`[40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*](readme.md#x-2840ANTS-DOC-2FBUILDER-2FPRINTER-3A-2ADOCUMENT-NORMALIZE-PACKAGES-2A-20-28VARIABLE-29-29)`, turned off to reduce clutter.
+[`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`](readme.md#x-2840ANTS-DOC-2FBUILDER-2FPRINTER-3A-2ADOCUMENT-NORMALIZE-PACKAGES-2A-20-28VARIABLE-29-29), turned off to reduce clutter.
 
 
 <a id="x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>

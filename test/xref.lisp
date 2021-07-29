@@ -52,7 +52,6 @@
   (testing "Simple case"
     (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
            (doc (40ants-doc/commondoc/markdown::parse-markdown "[FOO][function]")))
-      
       (flet ((first-child ()
                (first (common-doc:children doc))))
         (testing "Before replacing we should have a paragraph with internal link"
@@ -63,23 +62,54 @@
                                                                                 :no-page)))))
           (testing "Resulting document should remain the same, because only paragraph's child should be changed"
             (ok (eql doc result)))
-
           (testing "But it's child should be changed to a real web link"
             (ok (typep (first-child) 'common-doc:document-link)))))))
   
-  (testing "XREF nested in CODE block shouldn't not be replaced with yet another code block."
+  (testing "Case when symbol name already the code"
+    (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
+           (doc (40ants-doc/commondoc/xref:extract-symbols
+                 (40ants-doc/commondoc/markdown::parse-markdown "`FOO` function"))))
+      (flet ((first-child (node)
+               (first (common-doc:children node))))
+        (testing "Before replacing we should have a paragraph with inline code block containing a XREF"
+          (ok (typep doc 'common-doc:paragraph))
+          (ok (typep (first-child doc)
+                     'common-doc:code))
+          (ok (typep (first-child
+                      (first-child doc))
+                     '40ants-doc/commondoc/xref:xref)))
+
+        (let ((result (40ants-doc/commondoc/page::replace-xrefs doc (list (cons reference
+                                                                                :no-page)))))
+          
+          (testing "Resulting document should remain the same, because only paragraph's child should be changed"
+            (ok (eql doc result)))
+          (testing "But it's child should be changed to a real web link containing an inline code block around the text"
+            (ok (typep (first-child result)
+                       'common-doc:document-link))
+            (ok (typep (first-child
+                        (first-child result))
+                       'common-doc:code))
+            (ok (and
+                 (typep (first-child
+                         (first-child
+                          (first-child result)))
+                        'common-doc:text-node)
+                 (string= (common-doc:text
+                          (first-child
+                           (first-child
+                            (first-child result))))
+                          "FOO"))))))))
+  
+  (testing "XREF nested in CODE block should not be replaced with just XREF"
     (let* ((original-xref (make-xref "FOO"))
            (doc (common-doc:make-code original-xref)))
       
       (let ((result (40ants-doc/commondoc/page::replace-xrefs doc nil)))
         (testing "Resulting document should remain the same"
-          (ok (eql doc result)))
-
-        (testing "And it's child should be remain original XREF"
-          (ok (eql (first (common-doc:children doc))
-                   original-xref))))))
+          (ok (eql result original-xref))))))
   
-  (testing "XREF not-nested in CODE block should be surrounded by one"
+  (testing "XREF not-nested in CODE block should not be surrounded by one"
     (let* ((original-xref (make-xref "FOO"))
            (doc (common-doc:make-content original-xref)))
       
@@ -87,14 +117,9 @@
         (testing "Resulting document should remain the same"
           (ok (eql doc result)))
 
-        (testing "And now it should contain an inline code block"
-          (ok (typep (first (common-doc:children doc))
-                     'common-doc:code)))
-        
-        (testing "And this code block should contain original XREF"
-          (let ((code-block (first (common-doc:children doc))))
-            (ok (eql (first (common-doc:children code-block))
-                     original-xref))))))))
+        (testing "And now it should contain original xref"
+          (ok (eql (first (common-doc:children result))
+                   original-xref)))))))
 
 
 (deftest test-filling-locatives
@@ -169,8 +194,7 @@
     (let* ((doc (make-content
                  (list (make-text "This is a magic 100500 number."))))
            (result (extract-symbols doc)))
-      (let* ((content (first (common-doc:children result)))
-             (children (common-doc:children content)))
+      (let* ((children (common-doc:children result)))
         (testing "Now text node should not be replaced with a content-node"
           (ok (= (length children) 1))
           (ok (typep (first children) 'common-doc:text-node))))))
