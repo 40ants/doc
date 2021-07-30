@@ -176,7 +176,10 @@
       (loop with undocumented-symbols = nil
             for package in packages
             do (do-external-symbols (symbol package)
-                 (unless (documented-p symbol)
+                 (unless (or (documented-p symbol)
+                             (and (boundp symbol)
+                                  (typep (symbol-value symbol)
+                                         '40ants-doc:section)))
                    (push symbol undocumented-symbols)))
             finally (when undocumented-symbols
                       (let ((*package* (find-package :keyword)))
