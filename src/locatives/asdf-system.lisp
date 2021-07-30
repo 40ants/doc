@@ -84,42 +84,44 @@
     (flet ((item (name getter &key type)
              (let* ((value (funcall getter system))
                     (href nil))
-               (case type
-                 (:link (setf href value))
-                 (:mailto (setf href (format nil "mailto:~A"
-                                             value)))
-                 (:source-control (psetf value (format nil "~A"
-                                                       (first value))
-                                         href (second value))))
-               (make-list-item
-                (make-paragraph
-                 (if href
-                     (make-content
-                      (list (make-text
-                             (format nil "~A: "
-                                     name))
-                            (make-web-link href
-                                           (make-text value))))
-                     (make-text
-                      (format nil "~A: ~A"
-                              name
-                              value))))))))
+               (when value
+                 (case type
+                   (:link (setf href value))
+                   (:mailto (setf href (format nil "mailto:~A"
+                                               value)))
+                   (:source-control (psetf value (format nil "~A"
+                                                         (first value))
+                                           href (second value))))
+                 (make-list-item
+                  (make-paragraph
+                   (if href
+                       (make-content
+                        (list (make-text
+                               (format nil "~A: "
+                                       name))
+                              (make-web-link href
+                                             (make-text value))))
+                       (make-text
+                        (format nil "~A: ~A"
+                                name
+                                value)))))))))
       
-      (let ((children (make-unordered-list
-                       (list (item "Version" 'asdf/component:component-version)
-                             (item "Description" 'asdf/system:system-description)
-                             (item "Licence" 'asdf/system:system-licence)
-                             (item "Author" 'asdf/system:system-author)
-                             (item "Maintainer" 'asdf/system:system-maintainer)
-                             (item "Mailto" 'asdf/system:system-mailto
-                                   :type :mailto)
-                             (item "Homepage" 'asdf/system:system-homepage
-                                   :type :link)
-                             (item "Bug tracker" 'asdf/system:system-bug-tracker
-                                   :type :link)
-                             (item "Source control" 'asdf/system:system-source-control
-                                   :type :source-control))))
-            (reference (40ants-doc/reference-api::canonical-reference system)))
+      (let* ((items (list (item "Version" 'asdf/component:component-version)
+                          (item "Description" 'asdf/system:system-description)
+                          (item "Licence" 'asdf/system:system-licence)
+                          (item "Author" 'asdf/system:system-author)
+                          (item "Maintainer" 'asdf/system:system-maintainer)
+                          (item "Mailto" 'asdf/system:system-mailto
+                                :type :mailto)
+                          (item "Homepage" 'asdf/system:system-homepage
+                                :type :link)
+                          (item "Bug tracker" 'asdf/system:system-bug-tracker
+                                :type :link)
+                          (item "Source control" 'asdf/system:system-source-control
+                                :type :source-control)))
+             (children (make-unordered-list
+                        (remove nil items)))
+             (reference (40ants-doc/reference-api::canonical-reference system)))
         (make-section-with-reference title
                                      children
                                      reference)))))
