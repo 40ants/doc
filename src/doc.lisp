@@ -20,40 +20,49 @@
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/document)
   (:export
-   #:@index))
+   #:@index
+   #:@readme))
 (in-package 40ants-doc/doc)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
-(defsection @index (:title "40Ants Doc Manual"
-                    :ignore-words ("HTML"
-                                   "HTMLs"
-                                   "README"
-                                   "JSON"
-                                   "MGL-PAX"
-                                   "SLIME"
-                                   "SWANK"
-                                   "SLY"
-                                   "URI"
-                                   "URL"
-                                   "URLs"
-                                   "LISP"
-                                   "SBCL"
-                                   "FOO"
-                                   "FOO-SLOT"
-                                   "FOO-EXAMPLE"
-                                   "*FOO-STATE*"
-                                   "BAZ"
-                                   "BAR"
-                                   "OTHER-PACKAGE:SOMETHING"
-                                   "MIT"
-                                   "GIT"
-                                   "ASDF"
-                                   "CSS"
-                                   "3BMD"
-                                   "PYTHONIC-STRING-READER"))
-  "
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defparameter *ignore-words*
+    '("HTML"
+      "HTMLs"
+      "README"
+      "JSON"
+      "MGL-PAX"
+      "SLIME"
+      "SWANK"
+      "SLY"
+      "URI"
+      "URL"
+      "URLs"
+      "LISP"
+      "SBCL"
+      "FOO"
+      "FOO-SLOT"
+      "FOO-EXAMPLE"
+      "*FOO-STATE*"
+      "BAZ"
+      "BAR"
+      "OTHER-PACKAGE:SOMETHING"
+      "MIT"
+      "GIT"
+      "ASDF"
+      "CSS"
+      "3BMD"
+      "PYTHONIC-STRING-READER"))
+
+  (defparameter *readme-ignore-words*
+    (list* "DEFSECTION"
+           *ignore-words*))
+
+
+  (defparameter *badges*
+    "
 <table>
 <tr>
 <td><a href=\"https://github.com/40ants/doc/actions/workflows/ci.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests\"/></a></td>
@@ -63,7 +72,11 @@
 <td><a href=\"https://coveralls.io/github/40ants/doc?branch=master\"><img src=\"https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master\"></a></td>
 </tr>
 </table>
-"
+"))
+
+(defsection @index (:title "40Ants Doc Manual"
+                    :ignore-words #.*ignore-words*)
+  *badges*
   (@about section)
   (40ants-doc system)
   (40ants-doc-full system)
@@ -79,6 +92,12 @@
   (@extension-api section)
   (40ants-doc/transcribe::@transcript section)
   (@todo section))
+
+
+(defsection @readme (:title "40ANTS-DOC Documentation Generator"
+                     :ignore-words #.*readme-ignore-words*)
+  *badges*
+  (@about section))
 
 
 (defsection @about (:title "About this fork"
@@ -106,7 +125,8 @@ integration.
                                       :ignore-words ("NAMED-READTABLES"
                                                      "PYTHONIC-STRING-READER"
                                                      "API"
-                                                     "CL-INFO:@INDEX"))
+                                                     "@INDEX"
+                                                     "SECTION"))
   "
 Here is features already implemented in this fork:
 
@@ -120,9 +140,9 @@ Here is features already implemented in this fork:
 * Added a warning mechanism, which will issue such warnings on words which looks
   like a symbol, but when real symbol or reference is absent:
 
-  ```
-   WARNING: Unable to find symbol \"API\" mentioned in (CL-INFO:@INDEX SECTION)
-  ```
+```
+WARNING: Unable to find symbol \"API\" mentioned in (CL-INFO:@INDEX SECTION)
+```
 
 I'm planning to extend this fork even more. Read @TODO section to learn about
 proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)

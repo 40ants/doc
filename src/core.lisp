@@ -176,9 +176,16 @@
 
 (defun transform-entries (entries)
   (mapcar (lambda (entry)
-            (if (stringp entry)
-                entry
-                (entry-to-reference entry)))
+            (typecase entry
+              (string entry)
+              (symbol
+               (let ((value (symbol-value entry)))
+                 (unless (typep value 'string)
+                   (error "~S value should be a string."
+                          entry))
+                 value))
+              (t
+               (entry-to-reference entry))))
           entries))
 
 (defun entry-to-reference (entry)
