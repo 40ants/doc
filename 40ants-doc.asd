@@ -5,7 +5,7 @@
   :version "0.1.0"
   :author "Alexander Artemenko"
   :mailto "svetlyak.40wt@gmail.com"
-  :homepage "http://40ants.com/doc"
+  :homepage "https://40ants.com/doc"
   :bug-tracker "https://github.com/40ants/doc/issues"
   :source-control (:git "https://github.com/40ants/doc")
   :description "Allows to put documentation inside lisp files and cross-reference between different entities. Based on MGL-PAX."
