@@ -17,3 +17,7 @@ referenced objects are in different packages.
 * Fixed docstring extraction for compiler macro.
 
 * Now defsection does not exports symbols by default
+* You can render documents in multiple formats in a single run having cross links.
+For example shorter README.md could mention symbols and have correct
+links to the full documentation
+* "Clean" URLs are supported out of the box.
