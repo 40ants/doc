@@ -9,7 +9,9 @@
                 #:section-name/builder/heading)
   (:import-from #:40ants-doc/builder/footer)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/page
+                #:page-base-dir
+                #:page-format)
   (:import-from #:40ants-doc/document)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/builder/printer)
@@ -158,14 +160,15 @@
   (format nil "~A-~A"
           s n))
 
-(defun process-document (document)
+(defun process-document (document &key base-url)
   (let* ((references (40ants-doc/commondoc/page::collect-references document))
          (document (40ants-doc/commondoc/page:warn-on-missing-exports document))
          (document (40ants-doc/commondoc/page:warn-on-undocumented-exports document
                                                                            references))
          (document (40ants-doc/commondoc/xref::extract-symbols document))
          (document (40ants-doc/commondoc/xref:fill-locatives document))
-         (document (40ants-doc/commondoc/page::replace-xrefs document references)))
+         (document (40ants-doc/commondoc/page::replace-xrefs document references
+                                                             :base-url base-url)))
     document))
 
 
@@ -180,6 +183,7 @@
 
 (defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
                                       (base-dir #P"./")
+                                      (base-url nil)
                                       (format 'common-html:html))
   "Renders given sections or pages into a files on disk.
 
@@ -202,7 +206,8 @@
                                 pages))
                (full-document (process-document
                                (common-doc:make-document "Documentation"
-                                                         :children page-documents)))
+                                                         :children page-documents)
+                               :base-url base-url))
                (absolute-dir (uiop:ensure-absolute-pathname base-dir
                                                             (probe-file ".")))
                (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
@@ -210,21 +215,40 @@
                (output-paths nil))
 
           (ensure-directories-exist absolute-dir)
-         
-          (let ((common-html.emitter:*document-section-format-control*
-                  ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
-                  ;; be a slash after the .html
-                  "~A#~A"))
-            (loop for document in page-documents
-                  for filename = (40ants-doc/commondoc/page::full-filename document)
-                  for full-filename = (uiop:merge-pathnames* filename absolute-dir)
-                  do (ensure-directories-exist full-filename)
-                     (uiop:with-output-file (stream full-filename
-                                                    :if-exists :supersede)
-                       (common-doc.format:emit-document (make-instance format)
-                                                        document
-                                                        stream)
-                       (push full-filename output-paths))))
+
+          ;; 
+          ;; Кстати, ещё нужно как-то генерить ChangeLog.md и changelog.html раздел в HTML
+          ;;
+          ;; Надо сделать обработку base-url:
+          ;; 
+          ;; И может ещё задавать base-url? И использовать его для построения ссылок на
+          ;; страницы из документов не в HTML формате?
+          ;; 
+          (flet ((make-full-filename (page)
+                   (let* ((page-base-dir (or (page-base-dir page)
+                                             base-dir))
+                          (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
+                                                                       (probe-file ".")))
+                          (filename (40ants-doc/commondoc/page::full-filename page)))
+                     (uiop:merge-pathnames* filename absolute-dir))))
+            (let ((common-html.emitter:*document-section-format-control*
+                    ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
+                    ;; be a slash after the .html
+                    "~A#~A"))
+              (loop with global-format = format
+                    for document in page-documents
+                    for full-filename = (make-full-filename document)
+                    for format = (or
+                                  ;; Page may override global format setting
+                                  (page-format document)
+                                  global-format)
+                    do (ensure-directories-exist full-filename)
+                       (uiop:with-output-file (stream full-filename
+                                                      :if-exists :supersede)
+                         (common-doc.format:emit-document (make-instance format)
+                                                          document
+                                                          stream)
+                         (push full-filename output-paths)))))
          
           (when (eql format
                      'common-html:html)
@@ -235,8 +259,11 @@
               (terpri stream)))
 
           (unless (zerop num-warnings)
-            (warn "~A warning~:P were caught"
-                  num-warnings))
+            (warn "~A warning~:P ~A caught"
+                  num-warnings
+                  (if (= num-warnings 1)
+                      "was"
+                      "were")))
           (apply #'values
                  absolute-dir
                  (nreverse output-paths)))))))

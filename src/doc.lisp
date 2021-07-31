@@ -56,10 +56,6 @@
       "3BMD"
       "PYTHONIC-STRING-READER"))
 
-  (defparameter *readme-ignore-words*
-    (list* "DEFSECTION"
-           *ignore-words*))
-
 
   (defparameter *badges*
     "
@@ -75,7 +71,7 @@
 "))
 
 (defsection @index (:title "40Ants Doc Manual"
-                    :ignore-words #.*ignore-words*)
+                    :ignore-words *ignore-words*)
   *badges*
   (@about section)
   (40ants-doc system)
@@ -95,10 +91,12 @@
 
 
 (defsection @readme (:title "40ANTS-DOC Documentation Generator"
-                     :ignore-words #.*readme-ignore-words*)
+                     :ignore-words (list* "DEFSECTION"
+                                          *ignore-words*))
   *badges*
   (@about section)
   (@full-doc-link section)
+  (@tutorial section)
   (@todo section))
 
 

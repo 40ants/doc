@@ -21,25 +21,32 @@
                 #:is-external)
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/commondoc/format)
-  (:export
-   ;; #:ensure-page
-   #:make-page
-   #:page
-   #:make-page-toc
-   #:warn-on-missing-exports
-   #:warn-on-undocumented-exports
-   #:base-filename
-   #:full-filename))
+  (:import-from #:40ants-doc/page
+                #:page-base-url
+                #:base-filename
+                #:page-format)
+  (:import-from #:40ants-doc/rewrite)
+  (:export #:make-page
+           #:page
+           #:make-page-toc
+           #:warn-on-missing-exports
+           #:warn-on-undocumented-exports
+           #:full-filename))
 (in-package 40ants-doc/commondoc/page)
 
 
-(defclass page (common-doc:content-node)
-  ((base-filename :type string
-                  :reader base-filename
-                  :initarg :base-filename)))
+(defclass page (40ants-doc/page::page-common-mixin
+                common-doc:content-node)
+  ())
 
 
 (defgeneric full-filename (page &key from)
+  (:method :around ((page t) &key from)
+    (declare (ignore from))
+    
+    (40ants-doc/rewrite::rewrite-file
+     (call-next-method)))
+  
   (:method ((page (eql :no-page)) &key from)
     (declare (ignore from))
     "")
@@ -50,7 +57,10 @@
     (let ((base (if from
                     (40ants-doc/utils:make-relative-path (base-filename from)
                                                          (base-filename page))
-                    (base-filename page))))
+                    (base-filename page)))
+          (extension (if (page-format page)
+                         (40ants-doc/commondoc/format:files-extension (page-format page))
+                         (40ants-doc/commondoc/format:current-files-extension))))
       ;; Base name can be empty only if FROM argument was given and
       ;; we are generating a link for a cross reference. In this case
       ;; we need to return an empty string to make links use only HTML fragment.
@@ -59,7 +69,7 @@
           (concatenate 'string
                        base
                        "."
-                       (40ants-doc/commondoc/format:current-files-extension))))))
+                       extension)))))
 
 
 (defmethod base-filename ((obj (eql :no-page)))
@@ -67,10 +77,13 @@
   "")
 
 
-(defun make-page (sections base-filename)
+(defun make-page (sections base-filename &key format base-dir base-url)
   (make-instance 'page
                  :children (uiop:ensure-list sections)
-                 :base-filename base-filename))
+                 :base-filename base-filename
+                 :base-dir base-dir
+                 :base-url base-url
+                 :format format))
 
 
 (defgeneric make-page-toc (page)
@@ -190,14 +203,43 @@
   node)
 
 
-(defun replace-xrefs (node known-references &aux ignored-words
-                                                 sections
-                                                 current-page
-                                                 inside-code-block
-                                                 pages-stack
-                                                 (common-lisp-package (find-package :common-lisp))
-                                                 (keywords-package (find-package :keyword)))
-  "Replaces XREF with COMMON-DOC:WEB-LINK.
+(defun remove-references-to-other-document-formats (current-page found-references)
+  "If there are two references with the same locative, then we need only one leading
+   to the page having the same format as the CURRENT-PAGE argument's format."
+  (let* ((current-format (page-format current-page))
+         (seen-locatives nil)
+         (same-format-references
+           (loop for (reference . page) in found-references
+                 when (eql (page-format page)
+                           current-format)
+                 do (push (40ants-doc/reference:reference-locative reference)
+                          seen-locatives)
+                 and collect (cons reference page))))
+    (append same-format-references
+            (loop for (reference . page) in found-references
+                  when (and (not (eql (page-format page)
+                                      current-format))
+                            ;; Here the place where we are filtering out
+                            ;; references we've already have in the same format
+                            ;; as the CURRENT-PAGE's format:
+                            (not (member (40ants-doc/reference:reference-locative reference)
+                                         seen-locatives
+                                         :test #'equal)))
+                  collect (cons reference page)))))
+
+(defun replace-xrefs (node known-references
+                      &key base-url
+                      &aux ignored-words
+                           sections
+                           current-page
+                           inside-code-block
+                           pages-stack
+                           (common-lisp-package (find-package :common-lisp))
+                           (keywords-package (find-package :keyword)))
+  "Replaces XREF with COMMON-DOC:DOCUMENT-LINK.
+
+   If XREFS corresponds to HTML page format, and BASE-URL argument is not none,
+   then it URL will be absolute otherwise a relative link will be generated.
 
    Returns links which were not replaced because there wasn't
    a corresponding reference in the KNOWN-REFERENCES argument.
@@ -321,6 +363,9 @@
                                                   locative)))
                                collect (cons reference
                                              page)))
+                       (found-references
+                         (remove-references-to-other-document-formats current-page
+                                                                      found-references))
                        (should-be-ignored
                          (unless found-references
                            (should-be-ignored-p text symbol locative))))
@@ -333,8 +378,28 @@
                      (labels ((make-link (reference page text)
                                 (let ((page-uri
                                         (when page
-                                          (format nil "~A"
-                                                  (full-filename page :from current-page))))
+                                          (let ((filename (full-filename page :from current-page))
+                                                (base-url (or (page-base-url page)
+                                                              base-url)))
+                                            (40ants-doc/rewrite::rewrite-url
+                                             (cond
+                                               ;; Links to HTML pages will be made absolute
+                                               ;; if base HTML URL is known. This could be
+                                               ;; the case when you are rendering a documentation
+                                               ;; to be hosted on site and a README.md to be hosted
+                                               ;; at the GitHub and README references items from
+                                               ;; HTML version of documentation.
+                                               ((and (eql (or (page-format page)
+                                                              40ants-doc/commondoc/format::*current-format*)
+                                                          'common-html:html)
+                                                     base-url)
+                                                (format nil "~A/~A"
+                                                        (string-right-trim '(#\/)
+                                                                           base-url)
+                                                        filename))
+                                               ;; When URL should remain relative:
+                                               (t
+                                                filename))))))
                                       (html-fragment
                                         (40ants-doc/utils::html-safe-name
                                          (40ants-doc/reference::reference-to-anchor reference))))

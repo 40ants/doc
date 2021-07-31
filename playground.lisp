@@ -1,5 +1,8 @@
 (uiop:define-package #:playground
   (:use #:cl)
+  (:import-from #:40ants-doc
+                #:section
+                #:defsection)
   (:export
    #:user))
 (in-package playground)
@@ -344,24 +347,29 @@
                        "https://github.com/40ants/doc")))))
 
 
-(40ants-doc:defsection @experiment (:title "Experiment")
-  "See [DESCRIBE-OBJECT][(METHOD () (40ANTS-DOC:SECTION T))]."
+(defsection @experiment (:title "Experiment")
+  "See SECTION class. This should be a local link"
 
-  (describe-object (method () (40ANTS-DOC:SECTION T)))
-  ;; (40ants-doc::*discard-documentation-p* variable)
-  ;; (40ants-doc::defsection macro)
-  ;; (40ants-doc::section class)
-  )
+  (section class))
+
+
+(defsection @readme (:title "Experiment")
+  "See SECTION class. This should be a full link to the site.")
 
 
 (defun new-render-multi ()
   (40ants-doc/builder:render-to-files (list ;; @index
-                                       40ants-doc/doc::@index
-                                       @second-page
-                                       @experiment
-                                       )
-                                      :base-dir "./new-docs/"
-                                      :format 'commondoc-markdown:markdown))
+                                       ;; 40ants-doc/doc::@index
+                                       ;; @second-page
+                                       
+                                       (40ants-doc/page:make-page2 @experiment)
+                                       (40ants-doc/page:make-page2 @readme
+                                                                   :format 'commondoc-markdown:markdown
+                                                                   :base-dir "./new-docs/"))
+                                      :base-url "https://40ants.com/doc/"
+                                      :base-dir "./new-docs/html/"
+                                      ;; :format 'commondoc-markdown:markdown
+                                      ))
 
 
 (defun render-readme ()

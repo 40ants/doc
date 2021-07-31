@@ -14,7 +14,13 @@
   ;; (:import-from #:40ants-doc/commondoc/page)
   (:export
    #:make-page2
-   #:ensure-page))
+   #:ensure-page)
+  (:export
+   #:page-format
+   #:base-filename
+   #:page-base-dir
+   #:page-base-url
+   #:page-sections))
 (in-package 40ants-doc/page)
 
 
@@ -287,15 +293,28 @@
 ;; TODO: check objects and functions above
 ;; if we are still need them
 
-(defclass page2 ()
-  ((sections :initarg :sections
-             :reader page-sections)
-   (base-filename :initarg :base-filename
+(defclass page-common-mixin ()
+  ((base-filename :initarg :base-filename
                   :reader base-filename
                   :type string
                   :documentation "Keeps a filename without extension.
                                   Extension will be added later during
-                                  documentation generation phase.")))
+                                  documentation generation phase.")
+   (base-dir :initform nil
+             :initarg :base-dir
+             :reader page-base-dir)
+   (base-url :initform nil
+             :initarg :base-url
+             :reader page-base-url)
+   (format :initform nil
+           :initarg :format
+           :reader page-format
+           :type (or null symbol))))
+
+
+(defclass page2 (page-common-mixin)
+  ((sections :initarg :sections
+             :reader page-sections)))
 
 
 (defmethod 40ants-doc/object-package:object-package ((obj page2))
@@ -312,13 +331,19 @@
                               (first sections))))))
 
 
-(defun make-page2 (sections &key base-filename)
+(defun make-page2 (sections &key base-filename
+                                 base-dir
+                                 base-url
+                                 format)
   (let* ((sections (uiop:ensure-list sections))
          (base-filename (or base-filename
                             (make-base-filename sections))))
     (make-instance 'page2
                    :sections sections
-                   :base-filename base-filename)))
+                   :base-filename base-filename
+                   :base-dir base-dir
+                   :base-url base-url
+                   :format format)))
 
 
 (defun ensure-page (obj)
@@ -330,6 +355,9 @@
 
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj page2))
   (uiop:symbol-call :40ants-doc/commondoc/page :make-page
-   (mapcar #'40ants-doc/commondoc/builder:to-commondoc
-           (page-sections obj))
-   (base-filename obj)))
+                    (mapcar #'40ants-doc/commondoc/builder:to-commondoc
+                            (page-sections obj))
+                    (base-filename obj)
+                    :format (page-format obj)
+                    :base-dir (page-base-dir obj)
+                    :base-url (page-base-url obj)))
