@@ -98,6 +98,17 @@
   
   (transform-entries entries)
   (transform-link-title-to link-title-to)
+
+  (when (and (typep ignore-words
+                    'list)
+             (typep (first ignore-words)
+                    'string))
+    ;; This allows to pass an unquoted list of words
+    ;; to the macro, which is what you most commonly need.
+    (setf ignore-words
+          (list* 'list
+                 ignore-words)))
+  
   `(progn
      (eval-when (:compile-toplevel :load-toplevel :execute)
        (when ,export
@@ -112,7 +123,8 @@
                       :entries ,(if discard-documentation-p
                                     ()
                                     `(transform-entries ',entries))
-                      :ignore-words (list ,@ignore-words)))))
+                      :ignore-words (list
+                                     ,@(eval ignore-words))))))
 
 (defclass section ()
   ((name
