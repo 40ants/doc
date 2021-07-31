@@ -54,7 +54,33 @@ Here is features already implemented in this fork:
 ```
 WARNING: Unable to find symbol "API" mentioned in (CL-INFO:@INDEX SECTION)
 ```
-I'm planning to extend this fork even more. Read `@TODO` section to learn about
+I'm planning to extend this fork even more. Read [`TODO`](#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section to learn about
 proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)
 on the GitHub to suggest a new feature.
+
+<a id="x-2840ANTS-DOC-2FDOC-3A-3A-40FULL-DOC-LINK-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## Full Documentation
+
+Read full documentation at [site 40ants.com/doc/](https://40ants.com/doc/).
+
+<a id="x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## TODO
+
+* <s>Refactor code and make a core package with only a few dependencies.</s>
+
+* <s>Add warnings on `UPPERCASED` symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
+
+* Make some warnings compile-time for defsection and show them in the Emacs, if possible.
+
+* Support custom `HTML` themes.
+
+* Support `SLY` and make both `SLIME` and `SLY` integrations optional.
+
+* Add a search facility which will build an index for static file like Sphinx does.
+
+* Separate markup parsing and result rendering code to support markups other than Markdown and `HTML`.
+
+* Add a new section type to render ChangeLog.
 

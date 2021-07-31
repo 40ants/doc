@@ -97,7 +97,13 @@
 (defsection @readme (:title "40ANTS-DOC Documentation Generator"
                      :ignore-words #.*readme-ignore-words*)
   *badges*
-  (@about section))
+  (@about section)
+  (@full-doc-link section)
+  (@todo section))
+
+
+(defsection @full-doc-link (:title "Full Documentation")
+  "Read full documentation at [site 40ants.com/doc/](https://40ants.com/doc/).")
 
 
 (defsection @about (:title "About this fork"
