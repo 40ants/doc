@@ -9,6 +9,7 @@
                 #:base-filename)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/commondoc/format)
+  (:import-from #:40ants-doc/rewrite)
   (:export
    #:make-toc))
 (in-package 40ants-doc/commondoc/toc)
@@ -36,12 +37,12 @@
                  (let* ((html-fragment (documentation-section-uri-fragment node))
                         (page-uri
                           (when current-page
-                            (format nil "~A"
-                                    (full-filename current-page))))
+                            (full-filename current-page)))
                       
                         (text (if page-uri
-                                  (common-doc:make-document-link (make-relative-path (full-filename page)
-                                                                                     page-uri)
+                                  (common-doc:make-document-link (40ants-doc/rewrite::rewrite-url
+                                                                  (make-relative-path (full-filename page)
+                                                                                      page-uri))
                                                                  html-fragment
                                                                  (common-doc:title node))
                                   (common-doc:title node)))
