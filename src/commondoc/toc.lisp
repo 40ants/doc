@@ -7,6 +7,8 @@
   (:import-from #:40ants-doc/commondoc/page
                 #:full-filename
                 #:base-filename)
+  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/commondoc/format)
   (:export
    #:make-toc))
 (in-package 40ants-doc/commondoc/toc)
@@ -21,43 +23,51 @@
   (let* ((current-sublist (list (common-doc:make-unordered-list (list))))
          (last-list-item nil)
          (current-page nil))
-    (flet ((collector (node)
-             (when (typep node '40ants-doc/commondoc/section:documentation-section)
-               (let* ((html-fragment (documentation-section-uri-fragment node))
-                      (page-uri
-                        (when current-page
-                          (format nil "~A"
-                                  (full-filename current-page))))
+    (labels ((page-format (page)
+               (or (40ants-doc/page:page-format page)
+                   40ants-doc/commondoc/format::*current-format*))
+             (collector (node)
+               (when (and (typep node '40ants-doc/commondoc/section:documentation-section)
+                          ;; We only want to include HTML documents into the TOC for HTML
+                          ;; and Markdown documents to the TOC for Markdown.
+                          (or (null current-page)
+                              (eql (page-format page)
+                                   (page-format current-page))))
+                 (let* ((html-fragment (documentation-section-uri-fragment node))
+                        (page-uri
+                          (when current-page
+                            (format nil "~A"
+                                    (full-filename current-page))))
                       
-                      (text (if page-uri
-                                (common-doc:make-document-link (make-relative-path (full-filename page)
-                                                                                   page-uri)
-                                                               html-fragment
-                                                               (common-doc:title node))
-                                (common-doc:title node)))
-                      (p (common-doc:make-paragraph text))
-                      (li (common-doc:make-list-item p)))
-                 (setf (common-doc:children (car current-sublist))
-                       (append (common-doc:children (car current-sublist))
-                               (list li)))
-                 (setf last-list-item
-                       li)))
-             node)
-           (on-down (node)
+                        (text (if page-uri
+                                  (common-doc:make-document-link (make-relative-path (full-filename page)
+                                                                                     page-uri)
+                                                                 html-fragment
+                                                                 (common-doc:title node))
+                                  (common-doc:title node)))
+                        (p (common-doc:make-paragraph text))
+                        (li (common-doc:make-list-item p)))
+                   (setf (common-doc:children (car current-sublist))
+                         (append (common-doc:children (car current-sublist))
+                                 (list li)))
+                   (setf last-list-item
+                         li)))
+               node)
+             (on-down (node)
              
-             (typecase node
-               (40ants-doc/commondoc/page:page
-                (setf current-page node))
+               (typecase node
+                 (40ants-doc/commondoc/page:page
+                  (setf current-page node))
                
-               (40ants-doc/commondoc/section:documentation-section
-                (push (common-doc:make-unordered-list (list))
-                      current-sublist)
-                (setf (common-doc:children last-list-item)
-                      (append (common-doc:children last-list-item)
-                              (list (car current-sublist)))))))
-           (on-up (node)
-             (when (typep node '40ants-doc/commondoc/section:documentation-section)
-               (pop current-sublist))))
+                 (40ants-doc/commondoc/section:documentation-section
+                  (push (common-doc:make-unordered-list (list))
+                        current-sublist)
+                  (setf (common-doc:children last-list-item)
+                        (append (common-doc:children last-list-item)
+                                (list (car current-sublist)))))))
+             (on-up (node)
+               (when (typep node '40ants-doc/commondoc/section:documentation-section)
+                 (pop current-sublist))))
       (40ants-doc/commondoc/mapper:map-nodes document #'collector
                                              :on-going-down #'on-down
                                              :on-going-up #'on-up))
