@@ -157,7 +157,7 @@ easy:
 ```
 For this example, the generated markdown would look like this:
 
-```text
+````text
 # Foo Random manual
 
 ###### \[in package FOO-RANDOM\]
@@ -203,7 +203,7 @@ with FOO:
 ==> #<FOO-RANDOM-STATE >
 
 ```
-```
+````
 More fancy markdown or `HTML` output with automatic markup and linking
 of uppercase symbol names found in docstrings, section numbering,
 table of contents, etc is possible by calling the [`40ANTS-DOC/DOCUMENT::DOCUMENT`](http://40ants.com/doc/#x-2840ANTS-DOC-2FDOCUMENT-3ADOCUMENT-20GENERIC-FUNCTION-29)
