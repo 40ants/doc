@@ -103,7 +103,10 @@
         (:title "Example page")
         (:link :rel "stylesheet"
                :type "text/css"
-               :href theme-uri))
+               :href theme-uri)
+        (:script :type "text/javascript"
+                 :src "https://code.jquery.com/jquery-3.6.0.min.js")
+        (:script :src "toc.js"))
        (:body
         (:div :id "content-container"
               (:div :id "toc"

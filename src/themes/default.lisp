@@ -209,26 +209,25 @@
       :background "#333"
       :box-shadow inset -5px 0 5px 0px "#000"
       :color "#aaa"
-      (ul 
-       :font-size 80%
+      (p
+       :padding 5px
        :margin 0
+       :margin-left 10px
+       :font-size 14px)
+      (ul 
+       :margin-left 10px
        :padding 0
        :list-style none)
       (li
        :line-height 1.0
-       :padding "5px 10px")
+       :padding 0
+       :margin 0)
       (a
        :border-bottom none)
       (hr
        :height 0.05em
        :border 0
        :background "#777")
-      (.toc-h2
-       :padding-left 10px)
-      (.toc-h3 
-       :padding-left 20px)
-      (.toc-h4 
-       :padding-left 30px)
       (.toc-active 
        :background "#336699"
        :box-shadow inset -5px 0px 10px -5px "#000"))
@@ -251,7 +250,7 @@
        :color "#777777"))
 
      (|#toc-footer|
-      :margin-left 0.5em
+      :margin-left 1.5em
       :margin-top 2em
       (a
        :font-size 80%

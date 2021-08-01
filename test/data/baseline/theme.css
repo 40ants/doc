@@ -293,16 +293,23 @@ body #toc{
     color: #aaa;
 }
 
-body #toc ul{
-    font-size: 80%;
+body #toc p{
+    padding: 5px;
     margin: 0;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+body #toc ul{
+    margin-left: 10px;
     padding: 0;
     list-style: none;
 }
 
 body #toc li{
     line-height: 1.0;
-    padding: 5px 10px;
+    padding: 0;
+    margin: 0;
 }
 
 body #toc a{
@@ -313,18 +320,6 @@ body #toc hr{
     height: 0.05em;
     border: 0;
     background: #777;
-}
-
-body #toc .toc-h2{
-    padding-left: 10px;
-}
-
-body #toc .toc-h3{
-    padding-left: 20px;
-}
-
-body #toc .toc-h4{
-    padding-left: 30px;
 }
 
 body #toc .toc-active{
@@ -363,7 +358,7 @@ body #toc-header a{
 }
 
 body #toc-footer{
-    margin-left: 0.5em;
+    margin-left: 1.5em;
     margin-top: 2em;
 }
 

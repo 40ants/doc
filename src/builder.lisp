@@ -260,7 +260,11 @@
                                            :if-exists :supersede)
               (write-string (40ants-doc/themes/api:render-css theme)
                             stream)
-              (terpri stream)))
+              (terpri stream))
+
+            (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                           "static/toc.js")
+                            (uiop:merge-pathnames* #P"toc.js" absolute-dir)))
 
           (unless (zerop num-warnings)
             (warn "~A warning~:P ~A caught"
