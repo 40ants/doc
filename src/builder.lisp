@@ -181,10 +181,11 @@
                                      document
                                      stream)))
 
+
 (defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
                                       (base-dir #P"./")
                                       (base-url nil)
-                                      (format 'common-html:html))
+                                      (format :html))
   "Renders given sections or pages into a files on disk.
 
    By default, it renders in to HTML, but you can specify FORMAT argument,
@@ -192,6 +193,9 @@
 
    Returns an absolute pathname to the output directory as the first value
    and pathnames corresponding to each of given sections."
+
+  (setf format
+        (40ants-doc/commondoc/format::ensure-format-class-name format))
   
   (let ((num-warnings 0))
     (handler-bind ((warning (lambda (c)

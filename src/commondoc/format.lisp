@@ -2,7 +2,8 @@
   (:use #:cl)
   (:export #:with-format
            #:current-files-extension
-           #:files-extension))
+           #:files-extension
+           #:*keyword-format-to-real-class*))
 (in-package 40ants-doc/commondoc/format)
 
 
@@ -35,3 +36,18 @@
   `(call-with-format ,format
                      (lambda ()
                        ,@body)))
+
+
+(defvar *keyword-format-to-real-class*
+  (list :html 'common-html:html
+        :markdown 'commondoc-markdown:markdown)
+  "Keeps a mapping from keyword format names to class-names supported by CommonDoc.")
+
+
+(defun ensure-format-class-name (name)
+  (if (keywordp name)
+      (or (getf *keyword-format-to-real-class* name)
+          (error "Format ~S is not supported. It absent at ~A"
+                 name
+                 '*keyword-format-to-real-class*))
+      name))

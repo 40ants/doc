@@ -12,6 +12,8 @@
   (:import-from #:40ants-doc/commondoc/builder)
   ;; TODO: solve circular dependency :(
   ;; (:import-from #:40ants-doc/commondoc/page)
+  (:import-from #:40ants-doc/commondoc/format
+                #:ensure-format-class-name)
   (:export
    #:make-page2
    #:ensure-page)
@@ -310,6 +312,13 @@
            :initarg :format
            :reader page-format
            :type (or null symbol))))
+
+
+(defmethod initialize-instance :after ((instance page-common-mixin) &rest initargs)
+  (declare (ignore initargs))
+  (setf (slot-value instance 'format)
+        (ensure-format-class-name
+         (slot-value instance 'format))))
 
 
 (defclass page2 (page-common-mixin)
