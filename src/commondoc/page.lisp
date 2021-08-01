@@ -364,8 +364,10 @@
                                collect (cons reference
                                              page)))
                        (found-references
-                         (remove-references-to-other-document-formats current-page
-                                                                      found-references))
+                         (if current-page
+                             (remove-references-to-other-document-formats current-page
+                                                                          found-references)
+                             found-references))
                        (should-be-ignored
                          (unless found-references
                            (should-be-ignored-p text symbol locative))))

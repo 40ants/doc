@@ -321,6 +321,13 @@
          (slot-value instance 'format))))
 
 
+(defmethod page-base-url ((page (eql :no-page)))
+  nil)
+
+(defmethod page-format ((page (eql :no-page)))
+  nil)
+
+
 (defclass page2 (page-common-mixin)
   ((sections :initarg :sections
              :reader page-sections)))

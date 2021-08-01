@@ -33,7 +33,7 @@
 
 
 (defmacro with-format ((format) &body body)
-  `(call-with-format ,format
+  `(call-with-format (ensure-format-class-name ,format)
                      (lambda ()
                        ,@body)))
 
