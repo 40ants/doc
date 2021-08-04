@@ -370,7 +370,7 @@ on the GitHub to suggest a new feature.
   The `M-.` extensions can be enabled by adding this to your Emacs
   initialization file (or loading `src/pax.el`):"
   (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
-                   :header-nl "```elisp" :footer-nl "```"))
+                   :lang "elisp"))
   (40ANTS-DOC/SWANK::LOCATE-DEFINITION-FOR-EMACS function))
 
 
@@ -502,8 +502,7 @@ on the GitHub to suggest a new feature.
   for ASDF:SYSTEM:"
   (asdf-example (include (:start (asdf:system locative)
                           :end (40ants-doc/locatives/asdf-system::end-of-asdf-example variable))
-                         :header-nl "```commonlisp"
-                         :footer-nl "```"))
+                         :lang "commonlisp"))
   (40ants-doc/locatives/base::define-locative-type macro)
   (40ants-doc::exportable-locative-type-p generic-function)
   (40ants-doc/locatives/base::locate-object generic-function)
@@ -530,8 +529,7 @@ on the GitHub to suggest a new feature.
   of how the VARIABLE locative is defined:"
   (variable-example (include (:start (variable locative)
                               :end (40ants-doc/locatives/variable::end-of-variable-example variable))
-                             :header-nl "```commonlisp"
-                             :footer-nl "```"))
+                             :lang "commonlisp"))
   (40ants-doc/reference-api::collect-reachable-objects (method () (40ants-doc/reference::reference)))
   (40ants-doc/locatives/base::locate-and-collect-reachable-objects generic-function)
   (40ants-doc/locatives/base::locate-and-collect-reachable-objects (method () (t t t)))

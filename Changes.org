@@ -23,3 +23,4 @@ links to the full documentation
 * "Clean" URLs are supported out of the box.
 * Now defsection does not export nor mentioned symbols nor the name of the section
 It is better to have explicit exports.
+* INCLUDE locative now does not support :HEADER, :FOOTER and some other arguments. Use :LANG argument instead.

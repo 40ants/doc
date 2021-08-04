@@ -30,8 +30,7 @@
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
-(define-locative-type include (source &key line-prefix header footer
-                                      header-nl footer-nl)
+(define-locative-type include (source &key lang)
   """Refers to a region of a file. SOURCE can be a string or a
   pathname in which case the whole file is being pointed to or it can
   explicitly supply START, END locatives. INCLUDE is typically used to
@@ -42,11 +41,10 @@
   ```commonlisp
   (defsection example-section ()
     (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
-                     :header-nl "```elisp" :footer-nl "```"))
+                     :lang "elisp"))
     (foo-example (include (:start (foo function)
                            :end (end-of-foo-example variable))
-                          :header-nl "```commonlisp"
-                          :footer-nl "```"))
+                          :lang "commonlisp")))
 
   (defun foo (x)
     (1+ x))
@@ -68,22 +66,16 @@
   locative)` locative.
 
   When documentation is generated, the entire `pax.el` file is
-  included in the markdown surrounded by the strings given as
-  HEADER-NL and FOOTER-NL (if any). The trailing newline character is
-  assumed implicitly. If that's undesirable, then use HEADER and
-  FOOTER instead. The documentation of `FOO-EXAMPLE` will be the
-  region of the file from the source location of the START
-  locative (inclusive) to the source location of the END
+  included in the markdown as a code block. The documentation of
+  `FOO-EXAMPLE` will be the region of the file from the source location
+  of the START locative (inclusive) to the source location of the END
   locative (exclusive). START and END default to the beginning and end
   of the file, respectively.
 
   Note that the file of the source location of :START and :END must be
   the same. If SOURCE is pathname designator, then it must be absolute
   so that the locative is context independent.
-
-  Finally, if specified LINE-PREFIX is a string that's prepended to
-  each line included in the documentation. For example, a string of
-  four spaces makes markdown think it's a code block.""")
+  """)
 
 
 (defmethod exportable-locative-type-p ((locative-type (eql 'include)))
@@ -91,9 +83,8 @@
 
 (defmethod locate-object (symbol (locative-type (eql 'include))
                           locative-args)
-  (destructuring-bind (source &key line-prefix header footer
-                                   header-nl footer-nl lang) locative-args
-    (declare (ignore source line-prefix header footer header-nl footer-nl lang))
+  (destructuring-bind (source &key lang) locative-args
+    (declare (ignore source lang))
     (40ants-doc/reference::make-reference symbol (cons locative-type locative-args))))
 
 
@@ -109,40 +100,31 @@
 
 (defmethod locate-and-document (symbol (locative-type (eql 'include))
                                 locative-args stream)
-  (destructuring-bind (source &key (line-prefix "")
-                                   header
-                                   footer
-                                   header-nl
-                                   footer-nl
-                                   lang)
-      locative-args
-    (declare (ignore lang))
+  ;; TODO: remove completely
+  (error "Not impemented anymore")
+  ;; (destructuring-bind (source &key lang)
+  ;;     locative-args
+  ;;   (declare (ignore lang))
     
-    (when header
-      (format stream "~A" header))
-    (when header-nl
-      (format stream "~A~%" header-nl))
-    (format stream "~A"
-            (40ants-doc/utils::prefix-lines line-prefix
-                                            (multiple-value-call #'file-subseq
-                                              (include-region source))))
-    (when footer
-      (format stream "~A" footer))
-    (when footer-nl
-      (format stream "~A~%" footer-nl))))
+  ;;   (when header
+  ;;     (format stream "~A" header))
+  ;;   (when header-nl
+  ;;     (format stream "~A~%" header-nl))
+  ;;   (format stream "~A"
+  ;;           (40ants-doc/utils::prefix-lines line-prefix
+  ;;                                           (multiple-value-call #'file-subseq
+  ;;                                             (include-region source))))
+  ;;   (when footer
+  ;;     (format stream "~A" footer))
+  ;;   (when footer-nl
+  ;;     (format stream "~A~%" footer-nl)))
+  )
 
 
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'include)) locative-args)
   (destructuring-bind (source &key 
-                              lang
-                              ;; TODO: remove after refactoring.
-                              ;;       These args as they are not supported anymore.
-                              header
-                              footer
-                              header-nl
-                              footer-nl)
+                              lang)
       locative-args
-    (declare (ignore header footer header-nl footer-nl))
     (common-doc:make-code-block lang
                                 (common-doc:make-text
                                  (multiple-value-call #'file-subseq

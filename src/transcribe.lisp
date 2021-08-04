@@ -1109,8 +1109,7 @@
   Emacs initialization file (or loading `elisp/transcribe.el`):"""
   (transcribe.el (include
                   #.(asdf:system-relative-pathname :40ants-doc "elisp/transcribe.el")
-                  :header-nl "```elisp"
-                  :footer-nl "```")))
+                  :lang "elisp")))
 
 (defun transcribe-for-emacs (string default-syntax* update-only echo
                              first-line-special-p)
