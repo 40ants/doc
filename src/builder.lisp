@@ -276,7 +276,13 @@
 
             (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
                                                            "static/toc.js")
-                            (uiop:merge-pathnames* #P"toc.js" absolute-dir)))
+                            (uiop:merge-pathnames* #P"toc.js" absolute-dir))
+            (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                           "static/highlight/highlight.min.js")
+                            (uiop:merge-pathnames* #P"highlight.min.js" absolute-dir))
+            (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                           "static/highlight/styles/atom-one-dark.min.css")
+                            (uiop:merge-pathnames* #P"highlight.min.css" absolute-dir)))
 
           (unless (zerop num-warnings)
             (warn "~A warning~:P ~A caught"

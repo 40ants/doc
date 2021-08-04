@@ -94,7 +94,9 @@
 (define-emitter (obj page)
   "Emit an piece of documentation."
   (let ((toc (make-page-toc obj))
-        (theme-uri (make-relative-path (base-filename obj) "theme.css")))
+        (theme-uri (make-relative-path (base-filename obj) "theme.css"))
+        (highlight-css-uri (make-relative-path (base-filename obj) "highlight.min.css"))
+        (highlight-js-uri (make-relative-path (base-filename obj) "highlight.min.js")))
     (with-html
       (:html
        (:head
@@ -106,7 +108,14 @@
                :href theme-uri)
         (:script :type "text/javascript"
                  :src "https://code.jquery.com/jquery-3.6.0.min.js")
-        (:script :src "toc.js"))
+        (:script :type "text/javascript"
+                 :src "toc.js")
+        (:link :rel "stylesheet"
+               :type "text/css"
+               :href highlight-css-uri)
+        (:script :type "text/javascript"
+                 :src highlight-js-uri)
+        (:script "hljs.highlightAll();"))
        (:body
         (:div :id "content-container"
               (:div :id "toc"

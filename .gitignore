@@ -8,3 +8,4 @@ docs/
 new-docs/
 .qlot/
 /coverage/
+.DS_Store
