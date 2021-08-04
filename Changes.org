@@ -24,4 +24,4 @@ links to the full documentation
 * Now defsection does not export nor mentioned symbols nor the name of the section
 It is better to have explicit exports.
 * INCLUDE locative now does not support :HEADER, :FOOTER and some other arguments. Use :LANG argument instead.
-* Added code highlighting using Hightlight.js library
+* Added code highlighting using Highlight.js library
