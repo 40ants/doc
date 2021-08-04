@@ -42,25 +42,25 @@
       (40ants-doc/reference::make-reference (class-name class) 'condition)
       (40ants-doc/reference::make-reference (class-name class) 'class)))
 
-(defmethod document-object ((class class) stream)
-  (let* ((conditionp (subtypep class 'condition))
-         (symbol (class-name class))
-         (superclasses
-           (remove-if (lambda (name)
-                        (or (eq name 'standard-object)
-                            (and conditionp (eq name 'condition))))
-                      (mapcar #'class-name
-                              (swank-mop:class-direct-superclasses class)))))
-    (40ants-doc/builder/bullet::print-bullet class stream)
-    (when superclasses
-      (write-char #\Space stream)
-      (if 40ants-doc/builder/vars::*document-mark-up-signatures*
-          (40ants-doc/render/args::print-arglist
-           (mark-up-superclasses superclasses) stream)
-          (40ants-doc/render/args::print-arglist superclasses stream)))
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (40ants-doc/args::with-dislocated-symbols ((list symbol))
-      (40ants-doc/render/print::maybe-print-docstring class t stream))))
+;; (defmethod document-object ((class class) stream)
+;;   (let* ((conditionp (subtypep class 'condition))
+;;          (symbol (class-name class))
+;;          (superclasses
+;;            (remove-if (lambda (name)
+;;                         (or (eq name 'standard-object)
+;;                             (and conditionp (eq name 'condition))))
+;;                       (mapcar #'class-name
+;;                               (swank-mop:class-direct-superclasses class)))))
+;;     (40ants-doc/builder/bullet::print-bullet class stream)
+;;     (when superclasses
+;;       (write-char #\Space stream)
+;;       (if 40ants-doc/builder/vars::*document-mark-up-signatures*
+;;           (40ants-doc/render/args::print-arglist
+;;            (mark-up-superclasses superclasses) stream)
+;;           (40ants-doc/render/args::print-arglist superclasses stream)))
+;;     (40ants-doc/builder/bullet::print-end-bullet stream)
+;;     (40ants-doc/args::with-dislocated-symbols ((list symbol))
+;;       (40ants-doc/render/print::maybe-print-docstring class t stream))))
 
 
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((class class))
@@ -73,7 +73,8 @@
                       (mapcar #'class-name
                               (swank-mop:class-direct-superclasses class))))
          (docstring (40ants-doc/render/print::get-docstring class t))
-         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference class)
                                               ;; TODO: support 40ants-doc/builder/vars::*document-mark-up-signatures* here

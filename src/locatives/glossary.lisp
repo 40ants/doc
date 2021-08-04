@@ -30,15 +30,15 @@
        (prin1-to-string (40ants-doc/glossary::glossary-term-name glossary-term)))))
 
 
-(defmethod 40ants-doc/document::document-object ((glossary-term 40ants-doc/glossary::glossary-term) stream)
-  (let ((symbol (40ants-doc/glossary::glossary-term-name glossary-term)))
-    (40ants-doc/builder/bullet::locate-and-print-bullet 'glossary-term () symbol stream
-                                                        :name (glossary-term-title-or-name glossary-term))
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (40ants-doc/args::with-dislocated-symbols ((list symbol))
-      (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
-        (when docstring
-          (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring)))))))
+;; (defmethod 40ants-doc/document::document-object ((glossary-term 40ants-doc/glossary::glossary-term) stream)
+;;   (let ((symbol (40ants-doc/glossary::glossary-term-name glossary-term)))
+;;     (40ants-doc/builder/bullet::locate-and-print-bullet 'glossary-term () symbol stream
+;;                                                         :name (glossary-term-title-or-name glossary-term))
+;;     (40ants-doc/builder/bullet::print-end-bullet stream)
+;;     (40ants-doc/args::with-dislocated-symbols ((list symbol))
+;;       (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
+;;         (when docstring
+;;           (format stream "~%~A~%" (40ants-doc/markdown/transform::massage-docstring docstring)))))))
 
 
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((glossary-term 40ants-doc/glossary::glossary-term))
@@ -48,9 +48,7 @@
                                                        symbol '(glossary-term))))
          (docstring (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
                       (when docstring
-                        (40ants-doc/utils::strip-docstring-indentation docstring)
-                        ;; (40ants-doc/markdown/transform::massage-docstring2 docstring)
-                        )))
+                        (40ants-doc/utils::strip-docstring-indentation docstring))))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 

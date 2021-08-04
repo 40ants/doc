@@ -29,7 +29,7 @@
    #:*document-html-max-navigation-table-of-contents-level*
    #:*document-html-top-blocks-of-links*
    #:*document-html-bottom-blocks-of-links*
-   #:document-to-string
+   #:render-to-string
    #:render-to-files))
 (in-package 40ants-doc/builder)
 
@@ -165,21 +165,33 @@
          (document (40ants-doc/commondoc/page:warn-on-missing-exports document))
          (document (40ants-doc/commondoc/page:warn-on-undocumented-exports document
                                                                            references))
-         (document (40ants-doc/commondoc/xref::extract-symbols document))
+         (document (if 40ants-doc/builder/printer::*document-uppercase-is-code*
+                       (40ants-doc/commondoc/xref::extract-symbols document)
+                       document))
          (document (40ants-doc/commondoc/xref:fill-locatives document))
-         (document (40ants-doc/commondoc/page::replace-xrefs document references
-                                                             :base-url base-url)))
+         (document (if 40ants-doc/link::*document-link-code*
+                       (40ants-doc/commondoc/page::replace-xrefs document references
+                                                                 :base-url base-url)
+                       document)))
     document))
 
 
-(defun document-to-string (document &key (format 'common-html:html))
+(defun render-to-string (object &key (format :html))
   "Renders given CommonDoc node into the string using specified format.
 
    This function is useful for debugging 40ANTS-DOC itself."
-  (uiop/cl:with-output-to-string (stream)
-    (common-doc.format:emit-document (make-instance format)
-                                     document
-                                     stream)))
+  (let ((format
+           (40ants-doc/commondoc/format::ensure-format-class-name format)))
+    
+    (40ants-doc/commondoc/format:with-format (format)
+      (let* ((document
+               (40ants-doc/commondoc/builder:to-commondoc object))
+             (processed-document
+               (process-document document)))
+        (uiop/cl:with-output-to-string (stream)
+          (common-doc.format:emit-document (make-instance format)
+                                           processed-document
+                                           stream))))))
 
 
 (defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
@@ -462,59 +474,60 @@
                   collect (format nil "h~S" i)))))
 
 
-(defmethod 40ants-doc/document::document (object &key stream pages (format :markdown))
-  (let ((40ants-doc/builder/printer::*format* format)
-        (*print-right-margin* (or *print-right-margin* 80))
-        (*package* (if 40ants-doc/builder/printer::*document-normalize-packages*
-                       (find-package :keyword)
-                       *package*))
-        (default-page (40ants-doc/page::translate-page-spec
-                       (list :objects (alexandria:ensure-list object)
-                             :output (list stream))
-                       format))
-        (3bmd-code-blocks:*code-blocks* t)
-        (3bmd-code-blocks:*code-blocks-default-colorize* :common-lisp)
-        (3bmd-code-blocks::*colorize-name-map*
-          (alexandria:plist-hash-table
-           `("cl-transcript" :common-lisp
-                             ,@(alexandria:hash-table-plist
-                                3bmd-code-blocks::*colorize-name-map*))
-           :test #'equal)))
-    (40ants-doc/page::with-tracking-pages-created ()
-      (40ants-doc/page::with-pages ((append (40ants-doc/page::translate-page-specs pages format)
-                                            (list default-page)))
-        ;; Here we output documentation for all objects.
-        ;; Don't be misleaded by DEFAULT-PAGE here.
-        ;; DOCUMENT-OBJECT will write data to all pages
-        ;; depending on a page reference belong to.
-        ;; It does this in 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT :AROUND method
-        (40ants-doc/page::with-temp-output-to-page (stream default-page)
-          (dolist (object (alexandria:ensure-list object))
-            (40ants-doc/builder/heading::with-headings (object)
-              (40ants-doc/document::document-object object stream))))
+;; (defmethod 40ants-doc/document::document (object &key stream pages (format :markdown))
+;;   ;; TODO: delete??
+;;   (let ((40ants-doc/builder/printer::*format* format)
+;;         (*print-right-margin* (or *print-right-margin* 80))
+;;         (*package* (if 40ants-doc/builder/printer::*document-normalize-packages*
+;;                        (find-package :keyword)
+;;                        *package*))
+;;         (default-page (40ants-doc/page::translate-page-spec
+;;                        (list :objects (alexandria:ensure-list object)
+;;                              :output (list stream))
+;;                        format))
+;;         (3bmd-code-blocks:*code-blocks* t)
+;;         (3bmd-code-blocks:*code-blocks-default-colorize* :common-lisp)
+;;         (3bmd-code-blocks::*colorize-name-map*
+;;           (alexandria:plist-hash-table
+;;            `("cl-transcript" :common-lisp
+;;                              ,@(alexandria:hash-table-plist
+;;                                 3bmd-code-blocks::*colorize-name-map*))
+;;            :test #'equal)))
+;;     (40ants-doc/page::with-tracking-pages-created ()
+;;       (40ants-doc/page::with-pages ((append (40ants-doc/page::translate-page-specs pages format)
+;;                                             (list default-page)))
+;;         ;; Here we output documentation for all objects.
+;;         ;; Don't be misleaded by DEFAULT-PAGE here.
+;;         ;; DOCUMENT-OBJECT will write data to all pages
+;;         ;; depending on a page reference belong to.
+;;         ;; It does this in 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT :AROUND method
+;;         (40ants-doc/page::with-temp-output-to-page (stream default-page)
+;;           (dolist (object (alexandria:ensure-list object))
+;;             (40ants-doc/builder/heading::with-headings (object)
+;;               (40ants-doc/document::document-object object stream))))
         
-        (let ((outputs ()))
-          (40ants-doc/page::do-pages-created (page)
-            (40ants-doc/page::with-temp-output-to-page (stream page)
-              (40ants-doc/builder/footer::emit-footer stream))
-            (unless (eq format :markdown)
-              (let ((markdown-string (40ants-doc/page::with-temp-input-from-page (stream page)
-                                       (uiop:slurp-stream-string stream))))
-                (40ants-doc/utils::delete-stream-spec (40ants-doc/page::page-temp-stream-spec page))
-                (40ants-doc/page::with-final-output-to-page (stream page)
-                  (when (40ants-doc/page::page-header-fn page)
-                    (funcall (40ants-doc/page::page-header-fn page) stream))
-                  (3bmd:parse-string-and-print-to-stream markdown-string
-                                                         stream :format format)
-                  (when (40ants-doc/page::page-footer-fn page)
-                    (funcall (40ants-doc/page::page-footer-fn page) stream)))))
-            (push (40ants-doc/utils::unmake-stream-spec (40ants-doc/page::page-final-stream-spec page))
-                  outputs))
+;;         (let ((outputs ()))
+;;           (40ants-doc/page::do-pages-created (page)
+;;             (40ants-doc/page::with-temp-output-to-page (stream page)
+;;               (40ants-doc/builder/footer::emit-footer stream))
+;;             (unless (eq format :markdown)
+;;               (let ((markdown-string (40ants-doc/page::with-temp-input-from-page (stream page)
+;;                                        (uiop:slurp-stream-string stream))))
+;;                 (40ants-doc/utils::delete-stream-spec (40ants-doc/page::page-temp-stream-spec page))
+;;                 (40ants-doc/page::with-final-output-to-page (stream page)
+;;                   (when (40ants-doc/page::page-header-fn page)
+;;                     (funcall (40ants-doc/page::page-header-fn page) stream))
+;;                   (3bmd:parse-string-and-print-to-stream markdown-string
+;;                                                          stream :format format)
+;;                   (when (40ants-doc/page::page-footer-fn page)
+;;                     (funcall (40ants-doc/page::page-footer-fn page) stream)))))
+;;             (push (40ants-doc/utils::unmake-stream-spec (40ants-doc/page::page-final-stream-spec page))
+;;                   outputs))
 
-          (if (and stream
-                   (endp pages))
-              (first outputs)
-              (reverse outputs)))
-        ))))
+;;           (if (and stream
+;;                    (endp pages))
+;;               (first outputs)
+;;               (reverse outputs)))
+;;         ))))
 
 

@@ -164,8 +164,16 @@ on the GitHub to suggest a new feature.
 ")
 
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (load
+   (asdf:system-relative-pathname :40ants-doc "tutorial.lisp")))
+
+
 (defsection @background (:export nil :title "Background"
                          :ignore-words ("OAOO"))
+  "Here is the story behind the MGL-PAX, precursor of 40ANTS-DOC, written
+   by Gábor Melis."
+  
   "As a user, I frequently run into documentation that's incomplete
   and out of date, so I tend to stay in the editor and explore the
   code by jumping around with SLIME's [`M-.`][slime-M-.]. As a library
@@ -265,72 +273,19 @@ on the GitHub to suggest a new feature.
   from code, not vice versa and there is no support for chunking yet.
   Code is first, code must look pretty, documentation is code.
 
-  In typical use, using 40ANTS-DOC, packages have no `:EXPORT`'s defined.
-  Instead the UIOP:DEFINE-PACKAGE form gets a docstring which may mention section
-  names (defined with DEFSECTION). When the code is loaded into the
-  lisp, pressing `M-.` in SLIME on the name of the section will take
-  you there. Sections can also refer to other sections, packages,
-  functions, etc and you can keep exploring.
+  When the code is loaded into the lisp, pressing `M-.` in SLIME on
+  the name of the section will take you there. Sections can also refer
+  to other sections, packages, functions, etc and you can keep exploring.
 
   Here is an example of how it all works together:
 
-  ```commonlisp
-  (uiop:define-package #:foo-random
-    (:documentation "This package provides various utilities for
-  random. See @FOO-RANDOM-MANUAL.")
-    (:use #:common-lisp #:40ants-doc))
+  """
 
-  (in-package foo-random)
+  (tutorial-code (include (:start (foo-random package)
+                           :end (foo-random::+end+ variable))
+                          :lang "commonlisp"))
 
-  (defsection @foo-random-manual (:title "Foo Random manual")
-    "Here you describe what's common to all the referenced (and
-                                                            exported) functions that follow. They work with *FOO-STATE*,
-  and have a :RANDOM-STATE keyword arg. Also explain when to
-  choose which."
-    (foo-random-state class)
-    (state (reader foo-random-state))
-    "Hey we can also print states!"
-    (print-object (method () (foo-random-state t)))
-    (*foo-state* variable)
-    (gaussian-random function)
-    (uniform-random function)
-    ;; this is a subsection
-    (@foo-random-examples section))
-
-  (defclass foo-random-state ()
-    ((state :reader state)))
-
-  (defmethod print-object ((object foo-random-state) stream)
-    (print-unreadable-object (object stream :type t)))
-
-  (defvar *foo-state* (make-instance 'foo-random-state)
-    "Much like *RANDOM-STATE* but uses the FOO algorithm.")
-
-  (defun uniform-random (limit &key (random-state *foo-state*))
-    "Return a random number from the between 0 and LIMIT (exclusive)
-  uniform distribution."
-    nil)
-
-  (defun gaussian-random (stddev &key (random-state *foo-state*))
-    "Return a random number from a zero mean normal distribution with
-  STDDEV."
-    nil)
-
-  (defsection @foo-random-examples (:title "Examples")
-    "Let's see the transcript of a real session of someone working
-  with FOO:
-
-  ```cl-transcript
-  (values (princ :hello) (list 1 2))
-  .. HELLO
-  => :HELLO
-  => (1 2)
-
-  (make-instance 'foo-random-state)
-  ==> #<FOO-RANDOM-STATE >
-  ```")
-  ```
-
+  """
   Generating documentation in a very stripped down markdown format is
   easy:
 
@@ -338,54 +293,12 @@ on the GitHub to suggest a new feature.
   (describe @foo-random-manual)
   ```
 
-  For this example, the generated markdown would look like this:
+  For this example, the generated markdown would look like this:"""
 
-      # Foo Random manual
+  (describe-output (stdout-of (describe foo-random::@foo-random-manual)
+                              :lang "markdown"))
 
-      ###### \[in package FOO-RANDOM\]
-      Here you describe what's common to all the referenced (and
-      exported) functions that follow. They work with *FOO-STATE*,
-      and have a :RANDOM-STATE keyword arg. Also explain when to
-      choose which.
-
-      - [class] FOO-RANDOM-STATE
-
-      - [reader] STATE FOO-RANDOM-STATE
-
-      Hey we can also print states!
-
-      - [method] PRINT-OBJECT (OBJECT FOO-RANDOM-STATE) STREAM
-
-      - [variable] *FOO-STATE* #<FOO-RANDOM-STATE >
-
-          Much like *RANDOM-STATE* but uses the FOO algorithm.
-
-      - [function] GAUSSIAN-RANDOM STDDEV &KEY (RANDOM-STATE *FOO-STATE*)
-
-          Return a random number from a zero mean normal distribution with
-          STDDEV.
-
-      - [function] UNIFORM-RANDOM LIMIT &KEY (RANDOM-STATE *FOO-STATE*)
-
-          Return a random number from the between 0 and LIMIT (exclusive)
-          uniform distribution.
-
-      ## Examples
-
-      Let's see the transcript of a real session of someone working
-      with FOO:
-
-      ```cl-transcript
-      (values (princ :hello) (list 1 2))
-      .. HELLO
-      => :HELLO
-      => (1 2)
-
-      (make-instance 'foo-random-state)
-      ==> #<FOO-RANDOM-STATE >
-
-      ```
-
+  """
   More fancy markdown or HTML output with automatic markup and linking
   of uppercase symbol names found in docstrings, section numbering,
   table of contents, etc is possible by calling the `40ANTS-DOC/DOCUMENT::DOCUMENT`
@@ -405,7 +318,9 @@ on the GitHub to suggest a new feature.
 
   The transcript in the code block tagged with `cl-transcript` is
   automatically checked for up-to-dateness. See
-  `40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT`.""")
+  `40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT`.
+"""
+  )
 
 (defsection @emacs-integration (:title "Emacs Integration"
                                 :ignore-words ("SWANK-BACKEND:FIND-SOURCE-LOCATION"
@@ -472,7 +387,7 @@ on the GitHub to suggest a new feature.
   (40ants-doc::*discard-documentation-p* variable)
   (40ants-doc::defsection macro)
   (40ants-doc/document::document generic-function)
-  (40ants-doc/builder:document-to-string function)
+  (40ants-doc/builder:render-to-string function)
   (40ants-doc/builder:render-to-files function))
 
 
@@ -561,6 +476,7 @@ on the GitHub to suggest a new feature.
   (argument locative)
   (locative locative)
   (include locative)
+  (stdout-of locative)
   (40ants-doc/restart::define-restart macro)
   (restart locative)
   (40ants-doc/glossary::define-glossary-term macro)

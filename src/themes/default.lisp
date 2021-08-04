@@ -105,14 +105,18 @@
      
      (.reference-object
       :background-color "#EBE8E2"
-      :padding 0.1em
-      :border "solid 1px"
+      :padding-left 0.3em
+      :padding-right 0.3em
+      :margin-left 0.2em
+      :border "solid gray 1px"
       :font-weight bold
       (a
        :border-bottom none))
 
      (.locative-args
       :font-style italic
+      :margin-left 0.2em
+      :color "#777"
       (code
        :font-family sans-serif))
 

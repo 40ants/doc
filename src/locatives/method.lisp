@@ -71,14 +71,14 @@
               (t (swank-mop:class-name spec))))
           (swank-mop:method-specializers method)))
 
-(defmethod document-object ((method method) stream)
-  (let ((arglist (rest (method-for-inspect-value method))))
-    (40ants-doc/builder/bullet::print-bullet method stream)
-    (write-char #\Space stream)
-    (40ants-doc/render/args::print-arglist arglist stream)
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
-      (40ants-doc/render/print::maybe-print-docstring method t stream))))
+;; (defmethod document-object ((method method) stream)
+;;   (let ((arglist (rest (method-for-inspect-value method))))
+;;     (40ants-doc/builder/bullet::print-bullet method stream)
+;;     (write-char #\Space stream)
+;;     (40ants-doc/render/args::print-arglist arglist stream)
+;;     (40ants-doc/builder/bullet::print-end-bullet stream)
+;;     (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
+;;       (40ants-doc/render/print::maybe-print-docstring method t stream))))
 
 
 (defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj method))

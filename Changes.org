@@ -21,3 +21,5 @@ referenced objects are in different packages.
 For example shorter README.md could mention symbols and have correct
 links to the full documentation
 * "Clean" URLs are supported out of the box.
+* Now defsection does not export nor mentioned symbols nor the name of the section
+It is better to have explicit exports.

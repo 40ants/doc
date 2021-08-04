@@ -139,14 +139,8 @@
               arglists)
        stream)
 
-      (format stream "~2&")
+      (format stream "~&")
       
       (call-next-method)
 
-      (format stream "~2&"))
-    
-    
-    ;; (loop for arglist in arglists
-    ;;       do (common-doc.format:emit-document format arglist stream))
-
-    ))
+      (format stream "~&"))))

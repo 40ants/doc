@@ -36,12 +36,12 @@
 (defmethod canonical-reference ((package package))
   (40ants-doc/reference::make-reference (package-name package) 'package))
 
-(defmethod document-object ((package package) stream)
-  (let ((symbol (package-name package)))
-    (40ants-doc/builder/bullet::print-bullet package stream)
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (40ants-doc/args::with-dislocated-symbols ((list symbol))
-      (40ants-doc/render/print::maybe-print-docstring package t stream))))
+;; (defmethod document-object ((package package) stream)
+;;   (let ((symbol (package-name package)))
+;;     (40ants-doc/builder/bullet::print-bullet package stream)
+;;     (40ants-doc/builder/bullet::print-end-bullet stream)
+;;     (40ants-doc/args::with-dislocated-symbols ((list symbol))
+;;       (40ants-doc/render/print::maybe-print-docstring package t stream))))
 
 
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((package package))

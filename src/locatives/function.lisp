@@ -39,17 +39,17 @@
   (40ants-doc/reference::make-reference (swank-backend:function-name function) 'function))
 
 ;; TODO: remove after refactoring
-(defmethod document-object ((function function) stream)
-  (let ((reference (canonical-reference function)))
-    (40ants-doc/builder/bullet::print-bullet reference stream)
-    (write-char #\Space stream)
-    (let ((arglist (swank-backend:arglist function)))
-      (40ants-doc/render/args::print-arglist arglist stream)
-      (40ants-doc/builder/bullet::print-end-bullet stream)
-      (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
-        (40ants-doc/render/print::maybe-print-docstring (40ants-doc/reference::reference-object reference)
-                                                        'function
-                                                        stream)))))
+;; (defmethod document-object ((function function) stream)
+;;   (let ((reference (canonical-reference function)))
+;;     (40ants-doc/builder/bullet::print-bullet reference stream)
+;;     (write-char #\Space stream)
+;;     (let ((arglist (swank-backend:arglist function)))
+;;       (40ants-doc/render/args::print-arglist arglist stream)
+;;       (40ants-doc/builder/bullet::print-end-bullet stream)
+;;       (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
+;;         (40ants-doc/render/print::maybe-print-docstring (40ants-doc/reference::reference-object reference)
+;;                                                         'function
+;;                                                         stream)))))
 
 
 (defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj function))

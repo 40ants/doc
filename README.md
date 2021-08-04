@@ -84,31 +84,36 @@ effects as with Literate Programming, but documentation is generated
 from code, not vice versa and there is no support for chunking yet.
 Code is first, code must look pretty, documentation is code.
 
-In typical use, using [`40ANTS-DOC`](https://40ants.com/doc/#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29), packages have no `:EXPORT`'s defined.
-Instead the `UIOP:DEFINE-PACKAGE` form gets a docstring which may mention section
-names (defined with [`DEFSECTION`](https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29)). When the code is loaded into the
-lisp, pressing `M-.` in `SLIME` on the name of the section will take
-you there. Sections can also refer to other sections, packages,
-functions, etc and you can keep exploring.
+When the code is loaded into the lisp, pressing `M-.` in `SLIME` on
+the name of the section will take you there. Sections can also refer
+to other sections, packages, functions, etc and you can keep exploring.
 
 Here is an example of how it all works together:
 
 ```commonlisp
 (uiop:define-package #:foo-random
   (:documentation "This package provides various utilities for
-random. See @FOO-RANDOM-MANUAL.")
-  (:use #:common-lisp #:40ants-doc))
+                   random. See @FOO-RANDOM-MANUAL.")
+  (:use #:common-lisp
+        #:40ants-doc)
+  (:export #:foo-random-state
+           #:state
+           #:*foo-state*
+           #:gaussian-random
+           #:uniform-random))
 
 (in-package foo-random)
 
 (defsection @foo-random-manual (:title "Foo Random manual")
   "Here you describe what's common to all the referenced (and
-                                                          exported) functions that follow. They work with *FOO-STATE*,
-and have a :RANDOM-STATE keyword arg. Also explain when to
-choose which."
+   exported) functions that follow. They work with *FOO-STATE*,
+   and have a :RANDOM-STATE keyword arg. Also explain when to
+   choose which."
   (foo-random-state class)
   (state (reader foo-random-state))
+  
   "Hey we can also print states!"
+  
   (print-object (method () (foo-random-state t)))
   (*foo-state* variable)
   (gaussian-random function)
@@ -117,7 +122,8 @@ choose which."
   (@foo-random-examples section))
 
 (defclass foo-random-state ()
-  ((state :reader state)))
+  ((state :reader state
+          :documentation "Returns random foo's state.")))
 
 (defmethod print-object ((object foo-random-state) stream)
   (print-unreadable-object (object stream :type t)))
@@ -127,27 +133,30 @@ choose which."
 
 (defun uniform-random (limit &key (random-state *foo-state*))
   "Return a random number from the between 0 and LIMIT (exclusive)
-uniform distribution."
+   uniform distribution."
+  (declare (ignore limit random-state))
   nil)
 
 (defun gaussian-random (stddev &key (random-state *foo-state*))
-  "Return a random number from a zero mean normal distribution with
-STDDEV."
+  "Return not a random number from a zero mean normal distribution with
+   STDDEV."
+  (declare (ignore stddev random-state))
   nil)
 
 (defsection @foo-random-examples (:title "Examples")
   "Let's see the transcript of a real session of someone working
-with FOO:
+   with FOO:
 
-```cl-transcript
-(values (princ :hello) (list 1 2))
-.. HELLO
-=> :HELLO
-=> (1 2)
+   ```cl-transcript
+   (values (princ :hello) (list 1 2))
+   .. HELLO
+   => :HELLO
+   => (1 2)
 
-(make-instance 'foo-random-state)
-==> #<FOO-RANDOM-STATE >
-```")
+   (make-instance 'foo-random-state)
+   ==> #<FOO-RANDOM-STATE >
+   ```")
+
 ```
 Generating documentation in a very stripped down markdown format is
 easy:
@@ -157,36 +166,37 @@ easy:
 ```
 For this example, the generated markdown would look like this:
 
-````text
+````markdown
 # Foo Random manual
 
-###### \[in package FOO-RANDOM\]
 Here you describe what's common to all the referenced (and
 exported) functions that follow. They work with *FOO-STATE*,
 and have a :RANDOM-STATE keyword arg. Also explain when to
 choose which.
 
-- [class] FOO-RANDOM-STATE
+## [class] `FOO-RANDOM-STATE` ()
 
-- [reader] STATE FOO-RANDOM-STATE
+## [reader] `STATE` (FOO-RANDOM-STATE) ()
+
+Returns random foo's state.
 
 Hey we can also print states!
 
-- [method] PRINT-OBJECT (OBJECT FOO-RANDOM-STATE) STREAM
+## [method] `PRINT-OBJECT` (OBJECT FOO-RANDOM-STATE) STREAM
 
-- [variable] *FOO-STATE* #<FOO-RANDOM-STATE >
+## [variable] `*FOO-STATE*` #<FOO-RANDOM-STATE >
 
-    Much like *RANDOM-STATE* but uses the FOO algorithm.
+Much like *RANDOM-STATE* but uses the FOO algorithm.
 
-- [function] GAUSSIAN-RANDOM STDDEV &KEY (RANDOM-STATE *FOO-STATE*)
+## [function] `GAUSSIAN-RANDOM` STDDEV &KEY (RANDOM-STATE \*FOO-STATE\*)
 
-    Return a random number from a zero mean normal distribution with
-    STDDEV.
+Return not a random number from a zero mean normal distribution with
+STDDEV.
 
-- [function] UNIFORM-RANDOM LIMIT &KEY (RANDOM-STATE *FOO-STATE*)
+## [function] `UNIFORM-RANDOM` LIMIT &KEY (RANDOM-STATE \*FOO-STATE\*)
 
-    Return a random number from the between 0 and LIMIT (exclusive)
-    uniform distribution.
+Return a random number from the between 0 and LIMIT (exclusive)
+uniform distribution.
 
 ## Examples
 
@@ -201,7 +211,6 @@ with FOO:
 
 (make-instance 'foo-random-state)
 ==> #<FOO-RANDOM-STATE >
-
 ```
 ````
 More fancy markdown or `HTML` output with automatic markup and linking

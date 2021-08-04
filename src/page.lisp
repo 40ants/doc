@@ -270,26 +270,26 @@
                      :definition ,link)))
 
 
-(defmethod 40ants-doc/document::document-object :around (object stream)
-  ;; This method renders object either to the current stream,
-  ;; or to the stream of the page object belongs to.
-  (loop
-    (return
-      (cond ((or (stringp object)
-                 (typep object '40ants-doc/reference::reference))
-             (call-next-method))
-            (t
-             (let* ((reference (40ants-doc/reference::canonical-reference object))
-                    (40ants-doc/reference::*reference-being-documented* reference))
-               (assert (eq object (40ants-doc/reference::resolve reference)))
+;; (defmethod 40ants-doc/document::document-object :around (object stream)
+;;   ;; This method renders object either to the current stream,
+;;   ;; or to the stream of the page object belongs to.
+;;   (loop
+;;     (return
+;;       (cond ((or (stringp object)
+;;                  (typep object '40ants-doc/reference::reference))
+;;              (call-next-method))
+;;             (t
+;;              (let* ((reference (40ants-doc/reference::canonical-reference object))
+;;                     (40ants-doc/reference::*reference-being-documented* reference))
+;;                (assert (eq object (40ants-doc/reference::resolve reference)))
 
-               ;; ATTENTION: Inside with-temp-output-to-page we are changing the stream we output documentation to!
-               (40ants-doc/page::with-temp-output-to-page (stream (40ants-doc/link::reference-page reference))
-                 (when (and 40ants-doc/link::*document-link-code*
-                            (not (typep object '40ants-doc/core::section))
-                            (not (typep object 'asdf:system)))
-                   (40ants-doc/utils::anchor (40ants-doc/reference::reference-to-anchor reference) stream))
-                 (call-next-method object stream))))))))
+;;                ;; ATTENTION: Inside with-temp-output-to-page we are changing the stream we output documentation to!
+;;                (40ants-doc/page::with-temp-output-to-page (stream (40ants-doc/link::reference-page reference))
+;;                  (when (and 40ants-doc/link::*document-link-code*
+;;                             (not (typep object '40ants-doc/core::section))
+;;                             (not (typep object 'asdf:system)))
+;;                    (40ants-doc/utils::anchor (40ants-doc/reference::reference-to-anchor reference) stream))
+;;                  (call-next-method object stream))))))))
 
 
 ;; TODO: check objects and functions above

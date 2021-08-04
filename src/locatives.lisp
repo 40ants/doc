@@ -18,6 +18,7 @@
            #:generic-function
            #:glossary-term
            #:include
+           #:stdout-of
            #:locative
            #:macro
            #:method

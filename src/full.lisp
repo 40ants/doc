@@ -26,6 +26,7 @@
   (:import-from #:40ants-doc/locatives/structure-accessor)
   (:import-from #:40ants-doc/locatives/type)
   (:import-from #:40ants-doc/locatives/include)
+  (:import-from #:40ants-doc/locatives/stdout-of)
   
   (:import-from #:40ants-doc/render/navigation)
   (:import-from #:40ants-doc/document/string)
