@@ -241,11 +241,18 @@
           ;; страницы из документов не в HTML формате?
           ;; 
           (flet ((make-full-filename (page)
-                   (let* ((page-base-dir (or (page-base-dir page)
+                   ;; PAGE argument could be either PAGE object or string denoting a relative path
+                   ;; of HTML page.
+                   (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
+                                               (page-base-dir page))
                                              base-dir))
                           (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
                                                                        (probe-file ".")))
-                          (filename (40ants-doc/commondoc/page::full-filename page)))
+                          (filename (etypecase page
+                                      (40ants-doc/commondoc/page:page
+                                       (40ants-doc/commondoc/page::full-filename page))
+                                      (string
+                                       page))))
                      (uiop:merge-pathnames* filename absolute-dir))))
             (let ((common-html.emitter:*document-section-format-control*
                     ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
@@ -264,25 +271,42 @@
                          (common-doc.format:emit-document (make-instance format)
                                                           document
                                                           stream)
-                         (push full-filename output-paths)))))
+                         (push full-filename output-paths))))
          
-          (when (eql format
-                     'common-html:html)
-            (uiop:with-output-file (stream css-filename
-                                           :if-exists :supersede)
-              (write-string (40ants-doc/themes/api:render-css theme)
-                            stream)
-              (terpri stream))
+            (when (eql format
+                       'common-html:html)
+              (uiop:with-output-file (stream css-filename
+                                             :if-exists :supersede)
+                (write-string (40ants-doc/themes/api:render-css theme)
+                              stream)
+                (terpri stream))
 
-            (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                           "static/toc.js")
-                            (uiop:merge-pathnames* #P"toc.js" absolute-dir))
-            (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                           "static/highlight/highlight.min.js")
-                            (uiop:merge-pathnames* #P"highlight.min.js" absolute-dir))
-            (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                           "static/highlight/styles/atom-one-dark.min.css")
-                            (uiop:merge-pathnames* #P"highlight.min.css" absolute-dir)))
+              (uiop:with-output-file (common-html.emitter::*output-stream*
+                                      (make-full-filename "search.html")
+                                      :if-exists :supersede)
+                (40ants-doc/commondoc/page::emit-search-page))
+
+              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                             "static/toc.js")
+                              (uiop:merge-pathnames* #P"toc.js" absolute-dir))
+              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                             "static/highlight/highlight.min.js")
+                              (uiop:merge-pathnames* #P"highlight.min.js" absolute-dir))
+              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                             "static/highlight/styles/atom-one-dark.min.css")
+                              (uiop:merge-pathnames* #P"highlight.min.css" absolute-dir))
+              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                             "static/search/searchtools.js")
+                              (uiop:merge-pathnames* #P"searchtools.js" absolute-dir))
+              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                             "static/search/searchindex.js")
+                              (uiop:merge-pathnames* #P"searchindex.js" absolute-dir))
+              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                             "static/search/language_data.js")
+                              (uiop:merge-pathnames* #P"language_data.js" absolute-dir))
+              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                             "static/search/doctools.js")
+                              (uiop:merge-pathnames* #P"doctools.js" absolute-dir))))
 
           (unless (zerop num-warnings)
             (warn "~A warning~:P ~A caught"
