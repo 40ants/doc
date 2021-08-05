@@ -301,17 +301,17 @@ on the GitHub to suggest a new feature.
   """
   More fancy markdown or HTML output with automatic markup and linking
   of uppercase symbol names found in docstrings, section numbering,
-  table of contents, etc is possible by calling the `40ANTS-DOC/DOCUMENT::DOCUMENT`
-  generic.
+  table of contents, etc is possible by calling the
+  40ANTS-DOC/BUILDER:RENDER-TO-STRING or 40ANTS-DOC/BUILDER:RENDER-TO-FILES
+  functions.
 
-  One can even generate documentation for different, but related
+  Last one can even generate documentation for different, but related
   libraries at the same time with the output going to different files,
   but with cross-page links being automatically added for symbols
   mentioned in docstrings. See `40ANTS-DOC/BUILDER::@GENERATING-DOCUMENTATION` for
   some convenience functions to cover the most common cases.
 
-  Note how `(VARIABLE *FOO-STATE*)` in the DEFSECTION form both
-  exports `*FOO-STATE*` and includes its documentation in
+  Note how `(*FOO-STATE* VARIABLE)` in the DEFSECTION form includes its documentation in
   `@FOO-RANDOM-MANUAL`. The symbols VARIABLE and FUNCTION are just two
   instances of 'locatives' which are used in DEFSECTION to refer to
   definitions tied to symbols. See @LOCATIVE-TYPES.

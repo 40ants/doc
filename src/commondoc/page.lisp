@@ -11,6 +11,7 @@
   (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/commondoc/mapper)
   (:import-from #:40ants-doc/ignored-words
+                #:ignored-in-package
                 #:ignored-words
                 #:supports-ignored-words-p)
   (:import-from #:40ants-doc/commondoc/piece
@@ -202,6 +203,7 @@
             for package in packages
             do (do-external-symbols (symbol package)
                  (unless (or (documented-p symbol)
+                             (ignored-in-package symbol package)
                              (and (boundp symbol)
                                   (typep (symbol-value symbol)
                                          '40ants-doc:section)))

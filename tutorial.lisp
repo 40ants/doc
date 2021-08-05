@@ -3,6 +3,8 @@
                    random. See @FOO-RANDOM-MANUAL.")
   (:use #:common-lisp
         #:40ants-doc)
+  (:import-from #:40ants-doc/ignored-words
+                #:ignore-words-in-package)
   (:export #:foo-random-state
            #:state
            #:*foo-state*
@@ -65,3 +67,10 @@
    ```")
 
 (defvar +end+)
+
+
+(ignore-words-in-package '*foo-state*
+                         'foo-random-state
+                         'state
+                         'gaussian-random
+                         'uniform-random)
