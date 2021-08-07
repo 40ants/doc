@@ -97,7 +97,9 @@
   
   (let ((theme-uri (make-relative-path uri "theme.css"))
         (highlight-css-uri (make-relative-path uri "highlight.min.css"))
-        (highlight-js-uri (make-relative-path uri "highlight.min.js")))
+        (highlight-js-uri (make-relative-path uri "highlight.min.js"))
+        (jquery-uri (make-relative-path uri "jquery.js"))
+        (toc-js-uri (make-relative-path uri "toc.js")))
     (with-html
       (:html
        (:head
@@ -108,9 +110,9 @@
                :type "text/css"
                :href theme-uri)
         (:script :type "text/javascript"
-                 :src "https://code.jquery.com/jquery-3.6.0.min.js")
+                 :src jquery-uri)
         (:script :type "text/javascript"
-                 :src "toc.js")
+                 :src toc-js-uri)
         (:link :rel "stylesheet"
                :type "text/css"
                :href highlight-css-uri)
@@ -118,17 +120,18 @@
                  :src highlight-js-uri)
         (:script "hljs.highlightAll();")
         ;; MathJax configuration to display inline formulas
-        (:script :type "text/x-mathjax-config"
-                 "
-MathJax.Hub.Config({
-       tex2jax: {
-         inlineMath: [['$','$']],
-         processEscapes: true
-       }
-     });
-")
-        (:script :type "text/javascript"
-                 :src "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"))
+        ;; (:script :type "text/javascript"
+        ;;          :src "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML")
+;;         (:script :type "text/x-mathjax-config"
+;;                  "
+;; MathJax.Hub.Config({
+;;        tex2jax: {
+;;          inlineMath: [['$','$']],
+;;          processEscapes: true
+;;        }
+;;      });
+;; ")
+        )
        (:body
         (:div :id "content-container"
               (when toc
@@ -162,7 +165,7 @@ MathJax.Hub.Config({
   "Emit an piece of documentation."
   (with-page-template ("search.html")
     (with-html
-      (:script :src "https://www.sphinx-doc.org/en/master/_static/underscore.js")
+      (:script :src "underscore.js")
       ;; This should go before doctools
       ;; URL_ROOT: document.getElementById('documentation_options').getAttribute('data-url_root'),
       (:script

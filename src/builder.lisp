@@ -286,27 +286,29 @@
                                       :if-exists :supersede)
                 (40ants-doc/commondoc/page::emit-search-page))
 
-              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                             "static/toc.js")
-                              (uiop:merge-pathnames* #P"toc.js" absolute-dir))
-              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                             "static/highlight/highlight.min.js")
-                              (uiop:merge-pathnames* #P"highlight.min.js" absolute-dir))
-              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                             "static/highlight/styles/atom-one-dark.min.css")
-                              (uiop:merge-pathnames* #P"highlight.min.css" absolute-dir))
-              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                             "static/search/searchtools.js")
-                              (uiop:merge-pathnames* #P"searchtools.js" absolute-dir))
-              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                             "static/search/searchindex.js")
-                              (uiop:merge-pathnames* #P"searchindex.js" absolute-dir))
-              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                             "static/search/language_data.js")
-                              (uiop:merge-pathnames* #P"language_data.js" absolute-dir))
-              (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                             "static/search/doctools.js")
-                              (uiop:merge-pathnames* #P"doctools.js" absolute-dir))))
+              (loop with paths = '(("toc.js" "toc.js")
+                                   ("highlight/highlight.min.js" "highlight.min.js")
+                                   ("highlight/styles/atom-one-dark.min.css" "highlight.min.css")
+                                   ("search/searchtools.js" "searchtools.js")
+                                   ("search/language_data.js" "language_data.js")
+                                   ("search/doctools.js" "doctools.js")
+                                   ("underscore.js" "underscore.js")
+                                   ("jquery.js" "jquery.js"))
+                    for (from to) in paths
+                    do (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                                      (concatenate 'string
+                                                                                   "static/" from))
+                                       (uiop:merge-pathnames* to absolute-dir)))
+              
+              ;; (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+              ;;                                                "static/search/searchindex.js")
+              ;;                 (uiop:merge-pathnames* #P"searchindex.js" absolute-dir))
+              
+              (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
+                                             :if-exists :supersede)
+                (write-string (40ants-doc/search::generate-search-index full-document)
+                              stream)
+                (terpri stream))))
 
           (unless (zerop num-warnings)
             (warn "~A warning~:P ~A caught"
