@@ -2,7 +2,8 @@
   (:use #:cl)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:map-nodes)
-  (:import-from #:40ants-doc/commondoc/section))
+  (:import-from #:40ants-doc/commondoc/section)
+  (:import-from #:40ants-doc/commondoc/page))
 (in-package 40ants-doc/search)
 
 
@@ -17,7 +18,7 @@
                                           collect (cons name values)))))))
 
 
-(defun generate-search-index (document)
+(defun generate-search-index (document page)
   (40ants-doc/commondoc/format:with-format (:html)
     (let ((docnames nil)
           (filenames nil)
@@ -64,7 +65,7 @@
                  node)
                (go-down (node)
                  (typecase node
-                   (40ANTS-DOC/COMMONDOC/PAGE:PAGE
+                   (40ants-doc/commondoc/page:page
                     (when (member (40ants-doc/page:page-format node)
                                   (list 'common-html:html nil))
                       (setf current-page node)
@@ -73,9 +74,16 @@
                              (common-doc:title
                               (first-section node)))
                             titles)
-                      (push (40ants-doc/page:base-filename node)
+                      ;; Here we need to make a path relative to the search page
+                      ;; because search page might be in /search/index.html and it might
+                      ;; refer to documents like /index.html. We can't use paths
+                      ;; starting from / because this will not work for static
+                      ;; documentation on local computer.
+                      (push (40ants-doc/utils:make-relative-path (40ants-doc/page:base-filename page)
+                                                                 (40ants-doc/page:base-filename node))
                             docnames)
-                      (push (40ants-doc/commondoc/page:full-filename node)
+                      (push (40ants-doc/commondoc/page:full-filename node
+                                                                     :from page)
                             filenames))))
                  node)
                (go-up (node)

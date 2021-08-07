@@ -209,7 +209,10 @@
   (setf format
         (40ants-doc/commondoc/format::ensure-format-class-name format))
   
-  (let ((num-warnings 0))
+  (let ((num-warnings 0)
+        ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
+        ;; be a slash after the .html
+        (common-html.emitter:*document-section-format-control* "~A#~A"))
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
                               (incf num-warnings))))
@@ -254,24 +257,20 @@
                                       (string
                                        page))))
                      (uiop:merge-pathnames* filename absolute-dir))))
-            (let ((common-html.emitter:*document-section-format-control*
-                    ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
-                    ;; be a slash after the .html
-                    "~A#~A"))
-              (loop with global-format = format
-                    for document in page-documents
-                    for full-filename = (make-full-filename document)
-                    for format = (or
-                                  ;; Page may override global format setting
-                                  (page-format document)
-                                  global-format)
-                    do (ensure-directories-exist full-filename)
-                       (uiop:with-output-file (stream full-filename
-                                                      :if-exists :supersede)
-                         (common-doc.format:emit-document (make-instance format)
-                                                          document
-                                                          stream)
-                         (push full-filename output-paths))))
+            (loop with global-format = format
+                  for document in page-documents
+                  for full-filename = (make-full-filename document)
+                  for format = (or
+                                ;; Page may override global format setting
+                                (page-format document)
+                                global-format)
+                  do (ensure-directories-exist full-filename)
+                     (uiop:with-output-file (stream full-filename
+                                                    :if-exists :supersede)
+                       (common-doc.format:emit-document (make-instance format)
+                                                        document
+                                                        stream)
+                       (push full-filename output-paths)))
          
             (when (eql format
                        'common-html:html)
@@ -281,10 +280,20 @@
                               stream)
                 (terpri stream))
 
-              (uiop:with-output-file (common-html.emitter::*output-stream*
-                                      (make-full-filename "search.html")
-                                      :if-exists :supersede)
-                (40ants-doc/commondoc/page::emit-search-page))
+              (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
+                                                                :format :html))
+                     (filename (make-full-filename page)))
+                (ensure-directories-exist filename)
+                (uiop:with-output-file (common-html.emitter::*output-stream*
+                                        filename
+                                        :if-exists :supersede)
+                  (40ants-doc/commondoc/page::emit-search-page page))
+
+                (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
+                                               :if-exists :supersede)
+                  (write-string (40ants-doc/search::generate-search-index full-document page)
+                                stream)
+                  (terpri stream)))
 
               (loop with paths = '(("toc.js" "toc.js")
                                    ("highlight/highlight.min.js" "highlight.min.js")
@@ -298,17 +307,7 @@
                     do (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
                                                                       (concatenate 'string
                                                                                    "static/" from))
-                                       (uiop:merge-pathnames* to absolute-dir)))
-              
-              ;; (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-              ;;                                                "static/search/searchindex.js")
-              ;;                 (uiop:merge-pathnames* #P"searchindex.js" absolute-dir))
-              
-              (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
-                                             :if-exists :supersede)
-                (write-string (40ants-doc/search::generate-search-index full-document)
-                              stream)
-                (terpri stream))))
+                                       (uiop:merge-pathnames* to absolute-dir)))))
 
           (unless (zerop num-warnings)
             (warn "~A warning~:P ~A caught"

@@ -136,6 +136,16 @@
         (:div :id "content-container"
               (when toc
                 (:div :id "toc"
+                      (:form :method "GET"
+                             :action (40ants-doc/rewrite::rewrite-url
+                                      (make-relative-path uri "search/index.html"))
+                             :class "search"
+                             (:input :type "text"
+                                     :name "q")
+                             (:input :type "submit"
+                                     :value "Search")
+                             (:span :id "search-progress"))
+                              
                       (:div :id "page-toc"
                             (common-html.emitter::emit toc))
                       (:div :id "toc-footer"
@@ -165,15 +175,16 @@
           (common-doc::children obj))))
 
 
-(defun emit-search-page ()
+(defun emit-search-page (page)
   "Emit an piece of documentation."
-  (with-page-template ("search.html")
-    (with-html
-      (:script :src "underscore.js")
-      ;; This should go before doctools
-      ;; URL_ROOT: document.getElementById('documentation_options').getAttribute('data-url_root'),
-      (:script
-       "
+  (let* ((uri (make-page-uri page)))
+    (with-page-template (uri
+                         (make-page-toc page))
+      (with-html
+        ;; This should go before doctools
+        ;; URL_ROOT: document.getElementById('documentation_options').getAttribute('data-url_root'),
+        (:script
+         "
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT: '',
     VERSION: '5.0.0+',
@@ -187,18 +198,13 @@ var DOCUMENTATION_OPTIONS = {
     NAVIGATION_WITH_KEYS: false
 };
 ")
-      (:script :src "doctools.js")
-      (:script :src "language_data.js")
-      (:script :src "searchtools.js")
-      (:script :src "searchindex.js")
-      
-      (:form :method "GET"
-             (:input :type "text"
-                     :name "q")
-             (:input :type "submit"
-                     :value "Search")
-             (:span :id "search-progress"))
-      (:div :id "search-results"))))
+        (:script :src (make-relative-path uri "underscore.js"))
+        (:script :src (make-relative-path uri "doctools.js"))
+        (:script :src (make-relative-path uri "language_data.js"))
+        (:script :src (make-relative-path uri "searchtools.js"))
+        (:script :src (make-relative-path uri "searchindex.js"))
+        
+        (:div :id "search-results")))))
 
 
 (defun collect-references (node &aux current-page results)
@@ -311,6 +317,31 @@ var DOCUMENTATION_OPTIONS = {
                                          seen-locatives
                                          :test #'equal)))
                   collect (cons reference page)))))
+
+
+(defun make-page-uri (page &key from-page base-url)
+  (let ((filename (full-filename page :from from-page))
+        (base-url (or (page-base-url page)
+                      base-url)))
+    (40ants-doc/rewrite::rewrite-url
+     (cond
+       ;; Links to HTML pages will be made absolute
+       ;; if base HTML URL is known. This could be
+       ;; the case when you are rendering a documentation
+       ;; to be hosted on site and a README.md to be hosted
+       ;; at the GitHub and README references items from
+       ;; HTML version of documentation.
+       ((and (eql (or (page-format page)
+                      40ants-doc/commondoc/format::*current-format*)
+                  'common-html:html)
+             base-url)
+        (format nil "~A/~A"
+                (string-right-trim '(#\/)
+                                   base-url)
+                filename))
+       ;; When URL should remain relative:
+       (t
+        filename)))))
 
 (defun replace-xrefs (node known-references
                       &key base-url
@@ -465,28 +496,8 @@ var DOCUMENTATION_OPTIONS = {
                      (labels ((make-link (reference page text)
                                 (let ((page-uri
                                         (when page
-                                          (let ((filename (full-filename page :from current-page))
-                                                (base-url (or (page-base-url page)
-                                                              base-url)))
-                                            (40ants-doc/rewrite::rewrite-url
-                                             (cond
-                                               ;; Links to HTML pages will be made absolute
-                                               ;; if base HTML URL is known. This could be
-                                               ;; the case when you are rendering a documentation
-                                               ;; to be hosted on site and a README.md to be hosted
-                                               ;; at the GitHub and README references items from
-                                               ;; HTML version of documentation.
-                                               ((and (eql (or (page-format page)
-                                                              40ants-doc/commondoc/format::*current-format*)
-                                                          'common-html:html)
-                                                     base-url)
-                                                (format nil "~A/~A"
-                                                        (string-right-trim '(#\/)
-                                                                           base-url)
-                                                        filename))
-                                               ;; When URL should remain relative:
-                                               (t
-                                                filename))))))
+                                          (make-page-uri page :from-page current-page
+                                                              :base-url base-url)))
                                       (html-fragment
                                         (40ants-doc/utils::html-safe-name
                                          (40ants-doc/reference::reference-to-anchor reference))))

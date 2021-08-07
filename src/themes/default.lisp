@@ -146,7 +146,12 @@
       :padding-left 2.5em
       :max-width 85ex)
 
-     ;; Toc bar
+     ;; Side-bar
+
+     (form.search
+      :margin-left 1.5em
+      :margin-top 1.5em)
+     
      (|#toc|
       :top 0px
       :left 0px
@@ -205,6 +210,11 @@
       (a
        :font-size 80%
        :color "#777777"))
+
+     (|#search-results|
+      (.search
+       (li
+        :margin-bottom 1em)))
 
      (.unresolved-reference
       :color magenta))))

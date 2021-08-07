@@ -40,11 +40,14 @@
                             (full-filename current-page)))
                       
                         (text (if page-uri
-                                  (common-doc:make-document-link (40ants-doc/rewrite::rewrite-url
-                                                                  (make-relative-path (full-filename page)
-                                                                                      page-uri))
-                                                                 html-fragment
-                                                                 (common-doc:title node))
+                                  (let* ((from-uri (full-filename page))
+                                         (link-uri (make-relative-path from-uri
+                                                                       page-uri))
+                                         (rewritten-link-uri (40ants-doc/rewrite::rewrite-url link-uri))
+                                         (result (common-doc:make-document-link rewritten-link-uri
+                                                                                html-fragment
+                                                                                (common-doc:title node))))
+                                    result)
                                   (common-doc:title node)))
                         (p (common-doc:make-paragraph text))
                         (li (common-doc:make-list-item p)))
