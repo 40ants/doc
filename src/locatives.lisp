@@ -9,10 +9,10 @@
                 #:system)
   (:export #:argument
            #:system
-           #:constant
            #:class
            #:compiler-macro
            #:constant
+           ;; TODO: probably remove?
            #:dislocated
            #:function
            #:generic-function
