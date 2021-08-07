@@ -133,62 +133,8 @@
       (.navigation
        :visibility visible))
 
-
-     ;; Syntax highlighting with Colorize
-     (.symbol
-      :color "#770055"
-      :background-color transparent
-      :text-decoration none
-      :border 0px
-      :margin 0px)
-     ((:and a.symbol :link)
-      :color "#229955")
-     ((:and a.symbol :active)
-      :color "#229955")
-     ((:and a.symbol :visited)
-      :color "#229955")
-     ((:and a.symbol :hover)
-      :color "#229955")
-     (.special
-      :color "#FF5000"
-      :background-color inherit)
-     (.keyword
-      :color "#770000"
-      :background-color inherit)
-     (.comment
-      :color "#007777"
-      :background-color inherit)
-     (.string
-      :color "#777777"
-      :background-color inherit)
-     (.atom
-      :color "#314F4F"
-      :background-color inherit)
-     (.macro
-      :color "#FF5000"
-      :background-color inherit)
-     (.variable
-      :color "#36648B"
-      :background-color inherit)
-     (.function
-      :color "#8B4789"
-      :background-color inherit)
-     (.attribute
-      :color "#FF5000"
-      :background-color inherit)
-     (.character
-      :color "#0055AA"
-      :background-color inherit)
-     (.syntaxerror
-      :color "#FF0000"
-      :background-color inherit)
-     (.diff-deleted
-      :color "#5F2121"
-      :background-color inherit)
-     (.diff-added
-      :color "#215F21"
-      :background-color inherit)
-
+     (.highlighted
+      :background "#adff2f")
 
      ;; Content
      (|#content-container|

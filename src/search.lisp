@@ -24,7 +24,7 @@
           (objects (make-hash-table :test 'equal))
           (objnames '(("lisp" "symbol" "Lisp Symbol"))) ;; names of types from objtypes
           (objtypes '("lisp:symbol"))
-          (terms nil)                   ; map of terms to indices in filenames
+          (terms (make-hash-table :test 'equal)) ;; map of terms to indices in filenames
           (titles nil)
           (titleterms nil)
           (current-page nil)
@@ -35,6 +35,14 @@
                        do (return child)))
                (process (node)
                  (typecase node
+                   (common-doc:text-node
+                     (when current-page
+                       (loop for word in (str:split #\Space
+                                                    (common-doc:text node)
+                                                    :omit-nulls t)
+                             ;; TODO: add stemmer here
+                             do (pushnew document-idx
+                                         (gethash word terms)))))
                    (40ants-doc/commondoc/bullet::bullet
                     (when current-page
                       (let* ((reference (40ants-doc/commondoc/piece:doc-reference node))
