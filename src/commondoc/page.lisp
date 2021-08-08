@@ -41,6 +41,14 @@
   ())
 
 
+(defmethod print-object ((page page) stream)
+  (print-unreadable-object (page stream :type t)
+    (format stream "~A children: ~{~A~#[~:;, ~]~}"
+            (base-filename page)
+            (loop for child in (common-doc:children page)
+                  collect (type-of child)))))
+
+
 (defgeneric full-filename (page &key from)
   (:method :around ((page t) &key from)
     (declare (ignore from))
@@ -55,22 +63,22 @@
   (:method ((page page) &key from)
     (check-type from (or page
                          null))
-    (let ((base (if from
-                    (40ants-doc/utils:make-relative-path (base-filename from)
-                                                         (base-filename page))
-                    (base-filename page)))
-          (extension (if (page-format page)
-                         (40ants-doc/commondoc/format:files-extension (page-format page))
-                         (40ants-doc/commondoc/format:current-files-extension))))
-      ;; Base name can be empty only if FROM argument was given and
-      ;; we are generating a link for a cross reference. In this case
-      ;; we need to return an empty string to make links use only HTML fragment.
-      (if (string= base "")
-          base
-          (concatenate 'string
-                       base
-                       "."
-                       extension)))))
+    (if from
+        (40ants-doc/utils:make-relative-path (full-filename from)
+                                             (full-filename page))
+        (let ((base (base-filename page))
+              (extension (if (page-format page)
+                             (40ants-doc/commondoc/format:files-extension (page-format page))
+                             (40ants-doc/commondoc/format:current-files-extension))))
+          ;; Base name can be empty only if FROM argument was given and
+          ;; we are generating a link for a cross reference. In this case
+          ;; we need to return an empty string to make links use only HTML fragment.
+          (if (string= base "")
+              base
+              (concatenate 'string
+                           base
+                           "."
+                           extension))))))
 
 
 (defmethod base-filename ((obj (eql :no-page)))
