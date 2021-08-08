@@ -86,16 +86,20 @@
                    (40ants-doc/commondoc/bullet::bullet
                     (when current-page
                       (let* ((reference (40ants-doc/commondoc/piece:doc-reference node))
-                             (symbol (40ants-doc/reference:reference-object reference))
+                             (object (40ants-doc/reference:reference-object reference))
                              (locative (40ants-doc/reference:reference-locative reference))
                              (locative-type (40ants-doc/locatives/base:locative-type locative))
-                             (package (symbol-package symbol))
+                             (package (typecase object
+                                        (symbol (symbol-package object))
+                                        (t nil)))
                              (prefix (if package
                                          (package-name
                                           package)
                                          ""))
                              
-                             (name (symbol-name symbol))
+                             (name (typecase object
+                                     (symbol (symbol-name object))
+                                     (t object)))
                              (html-fragment (common-doc:reference node))
                              ;; This index will be used by sphinx code
                              ;; to lookup an object's type name:

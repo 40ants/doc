@@ -456,6 +456,8 @@ on the GitHub to suggest a new feature.
   locative types, they are symbols and their names should make it
   obvious what kind of things they refer to. Unless otherwise noted,
   locatives take no arguments."
+  
+  (40ants-doc/locatives package)
   (system locative)
   (section locative)
   (variable locative)

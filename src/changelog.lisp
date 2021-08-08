@@ -27,7 +27,9 @@
 (defchangelog (:ignore-words ("MGL-PAX"
                               "README"
                               "URL"
-                              "JS"))
+                              "JS"
+                              "MGL-PAX:DEFINE-PACKAGE"
+                              "UIOP:DEFINE-PACKAGE"))
   (0.2.0
    "- Now defsection does not exports symbols by default
     - You can render documents in multiple formats in a single run having cross links.
@@ -49,7 +51,7 @@
     - Include locative was fixed for files with unicode characters
       file-subseq function was rewritten.
     - Locatives can be specified without a package prefix inside the defsection
-      because all locative symbols now live in 40ANTS-DOC/LOCATIVES package.
+      because all locative symbols now live in [40ANTS-DOC/LOCATIVES][package] package.
     - Function update-asdf-system-readmes was renamed to update-asdf-system-readmes and now
       it generates only one README file.
     - Tests were rewritten to use Rove and to support `(asdf:test-system :40ants-doc)`.
