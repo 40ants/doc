@@ -3,7 +3,9 @@
   (:import-from #:40ants-doc/commondoc/mapper
                 #:map-nodes)
   (:import-from #:40ants-doc/commondoc/section)
-  (:import-from #:40ants-doc/commondoc/page))
+  (:import-from #:40ants-doc/commondoc/page)
+  (:import-from #:stem)
+  (:import-from #:jonathan))
 (in-package 40ants-doc/search)
 
 
@@ -79,9 +81,8 @@
                       (loop for word in (str:split #\Space
                                                    (common-doc:text node)
                                                    :omit-nulls t)
-                            ;; TODO: add stemmer here
                             do (pushnew document-idx
-                                        (gethash word terms)))))
+                                        (gethash (stem:stem word) terms)))))
                    (40ants-doc/commondoc/bullet::bullet
                     (when current-page
                       (let* ((reference (40ants-doc/commondoc/piece:doc-reference node))

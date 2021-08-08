@@ -23,6 +23,7 @@
   (:import-from #:40ants-doc/commondoc/page)
   (:import-from #:40ants-doc/commondoc/toc)
   (:import-from #:40ants-doc/commondoc/format)
+  (:import-from #:40ants-doc/search)
   (:export
    #:update-asdf-system-html-docs
    #:update-asdf-system-readme
@@ -79,7 +80,8 @@
                              :direction :output
                              :if-does-not-exist :create
                              :if-exists :supersede)
-       (40ants-doc/document::document sections :stream stream)
+       ;; TODO: remove
+       ;; (40ants-doc/document::document sections :stream stream)
        (print-markdown-footer stream)))
     (:plain
      (with-open-file (stream (asdf:system-relative-pathname
@@ -152,9 +154,11 @@
   (let ((pages (add-html-defaults-to-page-specs
                 (alexandria:ensure-list sections)
                 page-specs target-dir link-to-pax-world-p)))
-    (40ants-doc/document::document sections
-                                   :pages pages
-                                   :format :html)))
+    ;; TODO: remove completely
+    ;; (40ants-doc/document::document sections
+    ;;                                :pages pages
+    ;;                                :format :html)
+    ))
 
 (defun append1 (s n)
   (format nil "~A-~A"
@@ -318,6 +322,27 @@
           (apply #'values
                  absolute-dir
                  (nreverse output-paths)))))))
+
+
+(defmethod describe-object ((section 40ants-doc/core::section) stream)
+  "40ANTS-DOC:SECTION objects are printed by calling 40ANTS-DOC/BUILDER::RENDER-TO-STRING on them
+  with all 40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES, except for
+  `40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`, turned off to reduce clutter."
+
+  ;; TODO: check these vars, probably some of them aren't need anymore:
+  (let ((40ants-doc/builder/printer::*document-uppercase-is-code* nil) ;; supported
+        (40ants-doc/link::*document-link-code* nil) ;; supported
+        (commondoc-markdown/emitter:*emit-section-anchors* nil) ;; supported
+        (40ants-doc/builder/vars::*document-mark-up-signatures* nil)
+        (40ants-doc/builder/vars::*document-max-numbering-level* 0)
+        (40ants-doc/builder/vars::*document-max-table-of-contents-level* 0)
+        (40ants-doc/builder/vars::*document-text-navigation* nil)
+        ;; Some Lisps bind it to T in DESCRIBE, some don't.
+        (*print-circle* nil))
+
+    (write-string (40ants-doc/builder:render-to-string section
+                                                       :format :markdown)
+                  stream)))
 
 
 ;; (defun page-to-markdown (sections filename)

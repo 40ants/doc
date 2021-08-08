@@ -46,27 +46,6 @@
 ;;               (40ants-doc/document::document-object entry stream))))))))
 
 
-(defmethod describe-object ((section 40ants-doc/core::section) stream)
-  "40ANTS-DOC:SECTION objects are printed by calling 40ANTS-DOC/DOCUMENT::DOCUMENT on them
-  with all 40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES, except for
-  `40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`, turned off to reduce clutter."
-
-  ;; TODO: check these vars, probably some of them aren't need anymore:
-  (let ((40ants-doc/builder/printer::*document-uppercase-is-code* nil) ;; supported
-        (40ants-doc/link::*document-link-code* nil) ;; supported
-        (commondoc-markdown/emitter:*emit-section-anchors* nil) ;; supported
-        (40ants-doc/builder/vars::*document-mark-up-signatures* nil)
-        (40ants-doc/builder/vars::*document-max-numbering-level* 0)
-        (40ants-doc/builder/vars::*document-max-table-of-contents-level* 0)
-        (40ants-doc/builder/vars::*document-text-navigation* nil)
-        ;; Some Lisps bind it to T in DESCRIBE, some don't.
-        (*print-circle* nil))
-
-    (write-string (40ants-doc/builder:render-to-string section
-                                                       :format :markdown)
-                  stream)))
-
-
 (defmethod 40ants-doc/reference-api::format-reference ((obj 40ants-doc/core::section) name ref link)
   `((:reference-link :label (,(section-title-or-name (40ants-doc/reference::resolve ref)))
                      :definition ,link)))

@@ -386,7 +386,6 @@ on the GitHub to suggest a new feature.
   "Now let's examine the most important pieces in detail."
   (40ants-doc::*discard-documentation-p* variable)
   (40ants-doc::defsection macro)
-  (40ants-doc/document::document generic-function)
   (40ants-doc/builder:render-to-string function)
   (40ants-doc/builder:render-to-files function))
 
@@ -492,10 +491,10 @@ on the GitHub to suggest a new feature.
 
 (defsection @new-object-types (:title "Adding New Object Types"
                                :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"))
-  "One may wish to make the 40ANTS-DOC/DOCUMENT::DOCUMENT generic-function and `M-.` navigation
-  work with new object types. Extending 40ANTS-DOC/DOCUMENT::DOCUMENT can be done by
-  defining a method of 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT generic-function. To allow these objects to be
-  referenced from DEFSECTION, a method of 40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT generic-function is to be defined.
+  "One may wish to make the 40ANTS-DOC/COMMONDOC/BUILDER::TO-COMMONDOC generic function and `M-.` navigation
+  work with new object types. Define a method of 40ANTS-DOC/COMMONDOC/BUILDER::TO-COMMONDOC generic-function
+  and to allow these objects to be referenced from DEFSECTION, a method of
+  40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT generic-function is to be defined.
   Finally, for `M-.` 40ANTS-DOC/SOURCE-API::FIND-SOURCE can be specialized. Finally,
   40ANTS-DOC::EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
   makes sense. Here is a stripped down example of how all this is done
@@ -510,8 +509,6 @@ on the GitHub to suggest a new feature.
   (40ants-doc/reference-api::canonical-reference generic-function)
   (40ants-doc/reference-api::collect-reachable-objects generic-function)
   (40ants-doc/reference-api::collect-reachable-objects (method () (t)))
-  (40ants-doc/document::document-object generic-function)
-  (40ants-doc/document::document-object (method () (string t)))
   (40ants-doc/source-api::find-source generic-function))
 
 
@@ -520,7 +517,7 @@ on the GitHub to suggest a new feature.
      :ignore-words ("DEFINE-DIRECTION"
                     "UP"
                     "DIRECTION"))
-  "Let's see how to extend 40ANTS-DOC/DOCUMENT::DOCUMENT and `M-.` navigation if there is
+  "Let's see how to extend 40ANTS-DOC/BUILDER::RENDER-TO-FILES and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
   that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case. 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
   and 40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and
@@ -533,7 +530,6 @@ on the GitHub to suggest a new feature.
   (40ants-doc/reference-api::collect-reachable-objects (method () (40ants-doc/reference::reference)))
   (40ants-doc/locatives/base::locate-and-collect-reachable-objects generic-function)
   (40ants-doc/locatives/base::locate-and-collect-reachable-objects (method () (t t t)))
-  (40ants-doc/document::document-object (method () (40ants-doc/reference::reference t)))
   (40ants-doc/locatives/base::locate-and-document generic-function)
   (40ants-doc/source-api::find-source (method () (40ants-doc/reference::reference)))
   (40ants-doc/locatives/base::locate-and-find-source generic-function)
@@ -550,7 +546,7 @@ on the GitHub to suggest a new feature.
 
 (defsection @sections (:title "Sections")
   "40ANTS-DOC:SECTION objects rarely need to be dissected since
-  40ANTS-DOC::DEFSECTION and 40ANTS-DOC/DOCUMENT::DOCUMENT cover most needs. However, it is plausible
+  40ANTS-DOC::DEFSECTION and 40ANTS-DOC/BUILDER::RENDER-TO-FILES cover most needs. However, it is plausible
   that one wants to subclass them and maybe redefine how they are
   presented."
   (40ants-doc::section class)

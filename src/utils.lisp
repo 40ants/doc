@@ -632,17 +632,33 @@
             #'string<))))
 
 
+;; (defun file-package (filename)
+;;   "Searches for (in-package ...) form and returns referred package object."
+;;   (when (probe-file filename)
+;;     (uiop:with-safe-io-syntax (:package :cl)
+;;       (let ((forms (uiop:read-file-forms filename)))
+;;         (loop for form in forms
+;;               when (and (consp form)
+;;                         (eql (first form)
+;;                              'in-package))
+;;               do (return (find-package
+;;                           (second form))))))))
+
 (defun file-package (filename)
   "Searches for (in-package ...) form and returns referred package object."
   (when (probe-file filename)
     (uiop:with-safe-io-syntax (:package :cl)
-      (let ((forms (uiop:read-file-forms filename)))
-        (loop for form in forms
-              when (and (consp form)
-                        (eql (first form)
-                             'in-package))
-              do (return (find-package
-                          (second form))))))))
+      ;; Here we'll read form one by one because UIOP:READ-FILE-FORMS
+      ;; may be broken on files with PYTHONIC-STRING-SYNTAX because
+      ;; it does not respect readtable changes.
+      (loop for idx upfrom 0
+            for form = (ignore-errors
+                        (uiop:read-file-form filename :at idx))
+            when (and (consp form)
+                      (eql (first form)
+                           'in-package))
+            do (return (find-package
+                        (second form)))))))
 
 
 (defun symbol-name-p (string)
