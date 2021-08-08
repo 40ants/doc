@@ -129,17 +129,17 @@
                  :src highlight-js-uri)
         (:script "hljs.highlightAll();")
         ;; MathJax configuration to display inline formulas
-        (:script :type "text/javascript"
-                 :src "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML")
-        (:script :type "text/x-mathjax-config"
-                         "
-             MathJax.Hub.Config({
-               tex2jax: {
+        (:script
+                 "
+             MathJax = {
+               tex: {
                  inlineMath: [['$','$']],
                  processEscapes: true
                }
-             });
-        "))
+             };
+        ")
+        (:script :type "text/javascript"
+                 :src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"))
        (:body
         (:div :id "content-container"
               (when toc
