@@ -19,6 +19,8 @@
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/document)
+  (:import-from #:40ants-doc/changelog
+                #:@changelog)
   (:export
    #:@index
    #:@readme))

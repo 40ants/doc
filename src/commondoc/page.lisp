@@ -100,6 +100,7 @@
         (highlight-js-uri (make-relative-path uri "highlight.min.js"))
         (jquery-uri (make-relative-path uri "jquery.js"))
         (toc-js-uri (make-relative-path uri "toc.js")))
+
     (with-html
       (:html
        (:head
@@ -120,18 +121,17 @@
                  :src highlight-js-uri)
         (:script "hljs.highlightAll();")
         ;; MathJax configuration to display inline formulas
-        ;; (:script :type "text/javascript"
-        ;;          :src "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML")
-;;         (:script :type "text/x-mathjax-config"
-;;                  "
-;; MathJax.Hub.Config({
-;;        tex2jax: {
-;;          inlineMath: [['$','$']],
-;;          processEscapes: true
-;;        }
-;;      });
-;; ")
-        )
+        (:script :type "text/javascript"
+                 :src "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML")
+        (:script :type "text/x-mathjax-config"
+                         "
+             MathJax.Hub.Config({
+               tex2jax: {
+                 inlineMath: [['$','$']],
+                 processEscapes: true
+               }
+             });
+        "))
        (:body
         (:div :id "content-container"
               (when toc
@@ -169,7 +169,7 @@
 
 (define-emitter (obj page)
   "Emit an piece of documentation."
-  (with-page-template ((base-filename obj)
+  (with-page-template ((make-page-uri obj)
                        (make-page-toc obj))
     (mapc #'common-html.emitter::emit
           (common-doc::children obj))))
