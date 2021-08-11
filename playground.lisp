@@ -346,11 +346,24 @@
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
 
-
 (defsection @experiment (:title "Experiment")
-  "See SECTION class. This should be a local link"
+  "Checking how trans work:
 
-  (section class))
+   ```cl-transcript
+   (values (princ :hello) (list 1 2))
+   .. HELLO
+   => :HELLO
+   => (1 2)
+
+   (values (princ :hello-word) (list 1 2))
+   .. HELLO-WORD
+   => :HELLO-WORD
+   => (1
+       ;; Here is the comment
+       2)
+   ```
+"
+  )
 
 
 (defsection @readme (:title "Experiment")
@@ -363,9 +376,10 @@
                                        ;; @second-page
                                        
                                        (40ants-doc/page:make-page2 @experiment)
-                                       (40ants-doc/page:make-page2 @readme
-                                                                   :format 'commondoc-markdown:markdown
-                                                                   :base-dir "./new-docs/"))
+                                       ;; (40ants-doc/page:make-page2 @readme
+                                       ;;                             :format 'commondoc-markdown:markdown
+                                       ;;                             :base-dir "./new-docs/")
+                                       )
                                       :base-url "https://40ants.com/doc/"
                                       :base-dir "./new-docs/html/"
                                       ;; :format 'commondoc-markdown:markdown

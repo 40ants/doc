@@ -2,13 +2,43 @@
   (:use #:cl)
   (:export
    #:map-nodes
-   #:node-supports-children))
+   #:node-supports-children
+   #:with-node-package))
 (in-package 40ants-doc/commondoc/mapper)
+
+
+(defvar *on-going-down* nil
+  "A list of callbacks to be called inside MAP-NODES.")
+
+(defvar *on-going-up* nil
+  "A list of callbacks to be called inside MAP-NODES.")
 
 
 (defun do-nothing (node)
   (declare (ignore node))
   (values))
+
+
+(defun call-with-node-package (func)
+  (let ((packages-stack nil))
+    (flet ((set-package (node)
+             (let ((package (or (40ants-doc/object-package:object-package node)
+                                *package*)))
+               (push *package* packages-stack)
+               (setf *package* package)))
+           (reset-package (node)
+             (declare (ignore node))
+             (setf *package*
+                   (pop packages-stack))))
+      
+      (let ((*on-going-down* (list* #'set-package *on-going-down*))
+            (*on-going-up* (list* #'reset-package *on-going-up*))
+            (*package* *package*))
+        (funcall func)))))
+
+
+(defmacro with-node-package (&body body)
+  `(call-with-node-package (lambda () ,@body)))
 
 
 (defun process-node-with-children (node func &key
@@ -19,7 +49,10 @@
                      (common-doc:children result))))
       
     (when (node-supports-children result)
+      (loop for callback in *on-going-down*
+            do (funcall callback result))
       (funcall on-going-down result)
+      
       (setf (common-doc:children result)
             (etypecase children
               (list (loop for child in (common-doc:children result)
@@ -33,7 +66,9 @@
                           :on-going-up on-going-up
                           :on-going-down on-going-down))))
       
-      (funcall on-going-up result))
+      (funcall on-going-up result)
+      (loop for callback in *on-going-up*
+            do (funcall callback result)))
     
     (values result)))
 

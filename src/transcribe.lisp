@@ -31,7 +31,8 @@
    #:transcription-consistency-error
    #:transcription-output-consistency-error
    #:transcription-values-consistency-error
-   #:transcription-error))
+   #:transcription-error
+   #:transcribe-for-emacs))
 (in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -1038,7 +1039,7 @@
   `cl-transcript` is only to tell PAX to perform consistency checks at
   documentation generation time.
 
-  Now invoke the elisp function `40ants-doc-transcribe` where the cursor
+  Now invoke the emacs command `mgl-pax-transcribe-last-expression` where the cursor
   is and the fenced code block from the docstring becomes:
 
       (values (princ :hello) (list 1 2))
@@ -1047,7 +1048,7 @@
       => (1 2)
       ^
 
-  Then you change the printed message and add a comment to the second
+  Then you change the printed message to :HELLO-WORLD and add a comment to the second
   return value:
 
       (values (princ :hello-world) (list 1 2))
@@ -1058,9 +1059,23 @@
           2)
 
   When generating the documentation you get a
-  TRANSCRIPTION-CONSISTENCY-ERROR because the printed output and the
+  a warning:
+
+      WARNING:
+         Transcription error. Inconsistent output found.
+      
+      Source:
+         "HELLO"
+
+      Output:
+         "HELLO-WORLD"
+
+      Form:
+         "(values (princ :hello-world) (list 1 2))"
+
+  because the printed output and the
   first return value changed so you regenerate the documentation by
-  marking the region of bounded by `#\|` and the cursor at `#\^` in
+  marking the region of bounded by `|` and the cursor at `^` in
   the example:
 
       |(values (princ :hello-world) (list 1 2))
@@ -1071,7 +1086,7 @@
           2)
       ^
 
-  then invoke the elisp function `40ANTS-DOC-RETRANSCRIBE-REGION` to get:
+  then invoke the emacs command `mgl-pax-retranscribe-region` to get:
 
       (values (princ :hello-world) (list 1 2))
       .. HELLO-WORLD
@@ -1084,12 +1099,14 @@
   Note how the indentation and the comment of `(1 2)` was left alone
   but the output and the first return value got updated.
 
-  Alternatively, `C-u 1 40ants-doc-transcribe` will emit commented markup:
+  Alternatively, `C-u 1 40ants-doc-transcribe-last-expression` will emit commented markup:
 
       (values (princ :hello) (list 1 2))
       ;.. HELLO
       ;=> :HELLO
       ;=> (1 2)
+
+  This can be useful for producing results outside of the docstrings.
 
   `C-u 0 40ants-doc-retranscribe-region` will turn commented into
   non-commented markup. In general, the numeric prefix argument is the
@@ -1111,6 +1128,17 @@
                   #.(asdf:system-relative-pathname :40ants-doc "elisp/transcribe.el")
                   :lang "elisp")))
 
+
+(defmacro with-buffer-syntax ((&optional package readtable) &body body)
+  "Execute BODY with appropriate *package* and *readtable* bindings.
+
+This should be used for code that is conceptionally executed in an
+Emacs buffer."
+  `(if (boundp 'swank::*buffer-package*)
+      (swank::call-with-buffer-syntax ,package (lambda () ,@body))
+      (slynk::call-with-buffer-syntax ,package ,readtable (lambda () ,@body))))
+
+
 (defun transcribe-for-emacs (string default-syntax* update-only echo
                              first-line-special-p)
   (let ((default-syntax (cond ((numberp default-syntax*)
@@ -1119,7 +1147,7 @@
                                nil)
                               (t (error "Unexpected default syntax ~S."
                                         default-syntax*)))))
-    (swank::with-buffer-syntax ()
+    (with-buffer-syntax ()
       (multiple-value-bind (string prefix)
           (40ants-doc/utils::strip-longest-common-prefix
            string "; " :first-line-special-p first-line-special-p)
