@@ -31,8 +31,7 @@
    #:transcription-consistency-error
    #:transcription-output-consistency-error
    #:transcription-values-consistency-error
-   #:transcription-error
-   #:transcribe-for-emacs))
+   #:transcription-error))
 (in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

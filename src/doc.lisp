@@ -340,7 +340,8 @@ on the GitHub to suggest a new feature.
   *Note that the this feature is implemented in terms of
   SWANK-BACKEND:FIND-SOURCE-LOCATION and
   SWANK-BACKEND:FIND-DEFINITIONS whose support varies across the Lisp
-  implementations.*
+  implementations. Sadly, but this integration does not with SLY because
+  it does not support hooks on finding definition.*
 
   In the following examples, pressing `M-.` when the cursor is on one
   of the characters of `FOO` or just after `FOO`, will visit the
@@ -371,9 +372,12 @@ on the GitHub to suggest a new feature.
 
   The `M-.` extensions can be enabled by adding this to your Emacs
   initialization file (or loading `src/pax.el`):"
-  (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
-                   :lang "elisp"))
-  (40ANTS-DOC/SWANK::LOCATE-DEFINITION-FOR-EMACS function))
+  (edit-locative.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/edit-locative.el")
+                             :lang "elisp"))
+  (40ants-doc/swank::locate-definition-for-emacs function)
+
+  "Note, there is also another part of Emacs code, related to
+   transcription blocks. It is described in 40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT section.")
 
 
 (defsection @basics (:title "Basics"

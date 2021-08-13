@@ -129,6 +129,10 @@
   (:documentation "Base class for all objects in the system"))
 
 
+(defun the-object ()
+  "A constructor for THE-OBJECT class objects.")
+
+
 (defclass user (the-object)
   ((nickname :reader user-nickname
              :initform :unauthorized
@@ -347,21 +351,9 @@
                        "https://github.com/40ants/doc")))))
 
 (defsection @experiment (:title "Experiment")
-  "Checking how trans work:
+  "Checking how trans work
 
-   ```cl-transcript
-   (values (princ :hello) (list 1 2))
-   .. HELLO
-   => :HELLO
-   => (1 2)
-
-   (values (princ :hello-word) (list 1 2))
-   .. HELLO-WORD
-   => :HELLO-WORD
-   => (1
-       ;; Here is the comment
-       2)
-   ```
+   THE-OBJECT function and THE-OBJECT class.
 "
   )
 

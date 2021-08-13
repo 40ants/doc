@@ -1,30 +1,30 @@
-;;; MGL-PAX M-. integration
+;;; M-. integration
 
-(defun slime-edit-locative-definition (name &optional where)
-  (or (slime-locate-definition name (slime-locative-before))
-      (slime-locate-definition name (slime-locative-after))
-      (slime-locate-definition name (slime-locative-after-in-brackets))
+(defun 40ants-doc-edit-locative-definition (name &optional where)
+  (or (40ants-doc-locate-definition name (40ants-doc-locative-before))
+      (40ants-doc-locate-definition name (40ants-doc-locative-after))
+      (40ants-doc-locate-definition name (40ants-doc-locative-after-in-brackets))
       ;; support "foo function" and "function foo" syntax in
       ;; interactive use
       (let ((pos (cl-position ?\s name)))
         (when pos
-          (or (slime-locate-definition (cl-subseq name 0 pos)
-                                       (cl-subseq name (1+ pos)))
-              (slime-locate-definition (cl-subseq name (1+ pos))
-                                       (cl-subseq name 0 pos)))))))
+          (or (40ants-doc-locate-definition (cl-subseq name 0 pos)
+                                            (cl-subseq name (1+ pos)))
+              (40ants-doc-locate-definition (cl-subseq name (1+ pos))
+                                            (cl-subseq name 0 pos)))))))
 
-(defun slime-locative-before ()
+(defun 40ants-doc-locative-before ()
   (ignore-errors (save-excursion
                    (slime-beginning-of-symbol)
                    (slime-last-expression))))
 
-(defun slime-locative-after ()
+(defun 40ants-doc-locative-after ()
   (ignore-errors (save-excursion
                    (slime-end-of-symbol)
                    (slime-forward-sexp)
                    (slime-last-expression))))
 
-(defun slime-locative-after-in-brackets ()
+(defun 40ants-doc-locative-after-in-brackets ()
   (ignore-errors (save-excursion
                    (slime-end-of-symbol)
                    (skip-chars-forward "`" (+ (point) 1))
@@ -35,7 +35,7 @@
                       (progn (search-forward "]" nil (+ (point) 1000))
                              (1- (point))))))))
 
-(defun slime-locate-definition (name locative)
+(defun 40ants-doc-locate-definition (name locative)
   (when locative
     (let ((location
            (slime-eval
@@ -53,4 +53,5 @@
          "dummy name"
          where)))))
 
-(add-hook 'slime-edit-definition-hooks 'slime-edit-locative-definition)
+(when (boundp 'slime-edit-definition-hooks)
+  (add-hook 'slime-edit-definition-hooks '40ants-doc-edit-locative-definition))

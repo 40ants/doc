@@ -77,3 +77,4 @@ changed."
     (if (eq transcription t)
         (error "40ANTS-DOC is not loaded.")
       transcription)))
+

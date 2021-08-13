@@ -29,7 +29,9 @@
                               "URL"
                               "JS"
                               "MGL-PAX:DEFINE-PACKAGE"
-                              "UIOP:DEFINE-PACKAGE"))
+                              "UIOP:DEFINE-PACKAGE"
+                              "SLIME"
+                              "SLY"))
   (0.2.0
    "- Now defsection does not exports symbols by default
     - You can render documents in multiple formats in a single run having cross links.
@@ -41,7 +43,9 @@
     - 40ANTS-DOC/LOCATIVES:INCLUDE locative now does not support :HEADER, :FOOTER and some other arguments. Use :LANG argument instead.
     - Added code highlighting using Highlight.js library.
     - Added search form which uses index in browser. JS code was taken from
-      [Sphinx](https://www.sphinx-doc.org/) documentation builder.")
+      [Sphinx](https://www.sphinx-doc.org/) documentation builder.
+    - Elisp code for transcriptions was fixed and now should word not
+      only with SLIME, but also with SLY.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
