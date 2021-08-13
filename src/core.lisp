@@ -109,22 +109,25 @@
           (list* 'list
                  ignore-words)))
   
-  `(progn
-     (eval-when (:compile-toplevel :load-toplevel :execute)
-       (when ,export
-         (export-some-symbols ',name ',entries ,package-symbol)))
-     (defparameter ,name
-       (make-instance 'section
-                      :name ',name
-                      :package ,package-symbol
-                      :readtable ,readtable-symbol
-                      :title ,title
-                      :link-title-to (transform-link-title-to ',link-title-to)
-                      :entries ,(if discard-documentation-p
-                                    ()
-                                    `(transform-entries ',entries))
-                      :ignore-words (list
-                                     ,@(eval ignore-words))))))
+  (let ((export-form
+          (when export
+            `((eval-when (:compile-toplevel :load-toplevel :execute)
+                (export-some-symbols ',name ',entries ,package-symbol))))))
+    `(progn
+       ,@export-form
+      
+       (defparameter ,name
+         (make-instance 'section
+                        :name ',name
+                        :package ,package-symbol
+                        :readtable ,readtable-symbol
+                        :title ,title
+                        :link-title-to (transform-link-title-to ',link-title-to)
+                        :entries ,(if discard-documentation-p
+                                      ()
+                                      `(transform-entries ',entries))
+                        :ignore-words (list
+                                       ,@(eval ignore-words)))))))
 
 (defclass section ()
   ((name

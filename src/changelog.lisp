@@ -45,7 +45,9 @@
     - Added search form which uses index in browser. JS code was taken from
       [Sphinx](https://www.sphinx-doc.org/) documentation builder.
     - Elisp code for transcriptions was fixed and now should word not
-      only with SLIME, but also with SLY.")
+      only with SLIME, but also with SLY.
+    - 40ANTS-DOC:DEFSECTION macro now does not generate export code
+      if :EXPORT argument is NIL.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
