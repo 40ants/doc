@@ -14,12 +14,15 @@
                 #:emit)
   (:import-from #:common-html.emitter
                 #:emit)
-  (:import-from #:40ants-doc/commondoc/xref)
+  (:import-from #:40ants-doc/commondoc/xref
+                #:make-xref)
   (:import-from #:40ants-doc/ignored-words)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/commondoc/piece
                 #:documentation-piece)
-  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/reference
+                #:reference-locative
+                #:reference-object)
   (:import-from #:40ants-doc/object-package)
   (:export
    #:documentation-section
@@ -59,22 +62,28 @@
                    :children (uiop:ensure-list children))))
 
 
-(defun make-documentation-section (definition)
-  (check-type definition 40ants-doc:section)
+(defun make-documentation-section (section)
+  (check-type section 40ants-doc:section)
   
-  (let ((title (list
-                (common-doc:make-text (or (40ants-doc:section-title definition)
-                                          "Untitled"))))
-        (children (make-section-body definition)))
+  (let* ((link-to (40ants-doc:section-link-title-to section))
+         (title-text (common-doc:make-text (or (40ants-doc:section-title section)
+                                               "Untitled")))
+         (title (list
+                 (if link-to
+                     (make-xref title-text
+                                :symbol (reference-object link-to)
+                                :locative (reference-locative link-to))
+                     title-text)))
+        (children (make-section-body section)))
 
-    (let* ((reference (40ants-doc/reference-api::canonical-reference definition))
+    (let* ((reference (40ants-doc/reference-api::canonical-reference section))
            (html-fragment (40ants-doc/utils::html-safe-name
                            (40ants-doc/reference::reference-to-anchor reference))))
     
       (make-instance 'documentation-section
-                     :definition definition
+                     :definition section
                      :doc-reference (40ants-doc/reference-api::canonical-reference
-                                     definition)
+                                     section)
                      :title title
                      :reference html-fragment
                      :children children))))
@@ -128,3 +137,4 @@
   (let* ((section (section-definition obj))
          (name (40ants-doc:section-name section)))
     (40ants-doc/object-package:object-package name)))
+

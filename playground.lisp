@@ -350,11 +350,13 @@
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
 
-(defsection @experiment (:title "Experiment")
+(defsection @experiment (:title "Experiment"
+                         :link-title-to (the-object function))
   "Checking how trans work
 
    THE-OBJECT function and THE-OBJECT class.
 "
+  (the-object function)
   )
 
 

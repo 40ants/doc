@@ -1,6 +1,8 @@
 (uiop:define-package #:40ants-doc/commondoc/page
   (:use #:cl)
-  (:import-from #:common-doc)
+  (:import-from #:common-doc
+                #:make-code
+                #:make-text)
   (:import-from #:common-html.emitter)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
@@ -414,10 +416,17 @@ var DOCUMENTATION_OPTIONS = {
              (pop-section node)
              (pop-page node)
              (unset-inside-code-block-if-needed node))
-           (make-code-if-needed (node)
-             (if inside-code-block
-                 node
-                 (common-doc:make-code node)))
+           (make-code-if-needed (obj)
+             ;; If obj is already a document node, then we need to leave it unchanged
+             ;; because it could be a cross-referenced title, but we don't want
+             ;; to make it a code
+             (etypecase obj
+               (common-doc:document-node obj)
+               (t
+                (if inside-code-block
+                    (make-text obj)
+                    (make-code
+                     (make-text obj))))))
            (package-specified (text)
              (find #\: text))
            (should-be-ignored-p (text symbol locative)
@@ -498,8 +507,7 @@ var DOCUMENTATION_OPTIONS = {
 
                   (cond
                     (should-be-ignored
-                     (make-code-if-needed
-                      (common-doc:make-text text)))
+                     (make-code-if-needed text))
                     (found-references
                      (labels ((make-link (reference page text)
                                 (let ((page-uri
@@ -511,8 +519,7 @@ var DOCUMENTATION_OPTIONS = {
                                          (40ants-doc/reference::reference-to-anchor reference))))
                                   (common-doc:make-document-link page-uri
                                                                  html-fragment
-                                                                 (make-code-if-needed
-                                                                  (common-doc:make-text text))))))
+                                                                 (make-code-if-needed text)))))
 
                        (cond ((= (length found-references) 1)
                               (destructuring-bind (reference . page)
@@ -525,8 +532,7 @@ var DOCUMENTATION_OPTIONS = {
                                              text))))
                              (t
                               (common-doc:make-content
-                               (append (list (make-code-if-needed
-                                              (common-doc:make-text text))
+                               (append (list (make-code-if-needed text)
                                              (common-doc:make-text " ("))
                                        (loop for (reference . page) in found-references
                                              for index upfrom 1

@@ -36,7 +36,8 @@
 (defclass xref (common-doc:document-node)
   ((name :accessor xref-name
          :initarg :name
-         :type string
+         :type (or string
+                   common-doc:document-node)
          :documentation "Original text, found in a documentation string")
    (symbol :accessor xref-symbol
            :initarg :symbol
@@ -60,7 +61,8 @@
 
 
 (defun make-xref (name &key symbol locative)
-  (check-type name string)
+  (check-type name (or string
+                       common-doc:document-node))
   (check-type symbol (or null symbol))
   (check-type locative (or null symbol list))
 
@@ -212,7 +214,8 @@
        (extractor (node)
          (typecase node
            (common-doc:text-node
-            (if inside-code-block
+            (if (or inside-code-block
+                    40ants-doc/commondoc/mapper::*inside-title*)
                 node
                 (extract-symbols-from-text node)))
            (t node))))
@@ -237,13 +240,32 @@
 (define-emitter (obj xref)
   "Emit an reference which was not processed by 40ANTS-DOC/COMMONDOC/PAGE::REPLACE-XREFS function."
   (with-html
-    (:code :class "unresolved-reference"
-           :title "Reference not found."
-           (xref-name obj))))
+    (let ((name (xref-name obj)))
+      (typecase name
+        (string
+         (:code :class "unresolved-reference"
+                :title "Reference not found."
+                name))
+        (t (common-html.emitter::emit name))))))
 
 
 (defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
                                             (node xref)
                                             stream)
-  (format stream "`~A`"
-          (xref-name node)))
+  (let ((name (xref-name node)))
+    (typecase name
+      (string
+       (format stream "`~A`" name))
+      (t
+       (common-doc.format:emit-document format name stream)))))
+
+
+;; TODO: make a pull to make this generic a public:
+(defmethod common-doc.ops::node-text ((node xref))
+  "Extract text from a content node."
+  (let ((name (xref-name node)))
+    (typecase name
+      (string
+       name)
+      (t
+       (common-doc.ops::node-text name)))))

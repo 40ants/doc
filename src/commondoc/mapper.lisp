@@ -14,6 +14,13 @@
   "A list of callbacks to be called inside MAP-NODES.")
 
 
+(defvar *inside-title* nil
+  "Will be set to T when mapper goes down into a section title.
+
+   This can be useful if we don't want to do something
+   inside titles.")
+
+
 (defun do-nothing (node)
   (declare (ignore node))
   (values))
@@ -115,4 +122,22 @@
                                                 (on-going-up #'do-nothing))
     (process-node-with-children node func
                                 :on-going-down on-going-down
-                                :on-going-up on-going-up)))
+                                :on-going-up on-going-up))
+
+  (:method  ((node common-doc:section) func &key (on-going-down #'do-nothing)
+                                                 (on-going-up #'do-nothing))
+    (let* ((result (call-next-method))
+           (*inside-title* t))
+      (loop for callback in *on-going-down*
+            do (funcall callback result))
+      (funcall on-going-down result)
+
+      (setf (common-doc:title node)
+            (mapcar func (common-doc:title node)))
+
+      (funcall on-going-up result)
+      (loop for callback in *on-going-up*
+            do (funcall callback result))
+      
+      result)))
+

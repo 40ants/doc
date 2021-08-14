@@ -62,7 +62,7 @@
   40ANTS-DOC/DOC:@EXTENSION-API) until documentation is generated, so it is
   allowed to refer to things yet to be defined.
 
-  If :EXPORT is true (the default), the referenced symbols and NAME are
+  If you set :EXPORT to true, the referenced symbols and NAME are
   candidates for exporting. A candidate symbol is exported if
 
   - it is accessible in PACKAGE (it's not `OTHER-PACKAGE:SOMETHING`)
@@ -71,13 +71,16 @@
   - there is a reference to it in the section being defined with a
     locative whose type is approved by EXPORTABLE-LOCATIVE-TYPE-P.
 
-  The idea with confounding documentation and exporting is to force
+  The original idea with confounding documentation and exporting is to force
   documentation of all exported symbols. :EXPORT argument will cause
   [package variance](http://www.sbcl.org/manual/#Package-Variance)
   error on SBCL. To prevent it, use UIOP:DEFINE-PACKAGE instead
-  of CL:DEFPACKAGE.
+  of CL:DEFPACKAGE. However when forking MGL-PAX into 40ANTS-DOC I've
+  decided explicit imports make code more readable, changed the default
+  for :EXPORT argument to NIL and added automatic warnings to help
+  find exported symbols not referenced from the documention.
 
-  :TITLE is a non-marked-up string or NIL. If non-NIL, it determines
+  :TITLE is a non-marked-up string or NIL. If non-nil, it determines
   the text of the heading in the generated output. :LINK-TITLE-TO is a
   reference given as an
   `(OBJECT LOCATIVE)` pair or NIL, to which the heading will link when
@@ -87,8 +90,8 @@
   When :DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
   is true, ENTRIES will not be recorded to save memory.
 
-  :IGNORE-WORDS allows to pass a list of string which will not cause
-  warnings. Usually these as uppercased words which are not symbols
+  :IGNORE-WORDS allows to pass a list of strings which will not cause
+  warnings. Usually these are uppercased words which are not symbols
   in the current package, like SLIME, LISP, etc."
   
   ;; Let's check the syntax as early as possible.
@@ -247,9 +250,9 @@
   (eq symbol (find-symbol (symbol-name symbol) package)))
 
 (defgeneric exportable-locative-type-p (locative-type)
-  (:documentation "Return true iff symbols in references with
-  LOCATIVE-TYPE are to be exported by default when they occur in a
-  DEFSECTION. The default method returns T, while the methods for
+  (:documentation "Return true if symbols in references with
+  LOCATIVE-TYPE are to be exported when they occur in a
+  DEFSECTION having `:EXPORT t` argument. The default method returns T, while the methods for
   PACKAGE, ASDF:SYSTEM and METHOD return NIL.
 
   DEFSECTION calls this function to decide what symbols to export when
