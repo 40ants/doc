@@ -107,6 +107,14 @@
                                                           :base-dir (asdf:system-relative-pathname
                                                                      asdf-system
                                                                      "./")
+                                                          :format :markdown)))
+                           (when changelog-sections
+                             (uiop:ensure-list
+                              (40ants-doc/page:make-page2 changelog-sections
+                                                          :base-filename "ChangeLog"
+                                                          :base-dir (asdf:system-relative-pathname
+                                                                     asdf-system
+                                                                     "./")
                                                           :format :markdown))))
                    :base-dir (asdf:system-relative-pathname
                               asdf-system
