@@ -35,6 +35,12 @@
         "This is
       indented
       differently")
+
+
+  Docstrings in sources are indented in various ways which can easily
+  mess up markdown. To handle the most common cases leave the first
+  line alone, but from the rest of the lines strip the longest run of
+  leading spaces that is common to all non-blank lines."
   """)
 
 (defsection @markdown-syntax-highlighting (:title "Syntax highlighting")

@@ -66,6 +66,7 @@
                               "UIOP:DEFINE-PACKAGE"
                               "*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL*"
                               "*DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL*"
+                              "LOCATE-AND-DOCUMENT"
                               "SLIME"
                               "SLY"))
   (0.2.0
@@ -89,7 +90,8 @@
       ChangeLog.md generation.
     - Variables *DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL* and
       *DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL* were removed. Probably we'll return this
-      feature back in other form, to restrict TOC's size.")
+      feature back in other form, to restrict TOC's size.
+    - Removed LOCATE-AND-DOCUMENT generic function.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
