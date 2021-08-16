@@ -72,13 +72,15 @@
     locative whose type is approved by EXPORTABLE-LOCATIVE-TYPE-P.
 
   The original idea with confounding documentation and exporting is to force
-  documentation of all exported symbols. :EXPORT argument will cause
+  documentation of all exported symbols. However when forking MGL-PAX into
+  40ANTS-DOC I've decided explicit imports make code more readable, and
+  changed the default for :EXPORT argument to NIL and added automatic
+  warnings to help find exported symbols not referenced from the documention.
+
+  If you decide to use `:EXPORT t` argument, note it will cause
   [package variance](http://www.sbcl.org/manual/#Package-Variance)
   error on SBCL. To prevent it, use UIOP:DEFINE-PACKAGE instead
-  of CL:DEFPACKAGE. However when forking MGL-PAX into 40ANTS-DOC I've
-  decided explicit imports make code more readable, changed the default
-  for :EXPORT argument to NIL and added automatic warnings to help
-  find exported symbols not referenced from the documention.
+  of CL:DEFPACKAGE. 
 
   :TITLE is a non-marked-up string or NIL. If non-nil, it determines
   the text of the heading in the generated output. :LINK-TITLE-TO is a
@@ -90,7 +92,7 @@
   When :DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
   is true, ENTRIES will not be recorded to save memory.
 
-  :IGNORE-WORDS allows to pass a list of strings which will not cause
+  :IGNORE-WORDS allows to pass a list of strings which should not cause
   warnings. Usually these are uppercased words which are not symbols
   in the current package, like SLIME, LISP, etc."
   

@@ -25,14 +25,14 @@
   (:import-from #:40ants-doc/commondoc/format)
   (:import-from #:40ants-doc/search)
   (:import-from #:40ants-doc/commondoc/transcribe)
+  (:import-from #:40ants-doc/changelog)
   (:export
-   #:update-asdf-system-html-docs
-   #:update-asdf-system-readme
    #:*document-html-max-navigation-table-of-contents-level*
    #:*document-html-top-blocks-of-links*
    #:*document-html-bottom-blocks-of-links*
    #:render-to-string
-   #:render-to-files))
+   #:render-to-files
+   #:update-asdf-system-docs))
 (in-package 40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -40,14 +40,14 @@
 (defsection @generating-documentation
     (:title "Generating Documentation"
      :ignore-words ("LABEL"))
-  "Two convenience functions are provided to serve the common case of
-  having an ASDF system with some readmes and a directory for the
-  HTML documentation and the default css stylesheet."
-  (update-asdf-system-html-docs function)
-  (update-asdf-system-readme function)
+  "Besides RENDER-TO-STRING and RENDER-TO-FILES a convenience function is provided
+   to serve the common case of having an ASDF system with a readme and a directory for the
+  HTML documentation."
+  (update-asdf-system-docs function)
   (*document-html-max-navigation-table-of-contents-level* variable)
   (*document-html-top-blocks-of-links* variable)
   (*document-html-bottom-blocks-of-links* variable)
+  (40ants-doc/changelog::@index section)
   (40ants-doc/github::@github-workflow section)
   (40ants-doc/world::@world section))
 
@@ -57,109 +57,65 @@
     :if-exists :supersede
     :ensure-directories-exist t))
 
-(defun update-asdf-system-readme (sections asdf-system &key (format :markdown))
-  "Convenience function to generate readme file in the directory
-  holding the ASDF-SYSTEM definition.
 
-  By default, README.md is generated. It has anchors, links, inline code,
-  and other markup added. Not necessarily the easiest on the eye in an editor,
-  but looks good on github.
+(defun update-asdf-system-docs (sections-or-pages
+                                asdf-system
+                                &key
+                                (readme-sections nil)
+                                (changelog-sections nil)
+                                (theme '40ants-doc/themes/default:default-theme)
+                                (base-url nil)
+                                (docs-dir #P"docs/"))
+  "Generate pretty HTML documentation for a single ASDF system,
+  possibly linking to github. If you are migrating from MGL-PAX,
+  then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
+  and UPDATE-ASDF-SYSTEM-README while making it possible to generate
+  a crosslinks between README.md and HTML docs. The same way you
+  can generate a ChangeLog.md file using :CHANGELOG-SECTIONS argument.
+  See 40ANTS-DOC/CHANGELOG::@INDEX section to learn about
+  40ANTS-DOC/CHANGELOG:DEFCHANGELOG helper.
 
-  You can provide `:FORMAT :PLAIN` argument to generate README instead.
-  It will be optimized for reading in text format. Has no links and
-  cluttery markup.
+  Both :README-SECTIONS and :CHANGELOG-SECTIONS arguments may be a single
+  item or a list.
 
   Example usage:
 
-  ```
-  (update-asdf-system-readme @40ants-doc-manual :40ants-doc)
-  ```"
-  (ecase format
-    (:markdown
-     (with-open-file (stream (asdf:system-relative-pathname
-                              asdf-system "README.md")
-                             :direction :output
-                             :if-does-not-exist :create
-                             :if-exists :supersede)
-       ;; TODO: remove
-       ;; (40ants-doc/document::document sections :stream stream)
-       (print-markdown-footer stream)))
-    (:plain
-     (with-open-file (stream (asdf:system-relative-pathname
-                              asdf-system "README")
-                             :direction :output
-                             :if-does-not-exist :create
-                             :if-exists :supersede)
-       (loop for section in (alexandria:ensure-list sections) do
-                (describe section stream))
-       (print-markdown-footer stream)))))
-
-
-(defun add-markdown-defaults-to-page-specs (sections page-specs dir)
-  (flet ((section-has-page-spec-p (section)
-           (some (lambda (page-spec)
-                   (member section (getf page-spec :objects)))
-                 page-specs)))
-    (mapcar (lambda (page-spec)
-              (add-markdown-defaults-to-page-spec page-spec dir))
-            (append page-specs
-                    (mapcar (lambda (section)
-                              `(:objects (,section)))
-                            (remove-if #'section-has-page-spec-p sections))))))
-
-(defun add-markdown-defaults-to-page-spec (page-spec filename)
-  `(,@page-spec
-    ,@(unless (getf page-spec :output)
-        `(:output (,filename ,@*default-output-options*)))
-    ,@(unless (getf page-spec :footer-fn)
-        `(:footer-fn ,#'print-markdown-footer))))
-
-(defun print-markdown-footer (stream)
-  (format stream "~%* * *~%")
-  (format stream "###### \\[generated by ~
-                 [40ANTS-DOC](https://40ants.com/doc)\\]~%"))
-
-
-(defun update-asdf-system-html-docs (sections asdf-system &key pages
-                                     (target-dir (asdf:system-relative-pathname
-                                                  asdf-system "doc/"))
-                                     (update-css-p t))
-  "Generate pretty HTML documentation for a single ASDF system,
-  possibly linking to github. If UPDATE-CSS-P, copy the CSS style
-  sheet to TARGET-DIR, as well. Example usage:
-
   ```commonlisp
-  (update-asdf-system-html-docs @manual :40ants-doc)
+  (40ants-doc/builder:update-asdf-system-docs 40ants-doc/doc:@index
+                                              :40ants-doc
+                                              :readme-sections 40ants-doc/doc:@readme)
   ```
 
-  The same, linking to the sources on github:
+  This is just a shorthand to call RENDER-TO-FILES for ASDF system.
 
-  ```commonlisp
-  (update-asdf-system-html-docs
-    @manual :40ants-doc
-    :pages
-    (list (list :objects (list @manual)
-                :source-uri-fn (make-github-source-uri-fn
-                                 :40ants-doc
-                                 \"https://github.com/40ants/doc\"))))
-  ```"
-  (document-html sections pages target-dir update-css-p nil))
+  All sections, listed in :README-SECTIONS argment will be concantenated into the README.md.
+  Some symbols, referenced in the :README-SECTIONS but not documented there will be
+  linked to the HTML documentation. To make this work for a hosted static sites,
+  then provide :BASE-URL of the site, otherwise, links will be relative.
+
+  In MGL-PAX this function supported such parameters as :UPDATE-CSS-P and :PAGES,
+  but in 40ANTS-DOC javascript and CSS files are updated automatically. See documentation
+  on RENDER-TO-FILES to learn how does page separation and other parameters work.
+
+  If you want a more generic wrapper for building documentation for your projects,
+  take a look at [DOCS-BUILDER](https://40ants.com/docs-builder/)."
+  (render-to-files (append (uiop:ensure-list sections-or-pages)
+                           (when readme-sections
+                             (uiop:ensure-list
+                              (40ants-doc/page:make-page2 readme-sections
+                                                          :base-filename "README"
+                                                          :base-dir (asdf:system-relative-pathname
+                                                                     asdf-system
+                                                                     "./")
+                                                          :format :markdown))))
+                   :base-dir (asdf:system-relative-pathname
+                              asdf-system
+                              (uiop:ensure-directory-pathname docs-dir))
+                   :base-url base-url
+                   :theme theme
+                   :format :html))
 
 ;;; Generate with the default HTML look
-
-;;; TODO: remove and replace with single-page-to-html
-(defun document-html (sections page-specs target-dir update-css-p
-                      link-to-pax-world-p)
-  (when update-css-p
-    (copy-css target-dir))
-  (let ((pages (add-html-defaults-to-page-specs
-                (alexandria:ensure-list sections)
-                page-specs target-dir link-to-pax-world-p)))
-    ;; TODO: remove completely
-    ;; (40ants-doc/document::document sections
-    ;;                                :pages pages
-    ;;                                :format :html)
-    ))
 
 (defun append1 (s n)
   (format nil "~A-~A"
@@ -184,10 +140,11 @@
 
 (defun render-to-string (object &key (format :html))
   "Renders given CommonDoc node into the string using specified format.
+   Supported formats are :HTML and :MARKDOWN.
 
    This function is useful for debugging 40ANTS-DOC itself."
   (let ((format
-           (40ants-doc/commondoc/format::ensure-format-class-name format)))
+          (40ants-doc/commondoc/format::ensure-format-class-name format)))
     
     (40ants-doc/commondoc/format:with-format (format)
       (let* ((document
@@ -206,8 +163,8 @@
                                       (format :html))
   "Renders given sections or pages into a files on disk.
 
-   By default, it renders in to HTML, but you can specify FORMAT argument,
-   and pass other CommonDoc's format class, supported by the 40ANTS-DOC system.
+   By default, it renders in to HTML, but you can specify FORMAT argument.
+   Supported formats are :HTML and :MARKDOWN.
 
    Returns an absolute pathname to the output directory as the first value
    and pathnames corresponding to each of given sections."

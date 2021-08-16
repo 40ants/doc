@@ -2,9 +2,19 @@
   (:use #:cl)
   (:import-from #:40ants-doc
                 #:defsection)
+  (:import-from #:pythonic-string-reader)
+  (:import-from #:named-readtables)
   (:export
-   #:@changelog))
+   #:@changelog
+   #:defchangelog))
 (in-package 40ants-doc/changelog)
+
+
+(named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
+
+
+(defsection @index (:title "Changelog Generation")
+  (defchangelog macro))
 
 
 (defun make-version-section (version content)
@@ -15,6 +25,27 @@
 (defmacro defchangelog ((&key (title "Changes")
                               ignore-words)
                         &body versions)
+  """
+  This macro might be used to define a ChangeLog in a structured way.
+  With DEFCHANGELOG you specify a body where each sublist starts with
+  a version number and the rest is it's description in the markdown
+  format. You can mention symbols from the rest of the documentation
+  and they will be cross-linked automatically if you are using
+  40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS function.
+
+  Here is an example:
+
+  ```commonlisp
+  (defchangelog ()
+    (0.2.0
+     "- Feature B implemented.
+    - Bug was fixed in function FOO.")
+    
+    (0.1.0
+     "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
+    - Feature A implemented."))
+  ```
+  """
   `(progn
      (defsection @changelog (:title ,title
                              :ignore-words (list ,@ignore-words))
@@ -25,6 +56,8 @@
 
 
 (defchangelog (:ignore-words ("MGL-PAX"
+                              "UPDATE-ASDF-SYSTEM-HTML-DOCS"
+                              "UPDATE-ASDF-SYSTEM-README"
                               "README"
                               "URL"
                               "JS"
@@ -47,7 +80,10 @@
     - Elisp code for transcriptions was fixed and now should word not
       only with SLIME, but also with SLY.
     - 40ANTS-DOC:DEFSECTION macro now does not generate export code
-      if :EXPORT argument is NIL.")
+      if :EXPORT argument is NIL.
+    - Functions UPDATE-ASDF-SYSTEM-HTML-DOCS and UPDATE-ASDF-SYSTEM-README
+      were replaced with 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS, which also supports
+      ChangeLog.md generation.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
@@ -69,3 +105,5 @@
       referenced objects are in different packages.
     - Allowed to reference objects using keywords.
     - Fixed docstring extraction for compiler macro."))
+
+

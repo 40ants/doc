@@ -15,7 +15,7 @@
 (defsection @github-workflow (:title "Github Workflow"
                               :ignore-words ("HTML"))
   "It is generally recommended to commit generated readmes (see
-  40ANTS-DOC/BUILDER::UPDATE-ASDF-SYSTEM-README) so that users have something to read
+  40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS) so that users have something to read
   without reading the code and sites like github can display them.
 
   HTML documentation can also be committed, but there is an issue with

@@ -56,7 +56,8 @@
       "ASDF"
       "CSS"
       "3BMD"
-      "PYTHONIC-STRING-READER"))
+      "PYTHONIC-STRING-READER"
+      "DOCS-BUILDER"))
 
 
   (defparameter *badges*
