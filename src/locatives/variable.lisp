@@ -2,7 +2,6 @@
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-and-find-source
-                #:locate-and-document
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
@@ -32,20 +31,6 @@
 (defmethod locate-object (symbol (locative-type (eql 'variable)) locative-args)
   (assert (<= (length locative-args) 1))
   (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
-
-(defmethod locate-and-document (symbol (locative-type (eql 'variable))
-                                locative-args stream)
-  (destructuring-bind (&optional (initform nil initformp)) locative-args
-    (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
-    (write-char #\Space stream)
-    (multiple-value-bind (value unboundp) (40ants-doc/utils::symbol-global-value symbol)
-      (40ants-doc/render/args::print-arglist (prin1-to-string (cond (initformp initform)
-                                                                    (unboundp "-unbound-")
-                                                                    (t value)))
-                     stream))
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (with-dislocated-symbols ((list symbol))
-      (40ants-doc/render/print::maybe-print-docstring symbol locative-type stream))))
 
 
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'variable)) locative-args)

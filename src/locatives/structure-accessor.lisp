@@ -2,7 +2,6 @@
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-and-find-source
-                #:locate-and-document
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
@@ -43,15 +42,6 @@
 
 ;; TODO: Maybe support initial value,
 ;;       type and read-only flag.
-(defmethod locate-and-document ((symbol symbol)
-                                (locative-type (eql 'structure-accessor))
-                                locative-args stream)
-  (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
-  (40ants-doc/builder/bullet::print-end-bullet stream)
-  (40ants-doc/args::with-dislocated-symbols ((list symbol))
-    (40ants-doc/render/print::maybe-print-docstring symbol 'function stream)))
-
-
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'structure-accessor)) locative-args)
   (let* ((reference (canonical-reference
                      (40ants-doc/reference::make-reference

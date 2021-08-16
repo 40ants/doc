@@ -40,21 +40,6 @@
   (find-method #'40ants-doc/locatives/base::locative-lambda-list () `((eql ,symbol))))
 
 
-(defmethod 40ants-doc/locatives/base::locate-and-document (symbol (locative-type (eql 'locative))
-                                                           locative-args stream)
-  (let ((method (locative-lambda-list-method-for-symbol symbol))
-        (lambda-list (40ants-doc/locatives/base::locative-lambda-list symbol)))
-    (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
-    (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::macro-arg-names lambda-list))
-      (when lambda-list
-        (write-char #\Space stream)
-        (40ants-doc/render/args::print-arglist lambda-list stream))
-      (40ants-doc/builder/bullet::print-end-bullet stream)
-      (40ants-doc/args::with-dislocated-symbols ((list symbol))
-        (40ants-doc/render/print::maybe-print-docstring method t stream))))
-  (format stream "~&"))
-
-
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'locative)) locative-args)
   (let* ((reference (canonical-reference
                      (40ants-doc/reference::make-reference

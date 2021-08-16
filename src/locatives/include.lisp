@@ -2,7 +2,6 @@
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-and-find-source
-                #:locate-and-document
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
@@ -95,28 +94,6 @@
       (:file ,(namestring file))
       (:position ,(1+ start))
       nil)))
-
-(defmethod locate-and-document (symbol (locative-type (eql 'include))
-                                locative-args stream)
-  ;; TODO: remove completely
-  (error "Not impemented anymore")
-  ;; (destructuring-bind (source &key lang)
-  ;;     locative-args
-  ;;   (declare (ignore lang))
-    
-  ;;   (when header
-  ;;     (format stream "~A" header))
-  ;;   (when header-nl
-  ;;     (format stream "~A~%" header-nl))
-  ;;   (format stream "~A"
-  ;;           (40ants-doc/utils::prefix-lines line-prefix
-  ;;                                           (multiple-value-call #'file-subseq
-  ;;                                             (include-region source))))
-  ;;   (when footer
-  ;;     (format stream "~A" footer))
-  ;;   (when footer-nl
-  ;;     (format stream "~A~%" footer-nl)))
-  )
 
 
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'include)) locative-args)

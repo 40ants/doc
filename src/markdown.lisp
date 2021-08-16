@@ -20,22 +20,22 @@
 
 
 (defsection @markdown-indentation (:title "Indentation")
-  """Docstrings can be indented in any of the usual styles.
+  """
+  Docstrings can be indented in any of the usual styles.
   40ANTS-DOC normalizes indentation by converting:
 
       (defun foo ()
         "This is
-  indented
-  differently")
+         indented
+         differently")
 
   to
 
       (defun foo ()
         "This is
-  indented
-  differently")
-
-  See [40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT][(method () (string t))] for the details.""")
+      indented
+      differently")
+  """)
 
 (defsection @markdown-syntax-highlighting (:title "Syntax highlighting")
   "For syntax highlighting, github's [fenced code

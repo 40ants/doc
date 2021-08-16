@@ -14,8 +14,7 @@
    #:define-locative-type
    #:locate-object
    #:locate-and-collect-reachable-objects
-   #:locate-and-find-source
-   #:locate-and-document))
+   #:locate-and-find-source))
 (in-package 40ants-doc/locatives/base)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -96,14 +95,6 @@
                      (locate-error-locative condition)
                      (locate-error-object condition)
                      (locate-error-message condition)))))
-
-
-(defgeneric locate-and-document (object locative-type locative-args
-                                 stream)
-  (:documentation "Called by 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT on 40ANTS-DOC/REFERENCE::REFERENCE objects,
-  this function has essentially the same purpose as 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
-  but it has different arguments to allow specializing on
-  LOCATIVE-TYPE."))
 
 
 (defgeneric locate-and-find-source (object locative-type locative-args)

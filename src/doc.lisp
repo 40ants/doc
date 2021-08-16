@@ -414,8 +414,8 @@ on the GitHub to suggest a new feature.
 
   which will return the same reference as `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO
   'VARIABLE)`. Operations need to know how to deal with references
-  which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS,
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
+  which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS
+  and 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
 
   Naturally, `(40ANTS-DOC/LOCATIVES/BASE:LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
   need to muck with references when there is a perfectly good object."
@@ -527,8 +527,8 @@ on the GitHub to suggest a new feature.
   "Let's see how to extend 40ANTS-DOC/BUILDER::RENDER-TO-FILES and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
   that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case.
-  40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE, which have 40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE in their argument
+  40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE,
+  which have 40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE in their argument
   list for EQL specializing pleasure. Here is a stripped down example
   of how the VARIABLE locative is defined:"
   (variable-example (include (:start (variable locative)
@@ -537,7 +537,6 @@ on the GitHub to suggest a new feature.
   (40ants-doc/reference-api::collect-reachable-objects (method () (40ants-doc/reference::reference)))
   (40ants-doc/locatives/base::locate-and-collect-reachable-objects generic-function)
   (40ants-doc/locatives/base::locate-and-collect-reachable-objects (method () (t t t)))
-  (40ants-doc/locatives/base::locate-and-document generic-function)
   (40ants-doc/source-api::find-source (method () (40ants-doc/reference::reference)))
   (40ants-doc/locatives/base::locate-and-find-source generic-function)
   (40ants-doc/locatives/base::locate-and-find-source (method () (t t t)))

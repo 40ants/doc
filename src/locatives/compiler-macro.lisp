@@ -2,7 +2,6 @@
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-and-find-source
-                #:locate-and-document
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
@@ -30,17 +29,6 @@
   (unless (compiler-macro-function symbol)
     (locate-error))
   (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
-
-
-(defmethod locate-and-document (symbol (locative-type (eql 'compiler-macro))
-                                locative-args stream)
-  (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
-  (write-char #\Space stream)
-  (let ((arglist (swank-backend:arglist symbol)))
-    (40ants-doc/render/args::print-arglist arglist stream)
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (with-dislocated-symbols ((40ants-doc/args::macro-arg-names arglist))
-      (40ants-doc/render/print::maybe-print-docstring symbol 'function stream))))
 
 
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'compiler-macro)) locative-args)

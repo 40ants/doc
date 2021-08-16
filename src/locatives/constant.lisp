@@ -2,7 +2,6 @@
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-and-find-source
-                #:locate-and-document
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
@@ -36,29 +35,6 @@
   (assert (<= (length locative-args) 1))
   (assert (constantp symbol))
   (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
-
-
-(defmethod locate-and-document (symbol (locative-type (eql 'constant))
-                                locative-args stream)
-  (destructuring-bind (&optional (initform nil initformp)) locative-args
-    (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
-    (write-char #\Space stream)
-    (40ants-doc/render/args::print-arglist (prin1-to-string (cond (initformp
-                                                                   initform)
-                                                                  ((boundp symbol)
-                                                                   (symbol-value symbol))
-                                                                  (t
-                                                                   "<unbound>")))
-                                           stream)
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (40ants-doc/args::with-dislocated-symbols ((list symbol))
-      (40ants-doc/render/print::maybe-print-docstring symbol
-                                                      ;; Standard does not support 'constant doc-type
-                                                      ;; and defconstant objects use 'variable
-                                                      'variable
-                                                      ;; locative-type
-                                                      stream))))
-
 
 
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'constant)) locative-args)
