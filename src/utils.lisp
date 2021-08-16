@@ -531,8 +531,7 @@
             (terpri out)))))))
 
 
-;;; Normalize indentation of docstrings as it's described in
-;;; (METHOD () (STRING T)) DOCUMENT-OBJECT.
+;;; Normalize indentation of docstrings'  
 (defun strip-docstring-indentation (docstring &key (first-line-special-p t))
   (let ((indentation
           (docstring-indentation docstring

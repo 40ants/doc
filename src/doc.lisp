@@ -447,7 +447,6 @@ on the GitHub to suggest a new feature.
   (40ants-doc/link::*document-min-link-hash-length* variable)
   (40ants-doc/builder/vars::*document-mark-up-signatures* variable)
   (40ants-doc/builder/vars::*document-max-numbering-level* variable)
-  (40ants-doc/builder/vars::*document-max-table-of-contents-level* variable)
   (40ants-doc/builder/vars::*document-text-navigation* variable)
   (40ants-doc/builder/vars::*document-fancy-html-navigation* variable))
 
@@ -563,8 +562,7 @@ on the GitHub to suggest a new feature.
   (40ants-doc::section-readtable (reader 40ants-doc::section))
   (40ants-doc::section-title (reader 40ants-doc::section))
   (40ants-doc::section-link-title-to (reader 40ants-doc::section))
-  (40ants-doc::section-entries (reader 40ants-doc::section))
-  (describe-object (method () (40ants-doc::section t))))
+  (40ants-doc::section-entries (reader 40ants-doc::section)))
 
 
 (defsection @todo (:title "TODO"

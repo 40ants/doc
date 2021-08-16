@@ -35,7 +35,10 @@
 
 (defsection @generating-documentation
     (:title "Generating Documentation"
-     :ignore-words ("LABEL"))
+     :ignore-words ("LABEL"
+                    "UPDATE-ASDF-SYSTEM-HTML-DOCS"
+                    "UPDATE-ASDF-SYSTEM-README"
+                    ":UPDATE-CSS-P"))
   "Besides RENDER-TO-STRING and RENDER-TO-FILES a convenience function is provided
    to serve the common case of having an ASDF system with a readme and a directory for the
   HTML documentation."

@@ -21,7 +21,7 @@ This system is a fork of [`MGL-PAX`](https://github.com/melisgl/mgl-pax).
 
 There are a few reasons, why I've created the fork.
 
-The main goal is to extract a core features into the [`40ANTS-DOC`](https://40ants.com/doc/#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system
+The main goal is to extract a core features into the [`40ANTS-DOC`](#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system
 with as little dependencies as possible. This is important, because with `MGL-PAX`'s
 style, you define documentation sections in your library's code, which makes
 it dependent on the documentation system. However, heavy weight dependencies
@@ -39,13 +39,13 @@ integration.
 
 Here is features already implemented in this fork:
 
-* Core system [`40ANTS-DOC`](https://40ants.com/doc/#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) now has only two dependencies on `NAMED-READTABLES`
+* Core system [`40ANTS-DOC`](#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
-  [`40ANTS-DOC-FULL`](https://40ants.com/doc/#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system which will download such dependencies as markdown
+  [`40ANTS-DOC-FULL`](#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system which will download such dependencies as markdown
   parser and more.
 
 * Now you don't have to import any locative symbols into your package. Import
-  only a [`DEFSECTION`](https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro and it will be enough to define documentation for
+  only a [`DEFSECTION`](#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro and it will be enough to define documentation for
   your library!
 
 * Added a warning mechanism, which will issue such warnings on words which looks
@@ -68,14 +68,14 @@ Read full documentation at [site 40ants.com/doc/](https://40ants.com/doc/).
 
 ## Tutorial
 
-[`40ANTS-DOC`](https://40ants.com/doc/#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) provides an extremely poor man's Explorable Programming
+[`40ANTS-DOC`](#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) provides an extremely poor man's Explorable Programming
 environment. Narrative primarily lives in so called sections that
 mix markdown docstrings with references to functions, variables,
 etc, all of which should probably have their own docstrings.
 
 The primary focus is on making code easily explorable by using
 `SLIME`'s `M-.` (`slime-edit-definition`). See how to enable some
-fanciness in [`Emacs Integration`](https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29). Generating documentation
+fanciness in [`Emacs Integration`](#x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29). Generating documentation
 from sections and all the referenced items in Markdown or `HTML`
 format is also implemented.
 
@@ -168,73 +168,39 @@ easy:
 ```
 For this example, the generated markdown would look like this:
 
-````markdown
-# Foo Random manual
+```markdown
+#<40ANTS-DOC:SECTION FOO-RANDOM::@FOO-RANDOM-MANUAL>
+  [standard-object]
 
-Here you describe what's common to all the referenced (and
-exported) functions that follow. They work with *FOO-STATE*,
-and have a :RANDOM-STATE keyword arg. Also explain when to
-choose which.
-
-## [class] `FOO-RANDOM-STATE` ()
-
-## [reader] `STATE` (FOO-RANDOM-STATE) ()
-
-Returns random foo's state.
-
-Hey we can also print states!
-
-## [method] `PRINT-OBJECT` (OBJECT FOO-RANDOM-STATE) STREAM
-
-## [variable] `*FOO-STATE*` #<FOO-RANDOM-STATE >
-
-Much like *RANDOM-STATE* but uses the FOO algorithm.
-
-## [function] `GAUSSIAN-RANDOM` STDDEV &KEY (RANDOM-STATE \*FOO-STATE\*)
-
-Return not a random number from a zero mean normal distribution with
-STDDEV.
-
-## [function] `UNIFORM-RANDOM` LIMIT &KEY (RANDOM-STATE \*FOO-STATE\*)
-
-Return a random number from the between 0 and LIMIT (exclusive)
-uniform distribution.
-
-## Examples
-
-Let's see the transcript of a real session of someone working
-with FOO:
-
-```cl-transcript
-(values (princ :hello) (list 1 2))
-.. HELLO
-=> :HELLO
-=> (1 2)
-
-(make-instance 'foo-random-state)
-==> #<FOO-RANDOM-STATE >
+Slots with :INSTANCE allocation:
+  NAME                           = FOO-RANDOM::@FOO-RANDOM-MANUAL
+  PACKAGE                        = #<PACKAGE "FOO-RANDOM">
+  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {10024..
+  TITLE                          = "Foo Random manual"
+  LINK-TITLE-TO                  = NIL
+  ENTRIES                        = ("Here you describe what's common to all the referenced (and..
+  IGNORE-WORDS                   = NIL
 ```
-````
 More fancy markdown or `HTML` output with automatic markup and linking
 of uppercase symbol names found in docstrings, section numbering,
 table of contents, etc is possible by calling the
-[`40ANTS-DOC/BUILDER:RENDER-TO-STRING`](https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-STRING-20FUNCTION-29) or [`40ANTS-DOC/BUILDER:RENDER-TO-FILES`](https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29)
+[`40ANTS-DOC/BUILDER:RENDER-TO-STRING`](#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-STRING-20FUNCTION-29) or [`40ANTS-DOC/BUILDER:RENDER-TO-FILES`](#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29)
 functions.
 
 Last one can even generate documentation for different, but related
 libraries at the same time with the output going to different files,
 but with cross-page links being automatically added for symbols
-mentioned in docstrings. See [`Generating Documentation`](https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) for
+mentioned in docstrings. See [`Generating Documentation`](#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) for
 some convenience functions to cover the most common cases.
 
-Note how `(*FOO-STATE* [VARIABLE](https://40ants.com/doc/#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` in the [`DEFSECTION`](https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) form includes its documentation in
-`@FOO-RANDOM-MANUAL`. The symbols [`VARIABLE`](https://40ants.com/doc/#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) and [`FUNCTION`](https://40ants.com/doc/#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) are just two
-instances of 'locatives' which are used in [`DEFSECTION`](https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to refer to
-definitions tied to symbols. See [`Locative Types`](https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
+Note how `(*FOO-STATE* [VARIABLE](#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` in the [`DEFSECTION`](#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) form includes its documentation in
+`@FOO-RANDOM-MANUAL`. The symbols [`VARIABLE`](#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) and [`FUNCTION`](#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) are just two
+instances of 'locatives' which are used in [`DEFSECTION`](#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to refer to
+definitions tied to symbols. See [`Locative Types`](#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
 
 The transcript in the code block tagged with `cl-transcript` is
 automatically checked for up-to-dateness. See
-[`Transcripts`](https://40ants.com/doc/#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
+[`Transcripts`](#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 

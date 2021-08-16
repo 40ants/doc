@@ -1022,7 +1022,8 @@
 
 (defsection @transcript-emacs-integration
     (:title "Transcribing with Emacs"
-     :ignore-words ("PAX"))
+     :ignore-words ("PAX"
+                    ":HELLO-WORLD"))
   """Typical transcript usage from within Emacs is simple: add a lisp
   form to a docstring or comment at any indentation level. Move the
   cursor right after the end of the form as if you were to evaluate it
