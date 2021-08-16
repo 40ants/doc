@@ -11,8 +11,6 @@
   (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/document
-                #:document-object)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/render/print))

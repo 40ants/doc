@@ -4,8 +4,6 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/document
-                #:document-object)
   (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/reference-api
@@ -16,7 +14,6 @@
   (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/builder/heading)
   (:import-from #:40ants-doc/locatives
                 #:argument)
   (:import-from #:named-readtables)

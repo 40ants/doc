@@ -17,9 +17,10 @@
   (defchangelog macro))
 
 
-(defun make-version-section (version content)
-  `(defsection ,version (:title ,(symbol-name version))
-     ,@content))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+ (defun make-version-section (version content)
+   `(defsection ,version (:title ,(symbol-name version))
+      ,@content)))
 
 
 (defmacro defchangelog ((&key (title "Changes")
@@ -63,6 +64,8 @@
                               "JS"
                               "MGL-PAX:DEFINE-PACKAGE"
                               "UIOP:DEFINE-PACKAGE"
+                              "*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL*"
+                              "*DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL*"
                               "SLIME"
                               "SLY"))
   (0.2.0
@@ -83,7 +86,10 @@
       if :EXPORT argument is NIL.
     - Functions UPDATE-ASDF-SYSTEM-HTML-DOCS and UPDATE-ASDF-SYSTEM-README
       were replaced with 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS, which also supports
-      ChangeLog.md generation.")
+      ChangeLog.md generation.
+    - Variables *DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL* and
+      *DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL* were removed. Probably we'll return this
+      feature back in other form, to restrict TOC's size.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).

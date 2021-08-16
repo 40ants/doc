@@ -18,7 +18,6 @@
   (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/source-api)
-  (:import-from #:40ants-doc/document)
   (:import-from #:40ants-doc/changelog
                 #:@changelog)
   (:export
@@ -528,8 +527,8 @@ on the GitHub to suggest a new feature.
                     "DIRECTION"))
   "Let's see how to extend 40ANTS-DOC/BUILDER::RENDER-TO-FILES and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
-  that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case. 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
-  and 40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and
+  that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case.
+  40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and
   40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE, which have 40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE in their argument
   list for EQL specializing pleasure. Here is a stripped down example
   of how the VARIABLE locative is defined:"

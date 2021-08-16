@@ -3,7 +3,6 @@
   (:export
    #:*document-mark-up-signatures*
    #:*document-max-numbering-level*
-   #:*document-max-table-of-contents-level*
    #:*document-text-navigation*
    #:*document-fancy-html-navigation*))
 (in-package 40ants-doc/builder/vars)
@@ -15,13 +14,6 @@
   "A non-negative integer. In their hierarchy, sections on levels less
   than this value get numbered in the format of `3.1.2`. Setting it to
   0 turns numbering off.")
-
-(defvar *document-max-table-of-contents-level* 3
-  "A non-negative integer. Top-level sections are given a table of
-  contents which includes a nested tree of section titles whose depth
-  is limited by this value. Setting it to 0 turns generation of the
-  table of contents off. If 40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS* is true, then the
-  table of contents will link to the sections.")
 
 (defvar *document-text-navigation* nil
   "If true, then before each heading a line is printed with links to
@@ -67,5 +59,3 @@
 ;;; printing of table of contents entries even if the stream is
 ;;; changed by paging.
 (defvar *table-of-contents-stream* nil)
-
-
