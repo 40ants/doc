@@ -21,3 +21,5 @@ https://highlightjs.org/download/, download archive and unpack it
 into this *static* directory. Strip down unnecessary files,
 to make ASDF system smaller. You can remove everything except
 *highlight.min.js*, *styles/<theme>.min.css* and *LICENSE*.
+
+Different themes can be previewed at https://highlightjs.org/static/demo/.
