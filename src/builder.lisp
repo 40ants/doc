@@ -118,6 +118,7 @@
                               asdf-system
                               (uiop:ensure-directory-pathname docs-dir))
                    :base-url base-url
+                   :source-uri-fn (40ants-doc/github:make-github-source-uri-fn asdf-system)
                    :theme theme
                    :format :html))
 
@@ -140,13 +141,15 @@
     document))
 
 
-(defun render-to-string (object &key (format :html))
+(defun render-to-string (object &key (format :html)
+                                     (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*))
   "Renders given CommonDoc node into the string using specified format.
    Supported formats are :HTML and :MARKDOWN.
 
    This function is useful for debugging 40ANTS-DOC itself."
   (let ((format
-          (40ants-doc/commondoc/format::ensure-format-class-name format)))
+          (40ants-doc/commondoc/format::ensure-format-class-name format))
+        (40ants-doc/reference-api:*source-uri-fn* source-uri-fn))
     
     (40ants-doc/commondoc/format:with-format (format)
       (let* ((document
@@ -162,6 +165,7 @@
 (defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
                                       (base-dir #P"./")
                                       (base-url nil)
+                                      (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
                                       (format :html))
   "Renders given sections or pages into a files on disk.
 
@@ -177,7 +181,8 @@
   (let ((num-warnings 0)
         ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
         ;; be a slash after the .html
-        (common-html.emitter:*document-section-format-control* "~A#~A"))
+        (common-html.emitter:*document-section-format-control* "~A#~A")
+        (40ants-doc/reference-api:*source-uri-fn* source-uri-fn))
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
                               (incf num-warnings))))

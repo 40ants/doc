@@ -76,8 +76,7 @@
                          (40ants-doc/reference::reference-locative-type reference)))
          (name (or (bullet-name obj)
                    (princ-to-string (40ants-doc/reference::reference-object reference))))
-         ;; TODO: move source-uri to reference-api
-         (source-uri (uiop:symbol-call :40ants-doc/builder/bullet :source-uri reference))
+         (source-uri (40ants-doc/reference-api:source-uri reference))
          (spinneret:*html* common-html.emitter::*output-stream*))
     (spinneret:with-html
       (:ul
@@ -118,8 +117,7 @@
                          (40ants-doc/reference::reference-locative-type reference)))
          (name (or (bullet-name node)
                    (princ-to-string (40ants-doc/reference::reference-object reference))))
-         ;; TODO: move source-uri to reference-api
-         (source-uri (uiop:symbol-call :40ants-doc/builder/bullet :source-uri reference)))
+         (source-uri (40ants-doc/reference-api:source-uri reference)))
 
     (let ((commondoc-markdown/emitter::*header-level* (or (and (boundp 'commondoc-markdown/emitter::*header-level*)
                                                                (1+ commondoc-markdown/emitter::*header-level*))

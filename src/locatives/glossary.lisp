@@ -3,7 +3,6 @@
   ;; (:import-from #:40ants-doc/core)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/printer)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/locatives
                 #:glossary-term)

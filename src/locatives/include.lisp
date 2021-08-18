@@ -8,7 +8,6 @@
   (:import-from #:40ants-doc/locatives
                 #:include)
   (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/args)

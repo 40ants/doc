@@ -5,7 +5,6 @@
   (:import-from #:40ants-doc/source)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/builder/printer)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/locatives
                 #:section)

@@ -17,7 +17,7 @@
 * Now defsection does not export nor mentioned symbols nor the name of the section
   It is better to have explicit exports.
 
-* [`40ANTS-DOC/LOCATIVES:INCLUDE`](https://40ants.com/doc/#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) locative now does not support `:HEADER`, `:FOOTER` and some other arguments. Use `:LANG` argument instead.
+* [`40ANTS-DOC/LOCATIVES:INCLUDE`](#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) locative now does not support `:HEADER`, `:FOOTER` and some other arguments. Use `:LANG` argument instead.
 
 * Added code highlighting using Highlight.js library.
 
@@ -27,12 +27,22 @@
 * Elisp code for transcriptions was fixed and now should word not
   only with `SLIME`, but also with `SLY`.
 
-* [`40ANTS-DOC:DEFSECTION`](https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro now does not generate export code
+* [`40ANTS-DOC:DEFSECTION`](#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro now does not generate export code
   if `:EXPORT` argument is `NIL`.
 
 * Functions `UPDATE-ASDF-SYSTEM-HTML-DOCS` and `UPDATE-ASDF-SYSTEM-README`
-  were replaced with [`40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS`](https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29), which also supports
+  were replaced with [`40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS`](#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29), which also supports
   ChangeLog.md generation.
+
+* Variables `*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL*` and
+  `*DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL*` were removed. Probably we'll return this
+  feature back in other form, to restrict `TOC`'s size.
+
+* Removed `LOCATE-AND-DOCUMENT` generic function.
+
+* Links to the GitHub now are generated automatically,
+  if [`40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS`](#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29) function is used
+  and system definition has a `:SOURCE-CONTROL` slot.
 
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E1-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -48,7 +58,7 @@
   file-subseq function was rewritten.
 
 * Locatives can be specified without a package prefix inside the defsection
-  because all locative symbols now live in [`40ANTS-DOC/LOCATIVES`](https://40ants.com/doc/#x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-2240ANTS-DOC-2FLOCATIVES-22-29-20PACKAGE-29) package.
+  because all locative symbols now live in [`40ANTS-DOC/LOCATIVES`](#x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-2240ANTS-DOC-2FLOCATIVES-22-29-20PACKAGE-29) package.
 
 * Function update-asdf-system-readmes was renamed to update-asdf-system-readmes and now
   it generates only one `README` file.

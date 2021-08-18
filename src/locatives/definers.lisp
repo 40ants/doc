@@ -4,7 +4,6 @@
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source-api)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/render/args)

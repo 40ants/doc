@@ -67,6 +67,7 @@
                               "*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL*"
                               "*DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL*"
                               "LOCATE-AND-DOCUMENT"
+                              "TOC"
                               "SLIME"
                               "SLY"))
   (0.2.0
@@ -91,7 +92,10 @@
     - Variables *DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL* and
       *DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL* were removed. Probably we'll return this
       feature back in other form, to restrict TOC's size.
-    - Removed LOCATE-AND-DOCUMENT generic function.")
+    - Removed LOCATE-AND-DOCUMENT generic function.
+    - Links to the GitHub now are generated automatically,
+      if 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS function is used
+      and system definition has a :SOURCE-CONTROL slot.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
