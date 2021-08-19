@@ -175,7 +175,7 @@ For this example, the generated markdown would look like this:
 Slots with :INSTANCE allocation:
   NAME                           = FOO-RANDOM::@FOO-RANDOM-MANUAL
   PACKAGE                        = #<PACKAGE "FOO-RANDOM">
-  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {10031..
+  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {10021..
   TITLE                          = "Foo Random manual"
   LINK-TITLE-TO                  = NIL
   ENTRIES                        = ("Here you describe what's common to all the referenced (and..
@@ -210,15 +210,15 @@ automatically checked for up-to-dateness. See
 
 * <s>Add warnings on `UPPERCASED` symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
 
-* Make some warnings compile-time for defsection and show them in the Emacs, if possible.
+* <s>Support `SLY` and make both `SLIME` and `SLY` integrations optional.</s>
+
+* <s>Add a search facility which will build an index for static file like Sphinx does.</s>
+
+* <s>Separate markup parsing and result rendering code to support markups other than Markdown and `HTML`.</s>
+
+* <s>Add a new section type to render ChangeLog.</s>
 
 * Support custom `HTML` themes.
 
-* Support `SLY` and make both `SLIME` and `SLY` integrations optional.
-
-* Add a search facility which will build an index for static file like Sphinx does.
-
-* Separate markup parsing and result rendering code to support markups other than Markdown and `HTML`.
-
-* Add a new section type to render ChangeLog.
+* Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 

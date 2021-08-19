@@ -1110,7 +1110,7 @@
 
   `C-u 0 40ants-doc-retranscribe-region` will turn commented into
   non-commented markup. In general, the numeric prefix argument is the
-  index of the syntax to be used in 40ants-doc:*SYNTAXES*. Without a
+  index of the syntax to be used in 40ANTS-DOC/TRANSCRIBE:*SYNTAXES*. Without a
   prefix argument `40ants-doc-retranscribe-region` will not change the
   markup style.
 

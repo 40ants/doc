@@ -572,11 +572,11 @@ on the GitHub to suggest a new feature.
   "
 - <s>Refactor code and make a core package with only a few dependencies.</s>
 - <s>Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
-- Make some warnings compile-time for defsection and show them in the Emacs, if possible.
+- <s>Support SLY and make both SLIME and SLY integrations optional.</s>
+- <s>Add a search facility which will build an index for static file like Sphinx does.</s>
+- <s>Separate markup parsing and result rendering code to support markups other than Markdown and HTML.</s>
+- <s>Add a new section type to render ChangeLog.</s>
 - Support custom HTML themes.
-- Support SLY and make both SLIME and SLY integrations optional.
-- Add a search facility which will build an index for static file like Sphinx does.
-- Separate markup parsing and result rendering code to support markups other than Markdown and HTML.
-- Add a new section type to render ChangeLog.
+- Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 ")
 
