@@ -10,7 +10,17 @@
 (in-package 40ants-doc/commondoc/builder)
 
 
-(defgeneric to-commondoc (obj))
+(defgeneric to-commondoc (obj)
+  (:documentation
+   "Define methods for this generic function to render object's
+    documentation into an intermediate CommonDoc format.
+
+    Function should return a COMMON-DOC:DOCUMENT-NODE.
+
+    To show a standard documentation item with locative,
+    name and arguments, use 40ANTS-DOC/COMMONDOC/BULLET:MAKE-BULLET
+    function.
+   "))
 
 (defgeneric reference-to-commondoc (obj locative locative-args))
 

@@ -56,7 +56,8 @@
       "CSS"
       "3BMD"
       "PYTHONIC-STRING-READER"
-      "DOCS-BUILDER"))
+      "DOCS-BUILDER"
+      "COMMON-DOC:DOCUMENT-NODE"))
 
 
   (defparameter *badges*
@@ -521,7 +522,7 @@ on the GitHub to suggest a new feature.
   (40ants-doc/reference-api:canonical-reference generic-function)
   (40ants-doc/source-api::find-source generic-function)
   (40ants-doc/commondoc/builder:to-commondoc generic-function)
-  (40ants-doc/commondoc/builder:reference-to-commondoc generic-function))
+  (40ants-doc/commondoc/bullet:make-bullet function))
 
 
 (defsection @reference-based-extensions
@@ -549,7 +550,8 @@ on the GitHub to suggest a new feature.
   simplify the common task of associating definition and documentation
   with symbols in a certain context."
   (40ants-doc/locatives/definers::define-symbol-locative-type macro)
-  (40ants-doc/locatives/define-definer::define-definer-for-symbol-locative-type macro))
+  (40ants-doc/locatives/define-definer::define-definer-for-symbol-locative-type macro)
+  (40ants-doc/commondoc/builder:reference-to-commondoc generic-function))
 
 
 (defsection @sections (:title "Sections")

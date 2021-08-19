@@ -18,7 +18,9 @@
   (:import-from #:40ants-doc/commondoc/piece
                 #:documentation-piece
                 #:doc-reference)
-  (:import-from #:40ants-doc/utils))
+  (:import-from #:40ants-doc/utils)
+  (:export
+   #:make-bullet))
 (in-package 40ants-doc/commondoc/bullet)
 
 
@@ -39,6 +41,14 @@
 
 
 (defun make-bullet (reference &key arglist children name ignore-words)
+  "Creates a CommonDoc node to represent a documentation item.
+
+   Documentation item can have an ARGLIST. If NAME is not given,
+   then it will be made from reference's object printed representation.
+
+   You can provide a CHILDREN arguments. It should be a list of CommonDoc nodes
+   or a single node.
+"
   ;; TODO: remove this printer format and reference resolving on this stage.
   ;; we only need to know format to render arglist to a string, but this
   ;; shouldn't be necessary on this stage.
