@@ -1,8 +1,7 @@
 (uiop:define-package #:40ants-doc/reference
   (:use #:cl)
   (:import-from #:40ants-doc/reference-api
-                #:canonical-reference
-                #:collect-reachable-objects)
+                #:canonical-reference)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/locatives/dislocated)
@@ -55,13 +54,7 @@
       reference)))
 
 
-(defmethod collect-reachable-objects (object)
-  "This default implementation returns the empty list. This means that
-  nothing is reachable from OBJECT."
-  (declare (ignore object))
-  ())
-
-
+;; TODO: remove?
 (defun reachable-canonical-references (objects)
   (mapcan (lambda (object)
             (mapcar #'canonical-reference
@@ -158,21 +151,6 @@
   (if (< 1 (length refs))
       (remove 'asdf:system refs :key #'reference-locative-type)
       refs))
-
-
-(defmethod collect-reachable-objects ((reference reference))
-  "If REFERENCE can be resolved to a non-reference, call
-  COLLECT-REACHABLE-OBJECTS with it, else call
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS on the object, locative-type,
-  locative-args of REFERENCE"
-  (let ((object (resolve reference)))
-    (if (typep object 'reference)
-        (let ((locative (reference-locative reference)))
-          (40ants-doc/locatives/base::locate-and-collect-reachable-objects
-           (reference-object reference)
-           (40ants-doc/locatives/base::locative-type locative)
-           (40ants-doc/locatives/base::locative-args locative)))
-        (collect-reachable-objects object))))
 
 
 (defun resolve (reference &key (errorp t))

@@ -69,7 +69,9 @@
                               "LOCATE-AND-DOCUMENT"
                               "TOC"
                               "SLIME"
-                              "SLY"))
+                              "SLY"
+                              "COLLECT-REACHABLE-OBJECTS"
+                              "LOCATE-AND-COLLECT-REACHABLE-OBJECTS"))
   (0.2.0
    "- Now defsection does not exports symbols by default
     - You can render documents in multiple formats in a single run having cross links.
@@ -95,7 +97,9 @@
     - Removed LOCATE-AND-DOCUMENT generic function.
     - Links to the GitHub now are generated automatically,
       if 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS function is used
-      and system definition has a :SOURCE-CONTROL slot.")
+      and system definition has a :SOURCE-CONTROL slot.
+    - Generic functions COLLECT-REACHABLE-OBJECTS and LOCATE-AND-COLLECT-REACHABLE-OBJECTS
+      were removed.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).

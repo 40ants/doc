@@ -414,8 +414,7 @@ on the GitHub to suggest a new feature.
 
   which will return the same reference as `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO
   'VARIABLE)`. Operations need to know how to deal with references
-  which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS
-  and 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
+  which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
 
   Naturally, `(40ANTS-DOC/LOCATIVES/BASE:LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
   need to muck with references when there is a perfectly good object."
@@ -520,8 +519,6 @@ on the GitHub to suggest a new feature.
   (40ants-doc/locatives/base:locate-object generic-function)
   (40ants-doc/locatives/base:locate-error function)
   (40ants-doc/reference-api:canonical-reference generic-function)
-  (40ants-doc/reference-api:collect-reachable-objects generic-function)
-  (40ants-doc/reference-api:collect-reachable-objects (method () (t)))
   (40ants-doc/source-api::find-source generic-function)
   (40ants-doc/commondoc/builder:to-commondoc generic-function)
   (40ants-doc/commondoc/builder:reference-to-commondoc generic-function))
@@ -542,9 +539,6 @@ on the GitHub to suggest a new feature.
   (variable-example (include (:start (variable locative)
                               :end (40ants-doc/locatives/variable::end-of-variable-example variable))
                              :lang "commonlisp"))
-  (40ants-doc/reference-api::collect-reachable-objects (method () (40ants-doc/reference::reference)))
-  (40ants-doc/locatives/base::locate-and-collect-reachable-objects generic-function)
-  (40ants-doc/locatives/base::locate-and-collect-reachable-objects (method () (t t t)))
   (40ants-doc/source-api::find-source (method () (40ants-doc/reference::reference)))
   (40ants-doc/locatives/base::locate-and-find-source generic-function)
   (40ants-doc/locatives/base::locate-and-find-source (method () (t t t)))

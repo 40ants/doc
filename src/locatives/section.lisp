@@ -29,13 +29,5 @@
   (40ants-doc/reference::make-reference (40ants-doc/core::section-name section)
                                         'section))
 
-(defmethod 40ants-doc/reference-api::collect-reachable-objects ((section 40ants-doc/core::section))
-  (mapcan (lambda (reference)
-            (cons reference (40ants-doc/reference-api::collect-reachable-objects reference)))
-          (remove-if-not (lambda (entry)
-                           (typep entry '40ants-doc/reference::reference))
-                         (40ants-doc/core::section-entries section))))
-
-
 (defmethod 40ants-doc/source::find-source ((section 40ants-doc/core::section))
   (40ants-doc/locatives/base::locate-and-find-source (40ants-doc/core::section-name section) 'variable ()))

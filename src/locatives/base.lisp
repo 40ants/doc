@@ -13,7 +13,6 @@
    #:locative-args
    #:define-locative-type
    #:locate-object
-   #:locate-and-collect-reachable-objects
    #:locate-and-find-source))
 (in-package 40ants-doc/locatives/base)
 
@@ -108,22 +107,6 @@
   instance, a defun but having its own locative type."
   (declare (ignore locative-type locative-args))
   (40ants-doc/source-api::find-source object))
-
-
-
-(defgeneric locate-and-collect-reachable-objects (object locative-type
-                                                  locative-args)
-  (:documentation "Called by 40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS on
-  40ANTS-DOC/REFERENCE::REFERENCE objects, this function has essentially the same purpose as its
-  caller but it has different arguments to allow specializing on
-  LOCATIVE-TYPE."))
-
-(defmethod locate-and-collect-reachable-objects (object locative-type
-                                                 locative-args)
-  "This default implementation returns the empty list. This means that
-  nothing is reachable from the reference."
-  (declare (ignore object locative-type locative-args))
-  ())
 
 
 ;;; A somewhat dummy generic function whose methods are
