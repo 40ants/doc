@@ -40,7 +40,7 @@
          (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
-                                              :arglist locative-args
+                                              :arglist arglist
                                               :children children
                                               :ignore-words (40ants-doc/args::macro-arg-names arglist))))
 
