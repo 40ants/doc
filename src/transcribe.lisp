@@ -1086,7 +1086,7 @@
           2)
       ^
 
-  then invoke the emacs command `mgl-pax-retranscribe-region` to get:
+  then invoke the emacs command `40ants-doc-retranscribe-region` to get:
 
       (values (princ :hello-world) (list 1 2))
       .. HELLO-WORLD
