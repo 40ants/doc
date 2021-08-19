@@ -498,25 +498,33 @@ on the GitHub to suggest a new feature.
 
 (defsection @new-object-types (:title "Adding New Object Types"
                                :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"))
-  "One may wish to make the 40ANTS-DOC/COMMONDOC/BUILDER::TO-COMMONDOC generic function and `M-.` navigation
-  work with new object types. Define a method of 40ANTS-DOC/COMMONDOC/BUILDER::TO-COMMONDOC generic-function
-  and to allow these objects to be referenced from DEFSECTION, a method of
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT generic-function is to be defined.
-  Finally, for `M-.` 40ANTS-DOC/SOURCE-API::FIND-SOURCE can be specialized. Finally,
-  40ANTS-DOC::EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
-  makes sense. Here is a stripped down example of how all this is done
+  "
+  If you wish to make it possible to render documentation for a new
+  object type, then you have to define a method for the
+  40ANTS-DOC/COMMONDOC/BUILDER:TO-COMMONDOC generic function.
+  And to make `M-.` navigation work with new object types, a methods of
+  40ANTS-DOC/LOCATIVES/BASE:LOCATE-OBJECT generic-function and
+  40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function are to be defined.
+  Also, additional method for 40ANTS-DOC/REFERENCE-API:CANONICAL-REFERENCE generic-function
+  need to be defined to make an opposite to [40ANTS-DOC/LOCATIVES/BASE:LOCATE-OBJECT][generic-function]'s action.
+
+  Finally, 40ANTS-DOC:EXPORTABLE-LOCATIVE-TYPE-P generic-function
+  may be overridden if exporting does not makes sense.
+  Here is a stripped down example of how all this is done
   for ASDF:SYSTEM:"
   (asdf-example (include (:start (asdf:system locative)
                           :end (40ants-doc/locatives/asdf-system::end-of-asdf-example variable))
                          :lang "commonlisp"))
-  (40ants-doc/locatives/base::define-locative-type macro)
-  (40ants-doc::exportable-locative-type-p generic-function)
-  (40ants-doc/locatives/base::locate-object generic-function)
-  (40ants-doc/locatives/base::locate-error function)
-  (40ants-doc/reference-api::canonical-reference generic-function)
-  (40ants-doc/reference-api::collect-reachable-objects generic-function)
-  (40ants-doc/reference-api::collect-reachable-objects (method () (t)))
-  (40ants-doc/source-api::find-source generic-function))
+  (40ants-doc/locatives/base:define-locative-type macro)
+  (40ants-doc:exportable-locative-type-p generic-function)
+  (40ants-doc/locatives/base:locate-object generic-function)
+  (40ants-doc/locatives/base:locate-error function)
+  (40ants-doc/reference-api:canonical-reference generic-function)
+  (40ants-doc/reference-api:collect-reachable-objects generic-function)
+  (40ants-doc/reference-api:collect-reachable-objects (method () (t)))
+  (40ants-doc/source-api::find-source generic-function)
+  (40ants-doc/commondoc/builder:to-commondoc generic-function)
+  (40ants-doc/commondoc/builder:reference-to-commondoc generic-function))
 
 
 (defsection @reference-based-extensions

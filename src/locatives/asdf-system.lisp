@@ -22,7 +22,9 @@
                 #:make-web-link
                 #:make-text)
   (:import-from #:40ants-doc/commondoc/section
-                #:make-section-with-reference))
+                #:make-section-with-reference)
+  (:import-from #:40ants-doc/commondoc/builder
+                #:to-commondoc))
 (in-package 40ants-doc/locatives/asdf-system)
 
 (define-locative-type asdf:system ()
@@ -39,13 +41,19 @@
       (locate-error)))
 
 (defmethod canonical-reference ((system asdf:system))
-  (40ants-doc/reference::make-reference (asdf::primary-system-name system) 'asdf:system))
+  (40ants-doc/reference:make-reference (asdf:primary-system-name system)
+                                       'asdf:system))
 
+(defmethod find-source ((system asdf:system))
+  `(:location
+    (:file ,(namestring (asdf/system:system-source-file system)))
+    (:position 1)
+    (:snippet "")))
 
-(defmethod 40ants-doc/commondoc/builder:to-commondoc ((system asdf:system))
+(defmethod to-commondoc ((system asdf:system))
   (let ((title (format nil "~A ASDF System Details"
                        (string-upcase
-                        (asdf::primary-system-name system)))))
+                        (asdf:primary-system-name system)))))
     (flet ((item (name getter &key type)
              (let* ((value (funcall getter system))
                     (href nil))
@@ -86,15 +94,9 @@
                                 :type :source-control)))
              (children (make-unordered-list
                         (remove nil items)))
-             (reference (40ants-doc/reference-api::canonical-reference system)))
+             (reference (40ants-doc/reference-api:canonical-reference system)))
         (make-section-with-reference title
                                      children
                                      reference)))))
-
-(defmethod find-source ((system asdf:system))
-  `(:location
-    (:file ,(namestring (asdf/system:system-source-file system)))
-    (:position 1)
-    (:snippet "")))
 
 (defvar end-of-asdf-example)
