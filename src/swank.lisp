@@ -114,8 +114,7 @@
                        ;; for example, reading "'foo"
                        ;; will result in (cons 'QUOTE 'FOO)
                        ;; but we only want this function to return symbols.
-                       (when (typep result 'symbol)
-                         result))))))))))))
+                       result)))))))))))
 
 (defun locate-reference-link-definition-for-emacs (string)
   (when (and (= 2 (count #\[ string))

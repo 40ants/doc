@@ -29,6 +29,8 @@
                 #:base-filename
                 #:page-format)
   (:import-from #:40ants-doc/rewrite)
+  (:import-from #:40ants-doc/locatives/base
+                #:locative-equal)
   (:export #:make-page
            #:page
            #:make-page-toc
@@ -492,8 +494,8 @@ var DOCUMENTATION_OPTIONS = {
                                             (string-equal reference-object
                                                           text)))
                                          (or (null locative)
-                                             (eql (40ants-doc/reference::reference-locative-type reference)
-                                                  locative)))
+                                             (locative-equal (40ants-doc/reference::reference-locative reference)
+                                                             locative)))
                                collect (cons reference
                                              page)))
                        (found-references

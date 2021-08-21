@@ -29,6 +29,11 @@
   (values))
 
 
+(defgeneric blah (obj))
+
+(defmethod blah ((obj string)))
+
+
 (40ants-doc:defsection @foo-n-bar (:title "Test section")
   (foo function)
   (bar function))
@@ -67,7 +72,7 @@
               (ok (eql doc result)))
             (testing "But it's child should be changed to a real web link"
               (ok (typep (first-child) 'common-doc:document-link)))))))
-  
+
     (testing "Case when symbol name already the code"
       (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
              (doc (40ants-doc/commondoc/xref:extract-symbols
@@ -99,10 +104,30 @@
                             (first-child result)))
                           'common-doc:text-node)
                    (string= (common-doc:text
+                             (first-child
                               (first-child
-                               (first-child
-                                (first-child result))))
+                               (first-child result))))
                             "FOO"))))))))
+  
+    (testing "Explicit method locative should be replaced with a single link"
+      (let* ((generic-reference (40ants-doc/reference::make-reference 'blah 'generic-function))
+             (method-reference (40ants-doc/reference::make-reference 'blah '(method () (string))))
+             (doc (40ants-doc/commondoc/markdown::parse-markdown "[BLAH][(METHOD () (STRING))]")))
+        (flet ((first-child ()
+                 (first (common-doc:children doc))))
+          
+          (testing "First child should have given locative"
+            (ok (equal (40ants-doc/commondoc/xref::xref-locative
+                        (first-child))
+                       '(method () (string)))))
+          (let ((result (40ants-doc/commondoc/page::replace-xrefs doc (list (cons generic-reference
+                                                                                  :no-page)
+                                                                            (cons method-reference
+                                                                                  :no-page)))))
+            (testing "Resulting document should remain the same, because only paragraph's child should be changed"
+              (ok (eql doc result)))
+            (testing "But it's child should be changed to a single document link"
+              (ok (typep (first-child) 'common-doc:document-link)))))))
   
     (testing "XREF nested in CODE block should not be replaced with just XREF"
       (let* ((original-xref (make-xref "FOO"))
