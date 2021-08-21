@@ -389,12 +389,51 @@ on the GitHub to suggest a new feature.
                                     "3BMD"
                                     "@MANUAL"
                                     "@MGL-PAX-EXTENSION-API"
-                                    "SECTION"))
+                                    "SECTION"
+                                    "FIND-SOURCE"))
   "Now let's examine the most important pieces in detail."
-  (40ants-doc::*discard-documentation-p* variable)
+  (@defining-sections section)
+  (@cross-referencing section))
+
+
+(defsection @defining-sections (:title "Defining Sections")
   (40ants-doc::defsection macro)
-  (40ants-doc/builder:render-to-string function)
-  (40ants-doc/builder:render-to-files function))
+  (40ants-doc::*discard-documentation-p* variable))
+
+
+(defsection @cross-referencing (:title "Cross-referencing")
+  "
+  You can cross-reference entries from different documentation parts be it
+  content of the DEFSECTION or a documentation string of some lisp entity.
+
+  The simples form of cross reference is uppercased name of the entity, like:
+  40ANTS-DOC/REFERENCE:MAKE-REFERENCE. But if there are more than one locative
+  bound to the name, then all these links will be rendered in a parenthesis.
+  For example, docstring:
+
+  ```text
+  See 40ANTS-DOC/SOURCE-API:FIND-SOURCE.
+  ```
+
+  will be rendered as \"See 40ANTS-DOC/SOURCE-API:FIND-SOURCE.\" because
+  there is a generic-function and a method called FIND-SOURCE.
+
+  But you can mention a locative type in a docstring before or after a symbol name:
+
+  ```text
+  See 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function.
+  ```
+
+  and it will be rendered as: See 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function.
+
+  In case if you don't want locative type to appear in the resulting documentation
+  or if locative type is complex, then you can use in a docstring markdown reference:
+
+  ```text
+  See [40ANTS-DOC/SOURCE-API:FIND-SOURCE][(method () (40ants-doc/reference:reference))].
+  ```
+
+  and link will lead to the specified method: See [40ANTS-DOC/SOURCE-API:FIND-SOURCE][(method () (40ants-doc/reference:reference))].")
 
 
 (defsection @locatives-and-references

@@ -39,6 +39,13 @@
                     "UPDATE-ASDF-SYSTEM-HTML-DOCS"
                     "UPDATE-ASDF-SYSTEM-README"
                     ":UPDATE-CSS-P"))
+  "To make documentation builder work, you need to load 40ANTS-DOC-FULL asdf system.
+
+   There are two core functions which render documentation to a string or files:"
+  
+  (40ants-doc/builder:render-to-string function)
+  (40ants-doc/builder:render-to-files function)
+  
   "Besides RENDER-TO-STRING and RENDER-TO-FILES a convenience function is provided
    to serve the common case of having an ASDF system with a readme and a directory for the
   HTML documentation."

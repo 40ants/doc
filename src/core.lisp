@@ -55,7 +55,7 @@
   arguments. See 40ANTS-DOC/DOC::@LOCATIVE-TYPES for the list of locative
   types available out of the box.
 
-  The same symbol can occur multiple times in a reference, typically
+  The same symbol can occur multiple times in ENTRIES, typically
   with different locatives, but this is not required.
 
   The references are not looked up (see 40ANTS-DOC/REFERENCE::RESOLVE in the
