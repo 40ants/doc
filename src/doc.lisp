@@ -532,17 +532,32 @@ on the GitHub to suggest a new feature.
                     "DIRECTION"))
   "Let's see how to extend 40ANTS-DOC/BUILDER::RENDER-TO-FILES and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
-  that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case.
-  40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE,
-  which have 40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE in their argument
-  list for EQL specializing pleasure. Here is a stripped down example
-  of how the VARIABLE locative is defined:"
+  that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case:
+
+  ```cl-transcript
+  (40ants-doc/locatives/base:locate
+     '40ants-doc:*discard-documentation-p*
+     'variable)
+  ==> #<40ANTS-DOC/REFERENCE:REFERENCE 40ANTS-DOC:*DISCARD-DOCUMENTATION-P* (VARIABLE)>
+  ```
+
+  Some methods of 40ANTS-DOC/SOURCE-API::FIND-SOURCE generic-function defer to
+  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE generic-function,
+  which have [LOCATIVE-TYPE][argument] in their argument
+  list for EQL specializing pleasure.
+
+  Here is a stripped down example of how the VARIABLE locative is defined.
+  Pay attention how it defines a method of
+  40ANTS-DOC/COMMONDOC/BUILDER:REFERENCE-TO-COMMONDOC generic-function instead of
+  40ANTS-DOC/COMMONDOC/BUILDER:TO-COMMONDOC generic-function. This is because we have no
+  a lisp object to represent a variable and have to specialize method on
+  LOCATIVE-TYPE argument:"
   (variable-example (include (:start (variable locative)
                               :end (40ants-doc/locatives/variable::end-of-variable-example variable))
                              :lang "commonlisp"))
-  (40ants-doc/source-api::find-source (method () (40ants-doc/reference::reference)))
-  (40ants-doc/locatives/base::locate-and-find-source generic-function)
-  (40ants-doc/locatives/base::locate-and-find-source (method () (t t t)))
+  (40ants-doc/source-api:find-source (method () (40ants-doc/reference:reference)))
+  (40ants-doc/locatives/base:locate-and-find-source generic-function)
+  (40ants-doc/locatives/base:locate-and-find-source (method () (t t t)))
   "We have covered the basic building blocks of reference based
   extensions. Now let's see how the obscure
   40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE and

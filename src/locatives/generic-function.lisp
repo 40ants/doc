@@ -30,3 +30,21 @@
 (defmethod canonical-reference ((function generic-function))
   (40ants-doc/reference::make-reference (swank-mop:generic-function-name function) 'generic-function))
 
+
+
+(defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj generic-function))
+  (let* ((arglist (swank-backend:arglist obj))
+         (docstring (40ants-doc/render/print::get-docstring
+                     obj 'function))
+         ;; TODO:  we should move text transfromation after it will be parsed
+         (children (when docstring
+                     (40ants-doc/commondoc/builder::parse-markdown docstring)))
+         (ignore-words
+           (mapcar #'symbol-name
+                   (40ants-doc/args::function-arg-names arglist)))
+         (reference (canonical-reference obj)))
+
+    (40ants-doc/commondoc/bullet::make-bullet reference
+                                              :arglist arglist
+                                              :children children
+                                              :ignore-words ignore-words)))

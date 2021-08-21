@@ -97,9 +97,11 @@
 
 
 (defgeneric locate-and-find-source (object locative-type locative-args)
-  (:documentation "Called by 40ANTS-DOC/SOURCE-API::FIND-SOURCE on 40ANTS-DOC/REFERENCE::REFERENCE objects, this
-  function has essentially the same purpose as 40ANTS-DOC/SOURCE-API::FIND-SOURCE generic-function but it has
-  different arguments to allow specializing on LOCATIVE-TYPE."))
+  (:documentation
+   "Called by [40ANTS-DOC/SOURCE-API:FIND-SOURCE][(METHOD () (40ANTS-DOC/REFERENCE:REFERENCE)]
+    on 40ANTS-DOC/REFERENCE:REFERENCE objects, this
+    function has essentially the same purpose as 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function but it has
+    different arguments to allow specializing on LOCATIVE-TYPE."))
 
 (defmethod locate-and-find-source (object locative-type locative-args)
   "This default implementation simply calls 40ANTS-DOC/SOURCE-API::FIND-SOURCE with OBJECT

@@ -133,14 +133,19 @@
        refs))))
 
 
-(defmethod 40ants-doc/source-api::find-source ((reference reference))
-  "If REFERENCE can be resolved to a non-reference, call 40ANTS-DOC/SOURCE-API::FIND-SOURCE
-  with it, else call 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE on the object,
-  locative-type, locative-args of REFERENCE."
-  (let ((locative (reference-locative reference)))
-    (40ants-doc/locatives/base::locate-and-find-source (reference-object reference)
-                                                       (40ants-doc/locatives/base::locative-type locative)
-                                                       (40ants-doc/locatives/base::locative-args locative))))
+(defmethod 40ants-doc/source-api:find-source ((reference reference))
+  "If REFERENCE can be resolved to a non-reference, call FIND-SOURCE generic-function
+  with it, else call [40ANTS-DOC/LOCATIVES/BASE:LOCATE-AND-FIND-SOURCE][generic-function] on the object,
+  locative-type, locative-args slots of REFERENCE."
+  (let ((object (resolve reference)))
+    (typecase object
+      (reference
+       (let ((locative (reference-locative reference)))
+         (40ants-doc/locatives/base:locate-and-find-source (reference-object reference)
+                                                           (40ants-doc/locatives/base:locative-type locative)
+                                                           (40ants-doc/locatives/base:locative-args locative))))
+      (t
+       (40ants-doc/source-api:find-source object)))))
 
 
 ;;; REFERENCE-OBJECT on a CANONICAL-REFERENCE of ASDF:SYSTEM is a

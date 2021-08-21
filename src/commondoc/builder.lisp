@@ -22,7 +22,21 @@
     function.
    "))
 
-(defgeneric reference-to-commondoc (obj locative locative-args))
+(defgeneric reference-to-commondoc (obj locative-type locative-args)
+  (:documentation
+   "Define a method for this generic function, when there is no
+    a lisp object to represent an object of given locative type.
+
+    LOCATIVE-TYPE argument will be a symbol. OBJ argument also usually a symbol.
+    LOCATIVE-ARGS argument is a list which will be non-nil in case if
+    object is referenced in a 40ANTS-DOC:DEFSECTION like this:
+
+    ```commonlisp
+    (40ants-doc/source-api:find-source (method () (40ants-doc/reference:reference)))
+    ```
+
+    In this case LOCATIVE-ARGS argument will be `'(NIL (40ANTS-DOC/REFERENCE:REFERENCE))`.
+    "))
 
 
 (defmethod to-commondoc ((obj string))

@@ -110,7 +110,6 @@
   (foo-a (accessor foo))
   (*test-variable* variable)
   (@test-examples section)
-  (@test-other section)
   (test-gf generic-function)
   (test-gf (method () (number)))
   (test-gf (method () ((eql 7))))
@@ -121,7 +120,7 @@
 (defsection @test-examples (:export nil)
   "example section")
 
-(defsection @test-other (:export nil :title "test other title")
+(defsection @test-other (:export nil :title "Test other title")
   "backlink @TEST")
 
 (defsection @test-section-with-link-to-other-page-in-title

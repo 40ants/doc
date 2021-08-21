@@ -12,8 +12,19 @@ function tocItem(anchor) {
     return $("[href=\"" + anchor + "\"]").parent();
 }
 
-function heading(anchor) {
-    return $("[id=" + anchor.substr(1) + "]");
+function heading(uri) {
+    // A uri might contain not only a HTML fragment,
+    // but also a path, like:
+    // /changelog/#some-version
+    //
+    // For highlighting TOC item, we need
+    // only anchors without path
+    if (uri[0] == '#') {
+        anchor_id = uri.substr(1);
+        return $("[id=" + anchor_id + "]");
+    } else {
+        return null;
+    }
 }
 
 var _anchors = null;
@@ -31,10 +42,14 @@ function currentAnchor() {
     var winY = window.pageYOffset;
     var currAnchor = null;
     anchors().each(function() {
-        var y = heading(this).position().top;
-        if (y < winY + window.innerHeight * 0.23) {
-            currAnchor = this;
-            return;
+        var item = heading(this);
+
+        if (item) {
+            var y = item.position().top;
+            if (y < winY + window.innerHeight * 0.23) {
+                currAnchor = this;
+                return;
+            }
         }
     })
     return tocItem(currAnchor);
