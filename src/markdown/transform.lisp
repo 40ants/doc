@@ -306,36 +306,6 @@
    "\\1`\\2`\\3"))
 
 
-;;; Take a string in markdown format and a list of KNOWN-REFERENCES.
-;;; Markup symbols as code (if *DOCUMENT-UPPERCASE-IS-CODE*), autolink
-;;; (if *DOCUMENT-LINK-SECTIONS*, *DOCUMENT-LINK-CODE*) and handle
-;;; explicit links with locatives (always). Return the transformed
-;;; string.
-(defun replace-known-references (string &key (known-references 40ants-doc/reference::*references*))
-  ;; TODO: This entire function should be replaced to work with commondoc documents
-  ;;       and to modify them instead of working on a markdown level.
-  (when string
-    (let* ((string (replace-upcased-package-qualified-names string))
-           (string
-             ;; Handle *DOCUMENT-UPPERCASE-IS-CODE* in normal strings
-             ;; and :EMPH (to recognize *VAR*).
-             (40ants-doc/markdown::map-markdown-parse-tree
-              '(:emph 3bmd-code-blocks::code-block)
-              '(:code :verbatim 3bmd-code-blocks::code-block
-                :reference-link :explicit-link :image :mailto)
-              t
-              (alexandria:rcurry #'translate-to-code known-references)
-              string)))
-      ;; Handle *DOCUMENT-LINK-CODE* (:CODE for `SYMBOL` and
-      ;; :REFERENCE-LINK for [symbol][locative]). Don't hurt links.
-      (40ants-doc/markdown::map-markdown-parse-tree
-       '(:code :reference-link)
-       '(:explicit-link :image :mailto)
-       nil
-       (alexandria:rcurry #'translate-to-links known-references)
-       string))))
-
-
 (defun massage-docstring (docstring &key (indentation "    "))
   (if 40ants-doc/builder/vars::*table-of-contents-stream*
       ;; The output is going to /dev/null and this is a costly
@@ -343,17 +313,7 @@
       ""
       (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
         (40ants-doc/utils::prefix-lines indentation
-                                        (replace-known-references docstring)))))
+                                        docstring))))
 
 (defun massage-docstring2 (docstring)
-  ;; (40ants-doc/utils::strip-docstring-indentation docstring)
-
-  (40ants-doc/utils::strip-docstring-indentation docstring)
-
-  ;; We need this code only for old version of the builder
-  ;; New version replaces references on the separate stage:
-  ;; 
-  ;; (replace-known-references docstring)
-  ;; (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
-  ;;   (replace-known-references docstring))
-  )
+  (40ants-doc/utils::strip-docstring-indentation docstring))

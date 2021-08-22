@@ -54,14 +54,6 @@
       reference)))
 
 
-;; TODO: remove?
-(defun reachable-canonical-references (objects)
-  (mapcan (lambda (object)
-            (mapcar #'canonical-reference
-                    (cons object (collect-reachable-objects object))))
-          objects))
-
-
 ;;; Return the unescaped name of the HTML anchor for REFERENCE. See
 ;;; HTML-SAFE-NAME.
 (defun reference-to-anchor (reference)

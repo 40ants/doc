@@ -1,7 +1,6 @@
 (uiop:define-package #:40ants-doc/builder/section
   (:use #:cl)
   (:import-from #:40ants-doc/core)
-  (:import-from #:40ants-doc/render/toc)
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/reference-api)

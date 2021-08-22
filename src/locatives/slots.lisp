@@ -116,12 +116,9 @@
                                               (if (swank-mop:slot-definition-initfunction slot-def)
                                                   (format nil "~A= ~A"
                                                           (if initarg-strings " " "")
-                                                          ;; TODO: remove this replace-known-references and replace
-                                                          ;;       it with a separate reference replacing step.
-                                                          (40ants-doc/markdown/transform::replace-known-references
-                                                           (40ants-doc/utils::prin1-and-escape-markdown
-                                                            (swank-mop:slot-definition-initform
-                                                             slot-def))))
+                                                          (40ants-doc/utils::prin1-and-escape-markdown
+                                                           (swank-mop:slot-definition-initform
+                                                            slot-def)))
                                                   "")))))
          (docstring (unless (subtypep (find-class (first locative-args)) 'condition)
                       (let ((docstring (swank-mop:slot-definition-documentation slot-def)))
