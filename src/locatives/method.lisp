@@ -75,12 +75,15 @@
                      obj t))
          ;; TODO:  we should move text transfromation after it will be parsed
          (children (when docstring
-                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                     (40ants-doc/commondoc/builder::parse-markdown docstring)))
+         (dislocated-symbols
+           (40ants-doc/args::function-arg-names arglist))
+         (reference (canonical-reference obj)))
 
-    (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
+    (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist arglist
                                               :children children
-                                              :ignore-words (40ants-doc/args::function-arg-names arglist))))
+                                              :dislocated-symbols dislocated-symbols)))
 
 ;;;; These were lifted from the fancy inspector contrib and then
 ;;;; tweaked.

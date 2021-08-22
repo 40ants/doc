@@ -39,12 +39,9 @@
          ;; TODO:  we should move text transfromation after it will be parsed
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring)))
-         (ignore-words
-           (mapcar #'symbol-name
-                   (40ants-doc/args::function-arg-names arglist)))
          (reference (canonical-reference obj)))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist arglist
                                               :children children
-                                              :ignore-words ignore-words)))
+                                              :dislocated-symbols (40ants-doc/args::function-arg-names arglist))))

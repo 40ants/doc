@@ -8,8 +8,6 @@
   (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
-  (:import-from #:40ants-doc/args
-                #:with-dislocated-symbols)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/render/print)
@@ -42,7 +40,7 @@
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist locative-args
                                               :children children
-                                              :ignore-words (40ants-doc/args::macro-arg-names arglist))))
+                                              :dislocated-symbols (40ants-doc/args::macro-arg-names arglist))))
 
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'compiler-macro))

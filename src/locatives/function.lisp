@@ -46,4 +46,4 @@
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
                                               :arglist arglist
                                               :children children
-                                              :ignore-words (40ants-doc/args::function-arg-names arglist))))
+                                              :dislocated-symbols (40ants-doc/args::function-arg-names arglist))))

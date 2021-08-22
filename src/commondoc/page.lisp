@@ -31,6 +31,9 @@
   (:import-from #:40ants-doc/rewrite)
   (:import-from #:40ants-doc/locatives/base
                 #:locative-equal)
+  (:import-from #:40ants-doc/dislocated-symbols
+                #:dislocated-symbols
+                #:supports-dislocated-symbols-p)
   (:export #:make-page
            #:page
            #:make-page-toc
@@ -358,6 +361,7 @@ var DOCUMENTATION_OPTIONS = {
 (defun replace-xrefs (node known-references
                       &key base-url
                       &aux ignored-words
+                           dislocated-symbols
                            sections
                            current-page
                            inside-code-block
@@ -379,7 +383,14 @@ var DOCUMENTATION_OPTIONS = {
    contains words, specified as IGNORE-WORDS argument of the 40ANTS-DOC:DEFSECTION macro.
   "
   
-  (labels ((collect-ignored-words (node)
+  (labels ((collect-dislocated (node)
+             (when (supports-dislocated-symbols-p node)
+               (push (dislocated-symbols node)
+                     dislocated-symbols)))
+           (pop-dislocated (node)
+             (when (supports-dislocated-symbols-p node)
+               (pop dislocated-symbols)))
+           (collect-ignored-words (node)
              (when (supports-ignored-words-p node)
                (let ((words (ignored-words node)))
                  (push words
@@ -409,11 +420,13 @@ var DOCUMENTATION_OPTIONS = {
              (when (typep node 'common-doc:code)
                (setf inside-code-block nil)))
            (go-down (node)
+             (collect-dislocated node)
              (collect-ignored-words node)
              (collect-section node)
              (push-page node)
              (set-inside-code-block-if-needed node))
            (go-up (node)
+             (pop-dislocated node)
              (pop-ignored-words node)
              (pop-section node)
              (pop-page node)
@@ -472,32 +485,37 @@ var DOCUMENTATION_OPTIONS = {
                 (let* ((text (40ants-doc/commondoc/xref:xref-name node))
                        (symbol (40ants-doc/commondoc/xref:xref-symbol node))
                        (locative (40ants-doc/commondoc/xref:xref-locative node))
+                       (found-in-dislocated
+                         (loop for sublist in dislocated-symbols
+                               thereis (member text sublist
+                                               :test #'string-equal)))
                        (found-references
-                         (loop for (reference . page) in known-references
-                               ;; This can be a symbol or a string.
-                               ;; For example, for SYSTEM locative, object
-                               ;; is a string name of a system.
-                               ;; 
-                               ;; TODO: Think about a GENERIC to compare
-                               ;;       XREF with references of different locative types.
-                               for reference-object = (40ants-doc/reference::reference-object reference)
-                               when (and (etypecase reference-object
-                                           (symbol
-                                            (eql reference-object
-                                                 symbol))
-                                           (string
-                                            ;; Here we intentionally use case insensitive
-                                            ;; comparison, because a canonical reference
-                                            ;; to ASDF system contains it's name in a lowercase,
-                                            ;; but some other locatives like a PACKAGE, might
-                                            ;; keep a name in the uppercase.
-                                            (string-equal reference-object
-                                                          text)))
-                                         (or (null locative)
-                                             (locative-equal (40ants-doc/reference::reference-locative reference)
-                                                             locative)))
-                               collect (cons reference
-                                             page)))
+                         (unless found-in-dislocated
+                           (loop for (reference . page) in known-references
+                                 ;; This can be a symbol or a string.
+                                 ;; For example, for SYSTEM locative, object
+                                 ;; is a string name of a system.
+                                 ;; 
+                                 ;; TODO: Think about a GENERIC to compare
+                                 ;;       XREF with references of different locative types.
+                                 for reference-object = (40ants-doc/reference::reference-object reference)
+                                 when (and (etypecase reference-object
+                                             (symbol
+                                              (eql reference-object
+                                                   symbol))
+                                             (string
+                                              ;; Here we intentionally use case insensitive
+                                              ;; comparison, because a canonical reference
+                                              ;; to ASDF system contains it's name in a lowercase,
+                                              ;; but some other locatives like a PACKAGE, might
+                                              ;; keep a name in the uppercase.
+                                              (string-equal reference-object
+                                                            text)))
+                                           (or (null locative)
+                                               (locative-equal (40ants-doc/reference::reference-locative reference)
+                                                               locative)))
+                                 collect (cons reference
+                                               page))))
                        (found-references
                          (if current-page
                              (remove-references-to-other-document-formats current-page
@@ -505,7 +523,8 @@ var DOCUMENTATION_OPTIONS = {
                              found-references))
                        (should-be-ignored
                          (unless found-references
-                           (should-be-ignored-p text symbol locative))))
+                           (or found-in-dislocated
+                               (should-be-ignored-p text symbol locative)))))
 
                   (cond
                     (should-be-ignored

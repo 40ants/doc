@@ -35,16 +35,3 @@
                                    (foo arg)))))))
         (foo arglist))
       (reverse names))))
-
-;;; Add a dummy page with for references to SYMBOLS whose locative is
-;;; ARGUMENT. If an ARGUMENT reference is present for a symbol, it
-;;; will surely be marked up as code, but it's not linkified in the
-;;; absence of an explicit locative even if it the symbol refers to
-;;; other things with different locatives.
-(defmacro with-dislocated-symbols ((symbols) &body body)
-  `(40ants-doc/page::with-pages ((list (40ants-doc/page::make-page
-                       :references (mapcar (lambda (symbol)
-                                             (40ants-doc/reference::make-reference symbol
-                                                                                   '40ants-doc/locatives/dislocated::dislocated))
-                                           ,symbols))))
-     ,@body))
