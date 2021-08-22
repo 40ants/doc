@@ -25,6 +25,7 @@
   (:import-from #:40ants-doc/reference)
   ;; (:import-from #:40ants-doc/page)
   (:import-from #:swank)
+  (:import-from #:slynk)
   (:export
    #:transcribe
    #:*syntaxes*
