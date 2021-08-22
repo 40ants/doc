@@ -27,14 +27,15 @@
 
 (defmethod locate-object (symbol (locative-type (eql 'variable)) locative-args)
   (assert (<= (length locative-args) 1))
-  (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
+  (40ants-doc/reference:make-reference symbol (cons locative-type locative-args)))
 
 
-(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'variable)) locative-args)
+(defmethod 40ants-doc/commondoc/builder:reference-to-commondoc ((symbol symbol) (locative-type (eql 'variable)) locative-args)
   (destructuring-bind (&optional (initform nil initformp)) locative-args
     (let* ((reference (canonical-reference
-                       (40ants-doc/reference::make-reference
-                        symbol (cons locative-type locative-args))))
+                       (40ants-doc/reference:make-reference symbol
+                                                            (cons locative-type
+                                                                  locative-args))))
            (docstring (40ants-doc/render/print::get-docstring symbol 'variable))
            (arglist (multiple-value-bind (value unboundp) (40ants-doc/utils::symbol-global-value symbol)
                       (cond (initformp
@@ -43,12 +44,12 @@
                             (t
                              (prin1-to-string value)))))
            (children (when docstring
-                       (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                       (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
-      (40ants-doc/commondoc/bullet::make-bullet reference
-                                                :arglist arglist
-                                                :children children
-                                                :dislocated-symbols symbol))))
+      (40ants-doc/commondoc/bullet:make-bullet reference
+                                               :arglist arglist
+                                               :children children
+                                               :dislocated-symbols symbol))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'variable))
                                    locative-args)

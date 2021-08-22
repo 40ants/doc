@@ -522,9 +522,9 @@ on the GitHub to suggest a new feature.
   (locative locative)
   (include locative)
   (stdout-of locative)
-  (40ants-doc/restart::define-restart macro)
+  (40ants-doc/restart:define-restart macro)
   (restart locative)
-  (40ants-doc/glossary::define-glossary-term macro)
+  (40ants-doc/glossary:define-glossary-term macro)
   (glossary-term locative))
 
 
@@ -588,7 +588,7 @@ on the GitHub to suggest a new feature.
   Here is a stripped down example of how the VARIABLE locative is defined.
   Pay attention how it defines a method of
   40ANTS-DOC/COMMONDOC/BUILDER:REFERENCE-TO-COMMONDOC generic-function instead of
-  40ANTS-DOC/COMMONDOC/BUILDER:TO-COMMONDOC generic-function. This is because we have no
+  [40ANTS-DOC/COMMONDOC/BUILDER:TO-COMMONDOC][generic-function]. This is because we have no
   a lisp object to represent a variable and have to specialize method on
   LOCATIVE-TYPE argument:"
   (variable-example (include (:start (variable locative)
@@ -597,15 +597,16 @@ on the GitHub to suggest a new feature.
   (40ants-doc/source-api:find-source (method () (40ants-doc/reference:reference)))
   (40ants-doc/locatives/base:locate-and-find-source generic-function)
   (40ants-doc/locatives/base:locate-and-find-source (method () (t t t)))
+  (40ants-doc/commondoc/builder:reference-to-commondoc generic-function)
+  
   "We have covered the basic building blocks of reference based
   extensions. Now let's see how the obscure
-  40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE and
-  40ANTS-DOC/LOCATIVES/DEFINE-DEFINER::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
+  40ANTS-DOC/LOCATIVES/DEFINERS:DEFINE-SYMBOL-LOCATIVE-TYPE and
+  40ANTS-DOC/LOCATIVES/DEFINE-DEFINER:DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
   simplify the common task of associating definition and documentation
   with symbols in a certain context."
-  (40ants-doc/locatives/definers::define-symbol-locative-type macro)
-  (40ants-doc/locatives/define-definer::define-definer-for-symbol-locative-type macro)
-  (40ants-doc/commondoc/builder:reference-to-commondoc generic-function))
+  (40ants-doc/locatives/definers:define-symbol-locative-type macro)
+  (40ants-doc/locatives/define-definer:define-definer-for-symbol-locative-type macro))
 
 
 (defsection @sections (:title "Sections")
