@@ -40,7 +40,7 @@
 (defvar *document-mark-up-signatures* t
   "When true, some things such as function names and arglists are
   rendered as bold and italic. In :HTML output, locative types become
-  links to sources (if :SOURCE-URI-FN is provided, see 40ANTS-DOC/DOCUMENT::DOCUMENT), and
+  links to sources (if :SOURCE-URI-FN is provided, see 40ANTS-DOC/BUILDER:RENDER-TO-FILES), and
   the symbol becomes a self-link for your permalinking pleasure.
 
   For example, a reference is rendered in markdown roughly as:

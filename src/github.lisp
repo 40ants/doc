@@ -37,7 +37,9 @@
   `http://<username>.github.io/<repo-name>`. It is probably a good
   idea to add section like the 40ANTS-DOC/DOC:@LINKS section to allow jumping
   between the repository and the gh-pages site."
-  (make-github-source-uri-fn function))
+  (make-github-source-uri-fn function)
+  (40ants-doc/reference-api:*source-uri-fn* variable)
+  (40ants-doc/reference-api:source-uri function))
 
 
 (defun asdf-system-github-uri (asdf-system)

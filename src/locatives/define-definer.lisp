@@ -22,7 +22,7 @@
   a lambda-list and source location to a symbol in the context of
   LOCATIVE-TYPE. The defined macro's arglist is (SYMBOL LAMBDA-LIST
   &OPTIONAL DOCSTRING). LOCATIVE-TYPE is assumed to have been defined
-  with 40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE."
+  with 40ANTS-DOC/LOCATIVES/DEFINERS:DEFINE-SYMBOL-LOCATIVE-TYPE."
   `(defmacro ,name (symbol lambda-list &body docstring)
      ,@docstring
      `,(expand-define-definer-for-symbol-as-locative-definer-body

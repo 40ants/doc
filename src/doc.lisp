@@ -477,7 +477,10 @@ on the GitHub to suggest a new feature.
      :ignore-words ("@FOO-MANUAL"))
   "Docstrings are assumed to be in markdown format and they are pretty
   much copied verbatim to the documentation subject to a few knobs
-  described below."
+  described below.
+
+  **Note, some of these variables might be not supported yet in this fork.**
+"
   (40ants-doc/builder/printer::*document-uppercase-is-code* variable)
   (40ants-doc/builder/printer::*document-downcase-uppercase-code* variable)
   (40ants-doc/builder/printer::*document-normalize-packages* variable)
@@ -525,7 +528,10 @@ on the GitHub to suggest a new feature.
   (40ants-doc/restart:define-restart macro)
   (restart locative)
   (40ants-doc/glossary:define-glossary-term macro)
-  (glossary-term locative))
+  (glossary-term locative)
+
+  "There is also a helper function to compare locatives:"
+  (40ants-doc/locatives/base:locative-equal function))
 
 
 (defsection @extension-api (:title "Extension API")
@@ -611,16 +617,17 @@ on the GitHub to suggest a new feature.
 
 (defsection @sections (:title "Sections")
   "40ANTS-DOC:SECTION objects rarely need to be dissected since
-  40ANTS-DOC::DEFSECTION and 40ANTS-DOC/BUILDER::RENDER-TO-FILES cover most needs. However, it is plausible
+  40ANTS-DOC:DEFSECTION and 40ANTS-DOC/BUILDER:RENDER-TO-FILES cover most needs. However, it is plausible
   that one wants to subclass them and maybe redefine how they are
   presented."
-  (40ants-doc::section class)
-  (40ants-doc::section-name (reader 40ants-doc::section))
-  (40ants-doc::section-package (reader 40ants-doc::section))
-  (40ants-doc::section-readtable (reader 40ants-doc::section))
-  (40ants-doc::section-title (reader 40ants-doc::section))
-  (40ants-doc::section-link-title-to (reader 40ants-doc::section))
-  (40ants-doc::section-entries (reader 40ants-doc::section)))
+  (40ants-doc:section class)
+  (40ants-doc:section-name (reader 40ants-doc:section))
+  (40ants-doc:section-package (reader 40ants-doc:section))
+  (40ants-doc:section-readtable (reader 40ants-doc:section))
+  (40ants-doc:section-title (reader 40ants-doc:section))
+  (40ants-doc:section-link-title-to (reader 40ants-doc:section))
+  (40ants-doc:section-entries (reader 40ants-doc:section))
+  (40ants-doc:section-ignore-words (reader 40ants-doc:section)))
 
 
 (defsection @todo (:title "TODO"

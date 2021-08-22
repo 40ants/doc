@@ -22,10 +22,17 @@
    object and the result should be a full URL leading to the web page where
    referenced object can be viewed. Usually this is a GitHub's page.
 
+   When you are using 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS,
+   this variable will be automatically bound to the result of
+   40ANTS-DOC/GITHUB:MAKE-GITHUB-SOURCE-URI-FN function call if
+   ASDF system has a :SOURCE-CONTROL slot.
+
    See 40ANTS-DOC/GITHUB:MAKE-GITHUB-SOURCE-URI-FN for details.")
 
 
 (defun source-uri (reference)
+  "Returns URI for the reference object
+   if *SOURCE-URI-FN* is bound to a function."
   (let ((fn *source-uri-fn*))
     (when fn
       (funcall fn reference))))

@@ -145,6 +145,9 @@
 
 
 (defun locative-equal (left right)
+  "Compares two locatives.
+
+   Each locative may be a symbol or a locative with arugments in a list form."
   (and (eql (locative-type left)
             (locative-type right))
        (equal (locative-args left)

@@ -14,7 +14,8 @@
            #:section-title
            #:section-link-title-to
            #:section-entries
-           #:*discard-documentation-p*))
+           #:*discard-documentation-p*
+           #:section-ignore-words))
 (in-package 40ants-doc)
 
 

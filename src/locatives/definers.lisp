@@ -26,9 +26,9 @@
 
 (defmacro define-symbol-locative-type (locative-type lambda-list
                                        &body docstring)
-  """Similar to 40ANTS-DOC/LOCATIVES/BASE::DEFINE-LOCATIVE-TYPE but it assumes that all things
+  """Similar to 40ANTS-DOC/LOCATIVES/BASE:DEFINE-LOCATIVE-TYPE but it assumes that all things
   locatable with LOCATIVE-TYPE are going to be just symbols defined
-  with a definer defined with 40ANTS-DOC/LOCATIVES/DEFINE-DEFINER::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE.
+  with a definer defined with 40ANTS-DOC/LOCATIVES/DEFINE-DEFINER:DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE.
   It is useful to attach documentation and source location to symbols
   in a particular context. An example will make everything clear:
 
