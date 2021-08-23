@@ -5,7 +5,6 @@
   (:import-from #:3bmd-code-blocks)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
-  (:import-from #:40ants-doc/builder/footer)
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/page
                 #:page-base-dir

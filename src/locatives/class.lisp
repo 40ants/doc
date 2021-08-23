@@ -55,24 +55,10 @@
 
     (40ants-doc/commondoc/bullet::make-bullet (canonical-reference class)
                                               ;; TODO: support 40ants-doc/builder/vars::*document-mark-up-signatures* here
-                                              ;; and rewrite mark-up-superclasses
+                                              ;; and make transform superclasses to XREFs
                                               :arglist (40ants-doc/commondoc/arglist::make-arglist superclasses)
                                               :children children
                                               :ignore-words symbol)))
-
-
-(defun mark-up-superclasses (superclasses)
-  (with-output-to-string (stream)
-    (loop for class in superclasses
-          for i upfrom 0
-          do (let ((reference (40ants-doc/reference::make-reference class 'class)))
-               (let ((name (40ants-doc/utils::escape-markdown (prin1-to-string class))))
-                 (unless (zerop i)
-                   (format stream " "))
-                 (if (find-known-reference reference)
-                     (format stream "[~A][~A]" name
-                             (40ants-doc/page::link-to-reference reference))
-                     (format stream "~A" name)))))))
 
 (defun find-known-reference (reference)
   (find reference 40ants-doc/reference::*references* :test #'40ants-doc/reference::reference=))
