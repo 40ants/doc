@@ -41,7 +41,7 @@
 
 (defmethod to-commondoc ((obj string))
   (parse-markdown
-   (40ants-doc/utils::strip-docstring-indentation obj)))
+   (40ants-doc/docstring:strip-docstring-indentation obj)))
 
 
 (defmethod to-commondoc ((obj 40ants-doc/reference::reference))

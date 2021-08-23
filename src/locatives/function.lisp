@@ -12,9 +12,9 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/commondoc/bullet))
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/function)
 
 
@@ -38,12 +38,11 @@
 
 (defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj function))
   (let* ((arglist (swank-backend:arglist obj))
-         (docstring (40ants-doc/render/print::get-docstring
-                     obj 'function))
+         (docstring (40ants-doc/docstring:get-docstring obj 'function))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
-    (40ants-doc/commondoc/bullet::make-bullet (canonical-reference obj)
-                                              :arglist arglist
-                                              :children children
-                                              :dislocated-symbols (40ants-doc/args::function-arg-names arglist))))
+    (40ants-doc/commondoc/bullet:make-bullet (canonical-reference obj)
+                                             :arglist arglist
+                                             :children children
+                                             :dislocated-symbols (40ants-doc/args::function-arg-names arglist))))

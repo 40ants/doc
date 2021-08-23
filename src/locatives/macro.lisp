@@ -10,14 +10,14 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/locatives
                 #:macro)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/commondoc/bullet))
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/macro)
 
 
@@ -35,14 +35,14 @@
                      (40ants-doc/reference::make-reference
                       symbol (cons locative-type locative-args))))
          (arglist (swank-backend:arglist symbol))
-         (docstring (40ants-doc/render/print::get-docstring symbol 'function))
+         (docstring (40ants-doc/docstring:get-docstring symbol 'function))
          ;; TODO:  we should move text transformation out from get-docstring to after it will be parsed
          (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
 
-    (40ants-doc/commondoc/bullet::make-bullet reference
-                                              :arglist arglist
-                                              :children children
-                                              :ignore-words (40ants-doc/args::macro-arg-names arglist))))
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :arglist arglist
+                                             :children children
+                                             :ignore-words (40ants-doc/args::macro-arg-names arglist))))
 
 
 (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql 'macro))

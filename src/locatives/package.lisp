@@ -10,7 +10,6 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
@@ -18,7 +17,8 @@
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/commondoc/builder))
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/package)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -37,9 +37,9 @@
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((package package))
   (let* ((reference (canonical-reference package))
          (symbol (package-name package))
-         (docstring (40ants-doc/render/print::get-docstring package t))
+         (docstring (40ants-doc/docstring:get-docstring package t))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
-    (40ants-doc/commondoc/bullet::make-bullet reference
-                                              :children children
-                                              :ignore-words symbol)))
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :children children
+                                             :ignore-words symbol)))

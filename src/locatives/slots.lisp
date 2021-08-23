@@ -11,7 +11,6 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-mop)
@@ -20,7 +19,6 @@
                 #:accessor
                 #:reader
                 #:writer)
-  (:import-from #:40ants-doc/markdown/transform)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/arglist
                 #:make-arglist))
@@ -123,7 +121,7 @@
          (docstring (unless (subtypep (find-class (first locative-args)) 'condition)
                       (let ((docstring (swank-mop:slot-definition-documentation slot-def)))
                         (when docstring
-                          (40ants-doc/markdown/transform::massage-docstring2 docstring)))))
+                          (40ants-doc/docstring:strip-docstring-indentation docstring)))))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
     (40ants-doc/commondoc/bullet::make-bullet reference

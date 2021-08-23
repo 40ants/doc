@@ -10,11 +10,11 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/commondoc/arglist))
+  (:import-from #:40ants-doc/commondoc/arglist)
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/class)
 
 (define-locative-type class ())
@@ -49,7 +49,7 @@
                             (and conditionp (eq name 'condition))))
                       (mapcar #'class-name
                               (swank-mop:class-direct-superclasses class))))
-         (docstring (40ants-doc/render/print::get-docstring class t))
+         (docstring (40ants-doc/docstring:get-docstring class t))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 

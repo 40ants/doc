@@ -8,7 +8,6 @@
                 #:glossary-term)
   (:import-from #:40ants-doc/glossary)
   (:import-from #:40ants-doc/reference-api)
-  (:import-from #:40ants-doc/markdown/transform)
   (:import-from #:40ants-doc/source-api))
 (in-package 40ants-doc/locatives/glossary)
 
@@ -37,7 +36,7 @@
                                                        symbol '(glossary-term))))
          (docstring (let ((docstring (40ants-doc/glossary::glossary-term-docstring glossary-term)))
                       (when docstring
-                        (40ants-doc/utils::strip-docstring-indentation docstring))))
+                        (40ants-doc/docstring:strip-docstring-indentation docstring))))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 

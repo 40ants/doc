@@ -10,12 +10,12 @@
                 #:canonical-reference)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/commondoc/bullet))
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/compiler-macro)
 
 
@@ -33,7 +33,7 @@
                      (40ants-doc/reference::make-reference
                       symbol (cons locative-type locative-args))))
          (arglist (swank-backend:arglist symbol))
-         (docstring (40ants-doc/render/print::get-docstring symbol 'compiler-macro))
+         (docstring (40ants-doc/docstring:get-docstring symbol 'compiler-macro))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 

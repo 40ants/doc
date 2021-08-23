@@ -10,14 +10,14 @@
                 #:canonical-reference)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/locatives/utils)
   (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/commondoc/bullet))
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/variable)
 
 
@@ -36,7 +36,7 @@
                        (40ants-doc/reference:make-reference symbol
                                                             (cons locative-type
                                                                   locative-args))))
-           (docstring (40ants-doc/render/print::get-docstring symbol 'variable))
+           (docstring (40ants-doc/docstring:get-docstring symbol 'variable))
            (arglist (multiple-value-bind (value unboundp) (40ants-doc/utils::symbol-global-value symbol)
                       (cond (initformp
                              (prin1-to-string initform))

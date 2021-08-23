@@ -12,7 +12,7 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/render/print))
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/generic-function)
 
 
@@ -34,8 +34,7 @@
 
 (defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj generic-function))
   (let* ((arglist (swank-backend:arglist obj))
-         (docstring (40ants-doc/render/print::get-docstring
-                     obj 'function))
+         (docstring (40ants-doc/docstring:get-docstring obj 'function))
          ;; TODO:  we should move text transfromation after it will be parsed
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring)))

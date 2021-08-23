@@ -10,7 +10,6 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
@@ -71,8 +70,7 @@
 
 (defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj method))
   (let* ((arglist (rest (method-for-inspect-value obj)))
-         (docstring (40ants-doc/render/print::get-docstring
-                     obj t))
+         (docstring (40ants-doc/docstring:get-docstring obj t))
          ;; TODO:  we should move text transfromation after it will be parsed
          (children (when docstring
                      (40ants-doc/commondoc/markdown:parse-markdown docstring)))

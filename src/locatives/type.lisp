@@ -11,13 +11,13 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/locatives/utils)
   (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/commondoc/bullet))
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/docstring))
 (in-package 40ants-doc/locatives/type)
 
 
@@ -42,7 +42,7 @@
   (let* ((reference (40ants-doc/reference::make-reference
                      symbol (cons locative-type locative-args)))
          (arglist (swank-backend:type-specifier-arglist symbol))
-         (docstring (40ants-doc/render/print::get-docstring symbol 'type))
+         (docstring (40ants-doc/docstring:get-docstring symbol 'type))
          (children (when docstring
                      (40ants-doc/commondoc/builder::parse-markdown docstring))))
 

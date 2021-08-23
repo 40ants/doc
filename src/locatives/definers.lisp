@@ -5,11 +5,11 @@
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/docstring)
   (:export
    #:define-symbol-locative-type))
 (in-package 40ants-doc/locatives/definers)
@@ -61,7 +61,7 @@
               (arglist (40ants-doc/locatives/base::symbol-lambda-list symbol ',locative-type))
               (reference (40ants-doc/reference::make-reference
                           symbol (cons locative-type locative-args)))
-              (docstring (40ants-doc/render/print::get-docstring method t))
+              (docstring (40ants-doc/docstring:get-docstring method t))
               (children (when docstring
                           (40ants-doc/commondoc/builder::parse-markdown docstring))))
 
