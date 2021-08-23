@@ -12,15 +12,13 @@
   ;; (:import-from #:40ants-doc/commondoc/page)
   (:import-from #:40ants-doc/commondoc/format
                 #:ensure-format-class-name)
-  (:export
-   #:make-page2
-   #:ensure-page)
-  (:export
-   #:page-format
-   #:base-filename
-   #:page-base-dir
-   #:page-base-url
-   #:page-sections))
+  (:export #:make-page
+           #:ensure-page
+           #:page-format
+           #:base-filename
+           #:page-base-dir
+           #:page-base-url
+           #:page-sections))
 (in-package 40ants-doc/page)
 
 
@@ -57,12 +55,12 @@
   nil)
 
 
-(defclass page2 (page-common-mixin)
+(defclass page (page-common-mixin)
   ((sections :initarg :sections
              :reader page-sections)))
 
 
-(defmethod 40ants-doc/object-package:object-package ((obj page2))
+(defmethod 40ants-doc/object-package:object-package ((obj page))
   nil)
 
 
@@ -76,14 +74,14 @@
                               (first sections))))))
 
 
-(defun make-page2 (sections &key base-filename
-                                 base-dir
-                                 base-url
-                                 format)
+(defun make-page (sections &key base-filename
+                                base-dir
+                                base-url
+                                format)
   (let* ((sections (uiop:ensure-list sections))
          (base-filename (or base-filename
                             (make-base-filename sections))))
-    (make-instance 'page2
+    (make-instance 'page
                    :sections sections
                    :base-filename base-filename
                    :base-dir base-dir
@@ -92,13 +90,13 @@
 
 
 (defun ensure-page (obj)
-  (check-type obj (or 40ants-doc:section page2))
+  (check-type obj (or 40ants-doc:section page))
   (typecase obj
-    (page2 obj)
-    (t (make-page2 obj))))
+    (page obj)
+    (t (make-page obj))))
 
 
-(defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj page2))
+(defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj page))
   (uiop:symbol-call :40ants-doc/commondoc/page :make-page
                     (mapcar #'40ants-doc/commondoc/builder:to-commondoc
                             (page-sections obj))

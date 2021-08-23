@@ -106,20 +106,20 @@
   (render-to-files (append (uiop:ensure-list sections-or-pages)
                            (when readme-sections
                              (uiop:ensure-list
-                              (40ants-doc/page:make-page2 readme-sections
-                                                          :base-filename "README"
-                                                          :base-dir (asdf:system-relative-pathname
-                                                                     asdf-system
-                                                                     "./")
+                              (40ants-doc/page:make-page readme-sections
+                                                         :base-filename "README"
+                                                         :base-dir (asdf:system-relative-pathname
+                                                                    asdf-system
+                                                                    "./")
                                                           :format :markdown)))
                            (when changelog-sections
                              (uiop:ensure-list
-                              (40ants-doc/page:make-page2 changelog-sections
-                                                          :base-filename "ChangeLog"
-                                                          :base-dir (asdf:system-relative-pathname
-                                                                     asdf-system
-                                                                     "./")
-                                                          :format :markdown))))
+                              (40ants-doc/page:make-page changelog-sections
+                                                         :base-filename "ChangeLog"
+                                                         :base-dir (asdf:system-relative-pathname
+                                                                    asdf-system
+                                                                    "./")
+                                                         :format :markdown))))
                    :base-dir (asdf:system-relative-pathname
                               asdf-system
                               (uiop:ensure-directory-pathname docs-dir))

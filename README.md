@@ -175,7 +175,7 @@ For this example, the generated markdown would look like this:
 Slots with :INSTANCE allocation:
   NAME                           = FOO-RANDOM::@FOO-RANDOM-MANUAL
   PACKAGE                        = #<PACKAGE "FOO-RANDOM">
-  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {1002C..
+  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {10038..
   TITLE                          = "Foo Random manual"
   LINK-TITLE-TO                  = NIL
   ENTRIES                        = ("Here you describe what's common to all the referenced (and..

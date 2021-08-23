@@ -369,10 +369,10 @@
                                        ;; 40ants-doc/doc::@index
                                        ;; @second-page
                                        
-                                       (40ants-doc/page:make-page2 @experiment)
-                                       ;; (40ants-doc/page:make-page2 @readme
-                                       ;;                             :format 'commondoc-markdown:markdown
-                                       ;;                             :base-dir "./new-docs/")
+                                       (40ants-doc/page:make-page @experiment)
+                                       ;; (40ants-doc/page:make-page @readme
+                                       ;;                            :format 'commondoc-markdown:markdown
+                                       ;;                            :base-dir "./new-docs/")
                                        )
                                       :base-url "https://40ants.com/doc/"
                                       :base-dir "./new-docs/html/"

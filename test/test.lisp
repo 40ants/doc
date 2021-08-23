@@ -331,10 +331,10 @@
 
 (defun write-test-document-files (basedir format)
   (let ((40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html))
-        (pages (list (40ants-doc/page:make-page2 @test-other
-                                                 :base-filename "other/test-other")
-                     (40ants-doc/page:make-page2 @test
-                                                 :base-filename "test"))))
+        (pages (list (40ants-doc/page:make-page @test-other
+                                                :base-filename "other/test-other")
+                     (40ants-doc/page:make-page @test
+                                                :base-filename "test"))))
 
     (40ants-doc/builder:render-to-files pages
                                         :base-dir basedir
