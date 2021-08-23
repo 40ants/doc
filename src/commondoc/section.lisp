@@ -129,7 +129,7 @@
       (decf *section-depth*))))
 
 
-(defmethod 40ants-doc/commondoc/xref::link-text ((obj 40ants-doc:section))
+(defmethod 40ants-doc/commondoc/xref:link-text ((obj 40ants-doc:section))
   (40ants-doc:section-title obj))
 
 

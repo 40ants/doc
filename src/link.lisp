@@ -7,35 +7,10 @@
   (:import-from #:pythonic-string-reader)
   (:export
    #:*document-link-code*
-   #:*document-link-sections*
    #:*document-min-link-hash-length*))
 (in-package 40ants-doc/link)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
-
-
-;;; This is a link target. REFERENCE is the thing it is about, PAGE is
-;;; where its documentation will go, ID is the markdown reference link
-;;; id and PAGE-TO-N-USES is a hash table that counts how many times
-;;; this was linked to for each page.
-(defstruct link
-  reference
-  page
-  id
-  page-to-n-uses)
-
-;;; A list of LINK objects. If a reference occurs multiple times,
-;;; earlier links have precedence.
-(defparameter *links* ())
-
-(defun find-link-by-id (id)
-  (find id *links* :key #'link-id :test #'equal))
-
-
-(defun reference-page (reference)
-  (let ((link (find-link reference)))
-    (when link
-      (link-page link))))
 
 
 (defvar *document-link-code* t
@@ -111,12 +86,6 @@
   40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-UPPERCASE-IS-CODE* to have links generated for
   uppercase names with no quoting required.""")
 
-(defvar *document-link-sections* t
-  "When true, HTML anchors are generated before the heading of
-  sections which allows the table of contents to contain links and
-  also code-like references to sections (like `@FOO-MANUAL`) to be
-  translated to links with the section title being the name of the
-  link.")
 
 (defparameter *document-min-link-hash-length* 4
   "Recall that markdown reference style links (like `[label][id]`) are
@@ -145,7 +114,4 @@
                  (return-from hash-link hash))))
     (assert nil () "MD5 collision collision detected.")))
 
-
-(defun find-link (reference)
-  (find reference *links* :key #'link-reference :test #'40ants-doc/reference::reference=))
 

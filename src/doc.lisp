@@ -485,12 +485,9 @@ on the GitHub to suggest a new feature.
   (40ants-doc/builder/printer::*document-downcase-uppercase-code* variable)
   (40ants-doc/builder/printer::*document-normalize-packages* variable)
   (40ants-doc/link::*document-link-code* variable)
-  (40ants-doc/link::*document-link-sections* variable)
   (40ants-doc/link::*document-min-link-hash-length* variable)
   (40ants-doc/builder/vars::*document-mark-up-signatures* variable)
-  (40ants-doc/builder/vars::*document-max-numbering-level* variable)
-  (40ants-doc/builder/vars::*document-text-navigation* variable)
-  (40ants-doc/builder/vars::*document-fancy-html-navigation* variable))
+  (40ants-doc/builder/vars::*document-max-numbering-level* variable))
 
 
 (defsection @locative-types (:title "Locative Types"

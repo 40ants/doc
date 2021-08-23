@@ -2,9 +2,7 @@
   (:use #:cl)
   (:export
    #:*document-mark-up-signatures*
-   #:*document-max-numbering-level*
-   #:*document-text-navigation*
-   #:*document-fancy-html-navigation*))
+   #:*document-max-numbering-level*))
 (in-package 40ants-doc/builder/vars)
 
 
@@ -14,18 +12,6 @@
   "A non-negative integer. In their hierarchy, sections on levels less
   than this value get numbered in the format of `3.1.2`. Setting it to
   0 turns numbering off.")
-
-(defvar *document-text-navigation* nil
-  "If true, then before each heading a line is printed with links to
-  the previous, parent and next section. Needs
-  40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS* to be on to work.")
-
-(defvar *document-fancy-html-navigation* t
-  "If true and the output format is HTML, then headings get a
-  navigation component that consists of links to the previous, parent,
-  next section and a permalink. This component is normally hidden, it
-  is visible only when the mouse is over the heading. Needs
-  40ANTS-DOC/LINK::*DOCUMENT-LINK-SECTIONS* to be on to work.")
 
 (defvar *heading-number* ())
 
