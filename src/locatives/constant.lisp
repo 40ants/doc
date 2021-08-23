@@ -19,7 +19,8 @@
                 #:constant)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/docstring))
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/constant)
 
 
@@ -34,7 +35,7 @@
   (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
 
 
-(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'constant)) locative-args)
+(defmethod 40ants-doc/commondoc/builder:reference-to-commondoc ((symbol symbol) (locative-type (eql 'constant)) locative-args)
   (destructuring-bind (&optional (initform nil initformp)) locative-args
     (let* ((reference (canonical-reference
                        (40ants-doc/reference::make-reference
@@ -47,7 +48,7 @@
                             (symbol-value symbol)))
                           (t "-unbound-")))
            (children (when docstring
-                       (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                       (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
       (40ants-doc/commondoc/bullet::make-bullet reference
                                                 :arglist arglist

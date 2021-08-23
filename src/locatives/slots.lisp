@@ -21,7 +21,8 @@
                 #:writer)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/arglist
-                #:make-arglist))
+                #:make-arglist)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/slots)
 
 
@@ -123,11 +124,11 @@
                         (when docstring
                           (40ants-doc/docstring:strip-docstring-indentation docstring)))))
          (children (when docstring
-                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
-    (40ants-doc/commondoc/bullet::make-bullet reference
-                                              :arglist arglist
-                                              :children children
-                                              :ignore-words symbol)))
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring))))
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :arglist arglist
+                                             :children children
+                                             :ignore-words symbol)))
 
 
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'reader)) locative-args)

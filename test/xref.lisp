@@ -59,7 +59,7 @@
   (with-format (:html)
     (testing "Simple case"
       (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
-             (doc (40ants-doc/commondoc/markdown::parse-markdown "[FOO][function]")))
+             (doc (40ants-doc/commondoc/markdown:parse-markdown "[FOO][function]")))
         (flet ((first-child ()
                  (first (common-doc:children doc))))
           (testing "Before replacing we should have a paragraph with internal link"
@@ -76,7 +76,7 @@
     (testing "Case when symbol name already the code"
       (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
              (doc (40ants-doc/commondoc/xref:extract-symbols
-                   (40ants-doc/commondoc/markdown::parse-markdown "`FOO` function"))))
+                   (40ants-doc/commondoc/markdown:parse-markdown "`FOO` function"))))
         (flet ((first-child (node)
                  (first (common-doc:children node))))
           (testing "Before replacing we should have a paragraph with inline code block containing a XREF"
@@ -112,7 +112,7 @@
     (testing "Explicit method locative should be replaced with a single link"
       (let* ((generic-reference (40ants-doc/reference::make-reference 'blah 'generic-function))
              (method-reference (40ants-doc/reference::make-reference 'blah '(method () (string))))
-             (doc (40ants-doc/commondoc/markdown::parse-markdown "[BLAH][(METHOD () (STRING))]")))
+             (doc (40ants-doc/commondoc/markdown:parse-markdown "[BLAH][(METHOD () (STRING))]")))
         (flet ((first-child ()
                  (first (common-doc:children doc))))
           

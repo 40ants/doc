@@ -17,7 +17,8 @@
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/docstring))
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/macro)
 
 
@@ -37,7 +38,7 @@
          (arglist (swank-backend:arglist symbol))
          (docstring (40ants-doc/docstring:get-docstring symbol 'function))
          ;; TODO:  we should move text transformation out from get-docstring to after it will be parsed
-         (children (40ants-doc/commondoc/builder::parse-markdown docstring)))
+         (children (40ants-doc/commondoc/markdown:parse-markdown docstring)))
 
     (40ants-doc/commondoc/bullet:make-bullet reference
                                              :arglist arglist

@@ -8,7 +8,8 @@
                 #:glossary-term)
   (:import-from #:40ants-doc/glossary)
   (:import-from #:40ants-doc/reference-api)
-  (:import-from #:40ants-doc/source-api))
+  (:import-from #:40ants-doc/source-api)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/glossary)
 
 
@@ -38,12 +39,12 @@
                       (when docstring
                         (40ants-doc/docstring:strip-docstring-indentation docstring))))
          (children (when docstring
-                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
-    (40ants-doc/commondoc/bullet::make-bullet reference
-                                              :name (glossary-term-title-or-name glossary-term)
-                                              :children children
-                                              :ignore-words symbol)))
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :name (glossary-term-title-or-name glossary-term)
+                                             :children children
+                                             :ignore-words symbol)))
 
 (defmethod 40ants-doc/reference-api:canonical-reference ((glossary-term 40ants-doc/glossary::glossary-term))
   (40ants-doc/reference:make-reference (40ants-doc/glossary::glossary-term-name glossary-term) 'glossary-term))

@@ -10,6 +10,7 @@
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown)
   (:export
    #:define-symbol-locative-type))
 (in-package 40ants-doc/locatives/definers)
@@ -63,12 +64,12 @@
                           symbol (cons locative-type locative-args)))
               (docstring (40ants-doc/docstring:get-docstring method t))
               (children (when docstring
-                          (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                          (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
-         (40ants-doc/commondoc/bullet::make-bullet reference
-                                                   :arglist arglist
-                                                   :children children
-                                                   :ignore-words symbol)))
+         (40ants-doc/commondoc/bullet:make-bullet reference
+                                                  :arglist arglist
+                                                  :children children
+                                                  :ignore-words symbol)))
      
      (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
        (40ants-doc/source-api::find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))

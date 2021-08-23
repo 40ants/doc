@@ -14,7 +14,8 @@
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/docstring))
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/function)
 
 
@@ -40,7 +41,7 @@
   (let* ((arglist (swank-backend:arglist obj))
          (docstring (40ants-doc/docstring:get-docstring obj 'function))
          (children (when docstring
-                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet:make-bullet (canonical-reference obj)
                                              :arglist arglist

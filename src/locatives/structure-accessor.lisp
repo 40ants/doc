@@ -46,7 +46,7 @@
                       symbol (cons locative-type locative-args))))
          (docstring (40ants-doc/docstring:get-docstring symbol 'function))
          (children (when docstring
-                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist locative-args

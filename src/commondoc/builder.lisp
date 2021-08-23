@@ -4,9 +4,9 @@
                 #:parse-markdown)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/object-package)
-  (:export
-   #:to-commondoc
-   #:reference-to-commondoc))
+  (:import-from #:40ants-doc/docstring)
+  (:export #:to-commondoc
+           #:reference-to-commondoc))
 (in-package 40ants-doc/commondoc/builder)
 
 
@@ -54,8 +54,8 @@
                           (list (cdr locative))
                           (symbol nil))))
     (typecase resolved
-      (40ants-doc/reference::reference
-       (let* ((reference-obj (40ants-doc/reference::reference-object obj))
+      (40ants-doc/reference:reference
+       (let* ((reference-obj (40ants-doc/reference:reference-object obj))
               (*package* (or (40ants-doc/object-package:object-package reference-obj)
                              *package*)))
          (reference-to-commondoc reference-obj

@@ -17,7 +17,8 @@
   (:import-from #:40ants-doc/locatives/utils)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/docstring))
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/type)
 
 
@@ -30,7 +31,7 @@
 (defmethod locate-object (symbol (locative-type (eql 'type)) locative-args)
   (unless (swank-backend:type-specifier-p 'symbol)
     (locate-error))
-  (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
+  (40ants-doc/reference:make-reference symbol (cons locative-type locative-args)))
 
 
 ;; Show lambda type expansion along with docstring
@@ -39,17 +40,17 @@
 ;; Type-specifier documentation: Very small integer, less or equal than 3.
 ;; Type-specifier expansion: (AND INTEGER (SATISFIES A-FEW-P))
 (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'type)) locative-args)
-  (let* ((reference (40ants-doc/reference::make-reference
-                     symbol (cons locative-type locative-args)))
+  (let* ((reference (40ants-doc/reference:make-reference symbol
+                                                         (cons locative-type locative-args)))
          (arglist (swank-backend:type-specifier-arglist symbol))
          (docstring (40ants-doc/docstring:get-docstring symbol 'type))
          (children (when docstring
-                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
-    (40ants-doc/commondoc/bullet::make-bullet reference
-                                              :arglist arglist
-                                              :children children
-                                              :ignore-words symbol)))
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :arglist arglist
+                                             :children children
+                                             :ignore-words symbol)))
 
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'type))

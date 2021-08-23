@@ -18,7 +18,8 @@
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/docstring))
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/locative)
 
 
@@ -47,7 +48,7 @@
          (arglist (40ants-doc/locatives/base::locative-lambda-list symbol))
          (docstring (40ants-doc/docstring:get-docstring method t))
          (children (when docstring
-                     (40ants-doc/commondoc/builder::parse-markdown docstring))))
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet:make-bullet reference
                                              :arglist arglist

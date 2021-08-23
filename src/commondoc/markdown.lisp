@@ -140,6 +140,14 @@
 
 
 (defun parse-markdown (text)
+  "Parses markdown text and returns CommonDoc node.
+
+   The diffence from usual common doc markdown parsing is
+   that this function keeps uppercased variable names as text.
+   Usual markdown parser parses *SOME-TEXT* \"italic\".
+
+   Also, this function replaces markdown references with
+   40ANTS-DOC/COMMONDOC:XREF nodes."
   (replace-markdown-links
    (transform-uppercase-italic-nodes-back-to-text
     (join-italic-var-names
