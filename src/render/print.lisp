@@ -5,25 +5,8 @@
   (:import-from #:40ants-doc/object-package))
 (in-package 40ants-doc/render/print)
 
-;;; Print (DOCUMENTATION OBJECT DOC-TYPE) to STREAM in FORMAT. Clean
-;;; up docstring indentation, then indent it by four spaces.
-;;; Automarkup symbols.
-(defun maybe-print-docstring (object doc-type stream)
-  (let* ((package (40ants-doc/object-package:object-package object))
-         (*package* package
-           ;; We need to set the package to the object's package
-           ;; to because in package inferred systems documentation
-           ;; section can referer objects from other sub-packages.
-           ;; If we don't do this, then argument reference will not
-           ;; work and uppercased words will not become `CODE`:
-           ;; (40ants-doc/object-package:object-package object)
-           ))
-    (let ((docstring (filter-documentation object doc-type)))
-      (when docstring
-        (format stream "~%~A~%"
-                (40ants-doc/markdown/transform::massage-docstring docstring))))))
 
-
+;; TODO: move to 40ants-doc/docstring package
 (defun get-docstring (object doc-type)
   (let* ((package (40ants-doc/object-package:object-package object))
          (*package* package

@@ -110,21 +110,3 @@
   strings can be a pain. [Pythonic String
   Reader](https://github.com/smithzvk/pythonic-string-reader) can help
   with that.""")
-
-
-(defun map-markdown-parse-tree (tags stop-tags handle-strings fn string)
-  (let* ((3bmd-grammar:*smart-quotes* nil)
-         (parse-tree
-           ;; To be able to recognize symbols like FOO* join (...
-           ;; "FOO" "*" ...) to look like (... "FOO*" ...).
-           (40ants-doc/utils::join-consecutive-non-blank-strings-in-parse-tree
-            (3bmd-grammar:parse-doc string))))
-    (with-output-to-string (out)
-      (3bmd::print-doc-to-stream-using-format
-       (40ants-doc/utils::transform-tree
-        (lambda (parent tree)
-          (40ants-doc/utils::defer-tag-handling tags stop-tags handle-strings
-            fn parent tree))
-        parse-tree)
-       out :markdown))))
-

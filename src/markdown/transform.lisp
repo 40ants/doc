@@ -5,14 +5,6 @@
 (in-package 40ants-doc/markdown/transform)
 
 
-(defun massage-docstring (docstring &key (indentation "    "))
-  (if 40ants-doc/builder/vars::*table-of-contents-stream*
-      ;; The output is going to /dev/null and this is a costly
-      ;; operation, skip it.
-      ""
-      (let ((docstring (40ants-doc/utils::strip-docstring-indentation docstring)))
-        (40ants-doc/utils::prefix-lines indentation
-                                        docstring))))
-
+;; TODO: move to 40ants-doc/docstring package
 (defun massage-docstring2 (docstring)
   (40ants-doc/utils::strip-docstring-indentation docstring))
