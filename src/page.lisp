@@ -3,8 +3,6 @@
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/reference-api
-                #:format-reference)
   (:import-from #:40ants-doc/link)
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc/builder/vars)

@@ -211,14 +211,6 @@
 
           (ensure-directories-exist absolute-dir)
 
-          ;; 
-          ;; Кстати, ещё нужно как-то генерить ChangeLog.md и changelog.html раздел в HTML
-          ;;
-          ;; Надо сделать обработку base-url:
-          ;; 
-          ;; И может ещё задавать base-url? И использовать его для построения ссылок на
-          ;; страницы из документов не в HTML формате?
-          ;; 
           (flet ((make-full-filename (page)
                    ;; PAGE argument could be either PAGE object or string denoting a relative path
                    ;; of HTML page.

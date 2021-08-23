@@ -261,51 +261,6 @@
     (ok (not (symbol-name-p "(UP DIRECTION)")))))
 
 
-(deftest test-package-qualifed-replacer
-  (flet ((ensure-case (value)
-           (etypecase value
-             (string (list value
-                           (if (char-equal (elt value 0)
-                                           #\`)
-                               value
-                               (format nil "`~A`" value))))
-             (list value))))
-    (loop with cases = '("FOO::*BAR*"
-                         "FOO::+BAR+"
-                         "FOO::BAR"
-                         "BLAH-ME/MINOR::BAR-ME"
-                         "BLAH-ME/MINOR:BAR-ME"
-                         "40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
-                         ("40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
-                          "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`")
-                         
-                         "`BLAH-ME/MINOR:BAR-ME`"
-                         ;; Start with punctuation
-                         ("(40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
-                          "(`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`")
-                         ;; End with punctuations
-                         ("40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*)"
-                          "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`)")
-                         ("40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*!"
-                          "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`!")
-                         ;; Lowercase should not be translated
-                         ("foo::*bar*" "foo::*bar*")
-                         ("blah-me/MINOR::BAR-ME" "blah-me/MINOR::BAR-ME")
-                         ("BLAH-ME/MINOR::BAR-me" "BLAH-ME/MINOR::BAR-me"))
-          for case in cases
-          for (case-before case-after) = (ensure-case case)
-          for input = (format nil "before ~A after" case-before)
-          for multiline-input = (format nil "before~%~A~%after" case-before)
-          for expected = (format nil "before ~A after" case-after)
-          for multiline-expected = (format nil "before~%~A~%after" case-after)
-          do (testing (format nil "Single-line ~S" case)
-               (ok (equal (40ants-doc/markdown/transform::replace-upcased-package-qualified-names input)
-                          expected)))
-             (testing (format nil "Multi-line ~S" case)
-               (ok (equal (40ants-doc/markdown/transform::replace-upcased-package-qualified-names multiline-input)
-                          multiline-expected))))))
-
-
 (deftest test-transform-tree
   (ok (equal '(1)
              (40ants-doc/utils::transform-tree

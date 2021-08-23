@@ -10,7 +10,6 @@
 (defgeneric canonical-reference (object)
   (:documentation "Return a 40ANTS-DOC/REFERENCE::REFERENCE that resolves to OBJECT."))
 
-(defgeneric format-reference (obj name ref link))
 
 (defgeneric reference-name (obj name ref link))
 

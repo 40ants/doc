@@ -8,7 +8,8 @@
                 #:glossary-term)
   (:import-from #:40ants-doc/glossary)
   (:import-from #:40ants-doc/reference-api)
-  (:import-from #:40ants-doc/markdown/transform))
+  (:import-from #:40ants-doc/markdown/transform)
+  (:import-from #:40ants-doc/source-api))
 (in-package 40ants-doc/locatives/glossary)
 
 
@@ -45,15 +46,10 @@
                                               :children children
                                               :ignore-words symbol)))
 
-(defmethod 40ants-doc/reference-api::canonical-reference ((glossary-term 40ants-doc/glossary::glossary-term))
-  (40ants-doc/reference::make-reference (40ants-doc/glossary::glossary-term-name glossary-term) 'glossary-term))
+(defmethod 40ants-doc/reference-api:canonical-reference ((glossary-term 40ants-doc/glossary::glossary-term))
+  (40ants-doc/reference:make-reference (40ants-doc/glossary::glossary-term-name glossary-term) 'glossary-term))
 
-(defmethod 40ants-doc/source::find-source ((glossary-term 40ants-doc/glossary::glossary-term))
-  (40ants-doc/locatives/base::locate-and-find-source (40ants-doc/glossary::glossary-term-name glossary-term) 'variable ()))
+(defmethod 40ants-doc/source-api:find-source ((glossary-term 40ants-doc/glossary::glossary-term))
+  (40ants-doc/locatives/base:locate-and-find-source (40ants-doc/glossary::glossary-term-name glossary-term) 'variable ()))
 
-
-(defmethod 40ants-doc/reference-api::format-reference ((obj 40ants-doc/glossary::glossary-term) name ref link)
-  `((:reference-link :label (,(glossary-term-title-or-name
-                               (40ants-doc/reference::resolve ref)))
-                     :definition ,link)))
 
