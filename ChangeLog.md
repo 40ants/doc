@@ -22,7 +22,7 @@
 * Added code highlighting using Highlight.js library.
 
 * Added search form which uses index in browser. `JS` code was taken from
-  [Sphinx](https://www.sphinx-doc.org/) documentation builder.
+  [Sphinx][140c] documentation builder.
 
 * Elisp code for transcriptions was fixed and now should word not
   only with `SLIME`, but also with `SLY`.
@@ -32,7 +32,7 @@
 
 * Functions `UPDATE-ASDF-SYSTEM-HTML-DOCS` and `UPDATE-ASDF-SYSTEM-README`
   were replaced with [`40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS`](#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29), which also supports
-  ChangeLog.md generation.
+  ChangeLog.md generation. Use [`40ANTS-DOC/CHANGELOG:DEFCHANGELOG`](#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to define versions.
 
 * Variables `*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL*` and
   `*DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL*` were removed. Probably we'll return this
@@ -49,11 +49,13 @@
 
 * Variables `*DOCUMENT-LINK-SECTIONS*`, `*DOCUMENT-TEXT-NAVIGATION*` and `*DOCUMENT-FANCY-HTML-NAVIGATION*` were removed.
 
+* Variable `*DOCUMENT-MIN-LINK-HASH-LENGTH*` was removed. Use `COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*`
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E1-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.1.0
 
-* Project forked from [`MGL-PAX`](https://github.com/melisgl/mgl-pax).
+* Project forked from [`MGL-PAX`][7927].
   Code refactored into the package inferred system and core is separated
   to have minimum dependencies.
 
@@ -84,3 +86,6 @@
 
 * Fixed docstring extraction for compiler macro.
 
+
+[140c]: https://www.sphinx-doc.org/
+[7927]: https://github.com/melisgl/mgl-pax

@@ -74,7 +74,9 @@
                               "SLIME"
                               "SLY"
                               "COLLECT-REACHABLE-OBJECTS"
-                              "LOCATE-AND-COLLECT-REACHABLE-OBJECTS"))
+                              "LOCATE-AND-COLLECT-REACHABLE-OBJECTS"
+                              "COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*"
+                              "*DOCUMENT-MIN-LINK-HASH-LENGTH*"))
   (0.2.0
    "- Now defsection does not exports symbols by default
     - You can render documents in multiple formats in a single run having cross links.
@@ -93,7 +95,7 @@
       if :EXPORT argument is NIL.
     - Functions UPDATE-ASDF-SYSTEM-HTML-DOCS and UPDATE-ASDF-SYSTEM-README
       were replaced with 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS, which also supports
-      ChangeLog.md generation.
+      ChangeLog.md generation. Use 40ANTS-DOC/CHANGELOG:DEFCHANGELOG to define versions.
     - Variables *DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL* and
       *DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL* were removed. Probably we'll return this
       feature back in other form, to restrict TOC's size.
@@ -103,7 +105,8 @@
       and system definition has a :SOURCE-CONTROL slot.
     - Generic functions COLLECT-REACHABLE-OBJECTS and LOCATE-AND-COLLECT-REACHABLE-OBJECTS
       were removed.
-    - Variables *DOCUMENT-LINK-SECTIONS*, *DOCUMENT-TEXT-NAVIGATION* and *DOCUMENT-FANCY-HTML-NAVIGATION* were removed.")
+    - Variables *DOCUMENT-LINK-SECTIONS*, *DOCUMENT-TEXT-NAVIGATION* and *DOCUMENT-FANCY-HTML-NAVIGATION* were removed.
+    - Variable *DOCUMENT-MIN-LINK-HASH-LENGTH* was removed. Use COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).

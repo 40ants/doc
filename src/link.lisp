@@ -6,8 +6,7 @@
   (:import-from #:babel)
   (:import-from #:pythonic-string-reader)
   (:export
-   #:*document-link-code*
-   #:*document-min-link-hash-length*))
+   #:*document-link-code*))
 (in-package 40ants-doc/link)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -85,33 +84,5 @@
   Note that [*DOCUMENT-LINK-CODE*][variable] can be combined with
   40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-UPPERCASE-IS-CODE* to have links generated for
   uppercase names with no quoting required.""")
-
-
-(defparameter *document-min-link-hash-length* 4
-  "Recall that markdown reference style links (like `[label][id]`) are
-  used for linking to sections and code. It is desirable to have ids
-  that are short to maintain legibility of the generated markdown, but
-  also stable to reduce the spurious diffs in the generated
-  documentation which can be a pain in a version control system.
-
-  Clearly, there is a tradeoff here. This variable controls how many
-  characters of the md5 sum of the full link id (the reference as a
-  string) are retained. If collisions are found due to the low number
-  of characters, then the length of the hash of the colliding
-  reference is increased.
-
-  This variable has no effect on the HTML generated from markdown, but
-  it can make markdown output more readable.")
-
-(defun hash-link (string detect-collision-fn
-                  &key (min-n-chars *document-min-link-hash-length*))
-  (let ((hex (ironclad:byte-array-to-hex-string
-              (ironclad:digest-sequence 'ironclad:md5
-                                        (babel:string-to-octets string)))))
-    (loop for i upfrom min-n-chars below 32
-          do (let ((hash (subseq hex 0 (min 32 i))))
-               (unless (funcall detect-collision-fn hash)
-                 (return-from hash-link hash))))
-    (assert nil () "MD5 collision collision detected.")))
 
 

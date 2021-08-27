@@ -17,7 +17,7 @@
 
 ## About this fork
 
-This system is a fork of [`MGL-PAX`](https://github.com/melisgl/mgl-pax).
+This system is a fork of [`MGL-PAX`][7927].
 
 There are a few reasons, why I've created the fork.
 
@@ -55,14 +55,14 @@ Here is features already implemented in this fork:
 WARNING: Unable to find symbol "API" mentioned in (CL-INFO:@INDEX SECTION)
 ```
 I'm planning to extend this fork even more. Read [`TODO`](#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section to learn about
-proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)
+proposed features or [start a new discussion][6f00]
 on the GitHub to suggest a new feature.
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40FULL-DOC-LINK-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## Full Documentation
 
-Read full documentation at [site 40ants.com/doc/](https://40ants.com/doc/).
+Read full documentation at [site 40ants.com/doc/][778d].
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -175,7 +175,7 @@ For this example, the generated markdown would look like this:
 Slots with :INSTANCE allocation:
   NAME                           = FOO-RANDOM::@FOO-RANDOM-MANUAL
   PACKAGE                        = #<PACKAGE "FOO-RANDOM">
-  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {10049..
+  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {10043..
   TITLE                          = "Foo Random manual"
   LINK-TITLE-TO                  = NIL
   ENTRIES                        = ("Here you describe what's common to all the referenced (and..
@@ -222,3 +222,7 @@ automatically checked for up-to-dateness. See
 
 * Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 
+
+[7927]: https://github.com/melisgl/mgl-pax
+[6f00]: https://github.com/40ants/doc/discussions
+[778d]: https://40ants.com/doc/
