@@ -242,9 +242,11 @@
     (let ((name (xref-name obj)))
       (typecase name
         (string
-         (:code :class "unresolved-reference"
-                :title "Reference not found."
-                name))
+         (if 40ants-doc/link:*document-link-code*
+             (:code :class "unresolved-reference"
+                    :title "Reference not found."
+                    name)
+             (:code name)))
         (t (common-html.emitter::emit name))))))
 
 
