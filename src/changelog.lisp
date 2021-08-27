@@ -76,7 +76,8 @@
                               "COLLECT-REACHABLE-OBJECTS"
                               "LOCATE-AND-COLLECT-REACHABLE-OBJECTS"
                               "COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*"
-                              "*DOCUMENT-MIN-LINK-HASH-LENGTH*"))
+                              "*DOCUMENT-MIN-LINK-HASH-LENGTH*"
+                              "*DOCUMENT-MARK-UP-SIGNATURES*"))
   (0.2.0
    "- Now defsection does not exports symbols by default
     - You can render documents in multiple formats in a single run having cross links.
@@ -108,7 +109,8 @@
     - Variables *DOCUMENT-LINK-SECTIONS*, *DOCUMENT-TEXT-NAVIGATION* and *DOCUMENT-FANCY-HTML-NAVIGATION* were removed.
     - Variable *DOCUMENT-MIN-LINK-HASH-LENGTH* was removed. Use COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*
     - Functions 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS and 40ANTS-DOC/BUILDER:RENDER-TO-FILES
-      now accept WARN-ON-UNDOCUMENTED-PACKAGES argument and CLEAN-URLS argument.")
+      now accept WARN-ON-UNDOCUMENTED-PACKAGES argument and CLEAN-URLS argument.
+    - Variable *DOCUMENT-MARK-UP-SIGNATURES* was removed.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).

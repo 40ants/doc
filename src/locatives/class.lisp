@@ -56,8 +56,7 @@
                      (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
     (40ants-doc/commondoc/bullet:make-bullet (canonical-reference class)
-                                             ;; TODO: support 40ants-doc/builder/vars::*document-mark-up-signatures* here
-                                             ;; and make transform superclasses to XREFs
+                                             ;; TODO: transform superclasses to XREFs
                                              :arglist (40ants-doc/commondoc/arglist::make-arglist superclasses)
                                              :children children
                                              :ignore-words symbol)))

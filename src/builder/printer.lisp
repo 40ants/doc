@@ -20,7 +20,9 @@
   no containing section. To eliminate ambiguity `[in package ...]`
   messages are printed right after the section heading if necessary.
   If false, symbols are always printed relative to the current
-  package.")
+  package.
+
+  **Is not supported yet.**")
 
 
 (defvar *document-uppercase-is-code* t
@@ -50,21 +52,13 @@
   those found if *DOCUMENT-UPPERCASE-IS-CODE*) are downcased in the
   output if they only consist of uppercase characters. If it is
   :ONLY-IN-MARKUP, then if the output format does not support
-  markup (e.g. it's :PLAIN), then no downcasing is performed.")
+  markup (e.g. it's :PLAIN), then no downcasing is performed.
 
-
-;;; Bound by DOCUMENT, this allows markdown output to depend on the
-;;; output format.
-(defvar *format*)
+  **Is not supported yet.**")
 
 
 (defun maybe-downcase (string)
-  (if (and (or (and *document-downcase-uppercase-code*
-                    (not (eq *document-downcase-uppercase-code*
-                             :only-in-markup)))
-               (and (eq *document-downcase-uppercase-code*
-                        :only-in-markup)
-                    (not (eq *format* :plain))))
+  (if (and *document-downcase-uppercase-code*
            (40ants-doc/utils::no-lowercase-chars-p string))
       (string-downcase string)
       string))

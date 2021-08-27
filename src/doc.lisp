@@ -485,7 +485,6 @@ on the GitHub to suggest a new feature.
   (40ants-doc/builder/printer::*document-downcase-uppercase-code* variable)
   (40ants-doc/builder/printer::*document-normalize-packages* variable)
   (40ants-doc/link::*document-link-code* variable)
-  (40ants-doc/builder/vars::*document-mark-up-signatures* variable)
   (40ants-doc/builder/vars::*document-max-numbering-level* variable))
 
 

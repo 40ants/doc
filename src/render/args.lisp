@@ -5,15 +5,6 @@
 (in-package 40ants-doc/render/args)
 
 
-(defun print-arglist (arglist stream)
-  (let ((string (arglist-to-string arglist)))
-    (if 40ants-doc/builder/vars::*document-mark-up-signatures*
-        (if (eq 40ants-doc/builder/printer::*format* :html)
-            (format stream "<span class=\"locative-args\">~A</span>" string)
-            (40ants-doc/utils::italic string stream))
-        (format stream "~A" string))))
-
-
 (defun arglist-to-string (arglist)
   (cond ((stringp arglist)
          ;; must be escaped markdown

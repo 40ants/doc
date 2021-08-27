@@ -70,8 +70,7 @@
   ;; TODO: remove this printer format and reference resolving on this stage.
   ;; we only need to know format to render arglist to a string, but this
   ;; shouldn't be necessary on this stage.
-  (let ((40ants-doc/builder/printer::*format* :plain)
-        (html-fragment (40ants-doc/utils::html-safe-name
+  (let ((html-fragment (40ants-doc/utils::html-safe-name
                         (40ants-doc/reference::reference-to-anchor reference))))
     (make-instance 'bullet
                    :name name
