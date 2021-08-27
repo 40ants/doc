@@ -15,7 +15,8 @@
   (:import-from #:40ants-doc/ignored-words
                 #:ignored-words
                 #:supports-ignored-words-p)
-  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/utils
+                #:maybe-downcase)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:with-node-package)
   (:import-from #:commondoc-markdown)
@@ -247,7 +248,8 @@
                     :title "Reference not found."
                     name)
              (:code name)))
-        (t (common-html.emitter::emit name))))))
+        (t
+         (common-html.emitter::emit (maybe-downcase name)))))))
 
 
 (defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
@@ -256,9 +258,10 @@
   (let ((name (xref-name node)))
     (typecase name
       (string
-       (format stream "`~A`" name))
+       (format stream "`~A`"
+               name))
       (t
-       (common-doc.format:emit-document format name stream)))))
+       (common-doc.format:emit-document format (maybe-downcase name) stream)))))
 
 
 ;; TODO: make a pull to make this generic a public:
@@ -267,6 +270,6 @@
   (let ((name (xref-name node)))
     (typecase name
       (string
-       name)
+       (maybe-downcase name))
       (t
        (common-doc.ops::node-text name)))))

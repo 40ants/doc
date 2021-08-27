@@ -17,7 +17,7 @@
 * Now defsection does not export nor mentioned symbols nor the name of the section
   It is better to have explicit exports.
 
-* [`40ANTS-DOC/LOCATIVES:INCLUDE`](index.html#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) locative now does not support `:HEADER`, `:FOOTER` and some other arguments. Use `:LANG` argument instead.
+* [`40ants-doc/locatives:include`](index.html#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) locative now does not support `:HEADER`, `:FOOTER` and some other arguments. Use `:LANG` argument instead.
 
 * Added code highlighting using Highlight.js library.
 
@@ -27,12 +27,12 @@
 * Elisp code for transcriptions was fixed and now should word not
   only with `SLIME`, but also with `SLY`.
 
-* [`40ANTS-DOC:DEFSECTION`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro now does not generate export code
+* [`40ants-doc:defsection`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro now does not generate export code
   if `:EXPORT` argument is `NIL`.
 
 * Functions `UPDATE-ASDF-SYSTEM-HTML-DOCS` and `UPDATE-ASDF-SYSTEM-README`
-  were replaced with [`40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS`](index.html#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29), which also supports
-  ChangeLog.md generation. Use [`40ANTS-DOC/CHANGELOG:DEFCHANGELOG`](index.html#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to define versions.
+  were replaced with [`40ants-doc/builder:update-asdf-system-docs`](index.html#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29), which also supports
+  ChangeLog.md generation. Use [`40ants-doc/changelog:defchangelog`](index.html#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to define versions.
 
 * Variables `*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL*` and
   `*DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL*` were removed. Probably we'll return this
@@ -41,7 +41,7 @@
 * Removed `LOCATE-AND-DOCUMENT` generic function.
 
 * Links to the GitHub now are generated automatically,
-  if [`40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS`](index.html#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29) function is used
+  if [`40ants-doc/builder:update-asdf-system-docs`](index.html#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29) function is used
   and system definition has a `:SOURCE-CONTROL` slot.
 
 * Generic functions `COLLECT-REACHABLE-OBJECTS` and `LOCATE-AND-COLLECT-REACHABLE-OBJECTS`
@@ -51,10 +51,13 @@
 
 * Variable `*DOCUMENT-MIN-LINK-HASH-LENGTH*` was removed. Use `COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*`
 
-* Functions [`40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS`](index.html#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29) and [`40ANTS-DOC/BUILDER:RENDER-TO-FILES`](index.html#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29)
+* Functions [`40ants-doc/builder:update-asdf-system-docs`](index.html#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29) and [`40ants-doc/builder:render-to-files`](index.html#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29)
   now accept `WARN-ON-UNDOCUMENTED-PACKAGES` argument and `CLEAN-URLS` argument.
 
 * Variable `*DOCUMENT-MARK-UP-SIGNATURES*` was removed.
+
+* Added `DOWNCASE-UPPERCASE-CODE` argument instead of `*DOCUMENT-DOWNCASE-UPPERCASE-CODE*`.
+  This argument is true by default.
 
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E1-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -70,7 +73,7 @@
   file-subseq function was rewritten.
 
 * Locatives can be specified without a package prefix inside the defsection
-  because all locative symbols now live in [`40ANTS-DOC/LOCATIVES`](index.html#x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-2240ANTS-DOC-2FLOCATIVES-22-29-20PACKAGE-29) package.
+  because all locative symbols now live in [`40ants-doc/locatives`](index.html#x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-2240ANTS-DOC-2FLOCATIVES-22-29-20PACKAGE-29) package.
 
 * Function update-asdf-system-readmes was renamed to update-asdf-system-readmes and now
   it generates only one `README` file.

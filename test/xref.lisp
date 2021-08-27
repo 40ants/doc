@@ -107,7 +107,9 @@
                              (first-child
                               (first-child
                                (first-child result))))
-                            "FOO"))))))))
+                            ;; By default, uppercased symbol names
+                            ;; are downcased:
+                            "foo"))))))))
   
     (testing "Explicit method locative should be replaced with a single link"
       (let* ((generic-reference (40ants-doc/reference::make-reference 'blah 'generic-function))

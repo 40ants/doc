@@ -3,7 +3,9 @@
   (:import-from #:common-doc)
   (:import-from #:common-html.emitter)
   (:import-from #:spinneret
-                #:with-html))
+                #:with-html)
+  (:import-from #:40ants-doc/utils
+                #:maybe-downcase))
 (in-package 40ants-doc/commondoc/arglist)
 
 
@@ -14,6 +16,10 @@
 
 (defun make-arglist (text)
   (make-instance 'arglist :text text))
+
+
+(defmethod maybe-downcase ((arglist arglist))
+  (make-arglist (maybe-downcase (arglist-text arglist))))
 
 
 (common-html.emitter::define-emitter (obj arglist)

@@ -20,7 +20,8 @@
   (:import-from #:40ants-doc/commondoc/piece
                 #:documentation-piece
                 #:doc-reference)
-  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/utils
+                #:maybe-downcase)
   (:export
    #:make-bullet))
 (in-package 40ants-doc/commondoc/bullet)
@@ -127,10 +128,10 @@
                             (let ((uri (common-doc:reference obj)))
                               (:a :href (format nil "#~A" uri)
                                   :id uri
-                                  name))))
+                                  (maybe-downcase name)))))
                
                (mapc #'common-html.emitter::emit
-                     arglists)
+                     (maybe-downcase arglists))
 
                (mapc #'common-html.emitter::emit
                      (common-doc::children obj))))))))
@@ -158,11 +159,11 @@
                   (format nil "[~A](~A) `~A`"
                           locative-type
                           source-uri
-                          name)
+                          (maybe-downcase name))
                   (format nil "[~A] `~A`"
                           locative-type
-                          name))
-              arglists)
+                          (maybe-downcase name)))
+              (maybe-downcase arglists))
        stream)
 
       (format stream "~&")

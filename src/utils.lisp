@@ -698,3 +698,21 @@
                         do (write-string "../" s))
                   (push to-part rest-to-parts)
                   (format s "~{~A~^/~}" rest-to-parts)))))))
+
+
+(defgeneric maybe-downcase (obj)
+  (:method ((string string))
+    (if (and 40ants-doc/builder/vars::*downcase-uppercase-code*
+             (no-lowercase-chars-p string))
+        (string-downcase string)
+        string))
+  (:method ((list list))
+    (mapcar #'maybe-downcase list))
+  (:method ((obj (eql nil)))
+    nil)
+  (:method ((symbol symbol))
+    (maybe-downcase (symbol-name symbol))))
+
+
+;; (defmethod maybe-downcase :before (obj)
+;;   (break))

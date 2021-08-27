@@ -2,8 +2,11 @@
   (:use #:cl)
   (:import-from #:40ants-doc/swank)
   (:import-from #:40ants-doc/utils
+                #:maybe-downcase
                 #:*whitespace-chars*)
   (:import-from #:str)
+  (:import-from #:40ants-doc/commondoc/mapper
+                #:map-nodes)
   (:export))
 (in-package 40ants-doc/commondoc/utils)
 
@@ -49,3 +52,13 @@
         (when (and (eq symbol present-symbol)
                    (eql status :external))
           found)))))
+
+
+(defmethod maybe-downcase ((node common-doc:document-node))
+  (flet ((replacer (node)
+           (typecase node
+             (common-doc:text-node
+              (common-doc:make-text (maybe-downcase
+                                     (common-doc:text node))))
+             (t node))))
+    (map-nodes node #'replacer)))

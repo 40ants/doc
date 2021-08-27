@@ -7,7 +7,6 @@
                 #:defsection)
   (:export
    #:*document-uppercase-is-code*
-   #:*document-downcase-uppercase-code*
    #:*document-normalize-packages*))
 (in-package 40ants-doc/builder/printer)
 
@@ -47,21 +46,6 @@
   example looks in a docstring. Note that the backslash is discarded
   even if *DOCUMENT-UPPERCASE-IS-CODE* is false.""")
 
-(defvar *document-downcase-uppercase-code* nil
-  "If true, then the names of symbols recognized as code (including
-  those found if *DOCUMENT-UPPERCASE-IS-CODE*) are downcased in the
-  output if they only consist of uppercase characters. If it is
-  :ONLY-IN-MARKUP, then if the output format does not support
-  markup (e.g. it's :PLAIN), then no downcasing is performed.
-
-  **Is not supported yet.**")
-
-
-(defun maybe-downcase (string)
-  (if (and *document-downcase-uppercase-code*
-           (40ants-doc/utils::no-lowercase-chars-p string))
-      (string-downcase string)
-      string))
 
 
 

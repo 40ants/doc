@@ -21,7 +21,7 @@ This system is a fork of [`MGL-PAX`][7927].
 
 There are a few reasons, why I've created the fork.
 
-The main goal is to extract a core features into the [`40ANTS-DOC`](index.html#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system
+The main goal is to extract a core features into the [`40ants-doc`](index.html#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system
 with as little dependencies as possible. This is important, because with `MGL-PAX`'s
 style, you define documentation sections in your library's code, which makes
 it dependent on the documentation system. However, heavy weight dependencies
@@ -39,13 +39,13 @@ integration.
 
 Here is features already implemented in this fork:
 
-* Core system [`40ANTS-DOC`](index.html#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) now has only two dependencies on `NAMED-READTABLES`
+* Core system [`40ants-doc`](index.html#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
-  [`40ANTS-DOC-FULL`](index.html#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system which will download such dependencies as markdown
+  [`40ants-doc-full`](index.html#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) system which will download such dependencies as markdown
   parser and more.
 
 * Now you don't have to import any locative symbols into your package. Import
-  only a [`DEFSECTION`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro and it will be enough to define documentation for
+  only a [`defsection`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) macro and it will be enough to define documentation for
   your library!
 
 * Added a warning mechanism, which will issue such warnings on words which looks
@@ -54,7 +54,7 @@ Here is features already implemented in this fork:
 ```
 WARNING: Unable to find symbol "API" mentioned in (CL-INFO:@INDEX SECTION)
 ```
-I'm planning to extend this fork even more. Read [`TODO`](#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section to learn about
+I'm planning to extend this fork even more. Read [`todo`](#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section to learn about
 proposed features or [start a new discussion][6f00]
 on the GitHub to suggest a new feature.
 
@@ -68,7 +68,7 @@ Read full documentation at [site 40ants.com/doc/][778d].
 
 ## Tutorial
 
-[`40ANTS-DOC`](index.html#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) provides an extremely poor man's Explorable Programming
+[`40ants-doc`](index.html#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) provides an extremely poor man's Explorable Programming
 environment. Narrative primarily lives in so called sections that
 mix markdown docstrings with references to functions, variables,
 etc, all of which should probably have their own docstrings.
@@ -175,7 +175,7 @@ For this example, the generated markdown would look like this:
 Slots with :INSTANCE allocation:
   NAME                           = FOO-RANDOM::@FOO-RANDOM-MANUAL
   PACKAGE                        = #<PACKAGE "FOO-RANDOM">
-  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {10042..
+  READTABLE                      = #<NAMED-READTABLE PYTHONIC-STRING-READER:PYTHONIC-STRING-SYNTAX {1009B..
   TITLE                          = "Foo Random manual"
   LINK-TITLE-TO                  = NIL
   ENTRIES                        = ("Here you describe what's common to all the referenced (and..
@@ -184,7 +184,7 @@ Slots with :INSTANCE allocation:
 More fancy markdown or `HTML` output with automatic markup and linking
 of uppercase symbol names found in docstrings, section numbering,
 table of contents, etc is possible by calling the
-[`40ANTS-DOC/BUILDER:RENDER-TO-STRING`](index.html#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-STRING-20FUNCTION-29) or [`40ANTS-DOC/BUILDER:RENDER-TO-FILES`](index.html#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29)
+[`40ants-doc/builder:render-to-string`](index.html#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-STRING-20FUNCTION-29) or [`40ants-doc/builder:render-to-files`](index.html#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29)
 functions.
 
 Last one can even generate documentation for different, but related
@@ -193,9 +193,9 @@ but with cross-page links being automatically added for symbols
 mentioned in docstrings. See [`Generating Documentation`](index.html#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) for
 some convenience functions to cover the most common cases.
 
-Note how `(*FOO-STATE* [VARIABLE](index.html#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` in the [`DEFSECTION`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) form includes its documentation in
-`@FOO-RANDOM-MANUAL`. The symbols [`VARIABLE`](index.html#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) and [`FUNCTION`](index.html#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) are just two
-instances of 'locatives' which are used in [`DEFSECTION`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to refer to
+Note how `(*FOO-STATE* [variable](index.html#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29))` in the [`defsection`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) form includes its documentation in
+`@FOO-RANDOM-MANUAL`. The symbols [`variable`](index.html#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) and [`function`](index.html#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29) are just two
+instances of 'locatives' which are used in [`defsection`](index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29) to refer to
 definitions tied to symbols. See [`Locative Types`](index.html#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
 
 The transcript in the code block tagged with `cl-transcript` is

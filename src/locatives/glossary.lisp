@@ -26,7 +26,7 @@
 (defun glossary-term-title-or-name (glossary-term)
   (check-type glossary-term 40ants-doc/glossary::glossary-term)
   (or (40ants-doc/glossary::glossary-term-title glossary-term)
-      (40ants-doc/builder/printer::maybe-downcase
+      (40ants-doc/utils::maybe-downcase
        (prin1-to-string (40ants-doc/glossary::glossary-term-name glossary-term)))))
 
 

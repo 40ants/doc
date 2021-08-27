@@ -14,3 +14,9 @@
 
 (defvar *find-definitions-right-trim* ",:.>")
 (defparameter *find-definitions-right-trim-2* ",:.>sS")
+
+
+(defvar *downcase-uppercase-code* t
+  "If true, then the names of symbols recognized as code (including
+  those found if *DOCUMENT-UPPERCASE-IS-CODE*) are downcased in the
+  output if they only consist of uppercase characters.")

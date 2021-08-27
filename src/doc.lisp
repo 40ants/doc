@@ -482,7 +482,6 @@ on the GitHub to suggest a new feature.
   **Note, some of these variables might be not supported yet in this fork.**
 "
   (40ants-doc/builder/printer::*document-uppercase-is-code* variable)
-  (40ants-doc/builder/printer::*document-downcase-uppercase-code* variable)
   (40ants-doc/builder/printer::*document-normalize-packages* variable)
   (40ants-doc/link::*document-link-code* variable)
   (40ants-doc/builder/vars::*document-max-numbering-level* variable))

@@ -20,6 +20,7 @@
                 #:doc-reference
                 #:documentation-piece)
   (:import-from #:40ants-doc/utils
+                #:maybe-downcase
                 #:make-relative-path
                 #:is-external)
   (:import-from #:40ants-doc/object-package)
@@ -463,10 +464,17 @@ var DOCUMENTATION_OPTIONS = {
              (pop-section node)
              (pop-page node)
              (unset-inside-code-block-if-needed node))
-           (make-code-if-needed (obj)
+           (make-code-if-needed (obj &key (maybe-downcase t))
+             ;; In some cases text should not be downcased.
+             ;; For example, if user intentionally mentioned
+             ;; an abbrebiation:
+             (when maybe-downcase
+               (setf obj
+                     (maybe-downcase obj)))
+             
              ;; If obj is already a document node, then we need to leave it unchanged
              ;; because it could be a cross-referenced title, but we don't want
-             ;; to make it a code
+             ;; to make it a code:
              (etypecase obj
                (common-doc:document-node obj)
                (t
@@ -560,7 +568,7 @@ var DOCUMENTATION_OPTIONS = {
 
                   (cond
                     (should-be-ignored
-                     (make-code-if-needed text))
+                     (make-code-if-needed text :maybe-downcase nil))
                     (found-references
                      (labels ((make-link (reference page text)
                                 (let ((page-uri

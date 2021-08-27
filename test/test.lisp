@@ -330,8 +330,7 @@
 
 
 (defun write-test-document-files (basedir format)
-  (let ((40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html))
-        (pages (list (40ants-doc/page:make-page @test-other
+  (let ((pages (list (40ants-doc/page:make-page @test-other
                                                 :base-filename "other/test-other")
                      (40ants-doc/page:make-page @test
                                                 :base-filename "test"))))
@@ -340,7 +339,8 @@
                                         :base-dir basedir
                                         :format (ecase format
                                                   (:markdown 'commondoc-markdown:markdown)
-                                                  (:html 'common-html:html)))))
+                                                  (:html 'common-html:html))
+                                        :downcase-uppercase-code (eq format :html))))
 
 (defun update-test-document-baseline (format)
   (write-test-document-files

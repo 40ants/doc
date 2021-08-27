@@ -71,7 +71,8 @@
                                 (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
                                 (base-url nil)
                                 (docs-dir #P"docs/")
-                                (clean-urls 40ants-doc/rewrite::*clean-urls*))
+                                (clean-urls 40ants-doc/rewrite::*clean-urls*)
+                                (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*))
   "Generate pretty HTML documentation for a single ASDF system,
   possibly linking to github. If you are migrating from MGL-PAX,
   then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
@@ -84,15 +85,9 @@
   Both :README-SECTIONS and :CHANGELOG-SECTIONS arguments may be a single
   item or a list.
 
-  When WARN-ON-UNDOCUMENTED-PACKAGES is true, then builder will check if there
-  are other packages of the package-inferred system with external but
-  not documented symbols. Otherwise, external symbols are searched only
-  in packages with at least one documented entity.
-
-  If CLEAN-URLS is true, then builder rewrites filenames and urls to make
-  it possible to host files on site without showing .html files inside. Also,
-  you need to specify a BASE-URL, to make urls absolute if you are rendering
-  markdown files together with HTML.
+  See docs on RENDER-TO-FILES function to learn about meaning of
+  BASE-DIR, BASE-URL, SOURCE-URI-FN, WARN-ON-UNDOCUMENTED-PACKAGES, CLEAN-URLS,
+  and DOWNCASE-UPPERCASE-CODE arguments.
 
   Example usage:
 
@@ -139,6 +134,7 @@
                    :source-uri-fn (40ants-doc/github:make-github-source-uri-fn asdf-system)
                    :warn-on-undocumented-packages warn-on-undocumented-packages
                    :clean-urls clean-urls
+                   :downcase-uppercase-code downcase-uppercase-code
                    :theme theme
                    :format :html))
 
@@ -188,6 +184,7 @@
                                       (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
                                       (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
                                       (clean-urls 40ants-doc/rewrite::*clean-urls*)
+                                      (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
                                       (format :html))
   "Renders given sections or pages into a files on disk.
 
@@ -205,7 +202,10 @@
    If CLEAN-URLS is true, then builder rewrites filenames and urls to make
    it possible to host files on site without showing .html files inside. Also,
    you need to specify a BASE-URL, to make urls absolute if you are rendering
-   markdown files together with HTML."
+   markdown files together with HTML.
+
+   If DOWNCASE-UPPERCASE-CODE is true, then all references to symbols will be
+   downcased."
 
   (setf format
         (40ants-doc/commondoc/format::ensure-format-class-name format))
@@ -216,7 +216,9 @@
         (common-html.emitter:*document-section-format-control* "~A#~A")
         (40ants-doc/commondoc/page::*warn-on-undocumented-packages* warn-on-undocumented-packages)
         (40ants-doc/rewrite::*clean-urls* clean-urls)
-        (40ants-doc/reference-api:*source-uri-fn* source-uri-fn))
+        (40ants-doc/reference-api:*source-uri-fn* source-uri-fn)
+        (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code))
+    
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
                               (incf num-warnings))))
