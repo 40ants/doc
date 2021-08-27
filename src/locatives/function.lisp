@@ -41,9 +41,11 @@
   (let* ((arglist (swank-backend:arglist obj))
          (docstring (40ants-doc/docstring:get-docstring obj 'function))
          (children (when docstring
-                     (40ants-doc/commondoc/markdown:parse-markdown docstring))))
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring)))
+         (reference (canonical-reference obj))
+         (dislocated (40ants-doc/args::function-arg-names arglist)))
 
-    (40ants-doc/commondoc/bullet:make-bullet (canonical-reference obj)
+    (40ants-doc/commondoc/bullet:make-bullet reference
                                              :arglist arglist
                                              :children children
-                                             :dislocated-symbols (40ants-doc/args::function-arg-names arglist))))
+                                             :dislocated-symbols dislocated)))

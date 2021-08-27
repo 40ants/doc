@@ -267,6 +267,12 @@ var DOCUMENTATION_OPTIONS = {
   node)
 
 
+(defvar *warn-on-undocumented-packages* nil
+  "When true, then builder will check if there are other packages of the package-inferred
+   system with external but not documented symbols.
+
+   When nil, then external symbols are searched only in packages with at least one documented entity.")
+
 (defun warn-on-undocumented-exports (node references)
   "Checks all documentation pieces if there are some documented but not exported symbols."
   
@@ -277,8 +283,8 @@ var DOCUMENTATION_OPTIONS = {
                 for obj = (40ants-doc/reference:reference-object reference)
                 when (typep obj 'symbol)
                 collect obj)))
-    (flet ((checker (node)
-             (let ((package (40ants-doc/object-package:object-package node)))
+    (flet ((collect-packages (node)
+             (let ((package (40ants-doc/object-package::object-package node)))
                (when (and package
                           (not (eql package
                                     common-lisp-package))
@@ -288,10 +294,30 @@ var DOCUMENTATION_OPTIONS = {
              node)
            (documented-p (symbol)
              (member symbol references-symbols)))
-      (40ants-doc/commondoc/mapper:map-nodes node #'checker)
+      
+      (40ants-doc/commondoc/mapper:map-nodes node #'collect-packages)
+
+      ;; This blocks extends PACKAGES list with all other
+      ;; package-inferred packages for the system
+      (when *warn-on-undocumented-packages* (loop with primary-names = nil
+                                                  for package in packages
+                                                  for name = (package-name package)
+                                                  for primary-name = (first (str:split "/" name))
+                                                  do (pushnew primary-name primary-names
+                                                              :test #'string=)
+                                                  finally (loop for primary-name in primary-names
+                                                                for prefix = (concatenate 'string primary-name "/")
+                                                                for sub-packages = (remove-if-not
+                                                                                    (lambda (package)
+                                                                                      (str:starts-with-p prefix
+                                                                                                         (package-name package)))
+                                                                                    (list-all-packages))
+                                                                do (setf packages
+                                                                         (nunion packages
+                                                                                 sub-packages)))))
 
       ;; Now we'll check if some external symbols are absent from REFERENCES
-      (loop with undocumented-symbols = nil
+      (loop with undocumented-symbols = (make-hash-table :test 'equal)
             for package in packages
             do (do-external-symbols (symbol package)
                  (unless (or (documented-p symbol)
@@ -299,13 +325,19 @@ var DOCUMENTATION_OPTIONS = {
                              (and (boundp symbol)
                                   (typep (symbol-value symbol)
                                          '40ants-doc:section)))
-                   (push symbol undocumented-symbols)))
-            finally (when undocumented-symbols
-                      (let ((*package* (find-package :keyword)))
-                        (warn "These symbols are external, but not documented: ~{~S~^, ~}"
-                              (sort undocumented-symbols #'string<
-                                    :key #'symbol-name)))))))
-  
+                   (push symbol (gethash package undocumented-symbols))))
+            finally (unless (zerop (hash-table-count undocumented-symbols))
+                      (warn 
+                       (with-output-to-string (s)
+                         (format s "These symbols are external, but not documented:")
+                         (loop for package being the hash-key of undocumented-symbols
+                               using (hash-value symbols)
+                               do (format s "~2&  ~A:"
+                                          (package-name package))
+                                  (loop for symbol in (sort symbols #'string<
+                                                            :key #'symbol-name)
+                                        do (format s "~&  - ~A"
+                                                   symbol)))))))))
   node)
 
 

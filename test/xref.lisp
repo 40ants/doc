@@ -75,7 +75,7 @@
 
     (testing "Case when symbol name already the code"
       (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
-             (doc (40ants-doc/commondoc/xref:extract-symbols
+             (doc (extract-symbols
                    (40ants-doc/commondoc/markdown:parse-markdown "`FOO` function"))))
         (flet ((first-child (node)
                  (first (common-doc:children node))))

@@ -56,7 +56,7 @@
     (typecase resolved
       (40ants-doc/reference:reference
        (let* ((reference-obj (40ants-doc/reference:reference-object obj))
-              (*package* (or (40ants-doc/object-package:object-package reference-obj)
+              (*package* (or (40ants-doc/object-package::object-package reference-obj)
                              *package*)))
          (reference-to-commondoc reference-obj
                                  locative-name
@@ -68,7 +68,7 @@
   "This methods sets the *PACKAGE* because other TO-COMMONDOC methods might
    read symbols from docstrings, and they should be referenced
    against the package OBJ argument belongs to."
-  (let ((*package* (or (40ants-doc/object-package:object-package obj)
+  (let ((*package* (or (40ants-doc/object-package::object-package obj)
                        *package*)))
     (call-next-method)))
 

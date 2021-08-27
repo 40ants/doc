@@ -60,7 +60,7 @@
              :reader page-sections)))
 
 
-(defmethod 40ants-doc/object-package:object-package ((obj page))
+(defmethod 40ants-doc/object-package::object-package ((obj page))
   nil)
 
 

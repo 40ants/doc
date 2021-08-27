@@ -1,7 +1,5 @@
-(defpackage #:40ants-doc/object-package
-  (:use #:cl)
-  (:export
-   #:object-package))
+(uiop:define-package #:40ants-doc/object-package
+  (:use #:cl))
 (in-package 40ants-doc/object-package)
 
 

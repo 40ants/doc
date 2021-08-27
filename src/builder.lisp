@@ -67,7 +67,8 @@
                                 &key
                                 (readme-sections nil)
                                 (changelog-sections nil)
-                                (theme '40ants-doc/themes/default:default-theme)
+                                (theme '40ants-doc/themes/default::default-theme)
+                                (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
                                 (base-url nil)
                                 (docs-dir #P"docs/"))
   "Generate pretty HTML documentation for a single ASDF system,
@@ -81,6 +82,11 @@
 
   Both :README-SECTIONS and :CHANGELOG-SECTIONS arguments may be a single
   item or a list.
+
+  When WARN-ON-UNDOCUMENTED-PACKAGES is true, then builder will check if there
+  are other packages of the package-inferred system with external but
+  not documented symbols. Otherwise, external symbols are searched only
+  in packages with at least one documented entity.
 
   Example usage:
 
@@ -111,7 +117,7 @@
                                                          :base-dir (asdf:system-relative-pathname
                                                                     asdf-system
                                                                     "./")
-                                                          :format :markdown)))
+                                                         :format :markdown)))
                            (when changelog-sections
                              (uiop:ensure-list
                               (40ants-doc/page:make-page changelog-sections
@@ -125,6 +131,7 @@
                               (uiop:ensure-directory-pathname docs-dir))
                    :base-url base-url
                    :source-uri-fn (40ants-doc/github:make-github-source-uri-fn asdf-system)
+                   :warn-on-undocumented-packages warn-on-undocumented-packages
                    :theme theme
                    :format :html))
 
@@ -168,10 +175,11 @@
                                            stream))))))
 
 
-(defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
+(defun render-to-files (sections &key (theme '40ants-doc/themes/default::default-theme)
                                       (base-dir #P"./")
                                       (base-url nil)
                                       (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
+                                      (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
                                       (format :html))
   "Renders given sections or pages into a files on disk.
 
@@ -179,7 +187,12 @@
    Supported formats are :HTML and :MARKDOWN.
 
    Returns an absolute pathname to the output directory as the first value
-   and pathnames corresponding to each of given sections."
+   and pathnames corresponding to each of given sections.
+
+   When WARN-ON-UNDOCUMENTED-PACKAGES is true, then builder will check if there
+   are other packages of the package-inferred system with external but
+   not documented symbols. Otherwise, external symbols are searched only
+   in packages with at least one documented entity."
 
   (setf format
         (40ants-doc/commondoc/format::ensure-format-class-name format))
@@ -188,6 +201,7 @@
         ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
         ;; be a slash after the .html
         (common-html.emitter:*document-section-format-control* "~A#~A")
+        (40ants-doc/commondoc/page::*warn-on-undocumented-packages* warn-on-undocumented-packages)
         (40ants-doc/reference-api:*source-uri-fn* source-uri-fn))
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))

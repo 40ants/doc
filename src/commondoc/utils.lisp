@@ -4,10 +4,7 @@
   (:import-from #:40ants-doc/utils
                 #:*whitespace-chars*)
   (:import-from #:str)
-  (:export
-   #:right-word
-   #:left-word
-   #:read-locative))
+  (:export))
 (in-package 40ants-doc/commondoc/utils)
 
 

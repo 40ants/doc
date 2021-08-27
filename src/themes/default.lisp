@@ -1,10 +1,8 @@
-(defpackage #:40ants-doc/themes/default
+(uiop:define-package #:40ants-doc/themes/default
   (:use #:cl)
   (:import-from #:40ants-doc/themes/api
                 #:render-css)
-  (:import-from #:lass)
-  (:export
-   #:default-theme))
+  (:import-from #:lass))
 (in-package 40ants-doc/themes/default)
 
 

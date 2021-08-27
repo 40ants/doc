@@ -27,7 +27,6 @@
    #:xref-symbol
    #:xref-locative
    #:fill-locatives
-   #:extract-symbols
    #:link-text
    #:extract-xrefs))
 (in-package 40ants-doc/commondoc/xref)
@@ -190,10 +189,10 @@
        node))))
 
 
-(defmethod 40ants-doc/object-package:object-package ((obj common-doc:document))
+(defmethod 40ants-doc/object-package::object-package ((obj common-doc:document))
   *package*)
 
-(defmethod 40ants-doc/object-package:object-package ((obj common-doc:document-node))
+(defmethod 40ants-doc/object-package::object-package ((obj common-doc:document-node))
   *package*)
 
 

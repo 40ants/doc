@@ -133,8 +133,8 @@
   (40ants-doc:section-title obj))
 
 
-(defmethod 40ants-doc/object-package:object-package ((obj documentation-section))
+(defmethod 40ants-doc/object-package::object-package ((obj documentation-section))
   (let* ((section (section-definition obj))
          (name (40ants-doc:section-name section)))
-    (40ants-doc/object-package:object-package name)))
+    (40ants-doc/object-package::object-package name)))
 

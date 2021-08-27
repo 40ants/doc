@@ -179,7 +179,7 @@
     (format stream "~S" (section-name section))))
 
 
-(defmethod 40ants-doc/object-package:object-package ((obj section))
+(defmethod 40ants-doc/object-package::object-package ((obj section))
   (section-package obj))
 
 
