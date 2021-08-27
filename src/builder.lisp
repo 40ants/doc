@@ -70,7 +70,8 @@
                                 (theme '40ants-doc/themes/default::default-theme)
                                 (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
                                 (base-url nil)
-                                (docs-dir #P"docs/"))
+                                (docs-dir #P"docs/")
+                                (clean-urls 40ants-doc/rewrite::*clean-urls*))
   "Generate pretty HTML documentation for a single ASDF system,
   possibly linking to github. If you are migrating from MGL-PAX,
   then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
@@ -87,6 +88,11 @@
   are other packages of the package-inferred system with external but
   not documented symbols. Otherwise, external symbols are searched only
   in packages with at least one documented entity.
+
+  If CLEAN-URLS is true, then builder rewrites filenames and urls to make
+  it possible to host files on site without showing .html files inside. Also,
+  you need to specify a BASE-URL, to make urls absolute if you are rendering
+  markdown files together with HTML.
 
   Example usage:
 
@@ -132,6 +138,7 @@
                    :base-url base-url
                    :source-uri-fn (40ants-doc/github:make-github-source-uri-fn asdf-system)
                    :warn-on-undocumented-packages warn-on-undocumented-packages
+                   :clean-urls clean-urls
                    :theme theme
                    :format :html))
 
@@ -180,6 +187,7 @@
                                       (base-url nil)
                                       (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
                                       (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
+                                      (clean-urls 40ants-doc/rewrite::*clean-urls*)
                                       (format :html))
   "Renders given sections or pages into a files on disk.
 
@@ -192,7 +200,12 @@
    When WARN-ON-UNDOCUMENTED-PACKAGES is true, then builder will check if there
    are other packages of the package-inferred system with external but
    not documented symbols. Otherwise, external symbols are searched only
-   in packages with at least one documented entity."
+   in packages with at least one documented entity.
+
+   If CLEAN-URLS is true, then builder rewrites filenames and urls to make
+   it possible to host files on site without showing .html files inside. Also,
+   you need to specify a BASE-URL, to make urls absolute if you are rendering
+   markdown files together with HTML."
 
   (setf format
         (40ants-doc/commondoc/format::ensure-format-class-name format))
@@ -202,6 +215,7 @@
         ;; be a slash after the .html
         (common-html.emitter:*document-section-format-control* "~A#~A")
         (40ants-doc/commondoc/page::*warn-on-undocumented-packages* warn-on-undocumented-packages)
+        (40ants-doc/rewrite::*clean-urls* clean-urls)
         (40ants-doc/reference-api:*source-uri-fn* source-uri-fn))
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
