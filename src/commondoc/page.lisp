@@ -347,15 +347,25 @@ var DOCUMENTATION_OPTIONS = {
 (defun warn-on-references-to-internals (document)
   "This function checks and warns on symbols references using :: notation.
 
-   You shouldn't reference internal symbols in the public documentation."
+   You shouldn't reference internal symbols in the public documentation.
+
+   It is allowed to reference sections using this internal notations,
+   because it is recommended to export only root sections which become
+   separate pages."
   (with-node-path
     (flet ((check-xref (node)
              (when (typep node '40ants-doc/commondoc/xref:xref)
-               (let* ((name (40ants-doc/commondoc/xref:xref-name node))
+               (let* ((symbol (40ants-doc/commondoc/xref:xref-symbol node))
+                      (reference-to-section (and symbol
+                                                 (boundp symbol)
+                                                 (typep (symbol-value symbol)
+                                                        '40ants-doc:section)))
+                      (name (40ants-doc/commondoc/xref:xref-name node))
                       (name (etypecase name
                               (common-doc:document-node (common-doc.ops:collect-all-text name))
                               (string name))))
-                 (when (str:containsp "::" name)
+                 (when (and (not reference-to-section)
+                            (str:containsp "::" name))
                    (warn "External symbol is referenced as internal: ~A mentioned at ~{~A~^ / ~}"
                          name
                          (current-path)))))
