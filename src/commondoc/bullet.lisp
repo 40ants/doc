@@ -41,6 +41,14 @@
                        :initform nil
                        :reader dislocated-symbols)))
 
+(defmethod bullet-name :around ((bullet bullet))
+  (or (call-next-method)
+      (let* ((reference (doc-reference bullet))
+             (object (40ants-doc/reference::reference-object reference)))
+        (typecase object
+          (string object)
+          (t (prin1-to-string object))))))
+
 
 (defmethod 40ants-doc/ignored-words:supports-ignored-words-p ((obj bullet))
   t)
@@ -103,8 +111,7 @@
          (arglists (bullet-arglist obj))
          (locative-type (string-downcase
                          (40ants-doc/reference::reference-locative-type reference)))
-         (name (or (bullet-name obj)
-                   (princ-to-string (40ants-doc/reference::reference-object reference))))
+         (name (bullet-name obj))
          (source-uri (40ants-doc/reference-api:source-uri reference))
          (spinneret:*html* common-html.emitter::*output-stream*))
     (spinneret:with-html
@@ -144,8 +151,7 @@
          (arglists (bullet-arglist node))
          (locative-type (string-downcase
                          (40ants-doc/reference::reference-locative-type reference)))
-         (name (or (bullet-name node)
-                   (princ-to-string (40ants-doc/reference::reference-object reference))))
+         (name (bullet-name node))
          (source-uri (40ants-doc/reference-api:source-uri reference)))
 
     (let ((commondoc-markdown/emitter::*header-level* (or (and (boundp 'commondoc-markdown/emitter::*header-level*)

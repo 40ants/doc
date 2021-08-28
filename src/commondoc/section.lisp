@@ -23,7 +23,8 @@
   (:import-from #:40ants-doc/reference
                 #:reference-locative
                 #:reference-object)
-  (:import-from #:40ants-doc/object-package)
+  (:import-from #:40ants-doc/object-package
+                #:object-package)
   (:export
    #:documentation-section
    #:section-definition
@@ -113,7 +114,11 @@
 
 (common-html.emitter::define-emitter (obj documentation-section)
   "Emit a documentation section with a link."
-  (let ((uri-fragment (documentation-section-uri-fragment obj)))
+  (let ((uri-fragment (documentation-section-uri-fragment obj))
+        ;; Here we change package to a package for which section was defined,
+        ;; to make all symbols from this package be printed in their short form
+        ;; without package prefix.
+        (*package* (object-package obj)))
     (with-html
       (:tag :name (format nil "h~A" *section-depth*)
             (progn
@@ -129,12 +134,16 @@
       (decf *section-depth*))))
 
 
+(defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
+                                            (node documentation-section)
+                                            stream)
+  ;; Here we change package to a package for which section was defined,
+  ;; to make all symbols from this package be printed in their short form
+  ;; without package prefix.
+  (let ((*package* (object-package node)))
+    (call-next-method)))
+
+
 (defmethod 40ants-doc/commondoc/xref:link-text ((obj 40ants-doc:section))
   (40ants-doc:section-title obj))
-
-
-(defmethod 40ants-doc/object-package::object-package ((obj documentation-section))
-  (let* ((section (section-definition obj))
-         (name (40ants-doc:section-name section)))
-    (40ants-doc/object-package::object-package name)))
 

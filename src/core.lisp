@@ -180,7 +180,11 @@
 
 
 (defmethod 40ants-doc/object-package::object-package ((obj section))
-  (section-package obj))
+  (let ((package-or-name (section-package obj)))
+    (etypecase package-or-name
+      (package package-or-name)
+      (string (find-package package-or-name))
+      (symbol (find-package package-or-name)))))
 
 
 ;; This function is from alexandria, to not

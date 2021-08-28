@@ -11,7 +11,9 @@
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/section)
   (:import-from #:40ants-doc/reference-api)
-  (:import-from #:40ants-doc/commondoc/mapper)
+  (:import-from #:40ants-doc/commondoc/mapper
+                #:current-path
+                #:with-node-path)
   (:import-from #:40ants-doc/ignored-words
                 #:ignored-in-package
                 #:ignored-words
@@ -340,6 +342,23 @@ var DOCUMENTATION_OPTIONS = {
                                         do (format s "~&  - ~A"
                                                    symbol)))))))))
   node)
+
+
+(defun warn-on-references-to-internals (document)
+  "This function checks and warns on symbols references using :: notation.
+
+   You shouldn't reference internal symbols in the public documentation."
+  (with-node-path
+    (flet ((check-xref (node)
+             (when (typep node '40ants-doc/commondoc/xref:xref)
+               (let ((name (40ants-doc/commondoc/xref:xref-name node)))
+                 (when (str:containsp "::" name)
+                   (warn "External symbol is referenced as internal: ~A mentioned at ~{~A~^ / ~}"
+                         name
+                         (current-path)))))
+             node))
+     
+      (40ants-doc/commondoc/mapper:map-nodes document #'check-xref))))
 
 
 (defun remove-references-to-other-document-formats (current-page found-references)

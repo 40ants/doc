@@ -490,7 +490,8 @@ on the GitHub to suggest a new feature.
 (defsection @locative-types (:title "Locative Types"
                              :ignore-words ("SWANK-BACKEND:ARGLIST"
                                             "START"
-                                            "END"))
+                                            "END")
+                             :package-symbol :40ants-doc/locatives)
   "These are the locatives type supported out of the box. As all
   locative types, they are symbols and their names should make it
   obvious what kind of things they refer to. Unless otherwise noted,

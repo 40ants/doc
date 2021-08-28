@@ -113,7 +113,8 @@
       now accept WARN-ON-UNDOCUMENTED-PACKAGES argument and CLEAN-URLS argument.
     - Variable *DOCUMENT-MARK-UP-SIGNATURES* was removed.
     - Added DOWNCASE-UPPERCASE-CODE argument instead of *DOCUMENT-DOWNCASE-UPPERCASE-CODE*.
-      This argument is true by default.")
+      This argument is true by default.
+    - Added warnings on symbols, referenced like internals, using `::`.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).

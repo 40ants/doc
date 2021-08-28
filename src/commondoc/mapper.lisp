@@ -1,5 +1,7 @@
 (defpackage #:40ants-doc/commondoc/mapper
   (:use #:cl)
+  (:import-from #:common-doc)
+  (:import-from #:40ants-doc/commondoc/bullet)
   (:export
    #:map-nodes
    #:node-supports-children
@@ -45,7 +47,53 @@
 
 
 (defmacro with-node-package (&body body)
+  "This macro tracks current documentation piece's package and sets *package* accordingly."
   `(call-with-node-package (lambda () ,@body)))
+
+
+(defvar *path*)
+
+
+(defun call-with-node-path (func)
+  (flet ((collect-section (node)
+           (when (or (typep node 'common-doc:section)
+                     (typep node '40ants-doc/commondoc/bullet::bullet))
+             (push node *path*)))
+         (pop-section (node)
+           (when (or (typep node 'common-doc:section)
+                     (typep node '40ants-doc/commondoc/bullet::bullet))
+             (pop *path*))))
+      
+    (let ((*on-going-down* (list* #'collect-section *on-going-down*))
+          (*on-going-up* (list* #'pop-section *on-going-up*))
+          (*path* nil))
+      (funcall func))))
+
+
+(defun current-path ()
+  "Returns a list of section titles (strings)."
+  (unless (boundp '*path*)
+    (error "Function CURRENT-PATH should be called inside WITH-NODE-PATH macro."))
+
+  (loop for item in (reverse *path*)
+        for title = (typecase item
+                      (common-doc:section
+                       (common-doc.ops:collect-all-text
+                        (common-doc:title item)))
+                      (40ants-doc/commondoc/bullet::bullet
+                       ;; To always render a package specified version
+                       ;; of symbol names, we need to set keyword package here
+                       (let ((*package* (find-package :keyword)))
+                         (40ants-doc/commondoc/bullet::bullet-name item))))
+        collect title))
+
+
+(defmacro with-node-path (&body body)
+  "This macro tracks sections and subsections providing a CURRENT-PATH function.
+
+   Useful for referencing a problematic node in a warning, because such path
+   makes it easier to locate the node having an issue."
+  `(call-with-node-path (lambda () ,@body)))
 
 
 (defun process-node-with-children (node func &key

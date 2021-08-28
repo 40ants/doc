@@ -59,6 +59,8 @@
 * Added `DOWNCASE-UPPERCASE-CODE` argument instead of `*DOCUMENT-DOWNCASE-UPPERCASE-CODE*`.
   This argument is true by default.
 
+* Added warnings on symbols, referenced like internals, using `::`.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E1-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.1.0

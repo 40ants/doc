@@ -150,6 +150,7 @@
                        (40ants-doc/commondoc/xref::extract-symbols document)
                        document))
          (document (40ants-doc/commondoc/xref:fill-locatives document))
+         (document (40ants-doc/commondoc/page::warn-on-references-to-internals document))
          (document (if 40ants-doc/link::*document-link-code*
                        (40ants-doc/commondoc/page::replace-xrefs document references
                                                                  :base-url base-url)
