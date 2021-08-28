@@ -92,8 +92,8 @@
           (lambda (reference)
             (let ((40ants-doc/source::*find-source-cache* find-source-cache))
               (multiple-value-bind (relative-path line-number)
-                  (convert-source-location (40ants-doc/source-api::find-source
-                                            (40ants-doc/reference::resolve reference))
+                  (convert-source-location (40ants-doc/source-api:find-source
+                                            (40ants-doc/reference:resolve reference))
                                            system-dir reference
                                            line-file-position-cache)
                 (when relative-path

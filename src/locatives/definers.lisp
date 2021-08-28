@@ -71,5 +71,5 @@
                                                   :children children
                                                   :ignore-words symbol)))
      
-     (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
-       (40ants-doc/source-api::find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))
+     (defmethod 40ants-doc/locatives/base:locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
+       (40ants-doc/source-api:find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))

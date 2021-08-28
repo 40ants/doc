@@ -375,7 +375,7 @@ on the GitHub to suggest a new feature.
   initialization file (or loading `src/pax.el`):"
   (edit-locative.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/edit-locative.el")
                              :lang "elisp"))
-  (40ants-doc/swank::locate-definition-for-emacs function)
+  (40ants-doc/swank:locate-definition-for-emacs function)
 
   "Note, there is also another part of Emacs code, related to
    transcription blocks. It is described in 40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT section.")
@@ -397,8 +397,8 @@ on the GitHub to suggest a new feature.
 
 
 (defsection @defining-sections (:title "Defining Sections")
-  (40ants-doc::defsection macro)
-  (40ants-doc::*discard-documentation-p* variable))
+  (40ants-doc:defsection macro)
+  (40ants-doc:*discard-documentation-p* variable))
 
 
 (defsection @cross-referencing (:title "Cross-referencing")
@@ -442,7 +442,7 @@ on the GitHub to suggest a new feature.
   "While Common Lisp has rather good introspective abilities, not
   everything is first class. For example, there is no object
   representing the variable defined with `(DEFVAR
-  FOO)`. `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a 40ANTS-DOC/REFERENCE::REFERENCE that
+  FOO)`. `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a 40ANTS-DOC/REFERENCE:REFERENCE that
   captures the path to take from an object (the symbol FOO) to an
   entity of interest (for example, the documentation of the variable).
   The path is called the locative. A locative can be applied to an
@@ -454,22 +454,22 @@ on the GitHub to suggest a new feature.
 
   which will return the same reference as `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO
   'VARIABLE)`. Operations need to know how to deal with references
-  which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
+  which we will see in 40ANTS-DOC/LOCATIVES/BASE:LOCATE-AND-FIND-SOURCE.
 
   Naturally, `(40ANTS-DOC/LOCATIVES/BASE:LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
   need to muck with references when there is a perfectly good object."
-  (40ants-doc/locatives/base::locate function)
-  (40ants-doc/locatives/base::locate-error condition)
-  (40ants-doc/locatives/base::locate-error-message (reader 40ants-doc/locatives/base::locate-error))
-  (40ants-doc/locatives/base::locate-error-object (reader 40ants-doc/locatives/base::locate-error))
-  (40ants-doc/locatives/base::locate-error-locative (reader 40ants-doc/locatives/base::locate-error))
-  (40ants-doc/reference::resolve function)
-  (40ants-doc/reference::reference class)
-  (40ants-doc/reference::reference-object (reader 40ants-doc/reference::reference))
-  (40ants-doc/reference::reference-locative (reader 40ants-doc/reference::reference))
-  (40ants-doc/reference::make-reference function)
-  (40ants-doc/locatives/base::locative-type function)
-  (40ants-doc/locatives/base::locative-args function))
+  (40ants-doc/locatives/base:locate function)
+  (40ants-doc/locatives/base:locate-error condition)
+  (40ants-doc/locatives/base:locate-error-message (reader 40ants-doc/locatives/base:locate-error))
+  (40ants-doc/locatives/base:locate-error-object (reader 40ants-doc/locatives/base:locate-error))
+  (40ants-doc/locatives/base:locate-error-locative (reader 40ants-doc/locatives/base:locate-error))
+  (40ants-doc/reference:resolve function)
+  (40ants-doc/reference:reference class)
+  (40ants-doc/reference:reference-object (reader 40ants-doc/reference:reference))
+  (40ants-doc/reference:reference-locative (reader 40ants-doc/reference:reference))
+  (40ants-doc/reference:make-reference function)
+  (40ants-doc/locatives/base:locative-type function)
+  (40ants-doc/locatives/base:locative-args function))
 
 
 (defsection @documentation-printer-variables
@@ -481,10 +481,10 @@ on the GitHub to suggest a new feature.
 
   **Note, some of these variables might be not supported yet in this fork.**
 "
-  (40ants-doc/builder/printer::*document-uppercase-is-code* variable)
-  (40ants-doc/builder/printer::*document-normalize-packages* variable)
-  (40ants-doc/link::*document-link-code* variable)
-  (40ants-doc/builder/vars::*document-max-numbering-level* variable))
+  (40ants-doc/builder/printer:*document-uppercase-is-code* variable)
+  (40ants-doc/builder/printer:*document-normalize-packages* variable)
+  (40ants-doc/link:*document-link-code* variable)
+  (40ants-doc/builder/vars:*document-max-numbering-level* variable))
 
 
 (defsection @locative-types (:title "Locative Types"
@@ -560,7 +560,7 @@ on the GitHub to suggest a new feature.
   (40ants-doc/locatives/base:locate-object generic-function)
   (40ants-doc/locatives/base:locate-error function)
   (40ants-doc/reference-api:canonical-reference generic-function)
-  (40ants-doc/source-api::find-source generic-function)
+  (40ants-doc/source-api:find-source generic-function)
   (40ants-doc/commondoc/builder:to-commondoc generic-function)
   (40ants-doc/commondoc/bullet:make-bullet function))
 
@@ -570,9 +570,9 @@ on the GitHub to suggest a new feature.
      :ignore-words ("DEFINE-DIRECTION"
                     "UP"
                     "DIRECTION"))
-  "Let's see how to extend 40ANTS-DOC/BUILDER::RENDER-TO-FILES and `M-.` navigation if there is
+  "Let's see how to extend 40ANTS-DOC/BUILDER:RENDER-TO-FILES and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
-  that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case:
+  that 40ANTS-DOC/LOCATIVES/BASE:LOCATE returns a 40ANTS-DOC/REFERENCE:REFERENCE object in this case:
 
   ```cl-transcript
   (40ants-doc/locatives/base:locate
@@ -581,8 +581,8 @@ on the GitHub to suggest a new feature.
   ==> #<40ANTS-DOC/REFERENCE:REFERENCE 40ANTS-DOC:*DISCARD-DOCUMENTATION-P* (VARIABLE)>
   ```
 
-  Some methods of 40ANTS-DOC/SOURCE-API::FIND-SOURCE generic-function defer to
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE generic-function,
+  Some methods of 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function defer to
+  40ANTS-DOC/LOCATIVES/BASE:LOCATE-AND-FIND-SOURCE generic-function,
   which have [LOCATIVE-TYPE][argument] in their argument
   list for EQL specializing pleasure.
 

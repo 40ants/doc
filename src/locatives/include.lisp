@@ -115,12 +115,12 @@
          (values source 0 nil))
         ((and source (listp source))
          (destructuring-bind (&key start end) source
-           (let* ((start-reference (40ants-doc/reference::resolve
+           (let* ((start-reference (40ants-doc/reference:resolve
                                     (40ants-doc/core::entry-to-reference start)))
-                  (end-reference (40ants-doc/reference::resolve
+                  (end-reference (40ants-doc/reference:resolve
                                   (40ants-doc/core::entry-to-reference end)))
-                  (start (40ants-doc/source-api::find-source start-reference))
-                  (end (40ants-doc/source-api::find-source end-reference)))
+                  (start (40ants-doc/source-api:find-source start-reference))
+                  (end (40ants-doc/source-api:find-source end-reference)))
              (when start
                (check-location start))
              (when end

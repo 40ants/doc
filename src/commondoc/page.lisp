@@ -617,7 +617,7 @@ var DOCUMENTATION_OPTIONS = {
                        (cond ((= (length found-references) 1)
                               (destructuring-bind (reference . page)
                                   (first found-references)
-                                (let* ((object (40ants-doc/reference::resolve reference))
+                                (let* ((object (40ants-doc/reference:resolve reference))
                                        (text (or (40ants-doc/commondoc/xref:link-text object)
                                                  text)))
                                   (make-link reference

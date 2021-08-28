@@ -60,7 +60,7 @@
   (declare (ignore locative-args))
   ;; Some implementations can not find the source location of the
   ;; accessor function, so fall back on FIND-ONE-LOCATION.
-  (let ((location (40ants-doc/source-api::find-source (symbol-function symbol))))
+  (let ((location (40ants-doc/source-api:find-source (symbol-function symbol))))
     (if (eq :error (first location))
         (40ants-doc/locatives/utils::find-one-location (swank-backend:find-definitions symbol)
                                                        '("function" "operator"))

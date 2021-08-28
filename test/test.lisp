@@ -208,8 +208,8 @@
       (testing (format nil "(~S ~S)"
                        symbol locative)
         (when (working-locative-p locative)
-          (let ((location (40ants-doc/source-api::find-source
-                           (40ants-doc/locatives/base::locate symbol locative))))
+          (let ((location (40ants-doc/source-api:find-source
+                           (40ants-doc/locatives/base:locate symbol locative))))
             (ok (not (eq :error (first location)))
                 (format nil "Could not find source location for (~S ~S)"
                         symbol locative))

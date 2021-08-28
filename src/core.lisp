@@ -59,7 +59,7 @@
   The same symbol can occur multiple times in ENTRIES, typically
   with different locatives, but this is not required.
 
-  The references are not looked up (see 40ANTS-DOC/REFERENCE::RESOLVE in the
+  The references are not looked up (see 40ANTS-DOC/REFERENCE:RESOLVE in the
   40ANTS-DOC/DOC:@EXTENSION-API) until documentation is generated, so it is
   allowed to refer to things yet to be defined.
 
@@ -160,11 +160,11 @@
     :initform nil
     :initarg :link-title-to
     :reader section-link-title-to
-    :documentation "A 40ANTS-DOC/REFERENCE::REFERENCE or NIL. Used in generated documentation.")
+    :documentation "A 40ANTS-DOC/REFERENCE:REFERENCE or NIL. Used in generated documentation.")
    (entries
     :initarg :entries
     :reader section-entries
-    :documentation "A list of strings and 40ANTS-DOC/REFERENCE::REFERENCE objects in the
+    :documentation "A list of strings and 40ANTS-DOC/REFERENCE:REFERENCE objects in the
     order they occurred in DEFSECTION.")
    (ignore-words
     :initarg :ignore-words

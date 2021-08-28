@@ -70,7 +70,7 @@
   ;; be recognized without markup because its name is too short. The
   ;; correct solution would be to add links automatically for the
   ;; hyperspec.
-  (list (make-reference t '40ants-doc/locatives/dislocated::dislocated)))
+  (list (make-reference t '40ants-doc/locatives:dislocated)))
 
 
 ;;; Return the references from REFS which are for SYMBOL or which are
@@ -94,7 +94,7 @@
                        refs)
         ;; Don't codify A, I and similar.
         (if (< 2 n-chars-read)
-            (list (make-reference symbol '40ants-doc/locatives/dislocated::dislocated))
+            (list (make-reference symbol '40ants-doc/locatives:dislocated))
             ()))))
 
 
@@ -104,7 +104,7 @@
 ;;; If there is a DISLOCATED reference, then don't link anywhere
 ;;; (remove all the other references).
 (defun resolve-dislocated (refs)
-  (let ((ref (find '40ants-doc/locatives/dislocated::dislocated refs :key #'reference-locative-type)))
+  (let ((ref (find '40ants-doc/locatives:dislocated refs :key #'reference-locative-type)))
     (if ref
         (list ref)
         refs)))
@@ -151,11 +151,11 @@
 
 
 (defun resolve (reference &key (errorp t))
-  "A convenience function to 40ANTS-DOC/LOCATIVES/BASE::LOCATE REFERENCE's object with its
+  "A convenience function to 40ANTS-DOC/LOCATIVES/BASE:LOCATE REFERENCE's object with its
   locative."
-  (40ants-doc/locatives/base::locate (reference-object reference)
-                                     (reference-locative reference)
-                                     :errorp errorp))
+  (40ants-doc/locatives/base:locate (reference-object reference)
+                                    (reference-locative reference)
+                                    :errorp errorp))
 
 
 ;;; We need this for more informative ERRORs and WARNINGs

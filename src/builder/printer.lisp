@@ -14,7 +14,7 @@
 
 
 (defvar *document-normalize-packages* t
-  "If true, symbols are printed relative to `40ANTS-DOC::SECTION-PACKAGE` of the
+  "If true, symbols are printed relative to `40ANTS-DOC:SECTION-PACKAGE` of the
   innermost containing section or with full package names if there is
   no containing section. To eliminate ambiguity `[in package ...]`
   messages are printed right after the section heading if necessary.
@@ -28,7 +28,7 @@
   """When true, words with at least three characters and no lowercase
   characters naming an interned symbol are assumed to be code as if
   they were marked up with backticks which is especially useful when
-  combined with 40ANTS-DOC/LINK::*DOCUMENT-LINK-CODE*. For example, this docstring:
+  combined with 40ANTS-DOC/LINK:*DOCUMENT-LINK-CODE*. For example, this docstring:
 
       "`FOO` and FOO."
 

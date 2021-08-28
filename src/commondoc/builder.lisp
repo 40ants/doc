@@ -45,8 +45,8 @@
 
 
 (defmethod to-commondoc ((obj 40ants-doc/reference::reference))
-  (let* ((resolved (40ants-doc/reference::resolve obj))
-         (locative (40ants-doc/reference::reference-locative obj))
+  (let* ((resolved (40ants-doc/reference:resolve obj))
+         (locative (40ants-doc/reference:reference-locative obj))
          (locative-name (etypecase locative
                           (list (car locative))
                           (symbol locative)))

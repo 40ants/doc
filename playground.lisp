@@ -100,8 +100,8 @@
   (*var-c* variable))
 
 
-(40ants-doc/glossary::define-glossary-term lisp (:title "The Best Programming Language")
-                                           "You really should use LISP!")
+(40ants-doc/glossary:define-glossary-term lisp (:title "The Best Programming Language")
+                                          "You really should use LISP!")
 
 (40ants-doc:defsection @glossary (:title "Glossary")
   (lisp glossary-term))

@@ -48,7 +48,7 @@
                                    locative-args)
   (declare (ignore locative-args))
   #-allegro
-  (40ants-doc/source-api::find-source (compiler-macro-function symbol))
+  (40ants-doc/source-api:find-source (compiler-macro-function symbol))
   #+allegro
   (find-one-location (swank-backend:find-definitions symbol)
                      '("compiler-macro")))

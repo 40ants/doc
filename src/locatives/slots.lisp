@@ -143,16 +143,16 @@
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'accessor))
                                    locative-args)
-  (40ants-doc/source-api::find-source (find-method (symbol-function symbol)
-                                                   '() (list (find-class (first locative-args))))))
+  (40ants-doc/source-api:find-source (find-method (symbol-function symbol)
+                                                  '() (list (find-class (first locative-args))))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'reader))
                                    locative-args)
-  (40ants-doc/source-api::find-source (find-method (symbol-function symbol)
-                                                   '() (list (find-class (first locative-args))))))
+  (40ants-doc/source-api:find-source (find-method (symbol-function symbol)
+                                                  '() (list (find-class (first locative-args))))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'writer))
                                    locative-args)
-  (40ants-doc/source-api::find-source (find-method (symbol-function symbol)
-                                                   '() (mapcar #'find-class
-                                                               (list t (first locative-args))))))
+  (40ants-doc/source-api:find-source (find-method (symbol-function symbol)
+                                                  '() (mapcar #'find-class
+                                                              (list t (first locative-args))))))

@@ -60,4 +60,4 @@
 (defmethod locate-and-find-source (symbol (locative-type (eql 'locative))
                                    locative-args)
   (declare (ignore locative-args))
-  (40ants-doc/source-api::find-source (locative-lambda-list-method-for-symbol symbol)))
+  (40ants-doc/source-api:find-source (locative-lambda-list-method-for-symbol symbol)))

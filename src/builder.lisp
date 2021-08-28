@@ -146,12 +146,12 @@
          (document (40ants-doc/commondoc/page:warn-on-undocumented-exports document
                                                                            references))
          (document (40ants-doc/commondoc/transcribe::warn-on-differences-in-transcriptions document))
-         (document (if 40ants-doc/builder/printer::*document-uppercase-is-code*
+         (document (if 40ants-doc/builder/printer:*document-uppercase-is-code*
                        (40ants-doc/commondoc/xref::extract-symbols document)
                        document))
          (document (40ants-doc/commondoc/xref:fill-locatives document))
          (document (40ants-doc/commondoc/page::warn-on-references-to-internals document))
-         (document (if 40ants-doc/link::*document-link-code*
+         (document (if 40ants-doc/link:*document-link-code*
                        (40ants-doc/commondoc/page::replace-xrefs document references
                                                                  :base-url base-url)
                        document)))

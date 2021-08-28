@@ -53,8 +53,8 @@
   calling the LOCATE-ERROR function if the lookup fails. Signal other
   errors if the types of the argument are bad, for instance
   LOCATIVE-ARGS is not the empty list in the package example. If a
-  40ANTS-DOC/REFERENCE::REFERENCE is returned then it must be canonical in the sense that
-  calling 40ANTS-DOC/REFERENCE-API::CANONICAL-REFERENCE on it will return the same reference.
+  40ANTS-DOC/REFERENCE:REFERENCE is returned then it must be canonical in the sense that
+  calling 40ANTS-DOC/REFERENCE-API:CANONICAL-REFERENCE on it will return the same reference.
   For extension only, don't call this directly."))
 
 (defun locate-error (&rest format-and-args)
@@ -73,7 +73,7 @@
 
 (defun locate (object locative &key (errorp t))
   "Follow LOCATIVE from OBJECT and return the object it leads to or a
-  40ANTS-DOC/REFERENCE::REFERENCE if there is no first class object corresponding to the
+  40ANTS-DOC/REFERENCE:REFERENCE if there is no first class object corresponding to the
   location. If ERRORP, then a LOCATE-ERROR condition is signaled when
   the lookup fails."
   (handler-case
@@ -105,11 +105,11 @@
     different arguments to allow specializing on LOCATIVE-TYPE."))
 
 (defmethod locate-and-find-source (object locative-type locative-args)
-  "This default implementation simply calls 40ANTS-DOC/SOURCE-API::FIND-SOURCE with OBJECT
+  "This default implementation simply calls 40ANTS-DOC/SOURCE-API:FIND-SOURCE with OBJECT
   which should cover the common case of a macro expanding to, for
   instance, a defun but having its own locative type."
   (declare (ignore locative-type locative-args))
-  (40ants-doc/source-api::find-source object))
+  (40ants-doc/source-api:find-source object))
 
 
 ;;; A somewhat dummy generic function whose methods are

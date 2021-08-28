@@ -64,9 +64,9 @@
     (when found
       (let ((locative (read-marked-up-locative-from-string locative-string)))
         (when locative
-          (let ((thing (40ants-doc/locatives/base::locate symbol locative :errorp nil)))
+          (let ((thing (40ants-doc/locatives/base:locate symbol locative :errorp nil)))
             (when thing
-              (40ants-doc/source-api::find-source thing))))))))
+              (40ants-doc/source-api:find-source thing))))))))
 
 ;;; Ensure that some Swank internal facilities (such as
 ;;; SWANK::FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE,
