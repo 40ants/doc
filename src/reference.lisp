@@ -126,7 +126,7 @@
 
 
 (defmethod 40ants-doc/source-api:find-source ((reference reference))
-  "If REFERENCE can be resolved to a non-reference, call FIND-SOURCE generic-function
+  "If REFERENCE can be resolved to a non-reference, call 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function
   with it, else call [40ANTS-DOC/LOCATIVES/BASE:LOCATE-AND-FIND-SOURCE][generic-function] on the object,
   locative-type, locative-args slots of REFERENCE."
   (let ((object (resolve reference)))

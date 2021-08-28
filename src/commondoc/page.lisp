@@ -427,7 +427,6 @@ var DOCUMENTATION_OPTIONS = {
                       &key base-url
                       &aux ignored-words
                            dislocated-symbols
-                           sections
                            current-page
                            inside-code-block
                            pages-stack
@@ -448,201 +447,191 @@ var DOCUMENTATION_OPTIONS = {
    contains words, specified as IGNORE-WORDS argument of the 40ANTS-DOC:DEFSECTION macro.
   "
   
-  (labels ((collect-dislocated (node)
-             (when (supports-dislocated-symbols-p node)
-               (push (dislocated-symbols node)
-                     dislocated-symbols)))
-           (pop-dislocated (node)
-             (when (supports-dislocated-symbols-p node)
-               (pop dislocated-symbols)))
-           (collect-ignored-words (node)
-             (when (supports-ignored-words-p node)
-               (let ((words (ignored-words node)))
-                 (push words
-                       ignored-words))))
-           (pop-ignored-words (node)
-             (when (supports-ignored-words-p node)
-               (pop ignored-words)))
-           (collect-section (node)
-             (when (typep node '40ants-doc/commondoc/section:documentation-section)
-               (push node sections)))
-           (pop-section (node)
-             (when (typep node '40ants-doc/commondoc/section:documentation-section)
-               (pop sections)))
-           (push-page (node)
-             (when (typep node 'page)
-               (push node pages-stack)
-               (setf current-page node)))
-           (pop-page (node)
-             (when (typep node 'page)
-               (pop pages-stack)
-               (setf current-page
-                     (car pages-stack))))
-           (set-inside-code-block-if-needed (node)
-             (when (typep node 'common-doc:code)
-               (setf inside-code-block t)))
-           (unset-inside-code-block-if-needed (node)
-             (when (typep node 'common-doc:code)
-               (setf inside-code-block nil)))
-           (go-down (node)
-             (collect-dislocated node)
-             (collect-ignored-words node)
-             (collect-section node)
-             (push-page node)
-             (set-inside-code-block-if-needed node))
-           (go-up (node)
-             (pop-dislocated node)
-             (pop-ignored-words node)
-             (pop-section node)
-             (pop-page node)
-             (unset-inside-code-block-if-needed node))
-           (make-code-if-needed (obj &key (maybe-downcase t))
-             ;; In some cases text should not be downcased.
-             ;; For example, if user intentionally mentioned
-             ;; an abbrebiation:
-             (when maybe-downcase
-               (setf obj
-                     (maybe-downcase obj)))
-             
-             ;; If obj is already a document node, then we need to leave it unchanged
-             ;; because it could be a cross-referenced title, but we don't want
-             ;; to make it a code:
-             (etypecase obj
-               (common-doc:document-node obj)
-               (t
-                (if inside-code-block
-                    (make-text obj)
-                    (make-code
-                     (make-text obj))))))
-           (package-specified (text)
-             (find #\: text))
-           (should-be-ignored-p (text symbol locative)
-             (or (and symbol
-                      (not (package-specified text))
-                      (not (40ants-doc/utils:is-external symbol)))
+  (with-node-path
+    (labels ((collect-dislocated (node)
+               (when (supports-dislocated-symbols-p node)
+                 (push (dislocated-symbols node)
+                       dislocated-symbols)))
+             (pop-dislocated (node)
+               (when (supports-dislocated-symbols-p node)
+                 (pop dislocated-symbols)))
+             (collect-ignored-words (node)
+               (when (supports-ignored-words-p node)
+                 (let ((words (ignored-words node)))
+                   (push words
+                         ignored-words))))
+             (pop-ignored-words (node)
+               (when (supports-ignored-words-p node)
+                 (pop ignored-words)))
+             (push-page (node)
+               (when (typep node 'page)
+                 (push node pages-stack)
+                 (setf current-page node)))
+             (pop-page (node)
+               (when (typep node 'page)
+                 (pop pages-stack)
+                 (setf current-page
+                       (car pages-stack))))
+             (set-inside-code-block-if-needed (node)
+               (when (typep node 'common-doc:code)
+                 (setf inside-code-block t)))
+             (unset-inside-code-block-if-needed (node)
+               (when (typep node 'common-doc:code)
+                 (setf inside-code-block nil)))
+             (go-down (node)
+               (collect-dislocated node)
+               (collect-ignored-words node)
+               (push-page node)
+               (set-inside-code-block-if-needed node))
+             (go-up (node)
+               (pop-dislocated node)
+               (pop-ignored-words node)
+               (pop-page node)
+               (unset-inside-code-block-if-needed node))
+             (make-code-if-needed (obj &key (maybe-downcase t))
+               ;; In some cases text should not be downcased.
+               ;; For example, if user intentionally mentioned
+               ;; an abbrebiation:
+               (when maybe-downcase
+                 (setf obj
+                       (maybe-downcase obj)))
+              
+               ;; If obj is already a document node, then we need to leave it unchanged
+               ;; because it could be a cross-referenced title, but we don't want
+               ;; to make it a code:
+               (etypecase obj
+                 (common-doc:document-node obj)
+                 (t
+                  (if inside-code-block
+                      (make-text obj)
+                      (make-code
+                       (make-text obj))))))
+             (package-specified (text)
+               (find #\: text))
+             (should-be-ignored-p (text symbol locative)
+               (or (and symbol
+                        (not (package-specified text))
+                        (not (40ants-doc/utils:is-external symbol)))
 
-                 (eql locative
-                      '40ants-doc/locatives:argument)
-                 (loop for sublist in ignored-words
-                       thereis (member text sublist
-                                       :test #'string=))
-                 ;; This is a special case
-                 ;; because we can't distinguish between absent SYMBOL
-                 ;; and NIL.
-                 (string= text
-                          "NIL")
-                 (and symbol
-                      (or (eql (symbol-package symbol)
-                               common-lisp-package)
-                          (eql (symbol-package symbol)
-                               keywords-package)))))
-           (apply-replacer (node)
-             (40ants-doc/commondoc/mapper:map-nodes node #'replacer
-                                                    :on-going-down #'go-down
-                                                    :on-going-up #'go-up))
-           (replacer (node)
-             (typecase node
-               (common-doc:code
-                ;; Here we replace CODE nodes having only one XREF child
-                ;; with this child
-                (let* ((children (common-doc:children node))
-                       (first-child (first children)))
-                  ;; We also need to continue replacing on results
-                  (cond
-                    ((and (= (length children) 1)
-                          (typep first-child '40ants-doc/commondoc/xref::xref))
-                     (replacer first-child))
-                    (t node))))
-               (40ants-doc/commondoc/xref:xref
-                (let* ((text (40ants-doc/commondoc/xref:xref-name node))
-                       (symbol (40ants-doc/commondoc/xref:xref-symbol node))
-                       (locative (40ants-doc/commondoc/xref:xref-locative node))
-                       (found-in-dislocated
-                         (loop for sublist in dislocated-symbols
-                               thereis (member text sublist
-                                               :test #'string-equal)))
-                       (found-references
-                         (unless found-in-dislocated
-                           (loop for (reference . page) in known-references
-                                 ;; This can be a symbol or a string.
-                                 ;; For example, for SYSTEM locative, object
-                                 ;; is a string name of a system.
-                                 ;; 
-                                 ;; TODO: Think about a GENERIC to compare
-                                 ;;       XREF with references of different locative types.
-                                 for reference-object = (40ants-doc/reference::reference-object reference)
-                                 when (and (etypecase reference-object
-                                             (symbol
-                                              (eql reference-object
-                                                   symbol))
-                                             (string
-                                              ;; Here we intentionally use case insensitive
-                                              ;; comparison, because a canonical reference
-                                              ;; to ASDF system contains it's name in a lowercase,
-                                              ;; but some other locatives like a PACKAGE, might
-                                              ;; keep a name in the uppercase.
-                                              (string-equal reference-object
-                                                            text)))
-                                           (or (null locative)
-                                               (locative-equal (40ants-doc/reference::reference-locative reference)
-                                                               locative)))
-                                 collect (cons reference
-                                               page))))
-                       (found-references
-                         (if current-page
-                             (remove-references-to-other-document-formats current-page
-                                                                          found-references)
-                             found-references))
-                       (should-be-ignored
-                         (unless found-references
-                           (or found-in-dislocated
-                               (should-be-ignored-p text symbol locative)))))
+                   (eql locative
+                        '40ants-doc/locatives:argument)
+                   (loop for sublist in ignored-words
+                         thereis (member text sublist
+                                         :test #'string=))
+                   ;; This is a special case
+                   ;; because we can't distinguish between absent SYMBOL
+                   ;; and NIL.
+                   (string= text
+                            "NIL")
+                   (and symbol
+                        (or (eql (symbol-package symbol)
+                                 common-lisp-package)
+                            (eql (symbol-package symbol)
+                                 keywords-package)))))
+             (apply-replacer (node)
+               (40ants-doc/commondoc/mapper:map-nodes node #'replacer
+                                                      :on-going-down #'go-down
+                                                      :on-going-up #'go-up))
+             (replacer (node)
+               (typecase node
+                 (common-doc:code
+                  ;; Here we replace CODE nodes having only one XREF child
+                  ;; with this child
+                  (let* ((children (common-doc:children node))
+                         (first-child (first children)))
+                    ;; We also need to continue replacing on results
+                    (cond
+                      ((and (= (length children) 1)
+                            (typep first-child '40ants-doc/commondoc/xref::xref))
+                       (replacer first-child))
+                      (t node))))
+                 (40ants-doc/commondoc/xref:xref
+                  (let* ((text (40ants-doc/commondoc/xref:xref-name node))
+                         (symbol (40ants-doc/commondoc/xref:xref-symbol node))
+                         (locative (40ants-doc/commondoc/xref:xref-locative node))
+                         (found-in-dislocated
+                           (loop for sublist in dislocated-symbols
+                                 thereis (member text sublist
+                                                 :test #'string-equal)))
+                         (found-references
+                           (unless found-in-dislocated
+                             (loop for (reference . page) in known-references
+                                   ;; This can be a symbol or a string.
+                                   ;; For example, for SYSTEM locative, object
+                                   ;; is a string name of a system.
+                                   ;; 
+                                   ;; TODO: Think about a GENERIC to compare
+                                   ;;       XREF with references of different locative types.
+                                   for reference-object = (40ants-doc/reference::reference-object reference)
+                                   when (and (etypecase reference-object
+                                               (symbol
+                                                (eql reference-object
+                                                     symbol))
+                                               (string
+                                                ;; Here we intentionally use case insensitive
+                                                ;; comparison, because a canonical reference
+                                                ;; to ASDF system contains it's name in a lowercase,
+                                                ;; but some other locatives like a PACKAGE, might
+                                                ;; keep a name in the uppercase.
+                                                (string-equal reference-object
+                                                              text)))
+                                             (or (null locative)
+                                                 (locative-equal (40ants-doc/reference::reference-locative reference)
+                                                                 locative)))
+                                   collect (cons reference
+                                                 page))))
+                         (found-references
+                           (if current-page
+                               (remove-references-to-other-document-formats current-page
+                                                                            found-references)
+                               found-references))
+                         (should-be-ignored
+                           (unless found-references
+                             (or found-in-dislocated
+                                 (should-be-ignored-p text symbol locative)))))
 
-                  (cond
-                    (should-be-ignored
-                     (make-code-if-needed text :maybe-downcase nil))
-                    (found-references
-                     (labels ((make-link (reference page text)
-                                (let ((page-uri
-                                        (when page
-                                          (make-page-uri page :from-page current-page
-                                                              :base-url base-url)))
-                                      (html-fragment
-                                        (40ants-doc/utils::html-safe-name
-                                         (40ants-doc/reference::reference-to-anchor reference))))
-                                  (common-doc:make-document-link page-uri
-                                                                 html-fragment
-                                                                 (make-code-if-needed text)))))
+                    (cond
+                      (should-be-ignored
+                       (make-code-if-needed text :maybe-downcase nil))
+                      (found-references
+                       (labels ((make-link (reference page text)
+                                  (let ((page-uri
+                                          (when page
+                                            (make-page-uri page :from-page current-page
+                                                                :base-url base-url)))
+                                        (html-fragment
+                                          (40ants-doc/utils::html-safe-name
+                                           (40ants-doc/reference::reference-to-anchor reference))))
+                                    (common-doc:make-document-link page-uri
+                                                                   html-fragment
+                                                                   (make-code-if-needed text)))))
 
-                       (cond ((= (length found-references) 1)
-                              (destructuring-bind (reference . page)
-                                  (first found-references)
-                                (let* ((object (40ants-doc/reference:resolve reference))
-                                       (text (or (40ants-doc/commondoc/xref:link-text object)
-                                                 text)))
-                                  (make-link reference
-                                             page
-                                             text))))
-                             (t
-                              (common-doc:make-content
-                               (append (list (make-code-if-needed text)
-                                             (common-doc:make-text " ("))
-                                       (loop for (reference . page) in found-references
-                                             for index upfrom 1
-                                             for text = (format nil "~A" index)
-                                             collect (make-link reference page text)
-                                             unless (= index (length found-references))
-                                             collect (common-doc:make-text " "))
-                                       (list (common-doc:make-text ")"))))))))
-                    
-                    (t
-                     (warn "Unable to find target for reference ~A mentioned at ~{~A~^ / ~}"
-                           node
-                           (loop for section in (reverse sections)
-                                 for title = (common-doc.ops:collect-all-text
-                                              (common-doc:title section))
-                                 collect title))
-                     node))))
-               (t
-                node))))
-    (apply-replacer node)))
+                         (cond ((= (length found-references) 1)
+                                (destructuring-bind (reference . page)
+                                    (first found-references)
+                                  (let* ((object (40ants-doc/reference:resolve reference))
+                                         (text (or (40ants-doc/commondoc/xref:link-text object)
+                                                   text)))
+                                    (make-link reference
+                                               page
+                                               text))))
+                               (t
+                                (common-doc:make-content
+                                 (append (list (make-code-if-needed text)
+                                               (common-doc:make-text " ("))
+                                         (loop for (reference . page) in found-references
+                                               for index upfrom 1
+                                               for text = (format nil "~A" index)
+                                               collect (make-link reference page text)
+                                               unless (= index (length found-references))
+                                               collect (common-doc:make-text " "))
+                                         (list (common-doc:make-text ")"))))))))
+                     
+                      (t
+                       (warn "Unable to find target for reference ~A mentioned at ~{~A~^ / ~}"
+                             node
+                             (current-path))
+                       node))))
+                 (t
+                  node))))
+      (apply-replacer node))))
