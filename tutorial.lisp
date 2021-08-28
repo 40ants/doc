@@ -13,7 +13,8 @@
 
 (in-package foo-random)
 
-(defsection @foo-random-manual (:title "Foo Random manual")
+(defsection @foo-random-manual (:title "Foo Random manual"
+                                :ignore-words ("FOO"))
   "Here you describe what's common to all the referenced (and
    exported) functions that follow. They work with *FOO-STATE*,
    and have a :RANDOM-STATE keyword arg. Also explain when to

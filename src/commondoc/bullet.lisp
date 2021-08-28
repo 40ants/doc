@@ -22,6 +22,8 @@
                 #:doc-reference)
   (:import-from #:40ants-doc/utils
                 #:maybe-downcase)
+  (:import-from #:commondoc-markdown/emitter
+                #:hash-link)
   (:export
    #:make-bullet))
 (in-package 40ants-doc/commondoc/bullet)
@@ -164,7 +166,7 @@
        (list* (if source-uri
                   (format nil "[~A](~A) `~A`"
                           locative-type
-                          source-uri
+                          (hash-link source-uri)
                           (maybe-downcase name))
                   (format nil "[~A] `~A`"
                           locative-type

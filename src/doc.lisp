@@ -310,20 +310,26 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   easy:
 
   ```lisp
-  (describe @foo-random-manual)
+  (40ants-doc/builder:render-to-string
+    @foo-random-manual
+    :format :markdown)
   ```
 
   For this example, the generated markdown would look like this:"""
 
-  (describe-output (stdout-of (describe foo-random::@foo-random-manual)
-                              :lang "markdown"))
+  (render-to-stribg-output
+   (stdout-of (format t (40ants-doc/builder:render-to-string
+                         foo-random::@foo-random-manual
+                         :format :markdown))
+              :lang "markdown"))
 
   """
-  More fancy markdown or HTML output with automatic markup and linking
-  of uppercase symbol names found in docstrings, section numbering,
-  table of contents, etc is possible by calling the
-  40ANTS-DOC/BUILDER:RENDER-TO-STRING or 40ANTS-DOC/BUILDER:RENDER-TO-FILES
-  functions.
+  MGL-PAX supported the plain text format which was more readble when viewed
+  from a simple text editor, but I've dropped support for plain text in this fork
+  because most time documentation are read in the browser these days.
+
+  To render into the files, use 40ANTS-DOC/BUILDER:RENDER-TO-FILES
+  and 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS functions.
 
   Last one can even generate documentation for different, but related
   libraries at the same time with the output going to different files,
