@@ -169,6 +169,8 @@ Here are features already implemented in this fork:
 I'm planning to extend this fork even more. Read @TODO section to learn about
 proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)
 on the GitHub to suggest a new feature.
+
+See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 ")
 
 

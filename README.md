@@ -72,6 +72,8 @@ I'm planning to extend this fork even more. Read [`todo`](#x-2840ANTS-DOC-2FDOC-
 proposed features or [start a new discussion][6f00]
 on the GitHub to suggest a new feature.
 
+See full list of changes in the [`Changes`](ChangeLog.md#x-2840ANTS-DOC-2FCHANGELOG-3A-40CHANGELOG-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section.
+
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40FULL-DOC-LINK-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## Full Documentation
