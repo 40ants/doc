@@ -4,19 +4,14 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/document
-                #:document-object)
   (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/builder/heading)
   (:import-from #:40ants-doc/locatives
                 #:argument)
   (:import-from #:named-readtables)
@@ -28,7 +23,7 @@
 ;;;; ARGUMENT locative
 
 (define-locative-type argument ()
-  """An alias for 40ANTS-DOC/LOCATIVES::DISLOCATED, so the one can refer to an argument of a
+  """An alias for 40ANTS-DOC/LOCATIVES:DISLOCATED, so the one can refer to an argument of a
   macro without accidentally linking to a class that has the same name
   as that argument. In the following example, FORMAT may link to
   CL:FORMAT (if we generated documentation for it):

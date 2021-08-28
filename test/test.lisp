@@ -110,7 +110,6 @@
   (foo-a (accessor foo))
   (*test-variable* variable)
   (@test-examples section)
-  (@test-other section)
   (test-gf generic-function)
   (test-gf (method () (number)))
   (test-gf (method () ((eql 7))))
@@ -121,7 +120,7 @@
 (defsection @test-examples (:export nil)
   "example section")
 
-(defsection @test-other (:export nil :title "test other title")
+(defsection @test-other (:export nil :title "Test other title")
   "backlink @TEST")
 
 (defsection @test-section-with-link-to-other-page-in-title
@@ -134,6 +133,7 @@
   "Same link in docstring to @TEST.")
 
 (defsection @test-tricky-title
+    ;; TODO: new builder version should parse section titles as markdown
     (:export nil :title "`CODE` *italic* _italic2_ *bold* [link][sdf] <thing>")
   "backlink @TEST")
 
@@ -208,8 +208,8 @@
       (testing (format nil "(~S ~S)"
                        symbol locative)
         (when (working-locative-p locative)
-          (let ((location (40ants-doc/source-api::find-source
-                           (40ants-doc/locatives/base::locate symbol locative))))
+          (let ((location (40ants-doc/source-api:find-source
+                           (40ants-doc/locatives/base:locate symbol locative))))
             (ok (not (eq :error (first location)))
                 (format nil "Could not find source location for (~S ~S)"
                         symbol locative))
@@ -261,120 +261,6 @@
     (ok (not (symbol-name-p "(UP DIRECTION)")))))
 
 
-(deftest test-package-qualifed-replacer
-  (flet ((ensure-case (value)
-           (etypecase value
-             (string (list value
-                           (if (char-equal (elt value 0)
-                                           #\`)
-                               value
-                               (format nil "`~A`" value))))
-             (list value))))
-    (loop with cases = '("FOO::*BAR*"
-                         "FOO::+BAR+"
-                         "FOO::BAR"
-                         "BLAH-ME/MINOR::BAR-ME"
-                         "BLAH-ME/MINOR:BAR-ME"
-                         "40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
-                         ("40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
-                          "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`")
-                         
-                         "`BLAH-ME/MINOR:BAR-ME`"
-                         ;; Start with punctuation
-                         ("(40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
-                          "(`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`")
-                         ;; End with punctuations
-                         ("40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*)"
-                          "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`)")
-                         ("40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*!"
-                          "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`!")
-                         ;; Lowercase should not be translated
-                         ("foo::*bar*" "foo::*bar*")
-                         ("blah-me/MINOR::BAR-ME" "blah-me/MINOR::BAR-ME")
-                         ("BLAH-ME/MINOR::BAR-me" "BLAH-ME/MINOR::BAR-me"))
-          for case in cases
-          for (case-before case-after) = (ensure-case case)
-          for input = (format nil "before ~A after" case-before)
-          for multiline-input = (format nil "before~%~A~%after" case-before)
-          for expected = (format nil "before ~A after" case-after)
-          for multiline-expected = (format nil "before~%~A~%after" case-after)
-          do (testing (format nil "Single-line ~S" case)
-               (ok (equal (40ants-doc/markdown/transform::replace-upcased-package-qualified-names input)
-                          expected)))
-             (testing (format nil "Multi-line ~S" case)
-               (ok (equal (40ants-doc/markdown/transform::replace-upcased-package-qualified-names multiline-input)
-                          multiline-expected))))))
-
-
-(deftest test-replace-known-references
-  (let ((40ants-doc/reference::*reference-being-documented*
-          (40ants-doc/reference::make-reference @test '40ants-doc::section)))
-    (testing "Unbound symbol should not be marked as a code block, and we should issue a warning"
-      (let (warning-caught)
-        (handler-bind ((warning (lambda (c)
-                                  (setf warning-caught t)
-                                  (when *muffle-warnings*
-                                    (muffle-warning c)))))
-          (ok (string= "some BLAH code"
-                       (40ants-doc/markdown/transform::replace-known-references
-                        "some BLAH code"
-                        :known-references
-                        (list (40ants-doc/reference::make-reference 'bar 'macro)))))
-          (ok warning-caught))))
-    
-    (testing "Transforming into a code block"
-      (ok (string= "`FOO`"
-                   (40ants-doc/markdown/transform::replace-known-references
-                    "FOO"
-                    :known-references ())))
-      (ok (string= "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`"
-                   (40ants-doc/markdown/transform::replace-known-references
-                    "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`"
-                    :known-references ())))
-      (ok (string= "`40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`"
-                   (40ants-doc/markdown/transform::replace-known-references
-                    "40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*"
-                    :known-references ())))))
-  
-  (testing "Without references"
-    (ok (string= "`FOO`"
-                 (40ants-doc/markdown/transform::replace-known-references
-                  "`FOO`"
-                  :known-references ()))))
-  
-  (testing "With single locative 1"
-    (ok (string= "[`FOO`][]"
-                 (40ants-doc/markdown/transform::replace-known-references
-                  "`FOO`"
-                  :known-references
-                  (list (40ants-doc/reference::make-reference 'foo 'function))))))
-  
-  (testing "With single locative 2"
-    (ok (string= "[`FOO`][]"
-                 (40ants-doc/markdown/transform::replace-known-references
-                  "FOO"
-                  :known-references
-                  (list (40ants-doc/reference::make-reference 'foo 'function))))))
-  
-  (testing "With single locative 3"
-    (ok (string= "[`40ANTS-DOC/SOURCE-API::FIND-SOURCE`][]"
-                 (40ants-doc/markdown/transform::replace-known-references
-                  "40ANTS-DOC/SOURCE-API::FIND-SOURCE"
-                  :known-references
-                  (list (40ants-doc/reference::make-reference '40ANTS-DOC/SOURCE-API::FIND-SOURCE
-                                                              'generic-function))))))
-  
-  (testing "With multiple locatives"
-    (ok (string= "`FOO`([`0`][] [`1`][])"
-                 (40ants-doc/markdown/transform::replace-known-references
-                  "`FOO`"
-                  :known-references
-                  (list (40ants-doc/reference::make-reference 'foo 'function)
-                        (40ants-doc/reference::make-reference 'foo 'class)
-                        ;; This reference should be ignored
-                        (40ants-doc/reference::make-reference 'bar 'function)))))))
-
-
 (deftest test-transform-tree
   (ok (equal '(1)
              (40ants-doc/utils::transform-tree
@@ -411,29 +297,28 @@
 
 
 (defun test-document (format)
-  (let ((outputs (write-test-document-files
-                  (asdf:system-relative-pathname :40ants-doc "test/data/tmp/")
-                  format)))
-    (ok (= 4 (length outputs)))
-    ;; the default page corresponding to :STREAM is empty
-    (ok (string= "" (first outputs)))
-    (ok (= 2 (count-if #'pathnamep outputs)))
+  (destructuring-bind (output-dir &rest pages-pathnames)
+      (multiple-value-list
+       (write-test-document-files
+        (asdf:system-relative-pathname :40ants-doc "test/data/tmp/")
+        format))
     
-    (dolist (output outputs)
-      (when (pathnamep output)
-        (let ((baseline (make-pathname
-                         :directory (substitute "baseline" "tmp"
-                                                (pathname-directory output)
-                                                :test #'equal)
-                         :defaults output)))
-          (unless (string= (alexandria:read-file-into-string baseline)
-                           (alexandria:read-file-into-string output))
-            (cerror "Update output file."
-                    "~@<Output ~S ~_differs from baseline ~S:~2%~A~@:>"
-                    output baseline
-                    (get-files-diff baseline
-                                    output))
-            (update-test-document-baseline format)))))))
+    (ok (pathnamep output-dir))
+    
+    (dolist (output pages-pathnames)
+      (let ((baseline (make-pathname
+                       :directory (substitute "baseline" "tmp"
+                                              (pathname-directory output)
+                                              :test #'equal)
+                       :defaults output)))
+        (unless (string= (alexandria:read-file-into-string baseline)
+                         (alexandria:read-file-into-string output))
+          (cerror "Update output file."
+                  "~@<Output ~S ~_differs from baseline ~S:~2%~A~@:>"
+                  output baseline
+                  (get-files-diff baseline
+                                  output))
+          (update-test-document-baseline format))))))
 
 
 (deftest test-markdown-document
@@ -445,25 +330,17 @@
 
 
 (defun write-test-document-files (basedir format)
-  (flet ((rebase (pathname)
-           (merge-pathnames pathname
-                            (make-pathname
-                             :type (if (eq format :markdown) "md" "html")
-                             :directory (pathname-directory basedir)))))
-    (let ((open-args '(:if-exists :supersede :ensure-directories-exist t))
-          (40ants-doc/builder/printer::*document-downcase-uppercase-code* (eq format :html)))
-      (40ants-doc/document::document
-       @test
-       :pages `((:objects
-                 ,(list @test-examples)
-                 :output (nil))
-                (:objects
-                 ,(list @test-other)
-                 :output (,(rebase "other/test-other") ,@open-args))
-                (:objects
-                 ,(list @test)
-                 :output (,(rebase "test") ,@open-args)))
-       :format format))))
+  (let ((pages (list (40ants-doc/page:make-page @test-other
+                                                :base-filename "other/test-other")
+                     (40ants-doc/page:make-page @test
+                                                :base-filename "test"))))
+
+    (40ants-doc/builder:render-to-files pages
+                                        :base-dir basedir
+                                        :format (ecase format
+                                                  (:markdown 'commondoc-markdown:markdown)
+                                                  (:html 'common-html:html))
+                                        :downcase-uppercase-code (eq format :html))))
 
 (defun update-test-document-baseline (format)
   (write-test-document-files

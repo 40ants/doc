@@ -12,7 +12,7 @@
 
 
 (defsection @markdown-support (:title "Markdown Support")
-  "The [Markdown][markdown] in docstrings is processed with the
+  "The Markdown in docstrings is processed with the
   [3BMD][3bmd] library."
   (@markdown-indentation section)
   (@markdown-syntax-highlighting section)
@@ -20,22 +20,32 @@
 
 
 (defsection @markdown-indentation (:title "Indentation")
-  """Docstrings can be indented in any of the usual styles.
+  """
+  Docstrings can be indented in any of the usual styles.
   40ANTS-DOC normalizes indentation by converting:
 
-      (defun foo ()
-        "This is
-  indented
-  differently")
+  ```
+  (defun foo ()
+    "This is
+     indented
+     differently")
+  ```
 
   to
 
-      (defun foo ()
-        "This is
+  ```
+  (defun foo ()
+    "This is
   indented
   differently")
+  ```
 
-  See [40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT][(method () (string t))] for the details.""")
+
+  Docstrings in sources are indented in various ways which can easily
+  mess up markdown. To handle the most common cases leave the first
+  line alone, but from the rest of the lines strip the longest run of
+  leading spaces that is common to all non-blank lines."
+  """)
 
 (defsection @markdown-syntax-highlighting (:title "Syntax highlighting")
   "For syntax highlighting, github's [fenced code
@@ -47,13 +57,34 @@
       (defun foo ())
       ```
 
-  to get syntactically marked up HTML output. Copy `src/style.css`
-  from 40ANTS-DOC and you are set. The language tag, `elisp` in this example,
-  is optional and defaults to `common-lisp`.
+  to get syntactically marked up HTML output. The language tag, `elisp` in this example,
+  is optional and defaults to `commonlisp`.
 
-  See the documentation of [3BMD][3bmd] and [colorize][colorize] for
-  the details.
+  Originally MGL-PAX used [colorize][colorize] for the syntax
+  highlighting, but 40ANTS-DOC uses [Highlight.js][highlightjs] which is able to
+  guess code block language if it is not specified. To minimize HTML document's
+  static size, Hightlight.js is configured to support only these languages:
 
+  * bash
+  * css
+  * json
+  * yaml
+  * plain-text
+  * html
+  * markdown
+  * lisp
+  
+  There is a separate [README][readme] where you will find instructions on how to
+  support other languages.
+
+  Besides an automatic language detection, the other cool feature of Highlight.js
+  is it's support for different color themes. Here you can view all available themes:
+  [https://highlightjs.org/static/demo/](https://highlightjs.org/static/demo/).
+  There is no easy way to choose color theme yet, but probably this will be a nice
+  feature for 40ANTS-DOC.
+  
+  [readme]: https://github.com/40ants/doc/blob/master/static/README.md#how-to-update-highlightjs
+  [highlightjs]: https://highlightjs.org/
   [3bmd]: https://github.com/3b/3bmd
   [colorize]: https://github.com/redline6561/colorize/
   [fenced-code-blocks]: https://help.github.com/articles/github-flavored-markdown#fenced-code-blocks")
@@ -79,21 +110,3 @@
   strings can be a pain. [Pythonic String
   Reader](https://github.com/smithzvk/pythonic-string-reader) can help
   with that.""")
-
-
-(defun map-markdown-parse-tree (tags stop-tags handle-strings fn string)
-  (let* ((3bmd-grammar:*smart-quotes* nil)
-         (parse-tree
-           ;; To be able to recognize symbols like FOO* join (...
-           ;; "FOO" "*" ...) to look like (... "FOO*" ...).
-           (40ants-doc/utils::join-consecutive-non-blank-strings-in-parse-tree
-            (3bmd-grammar:parse-doc string))))
-    (with-output-to-string (out)
-      (3bmd::print-doc-to-stream-using-format
-       (40ants-doc/utils::transform-tree
-        (lambda (parent tree)
-          (40ants-doc/utils::defer-tag-handling tags stop-tags handle-strings
-            fn parent tree))
-        parse-tree)
-       out :markdown))))
-

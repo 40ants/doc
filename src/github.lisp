@@ -6,14 +6,18 @@
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/source-api))
+  (:import-from #:40ants-doc/source-api)
+  (:import-from #:cl-ppcre)
+  (:import-from #:str)
+  (:export
+   #:make-github-source-uri-fn))
 (in-package 40ants-doc/github)
 
 
 (defsection @github-workflow (:title "Github Workflow"
                               :ignore-words ("HTML"))
   "It is generally recommended to commit generated readmes (see
-  40ANTS-DOC/BUILDER::UPDATE-ASDF-SYSTEM-README) so that users have something to read
+  40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS) so that users have something to read
   without reading the code and sites like github can display them.
 
   HTML documentation can also be committed, but there is an issue with
@@ -22,16 +26,10 @@
   be committed first, then HTML documentation regenerated and
   committed in a followup commit.
 
-  The second issue is that github is not very good at serving HTMLs
-  files from the repository itself (and
-  [http://htmlpreview.github.io](http://htmlpreview.github.io) chokes
-  on links to the sources).
-
-  The recommended workflow is to use
-  [gh-pages](https://pages.github.com/), which can be made relatively
-  painless with the `git workflow` command. The gist of it is to make
-  the `doc/` directory a checkout of the branch named `gh-pages`. A
-  good description of this process is
+  To serve static documentation, use [gh-pages](https://pages.github.com/).
+  You can use a separate branch `gh-pages`, or point GitHub Pages
+  to a `docs` folder inside the `main` branch.
+  Good description of this process is
   [http://sangsoonam.github.io/2019/02/08/using-git-worktree-to-deploy-github-pages.html](http://sangsoonam.github.io/2019/02/08/using-git-worktree-to-deploy-github-pages.html).
   Two commits needed still, but it is somewhat less painful.
 
@@ -39,11 +37,23 @@
   `http://<username>.github.io/<repo-name>`. It is probably a good
   idea to add section like the 40ANTS-DOC/DOC:@LINKS section to allow jumping
   between the repository and the gh-pages site."
-  (make-github-source-uri-fn function))
+  (make-github-source-uri-fn function)
+  (40ants-doc/reference-api:*source-uri-fn* variable)
+  (40ants-doc/reference-api:source-uri function))
 
-(defun make-github-source-uri-fn (asdf-system github-uri &key git-version)
-  "Return a function suitable as :SOURCE-URI-FN of a page spec (see
-  the :PAGES argument of 40ANTS-DOC/DOCUMENT::DOCUMENT). The function looks the source
+
+(defun asdf-system-github-uri (asdf-system)
+  (let* ((asdf-system (asdf:find-system asdf-system))
+         (uri (getf (asdf:system-source-control asdf-system)
+                    :git)))
+    (when (str:starts-with-p "https://github.com/" uri)
+      (values
+       (cl-ppcre:regex-replace-all ".git$" uri "")))))
+
+
+(defun make-github-source-uri-fn (asdf-system &key github-uri git-version)
+  "Return a function suitable as :SOURCE-URI-FN of
+  the 40ANTS-DOC/BUILDER:RENDER-TO-FILES function. The function looks the source
   location of the reference passed to it, and if the location is
   found, the path is made relative to the root directory of
   ASDF-SYSTEM and finally an URI pointing to github is returned. The
@@ -58,10 +68,23 @@
   ASDF-SYSTEM. If no `.git` directory is found, then no links to
   github will be generated.
 
+  If GITHUB-URI argument is not given, function will try to
+  get URL from ASDF system's description. To make this work,
+  your system description should look like this:
+
+  ```lisp
+  (defsystem 40ants-doc
+    ...
+    :source-control (:git \"https://github.com/40ants/doc\")
+    ...))))
+  ```
+
   A separate warning is signalled whenever source location lookup
   fails or if the source location points to a directory not below the
   directory of ASDF-SYSTEM."
   (let* ((git-version (or git-version (asdf-system-git-version asdf-system)))
+         (github-uri (or github-uri
+                         (asdf-system-github-uri asdf-system)))
          (system-dir (asdf:system-relative-pathname asdf-system "")))
     (if git-version
         (let ((line-file-position-cache (make-hash-table :test #'equal))
@@ -69,8 +92,8 @@
           (lambda (reference)
             (let ((40ants-doc/source::*find-source-cache* find-source-cache))
               (multiple-value-bind (relative-path line-number)
-                  (convert-source-location (40ants-doc/source-api::find-source
-                                            (40ants-doc/reference::resolve reference))
+                  (convert-source-location (40ants-doc/source-api:find-source
+                                            (40ants-doc/reference:resolve reference))
                                            system-dir reference
                                            line-file-position-cache)
                 (when relative-path

@@ -4,16 +4,12 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/document
-                #:document-object)
   (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
@@ -71,14 +67,21 @@
               (t (swank-mop:class-name spec))))
           (swank-mop:method-specializers method)))
 
-(defmethod document-object ((method method) stream)
-  (let ((arglist (rest (method-for-inspect-value method))))
-    (40ants-doc/builder/bullet::print-bullet method stream)
-    (write-char #\Space stream)
-    (40ants-doc/render/args::print-arglist arglist stream)
-    (40ants-doc/builder/bullet::print-end-bullet stream)
-    (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
-      (40ants-doc/render/print::maybe-print-docstring method t stream))))
+
+(defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj method))
+  (let* ((arglist (rest (method-for-inspect-value obj)))
+         (docstring (40ants-doc/docstring:get-docstring obj t))
+         ;; TODO:  we should move text transfromation after it will be parsed
+         (children (when docstring
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring)))
+         (dislocated-symbols
+           (40ants-doc/args::function-arg-names arglist))
+         (reference (canonical-reference obj)))
+
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :arglist arglist
+                                             :children children
+                                             :dislocated-symbols dislocated-symbols)))
 
 ;;;; These were lifted from the fancy inspector contrib and then
 ;;;; tweaked.

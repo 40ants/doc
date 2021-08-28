@@ -5,33 +5,89 @@
   (:import-from #:3bmd-code-blocks)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
-  (:import-from #:40ants-doc/builder/heading)
-  (:import-from #:40ants-doc/builder/footer)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/document)
+  (:import-from #:40ants-doc/page
+                #:page-base-dir
+                #:page-format)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc
                 #:defsection)
   (:import-from #:40ants-doc/github)
-  (:import-from #:40ants-doc/world))
+  (:import-from #:40ants-doc/world)
+  (:import-from #:40ants-doc/themes/default)
+  (:import-from #:40ants-doc/commondoc/page)
+  (:import-from #:40ants-doc/commondoc/toc)
+  (:import-from #:40ants-doc/commondoc/format)
+  (:import-from #:40ants-doc/search)
+  (:import-from #:40ants-doc/commondoc/transcribe)
+  (:import-from #:40ants-doc/changelog)
+  (:export
+   #:*document-html-top-blocks-of-links*
+   #:*document-html-bottom-blocks-of-links*
+   #:render-to-string
+   #:render-to-files
+   #:update-asdf-system-docs))
 (in-package 40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 (defsection @generating-documentation
-    (:title "Generating Documentation")
-  "Two convenience functions are provided to serve the common case of
-  having an ASDF system with some readmes and a directory for the
-  HTML documentation and the default css stylesheet."
-  (update-asdf-system-html-docs function)
-  (update-asdf-system-readme function)
-  (*document-html-max-navigation-table-of-contents-level* variable)
+    (:title "Generating Documentation"
+     :ignore-words ("LABEL"
+                    "UPDATE-ASDF-SYSTEM-HTML-DOCS"
+                    "UPDATE-ASDF-SYSTEM-README"
+                    ":UPDATE-CSS-P"))
+  "To make documentation builder work, you need to load 40ANTS-DOC-FULL asdf system.
+
+   There are two core functions which render documentation to a string or files:"
+  
+  (40ants-doc/builder:render-to-string function)
+  (40ants-doc/builder:render-to-files function)
+  
+  "Besides RENDER-TO-STRING and RENDER-TO-FILES a convenience function is provided
+   to serve the common case of having an ASDF system with a readme and a directory for the
+  HTML documentation."
+  (update-asdf-system-docs function)
   (*document-html-top-blocks-of-links* variable)
   (*document-html-bottom-blocks-of-links* variable)
+  (@rendering-multiple-formats section)
+  (40ants-doc/changelog::@index section)
   (40ants-doc/github::@github-workflow section)
   (40ants-doc/world::@world section))
+
+
+(defsection @rendering-multiple-formats (:title "Multiple Formats")
+  "With 40ANTS-DOC you can render HTML and Markdown documentation simultaneously.
+   This way, you can cross-reference entities from the README.md or ChangeLog.md to HTML docs.
+
+   To render documents in multiple formats, you have to pass to function RENDER-TO-FILES not
+   SECTION objects, but PAGE objects. Page object consists of one or more sections and additional
+   information such as document format. A section can belong to a multiple pages usually having different
+   formats. This allows you to include \"tutorial\" section into both HTML docs and README.
+
+   Here is an example of rendering the full documentation and a README with only introduction and tutorial:
+
+   ```lisp
+   (defsection @full-manual (:title \"Manual\")
+     (@introduction)
+     (@tutorial)
+     (@api)
+     (@changelog))
+
+   (render-to-files
+    (list @full-manual
+          (40ants-doc/page:make-page (list @introduction
+                                           @tutorial)
+                                     :format :markdown
+                                     :base-filename \"README\")
+          (40ants-doc/page:make-page @changelog
+                                     :format :markdown
+                                     :base-filename \"ChangeLog\")))
+   ```
+
+   The same approach works with the UPDATE-ASDF-SYSTEM-DOCS function.
+   ")   
 
 
 (defparameter *default-output-options*
@@ -39,221 +95,279 @@
     :if-exists :supersede
     :ensure-directories-exist t))
 
-(defun update-asdf-system-readme (sections asdf-system &key (format :markdown))
-  "Convenience function to generate readme file in the directory
-  holding the ASDF-SYSTEM definition.
 
-  By default, README.md is generated. It has anchors, links, inline code,
-  and other markup added. Not necessarily the easiest on the eye in an editor,
-  but looks good on github.
+(defun update-asdf-system-docs (sections-or-pages
+                                asdf-system
+                                &key
+                                (readme-sections nil)
+                                (changelog-sections nil)
+                                (theme '40ants-doc/themes/default::default-theme)
+                                (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
+                                (base-url nil)
+                                (docs-dir #P"docs/")
+                                (clean-urls 40ants-doc/rewrite::*clean-urls*)
+                                (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*))
+  "Generate pretty HTML documentation for a single ASDF system,
+  possibly linking to github. If you are migrating from MGL-PAX,
+  then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
+  and UPDATE-ASDF-SYSTEM-README while making it possible to generate
+  a crosslinks between README.md and HTML docs. The same way you
+  can generate a ChangeLog.md file using :CHANGELOG-SECTIONS argument.
+  See 40ANTS-DOC/CHANGELOG::@INDEX section to learn about
+  40ANTS-DOC/CHANGELOG:DEFCHANGELOG helper.
 
-  You can provide `:FORMAT :PLAIN` argument to generate README instead.
-  It will be optimized for reading in text format. Has no links and
-  cluttery markup.
+  Both :README-SECTIONS and :CHANGELOG-SECTIONS arguments may be a single
+  item or a list.
+
+  See docs on RENDER-TO-FILES function to learn about meaning of
+  BASE-DIR, BASE-URL, SOURCE-URI-FN, WARN-ON-UNDOCUMENTED-PACKAGES, CLEAN-URLS,
+  and DOWNCASE-UPPERCASE-CODE arguments.
 
   Example usage:
 
-  ```
-  (update-asdf-system-readme @40ants-doc-manual :40ants-doc)
-  ```"
-  (ecase format
-    (:markdown
-     (with-open-file (stream (asdf:system-relative-pathname
-                              asdf-system "README.md")
-                             :direction :output
-                             :if-does-not-exist :create
-                             :if-exists :supersede)
-       (40ants-doc/document::document sections :stream stream)
-       (print-markdown-footer stream)))
-    (:plain
-     (with-open-file (stream (asdf:system-relative-pathname
-                              asdf-system "README")
-                             :direction :output
-                             :if-does-not-exist :create
-                             :if-exists :supersede)
-       (loop for section in (alexandria:ensure-list sections) do
-                (describe section stream))
-       (print-markdown-footer stream)))))
-
-
-(defun add-markdown-defaults-to-page-specs (sections page-specs dir)
-  (flet ((section-has-page-spec-p (section)
-           (some (lambda (page-spec)
-                   (member section (getf page-spec :objects)))
-                 page-specs)))
-    (mapcar (lambda (page-spec)
-              (add-markdown-defaults-to-page-spec page-spec dir))
-            (append page-specs
-                    (mapcar (lambda (section)
-                              `(:objects (,section)))
-                            (remove-if #'section-has-page-spec-p sections))))))
-
-(defun add-markdown-defaults-to-page-spec (page-spec filename)
-  `(,@page-spec
-    ,@(unless (getf page-spec :output)
-        `(:output (,filename ,@*default-output-options*)))
-    ,@(unless (getf page-spec :footer-fn)
-        `(:footer-fn ,#'print-markdown-footer))))
-
-(defun print-markdown-footer (stream)
-  (format stream "~%* * *~%")
-  (format stream "###### \\[generated by ~
-                 [40ANTS-DOC](https://40ants.com/doc)\\]~%"))
-
-
-(defun update-asdf-system-html-docs (sections asdf-system &key pages
-                                     (target-dir (asdf:system-relative-pathname
-                                                  asdf-system "doc/"))
-                                     (update-css-p t))
-  "Generate pretty HTML documentation for a single ASDF system,
-  possibly linking to github. If UPDATE-CSS-P, copy the CSS style
-  sheet to TARGET-DIR, as well. Example usage:
-
-  ```commonlisp
-  (update-asdf-system-html-docs @manual :40ants-doc)
+  ```lisp
+  (40ants-doc/builder:update-asdf-system-docs 40ants-doc/doc:@index
+                                              :40ants-doc
+                                              :readme-sections 40ants-doc/doc:@readme)
   ```
 
-  The same, linking to the sources on github:
+  This is just a shorthand to call RENDER-TO-FILES for ASDF system.
 
-  ```commonlisp
-  (update-asdf-system-html-docs
-    @manual :40ants-doc
-    :pages
-    (list (list :objects (list @manual)
-                :source-uri-fn (make-github-source-uri-fn
-                                 :40ants-doc
-                                 \"https://github.com/40ants/doc\"))))
-  ```"
-  (document-html sections pages target-dir update-css-p nil))
+  All sections, listed in :README-SECTIONS argment will be concantenated into the README.md.
+  Some symbols, referenced in the :README-SECTIONS but not documented there will be
+  linked to the HTML documentation. To make this work for a hosted static sites,
+  then provide :BASE-URL of the site, otherwise, links will be relative.
+
+  In MGL-PAX this function supported such parameters as :UPDATE-CSS-P and :PAGES,
+  but in 40ANTS-DOC javascript and CSS files are updated automatically. See documentation
+  on RENDER-TO-FILES to learn how does page separation and other parameters work.
+
+  If you want a more generic wrapper for building documentation for your projects,
+  take a look at [DOCS-BUILDER](https://40ants.com/docs-builder/)."
+  (render-to-files (append (uiop:ensure-list sections-or-pages)
+                           (when readme-sections
+                             (uiop:ensure-list
+                              (40ants-doc/page:make-page readme-sections
+                                                         :base-filename "README"
+                                                         :base-dir (asdf:system-relative-pathname
+                                                                    asdf-system
+                                                                    "./")
+                                                         :format :markdown)))
+                           (when changelog-sections
+                             (uiop:ensure-list
+                              (40ants-doc/page:make-page changelog-sections
+                                                         :base-filename "ChangeLog"
+                                                         :base-dir (asdf:system-relative-pathname
+                                                                    asdf-system
+                                                                    "./")
+                                                         :format :markdown))))
+                   :base-dir (asdf:system-relative-pathname
+                              asdf-system
+                              (uiop:ensure-directory-pathname docs-dir))
+                   :base-url base-url
+                   :source-uri-fn (40ants-doc/github:make-github-source-uri-fn asdf-system)
+                   :warn-on-undocumented-packages warn-on-undocumented-packages
+                   :clean-urls clean-urls
+                   :downcase-uppercase-code downcase-uppercase-code
+                   :theme theme
+                   :format :html))
 
 ;;; Generate with the default HTML look
-(defun document-html (sections page-specs target-dir update-css-p
-                      link-to-pax-world-p)
-  (when update-css-p
-    (copy-css target-dir))
-  (let ((pages (add-html-defaults-to-page-specs
-                (alexandria:ensure-list sections)
-                page-specs target-dir link-to-pax-world-p)))
-    (40ants-doc/document::document sections
-                                  :pages pages
-                                  :format :html)))
 
-(defun add-html-defaults-to-page-specs (sections page-specs dir
-                                        link-to-pax-world-p)
-  (flet ((section-has-page-spec-p (section)
-           (some (lambda (page-spec)
-                   (member section (getf page-spec :objects)))
-                 page-specs)))
-    (mapcar (lambda (page-spec)
-              (add-html-defaults-to-page-spec page-spec dir
-                                              link-to-pax-world-p))
-            (append page-specs
-                    (mapcar (lambda (section)
-                              `(:objects (,section)))
-                            (remove-if #'section-has-page-spec-p sections))))))
+(defun process-document (document &key base-url)
+  (let* ((references (40ants-doc/commondoc/page::collect-references document))
+         (document (40ants-doc/commondoc/page:warn-on-missing-exports document))
+         (document (40ants-doc/commondoc/page:warn-on-undocumented-exports document
+                                                                           references))
+         (document (40ants-doc/commondoc/transcribe::warn-on-differences-in-transcriptions document))
+         (document (if 40ants-doc/builder/printer:*document-uppercase-is-code*
+                       (40ants-doc/commondoc/xref::extract-symbols document)
+                       document))
+         (document (40ants-doc/commondoc/xref:fill-locatives document))
+         (document (40ants-doc/commondoc/page::warn-on-references-to-internals document))
+         (document (if 40ants-doc/link:*document-link-code*
+                       (40ants-doc/commondoc/page::replace-xrefs document references
+                                                                 :base-url base-url)
+                       document)))
+    document))
 
-(defun add-html-defaults-to-page-spec (page-spec dir link-to-pax-world-p)
-  (let* ((objects (getf page-spec :objects))
-         (section (if (and (= 1 (length objects))
-                           (typep (first objects) '40ants-doc:section))
-                      (first objects)
-                      nil))
-         (title (if section
-                    (40ants-doc:section-title section)
-                    nil))
-         (filename (sections-to-filename objects dir)))
-    (flet ((header (stream)
-             (html-header stream :title title
-                          :stylesheet "style.css" :charset "UTF-8"
-                          :link-to-pax-world-p link-to-pax-world-p))
-           (footer (stream)
-             (html-footer stream)))
-      `(,@page-spec
-        ,@(unless (getf page-spec :output)
-            `(:output (,filename ,@*default-output-options*)))
-        ,@(unless (getf page-spec :header-fn)
-            `(:header-fn ,#'header))
-        ,@(unless (getf page-spec :footer-fn)
-            `(:footer-fn ,#'footer))))))
 
-(defun sections-to-filename (sections dir)
-  (flet ((name (section)
-           (string-downcase
-            (remove-special-chars (symbol-name (40ants-doc:section-name section))))))
-    (merge-pathnames (format nil "~{~A~^-~}.html"
-                             (mapcar #'name sections))
-                     dir)))
+(defun render-to-string (object &key (format :html)
+                                     (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*))
+  "Renders given CommonDoc node into the string using specified format.
+   Supported formats are :HTML and :MARKDOWN.
 
-(defun remove-special-chars (string)
-  (remove-if (lambda (char)
-               (find char "!@#$%^&*"))
-             string))
+   This function is useful for debugging 40ANTS-DOC itself."
+  (let ((format
+          (40ants-doc/commondoc/format::ensure-format-class-name format))
+        (40ants-doc/reference-api:*source-uri-fn* source-uri-fn))
+    
+    (40ants-doc/commondoc/format:with-format (format)
+      (let* ((document
+               (40ants-doc/commondoc/builder:to-commondoc object))
+             (processed-document
+               (process-document document)))
+        (uiop/cl:with-output-to-string (stream)
+          (common-doc.format:emit-document (make-instance format)
+                                           processed-document
+                                           stream))))))
 
-(defun copy-css (target-dir)
-  (ensure-directories-exist target-dir)
-  (loop for file in '("js/jquery.min.js" "js/toc.min.js" "css/style.css")
-        do (uiop:copy-file (asdf:system-relative-pathname :40ants-doc file)
-                           (merge-pathnames (file-namestring file)
-                                            target-dir))))
+
+(defun render-to-files (sections &key (theme '40ants-doc/themes/default::default-theme)
+                                      (base-dir #P"./")
+                                      (base-url nil)
+                                      (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
+                                      (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
+                                      (clean-urls 40ants-doc/rewrite::*clean-urls*)
+                                      (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
+                                      (format :html))
+  "Renders given sections or pages into a files on disk.
+
+   By default, it renders in to HTML, but you can specify FORMAT argument.
+   Supported formats are :HTML and :MARKDOWN.
+
+   Returns an absolute pathname to the output directory as the first value
+   and pathnames corresponding to each of given sections.
+
+   When WARN-ON-UNDOCUMENTED-PACKAGES is true, then builder will check if there
+   are other packages of the package-inferred system with external but
+   not documented symbols. Otherwise, external symbols are searched only
+   in packages with at least one documented entity.
+
+   If CLEAN-URLS is true, then builder rewrites filenames and urls to make
+   it possible to host files on site without showing .html files inside. Also,
+   you need to specify a BASE-URL, to make urls absolute if you are rendering
+   markdown files together with HTML.
+
+   If DOWNCASE-UPPERCASE-CODE is true, then all references to symbols will be
+   downcased."
+
+  (setf format
+        (40ants-doc/commondoc/format::ensure-format-class-name format))
+  
+  (let ((num-warnings 0)
+        ;; By default it uses "~A.html/#~A" which is wrong because there shouldn't
+        ;; be a slash after the .html
+        (common-html.emitter:*document-section-format-control* "~A#~A")
+        (40ants-doc/commondoc/page::*warn-on-undocumented-packages* warn-on-undocumented-packages)
+        (40ants-doc/rewrite::*clean-urls* clean-urls)
+        (40ants-doc/reference-api:*source-uri-fn* source-uri-fn)
+        (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code))
+    
+    (handler-bind ((warning (lambda (c)
+                              (declare (ignore c))
+                              (incf num-warnings))))
+      (40ants-doc/commondoc/format:with-format (format)
+        (let* ((theme (make-instance theme))
+               (sections (uiop:ensure-list sections))
+               (pages (mapcar #'40ants-doc/page:ensure-page sections))
+               (page-documents (mapcar
+                                #'40ants-doc/commondoc/builder:to-commondoc
+                                pages))
+               (full-document (process-document
+                               (common-doc:make-document "Documentation"
+                                                         :children page-documents)
+                               :base-url base-url))
+               (absolute-dir (uiop:ensure-absolute-pathname base-dir
+                                                            (probe-file ".")))
+               (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
+               (40ants-doc/commondoc/toc::*full-document* full-document)
+               (output-paths nil))
+
+          (ensure-directories-exist absolute-dir)
+
+          (flet ((make-full-filename (page)
+                   ;; PAGE argument could be either PAGE object or string denoting a relative path
+                   ;; of HTML page.
+                   (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
+                                               (page-base-dir page))
+                                             base-dir))
+                          (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
+                                                                       (probe-file ".")))
+                          (filename (etypecase page
+                                      (40ants-doc/commondoc/page:page
+                                       (40ants-doc/commondoc/page::full-filename page))
+                                      (string
+                                       page))))
+                     (uiop:merge-pathnames* filename absolute-dir))))
+            (loop with global-format = format
+                  for document in page-documents
+                  for full-filename = (make-full-filename document)
+                  for format = (or
+                                ;; Page may override global format setting
+                                (page-format document)
+                                global-format)
+                  do (ensure-directories-exist full-filename)
+                     (uiop:with-output-file (stream full-filename
+                                                    :if-exists :supersede)
+                       (common-doc.format:emit-document (make-instance format)
+                                                        document
+                                                        stream)
+                       (push full-filename output-paths)))
+         
+            (when (eql format
+                       'common-html:html)
+              (uiop:with-output-file (stream css-filename
+                                             :if-exists :supersede)
+                (write-string (40ants-doc/themes/api:render-css theme)
+                              stream)
+                (terpri stream))
+
+              (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
+                                                                :format :html))
+                     (filename (make-full-filename page)))
+                (ensure-directories-exist filename)
+                (uiop:with-output-file (common-html.emitter::*output-stream*
+                                        filename
+                                        :if-exists :supersede)
+                  (40ants-doc/commondoc/page::emit-search-page page))
+
+                (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
+                                               :if-exists :supersede)
+                  (write-string (40ants-doc/search::generate-search-index full-document page)
+                                stream)
+                  (terpri stream)))
+
+              (loop with paths = '(("toc.js" "toc.js")
+                                   ("highlight/highlight.min.js" "highlight.min.js")
+                                   ("highlight/styles/atom-one-dark.min.css" "highlight.min.css")
+                                   ("search/searchtools.js" "searchtools.js")
+                                   ("search/language_data.js" "language_data.js")
+                                   ("search/doctools.js" "doctools.js")
+                                   ("underscore.js" "underscore.js")
+                                   ("jquery.js" "jquery.js"))
+                    for (from to) in paths
+                    do (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
+                                                                      (concatenate 'string
+                                                                                   "static/" from))
+                                       (uiop:merge-pathnames* to absolute-dir)))))
+
+          (unless (zerop num-warnings)
+            (warn "~A warning~:P ~A caught"
+                  num-warnings
+                  (if (= num-warnings 1)
+                      "was"
+                      "were")))
+          (apply #'values
+                 absolute-dir
+                 (nreverse output-paths)))))))
+
 
 (defvar *document-html-top-blocks-of-links* ()
   "A list of blocks of links to be display on the sidebar on the left,
-  above the table of contents. A block is of the form `(&KEY TITLE ID
-  LINKS)`, where TITLE will be displayed at the top of the block in a
+  above the table of contents. A block is of the form
+  `(&KEY TITLE ID LINKS)`, where `TITLE` will be displayed at the top of the block in a
   HTML `div` with `id`, followed by the links. LINKS is a list
-  of `(URI LABEL)` elements.`")
+  of `(URI LABEL)` elements.`
+
+  **Is not supported yet.**")
 
 (defvar *document-html-bottom-blocks-of-links* ()
   "Like *DOCUMENT-HTML-TOP-BLOCKS-OF-LINKS*, only it is displayed
-  below the table of contents.")
+  below the table of contents.
 
-(defun html-header
-    (stream &key title stylesheet (charset "UTF-8")
-     link-to-pax-world-p
-     (top-blocks-of-links *document-html-top-blocks-of-links*)
-     (bottom-blocks-of-links *document-html-bottom-blocks-of-links*))
-  (format
-   stream
-   """<!DOCTYPE html>~%~
-   <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>~%~
-   <head>~%~
-   ~@[<title>~A</title>~]~%~
-   ~@[<link type='text/css' href='~A' rel='stylesheet'/>~]~%~
-   ~@[<meta http-equiv="Content-Type" ~
-            content="text/html; ~
-   charset=~A"/>~]~%~
-   <script src="jquery.min.js"></script>~%~
-   <script src="toc.min.js"></script>~%~
-   <script type="text/x-mathjax-config">
-     MathJax.Hub.Config({
-       tex2jax: {
-         inlineMath: [['$','$']],
-         processEscapes: true
-       }
-     });
-   </script>
-   <script type="text/javascript" ~
-    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
-   </script>
-   </head>~%~
-   <body>~%~
-   <div id="content-container">~%~
-     <div id="toc">~%~
-       ~A~
-       ~:[~;<div id="toc-header"><ul><li><a href="index.html">~
-            PAX World</a></li></ul></div>~%~]~
-       <div id="page-toc">~%~
-       </div>~%~
-       ~A~
-       <div id="toc-footer">~
-         <ul><li><a href="https://40ants.com/doc">[generated by 40ANTS-DOC]</a></li></ul>~
-       </div>~%~
-     </div>~%~
-     <div id="content">~%"""
-   title stylesheet charset
-   (blocks-of-links-to-html-string top-blocks-of-links)
-   link-to-pax-world-p
-   (blocks-of-links-to-html-string bottom-blocks-of-links)))
+  **Is not supported yet.**")
+
 
 (defun blocks-of-links-to-html-string (blocks-of-links)
   (format nil "~{~A~}" (mapcar #'block-of-links-to-html-string
@@ -276,89 +390,3 @@
       (princ "</ul></div>" stream))))
 
 (defvar *google-analytics-id* nil)
-
-(defun html-footer (stream &key (google-analytics-id *google-analytics-id*))
-  (format
-   stream
-   "  </div>~%~
-   </div>~%~
-   <script>$('#page-toc').toc(~A);</script>~%~
-   ~:[~;<script>
-   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){~
-   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement~
-   (o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.~
-   insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/~
-   analytics.js','ga');ga('create', '~A', 'auto');ga('send', 'pageview');~
-   </script>~%~]</body>~%</html>~%"
-   (toc-options)
-   google-analytics-id google-analytics-id))
-
-(defvar *document-html-max-navigation-table-of-contents-level* nil
-  "NIL or a non-negative integer. If non-NIL, it overrides
-  40ANTS-DOC/BUILDER/VARS::*DOCUMENT-MAX-NUMBERING-LEVEL* in dynamic HTML table of contents on
-  the left of the page.")
-
-(defun toc-options ()
-  (let ((max-level (or 40ants-doc/builder::*document-html-max-navigation-table-of-contents-level*
-                       40ants-doc/builder/vars::*document-max-table-of-contents-level*)))
-    (format nil "{'selectors': '~{~A~^,~}'}"
-            (loop for i upfrom 1 upto (1+ max-level)
-                  collect (format nil "h~S" i)))))
-
-
-(defmethod 40ants-doc/document::document (object &key stream pages (format :markdown))
-  (let ((40ants-doc/builder/printer::*format* format)
-        (*print-right-margin* (or *print-right-margin* 80))
-        (*package* (if 40ants-doc/builder/printer::*document-normalize-packages*
-                       (find-package :keyword)
-                       *package*))
-        (default-page (40ants-doc/page::translate-page-spec
-                       (list :objects (alexandria:ensure-list object)
-                             :output (list stream))
-                       format))
-        (3bmd-code-blocks:*code-blocks* t)
-        (3bmd-code-blocks:*code-blocks-default-colorize* :common-lisp)
-        (3bmd-code-blocks::*colorize-name-map*
-          (alexandria:plist-hash-table
-           `("cl-transcript" :common-lisp
-                             ,@(alexandria:hash-table-plist
-                                3bmd-code-blocks::*colorize-name-map*))
-           :test #'equal)))
-    (40ants-doc/page::with-tracking-pages-created ()
-      (40ants-doc/page::with-pages ((append (40ants-doc/page::translate-page-specs pages format)
-                                            (list default-page)))
-        ;; Here we output documentation for all objects.
-        ;; Don't be misleaded by DEFAULT-PAGE here.
-        ;; DOCUMENT-OBJECT will write data to all pages
-        ;; depending on a page reference belong to.
-        ;; It does this in 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT :AROUND method
-        (40ants-doc/page::with-temp-output-to-page (stream default-page)
-          (dolist (object (alexandria:ensure-list object))
-            (40ants-doc/builder/heading::with-headings (object)
-              (40ants-doc/document::document-object object stream))))
-        
-        (let ((outputs ()))
-          (40ants-doc/page::do-pages-created (page)
-            (40ants-doc/page::with-temp-output-to-page (stream page)
-              (40ants-doc/builder/footer::emit-footer stream))
-            (unless (eq format :markdown)
-              (let ((markdown-string (40ants-doc/page::with-temp-input-from-page (stream page)
-                                       (uiop:slurp-stream-string stream))))
-                (40ants-doc/utils::delete-stream-spec (40ants-doc/page::page-temp-stream-spec page))
-                (40ants-doc/page::with-final-output-to-page (stream page)
-                  (when (40ants-doc/page::page-header-fn page)
-                    (funcall (40ants-doc/page::page-header-fn page) stream))
-                  (3bmd:parse-string-and-print-to-stream markdown-string
-                                                         stream :format format)
-                  (when (40ants-doc/page::page-footer-fn page)
-                    (funcall (40ants-doc/page::page-footer-fn page) stream)))))
-            (push (40ants-doc/utils::unmake-stream-spec (40ants-doc/page::page-final-stream-spec page))
-                  outputs))
-
-          (if (and stream
-                   (endp pages))
-              (first outputs)
-              (reverse outputs)))
-        ))))
-
-

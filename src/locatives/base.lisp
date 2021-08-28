@@ -2,7 +2,19 @@
   (:use #:cl)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:export
+   #:locate
+   #:locate-error
+   #:locate-error-message
+   #:locate-error-object
+   #:locate-error-locative
+   #:locative-type
+   #:locative-args
+   #:define-locative-type
+   #:locate-object
+   #:locate-and-find-source
+   #:locative-equal))
 (in-package 40ants-doc/locatives/base)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -15,7 +27,7 @@
   being able to reference `(LOCATIVE-TYPE LOCATIVE)`. For example, if
   you have:
 
-  ```common-lisp
+  ```lisp
   (define-locative-type variable (&optional initform)
     "Dummy docstring.")
   ```
@@ -41,13 +53,13 @@
   calling the LOCATE-ERROR function if the lookup fails. Signal other
   errors if the types of the argument are bad, for instance
   LOCATIVE-ARGS is not the empty list in the package example. If a
-  40ANTS-DOC/REFERENCE::REFERENCE is returned then it must be canonical in the sense that
-  calling 40ANTS-DOC/REFERENCE-API::CANONICAL-REFERENCE on it will return the same reference.
+  40ANTS-DOC/REFERENCE:REFERENCE is returned then it must be canonical in the sense that
+  calling 40ANTS-DOC/REFERENCE-API:CANONICAL-REFERENCE on it will return the same reference.
   For extension only, don't call this directly."))
 
 (defun locate-error (&rest format-and-args)
   "Call this function to signal a LOCATE-ERROR condition from a
-  LOCATE-OBJECT method. FORMAT-AND-ARGS contains a format string and
+  LOCATE-OBJECT generic-function. FORMAT-AND-ARGS contains a format string and
   args suitable for FORMAT from which the LOCATE-ERROR-MESSAGE is
   constructed. If FORMAT-AND-ARGS is NIL, then the message will be NIL
   too.
@@ -61,7 +73,7 @@
 
 (defun locate (object locative &key (errorp t))
   "Follow LOCATIVE from OBJECT and return the object it leads to or a
-  40ANTS-DOC/REFERENCE::REFERENCE if there is no first class object corresponding to the
+  40ANTS-DOC/REFERENCE:REFERENCE if there is no first class object corresponding to the
   location. If ERRORP, then a LOCATE-ERROR condition is signaled when
   the lookup fails."
   (handler-case
@@ -85,41 +97,19 @@
                      (locate-error-message condition)))))
 
 
-(defgeneric locate-and-document (object locative-type locative-args
-                                 stream)
-  (:documentation "Called by 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT on 40ANTS-DOC/REFERENCE::REFERENCE objects,
-  this function has essentially the same purpose as 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
-  but it has different arguments to allow specializing on
-  LOCATIVE-TYPE."))
-
-
 (defgeneric locate-and-find-source (object locative-type locative-args)
-  (:documentation "Called by 40ANTS-DOC/SOURCE-API::FIND-SOURCE on 40ANTS-DOC/REFERENCE::REFERENCE objects, this
-  function has essentially the same purpose as 40ANTS-DOC/SOURCE-API::FIND-SOURCE generic-function but it has
-  different arguments to allow specializing on LOCATIVE-TYPE."))
+  (:documentation
+   "Called by [40ANTS-DOC/SOURCE-API:FIND-SOURCE][(METHOD () (40ANTS-DOC/REFERENCE:REFERENCE))]
+    on 40ANTS-DOC/REFERENCE:REFERENCE objects, this
+    function has essentially the same purpose as 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function but it has
+    different arguments to allow specializing on LOCATIVE-TYPE."))
 
 (defmethod locate-and-find-source (object locative-type locative-args)
-  "This default implementation simply calls 40ANTS-DOC/SOURCE-API::FIND-SOURCE with OBJECT
+  "This default implementation simply calls 40ANTS-DOC/SOURCE-API:FIND-SOURCE with OBJECT
   which should cover the common case of a macro expanding to, for
   instance, a defun but having its own locative type."
   (declare (ignore locative-type locative-args))
-  (40ants-doc/source-api::find-source object))
-
-
-
-(defgeneric locate-and-collect-reachable-objects (object locative-type
-                                                  locative-args)
-  (:documentation "Called by 40ANTS-DOC/REFERENCE-API::COLLECT-REACHABLE-OBJECTS on
-  40ANTS-DOC/REFERENCE::REFERENCE objects, this function has essentially the same purpose as its
-  caller but it has different arguments to allow specializing on
-  LOCATIVE-TYPE."))
-
-(defmethod locate-and-collect-reachable-objects (object locative-type
-                                                 locative-args)
-  "This default implementation returns the empty list. This means that
-  nothing is reachable from the reference."
-  (declare (ignore object locative-type locative-args))
-  ())
+  (40ants-doc/source-api:find-source object))
 
 
 ;;; A somewhat dummy generic function whose methods are
@@ -152,3 +142,13 @@
   (if (listp locative)
       (rest locative)
       ()))
+
+
+(defun locative-equal (left right)
+  "Compares two locatives.
+
+   Each locative may be a symbol or a locative with arugments in a list form."
+  (and (eql (locative-type left)
+            (locative-type right))
+       (equal (locative-args left)
+              (locative-args right))))

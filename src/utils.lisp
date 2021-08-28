@@ -2,11 +2,14 @@
   (:use #:cl)
   (:import-from #:40ants-doc/builder/vars)
   (:import-from #:alexandria)
-  (:import-from #:closer-mop
-                #:method-generic-function
-                #:generic-function-name)
-  (:import-from #:swank)
-  (:import-from #:cl-ppcre))
+  (:import-from #:cl-ppcre)
+  (:import-from #:str)
+  (:export
+   #:is-external
+   #:get-package-from-symbol-name
+   #:parse-symbol-name
+   #:get-symbol-from-string
+   #:make-relative-path))
 (in-package 40ants-doc/utils)
 
 
@@ -488,30 +491,6 @@
                  min-length)))))
 
 
-;;;; Indentation utilities
-
-
-(defun n-leading-spaces (line)
-  (let ((n 0))
-    (loop for i below (length line)
-          while (char= (aref line i) #\Space)
-          do (incf n))
-    n))
-
-;;; Return the minimum number of leading spaces in non-blank lines
-;;; after the first.
-(defun docstring-indentation (docstring &key (first-line-special-p t))
-  (let ((n-min-indentation nil))
-    (with-input-from-string (s docstring)
-      (loop for i upfrom 0
-            for line = (read-line s nil nil)
-            while line
-            do (when (and (or (not first-line-special-p) (plusp i))
-                          (not (blankp line)))
-                 (when (or (null n-min-indentation)
-                           (< (n-leading-spaces line) n-min-indentation))
-                   (setq n-min-indentation (n-leading-spaces line))))))
-    (or n-min-indentation 0)))
 
 ;;; Add PREFIX to every line in STRING.
 (defun prefix-lines (prefix string &key exclude-first-line-p)
@@ -526,27 +505,6 @@
               (format out "~a~a" prefix line))
           (unless missing-newline-p
             (terpri out)))))))
-
-
-;;; Normalize indentation of docstrings as it's described in
-;;; (METHOD () (STRING T)) DOCUMENT-OBJECT.
-(defun strip-docstring-indentation (docstring &key (first-line-special-p t))
-  (let ((indentation
-          (docstring-indentation docstring
-                                 :first-line-special-p first-line-special-p)))
-    (values (with-output-to-string (out)
-              (with-input-from-string (s docstring)
-                (loop for i upfrom 0
-                      do (multiple-value-bind (line missing-newline-p)
-                             (read-line s nil nil)
-                           (unless line
-                             (return))
-                           (if (and first-line-special-p (zerop i))
-                               (write-string line out)
-                               (write-string (subseq* line indentation) out))
-                           (unless missing-newline-p
-                             (terpri out))))))
-            indentation)))
 
 
 (defun delimiterp (char)
@@ -567,6 +525,7 @@
         (n (length string)))
     (flet ((add (a)
              (if (and (stringp a)
+
                       (stringp (first translated)))
                  (setf (first translated)
                        (concatenate 'string (first translated) a))
@@ -628,55 +587,33 @@
             #'string<))))
 
 
+;; (defun file-package (filename)
+;;   "Searches for (in-package ...) form and returns referred package object."
+;;   (when (probe-file filename)
+;;     (uiop:with-safe-io-syntax (:package :cl)
+;;       (let ((forms (uiop:read-file-forms filename)))
+;;         (loop for form in forms
+;;               when (and (consp form)
+;;                         (eql (first form)
+;;                              'in-package))
+;;               do (return (find-package
+;;                           (second form))))))))
+
 (defun file-package (filename)
   "Searches for (in-package ...) form and returns referred package object."
   (when (probe-file filename)
     (uiop:with-safe-io-syntax (:package :cl)
-      (let ((forms (uiop:read-file-forms filename)))
-        (loop for form in forms
-              when (and (consp form)
-                        (eql (first form)
-                             'in-package))
-              do (return (find-package
-                          (second form))))))))
-
-
-(defgeneric object-package (object)
-  (:method ((object t))
-    (warn "Unable to figure out *package* for object ~S"
-          object)
-    *package*)
-  
-  (:method ((object symbol))
-    (symbol-package object))
-
-  (:method ((object generic-function))
-    (object-package
-     (generic-function-name object)))
-
-  (:method ((object standard-method))
-    ;; Method can be defined in other package than
-    ;; a generic function.
-    ;; Thus we need to find it's file and package
-    (let* ((swank-response
-             (swank:find-definition-for-thing object))
-           (filename
-             (getf (getf swank-response :location) :file))
-           (package
-             (when filename
-               (file-package filename))))
-      (if package
-          package
-          (call-next-method))))
-  
-  (:method ((object standard-class))
-    (object-package
-     (class-name object)))
-
-  #+sbcl
-  (:method ((object sb-pcl::condition-class))
-    (object-package
-     (slot-value object 'sb-pcl::name))))
+      ;; Here we'll read form one by one because UIOP:READ-FILE-FORMS
+      ;; may be broken on files with PYTHONIC-STRING-SYNTAX because
+      ;; it does not respect readtable changes.
+      (loop for idx upfrom 0
+            for form = (ignore-errors
+                        (uiop:read-file-form filename :at idx))
+            when (and (consp form)
+                      (eql (first form)
+                           'in-package))
+            do (return (find-package
+                        (second form)))))))
 
 
 (defun symbol-name-p (string)
@@ -688,3 +625,94 @@
   (cl-ppcre:scan
    "^(?:[\\p{UppercaseLetter}\\/0-9-]+[:]{1,2})?[*+]?\\p{UppercaseLetter}[\\p{UppercaseLetter}0-9-]+[*+]?$"
    string))
+
+
+(defun is-external (symbol &optional (package (symbol-package symbol)))
+  "Checks if package is external in a package where it is defined."
+  (when package
+    (eql (nth-value 1
+                    (find-symbol (symbol-name symbol)
+                                 package))
+         :external)))
+
+
+(defun get-package-from-symbol-name (symbol-name)
+  "Returns a package if symbol-name is package qualified."
+  (when (find #\: symbol-name)
+    (let ((package-name (first (str:split #\: symbol-name))))
+      (find-package package-name))))
+
+
+(defun parse-symbol-name (symbol-name)
+  "Returns a symbol name and package object as a second value. Package might be nil if it is not found or not specified."
+  (let ((delimiter-position (position #\: symbol-name)))
+    (cond
+      ;; No package specified
+      ((null delimiter-position)
+       (values symbol-name nil))
+      
+      ((zerop delimiter-position)
+       (values (subseq symbol-name 1)
+               (find-package "KEYWORD")))
+      (t
+       (let* ((splitted (str:split #\: symbol-name))
+              (package-name (first splitted))
+              (symbol-name (car (last splitted))))
+         (values symbol-name
+                 (find-package package-name)))))))
+
+
+(defun get-symbol-from-string (symbol-name)
+  (multiple-value-bind (symbol-name package)
+      (parse-symbol-name symbol-name)
+  
+    (let ((package (or package
+                       *package*)))
+      (do-symbols (symbol package)
+        (when (string= (symbol-name symbol)
+                       symbol-name)
+          (return-from get-symbol-from-string
+            symbol))))))
+
+
+(defun make-relative-path (from to)
+  (check-type from string)
+  (check-type to string)
+
+  (let* ((from-parts (str:split "/" from))
+         (to-parts (str:split "/" to)))
+    (with-output-to-string (s)
+      (loop for (from-part . rest-from-parts) on from-parts
+            for (to-part . rest-to-parts) on to-parts
+            while (string= from-part
+                           to-part)
+            finally
+               (cond
+                 ((and (null rest-from-parts)
+                       (null rest-to-parts)
+                       (equal from-part
+                              to-part))
+                  "")
+                 (t
+                  (loop repeat (length rest-from-parts)
+                        do (write-string "../" s))
+                  (push to-part rest-to-parts)
+                  (format s "~{~A~^/~}" rest-to-parts)))))))
+
+
+(defgeneric maybe-downcase (obj)
+  (:method ((string string))
+    (if (and 40ants-doc/builder/vars::*downcase-uppercase-code*
+             (no-lowercase-chars-p string))
+        (string-downcase string)
+        string))
+  (:method ((list list))
+    (mapcar #'maybe-downcase list))
+  (:method ((obj (eql nil)))
+    nil)
+  (:method ((symbol symbol))
+    (maybe-downcase (symbol-name symbol))))
+
+
+;; (defmethod maybe-downcase :before (obj)
+;;   (break))

@@ -1,37 +1,33 @@
 (uiop:define-package #:40ants-doc
-  (:documentation "See 40ants-doc:@index.")
+  (:documentation "See 40ANTS-DOC:@INDEX.")
   (:use #:cl)
   (:nicknames #:40ants-doc/core)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives)
-  (:export #:define-package
-           #:defsection
+  (:import-from #:40ants-doc/object-package)
+  (:export #:defsection
            #:exportable-locative-type-p
-           #:locative-args
-           #:locative-type
-           #:make-reference
-           #:reference
-           #:reference-object
-           #:reference-locative
            #:section
            #:section-name
            #:section-package
            #:section-readtable
            #:section-title
            #:section-link-title-to
-           #:section-entries))
+           #:section-entries
+           #:*discard-documentation-p*
+           #:section-ignore-words))
 (in-package 40ants-doc)
 
 
 ;;; Should this remove docstrings of referenced things?
 (defvar *discard-documentation-p* nil
   "The default value of DEFSECTION's DISCARD-DOCUMENTATION-P argument.
-  One may want to set *DISCARD-DOCUMENTATION-P* to true before
+  One may want to set `*DISCARD-DOCUMENTATION-P*` to true before
   building a binary application.")
 
 (defmacro defsection (name (&key (package-symbol '*package*)
                                  (readtable-symbol '*readtable*)
-                                 (export t)
+                                 (export nil)
                                  title
                                  link-title-to
                                  (discard-documentation-p *discard-documentation-p*)
@@ -57,17 +53,17 @@
   A locative in a reference can either be a symbol or it can be a list
   whose CAR is a symbol. In either case, the symbol is the called the
   type of the locative while the rest of the elements are the locative
-  arguments. See 40ANTS-DOC/DOC:@LOCATIVE-TYPES for the list of locative
+  arguments. See 40ANTS-DOC/DOC::@LOCATIVE-TYPES for the list of locative
   types available out of the box.
 
-  The same symbol can occur multiple times in a reference, typically
+  The same symbol can occur multiple times in ENTRIES, typically
   with different locatives, but this is not required.
 
-  The references are not looked up (see 40ANTS-DOC/REFERENCE::RESOLVE in the
+  The references are not looked up (see 40ANTS-DOC/REFERENCE:RESOLVE in the
   40ANTS-DOC/DOC:@EXTENSION-API) until documentation is generated, so it is
   allowed to refer to things yet to be defined.
 
-  If :EXPORT is true (the default), the referenced symbols and NAME are
+  If you set :EXPORT to true, the referenced symbols and NAME are
   candidates for exporting. A candidate symbol is exported if
 
   - it is accessible in PACKAGE (it's not `OTHER-PACKAGE:SOMETHING`)
@@ -76,13 +72,18 @@
   - there is a reference to it in the section being defined with a
     locative whose type is approved by EXPORTABLE-LOCATIVE-TYPE-P.
 
-  The idea with confounding documentation and exporting is to force
-  documentation of all exported symbols. :EXPORT argument will cause
+  The original idea with confounding documentation and exporting is to force
+  documentation of all exported symbols. However when forking MGL-PAX into
+  40ANTS-DOC I've decided explicit imports make code more readable, and
+  changed the default for :EXPORT argument to NIL and added automatic
+  warnings to help find exported symbols not referenced from the documention.
+
+  If you decide to use `:EXPORT t` argument, note it will cause
   [package variance](http://www.sbcl.org/manual/#Package-Variance)
   error on SBCL. To prevent it, use UIOP:DEFINE-PACKAGE instead
-  of CL:DEFPACKAGE.
+  of CL:DEFPACKAGE. 
 
-  :TITLE is a non-marked-up string or NIL. If non-NIL, it determines
+  :TITLE is a non-marked-up string or NIL. If non-nil, it determines
   the text of the heading in the generated output. :LINK-TITLE-TO is a
   reference given as an
   `(OBJECT LOCATIVE)` pair or NIL, to which the heading will link when
@@ -92,8 +93,8 @@
   When :DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
   is true, ENTRIES will not be recorded to save memory.
 
-  :IGNORE-WORDS allows to pass a list of string which will not cause
-  warnings. Usually these as uppercased words which are not symbols
+  :IGNORE-WORDS allows to pass a list of strings which should not cause
+  warnings. Usually these are uppercased words which are not symbols
   in the current package, like SLIME, LISP, etc."
   
   ;; Let's check the syntax as early as possible.
@@ -103,45 +104,67 @@
   
   (transform-entries entries)
   (transform-link-title-to link-title-to)
-  `(progn
-     (eval-when (:compile-toplevel :load-toplevel :execute)
-       (when ,export
-         (export-some-symbols ',name ',entries ,package-symbol)))
-     (defparameter ,name
-       (make-instance 'section
-                      :name ',name
-                      :package ,package-symbol
-                      :readtable ,readtable-symbol
-                      :title ,title
-                      :link-title-to (transform-link-title-to ',link-title-to)
-                      :entries ,(if discard-documentation-p
-                                    ()
-                                    `(transform-entries ',entries))
-                      :ignore-words (list ,@ignore-words)))))
+
+  (when (and (typep ignore-words
+                    'list)
+             (typep (first ignore-words)
+                    'string))
+    ;; This allows to pass an unquoted list of words
+    ;; to the macro, which is what you most commonly need.
+    (setf ignore-words
+          (list* 'list
+                 ignore-words)))
+  
+  (let ((export-form
+          (when export
+            `((eval-when (:compile-toplevel :load-toplevel :execute)
+                (export-some-symbols ',name ',entries ,package-symbol))))))
+    `(progn
+       ,@export-form
+      
+       (defparameter ,name
+         (make-instance 'section
+                        :name ',name
+                        :package ,package-symbol
+                        :readtable ,readtable-symbol
+                        :title ,title
+                        :link-title-to (transform-link-title-to ',link-title-to)
+                        :entries ,(if discard-documentation-p
+                                      ()
+                                      `(transform-entries ',entries))
+                        :ignore-words (list
+                                       ,@(eval ignore-words)))))))
 
 (defclass section ()
   ((name
-    :initarg :name :reader section-name
+    :initarg :name
+    :reader section-name
+    :type symbol
     :documentation "The name of the global variable whose value is
     this SECTION object.")
    (package
-    :initarg :package :reader section-package
+    :initarg :package
+    :reader section-package
     :documentation "*PACKAGE* will be bound to this package when
     generating documentation for this section.")
    (readtable
-    :initarg :readtable :reader section-readtable
+    :initarg :readtable
+    :reader section-readtable
     :documentation "*READTABLE* will be bound to this when generating
     documentation for this section.")
    (title
-    :initarg :title :reader section-title
+    :initarg :title
+    :reader section-title
     :documentation "STRING or NIL. Used in generated documentation.")
    (link-title-to
     :initform nil
-    :initarg :link-title-to :reader section-link-title-to
-    :documentation "A 40ANTS-DOC/REFERENCE::REFERENCE or NIL. Used in generated documentation.")
+    :initarg :link-title-to
+    :reader section-link-title-to
+    :documentation "A 40ANTS-DOC/REFERENCE:REFERENCE or NIL. Used in generated documentation.")
    (entries
-    :initarg :entries :reader section-entries
-    :documentation "A list of strings and 40ANTS-DOC/REFERENCE::REFERENCE objects in the
+    :initarg :entries
+    :reader section-entries
+    :documentation "A list of strings and 40ANTS-DOC/REFERENCE:REFERENCE objects in the
     order they occurred in DEFSECTION.")
    (ignore-words
     :initarg :ignore-words
@@ -154,6 +177,14 @@
 (defmethod print-object ((section section) stream)
   (print-unreadable-object (section stream :type t)
     (format stream "~S" (section-name section))))
+
+
+(defmethod 40ants-doc/object-package::object-package ((obj section))
+  (let ((package-or-name (section-package obj)))
+    (etypecase package-or-name
+      (package package-or-name)
+      (string (find-package package-or-name))
+      (symbol (find-package package-or-name)))))
 
 
 ;; This function is from alexandria, to not
@@ -170,9 +201,16 @@
 
 (defun transform-entries (entries)
   (mapcar (lambda (entry)
-            (if (stringp entry)
-                entry
-                (entry-to-reference entry)))
+            (typecase entry
+              (string entry)
+              (symbol
+               (let ((value (symbol-value entry)))
+                 (unless (typep value 'string)
+                   (error "~S value should be a string."
+                          entry))
+                 value))
+              (t
+               (entry-to-reference entry))))
           entries))
 
 (defun entry-to-reference (entry)
@@ -219,9 +257,9 @@
   (eq symbol (find-symbol (symbol-name symbol) package)))
 
 (defgeneric exportable-locative-type-p (locative-type)
-  (:documentation "Return true iff symbols in references with
-  LOCATIVE-TYPE are to be exported by default when they occur in a
-  DEFSECTION. The default method returns T, while the methods for
+  (:documentation "Return true if symbols in references with
+  LOCATIVE-TYPE are to be exported when they occur in a
+  DEFSECTION having `:EXPORT t` argument. The default method returns T, while the methods for
   PACKAGE, ASDF:SYSTEM and METHOD return NIL.
 
   DEFSECTION calls this function to decide what symbols to export when

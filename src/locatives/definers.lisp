@@ -4,10 +4,15 @@
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source-api)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/render/print)
-  (:import-from #:40ants-doc/render/args))
+  (:import-from #:40ants-doc/render/args)
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown)
+  (:export
+   #:define-symbol-locative-type))
 (in-package 40ants-doc/locatives/definers)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -22,13 +27,13 @@
 
 (defmacro define-symbol-locative-type (locative-type lambda-list
                                        &body docstring)
-  """Similar to 40ANTS-DOC/LOCATIVES/BASE::DEFINE-LOCATIVE-TYPE but it assumes that all things
+  """Similar to 40ANTS-DOC/LOCATIVES/BASE:DEFINE-LOCATIVE-TYPE but it assumes that all things
   locatable with LOCATIVE-TYPE are going to be just symbols defined
-  with a definer defined with 40ANTS-DOC/LOCATIVES/DEFINE-DEFINER::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE.
+  with a definer defined with 40ANTS-DOC/LOCATIVES/DEFINE-DEFINER:DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE.
   It is useful to attach documentation and source location to symbols
   in a particular context. An example will make everything clear:
 
-  ```commonlisp
+  ```lisp
   (define-symbol-locative-type direction ()
     "A direction is a symbol. (After this `M-.` on `DIRECTION LOCATIVE`
                                      works and it can also be included in DEFSECTION forms.)")
@@ -51,17 +56,20 @@
            (40ants-doc/locatives/base::locate-error))
        (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
      
-     (defmethod 40ants-doc/locatives/base::locate-and-document (symbol (locative-type (eql ',locative-type)) locative-args stream)
-       (let ((method (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type))
-             (lambda-list (40ants-doc/locatives/base::symbol-lambda-list symbol ',locative-type)))
-         (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
-         (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::macro-arg-names lambda-list))
-           (when lambda-list
-             (write-char #\Space stream)
-             (40ants-doc/render/args::print-arglist lambda-list stream))
-           (40ants-doc/builder/bullet::print-end-bullet stream)
-           (40ants-doc/render/print::maybe-print-docstring method t stream)))
-       (format stream "~&"))
      
-     (defmethod 40ants-doc/locatives/base::locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
-       (40ants-doc/source-api::find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))
+     (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql ',locative-type)) locative-args)
+       (let* ((method (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type))
+              (arglist (40ants-doc/locatives/base::symbol-lambda-list symbol ',locative-type))
+              (reference (40ants-doc/reference::make-reference
+                          symbol (cons locative-type locative-args)))
+              (docstring (40ants-doc/docstring:get-docstring method t))
+              (children (when docstring
+                          (40ants-doc/commondoc/markdown:parse-markdown docstring))))
+
+         (40ants-doc/commondoc/bullet:make-bullet reference
+                                                  :arglist arglist
+                                                  :children children
+                                                  :ignore-words symbol)))
+     
+     (defmethod 40ants-doc/locatives/base:locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
+       (40ants-doc/source-api:find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))

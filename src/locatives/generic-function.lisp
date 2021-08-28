@@ -8,14 +8,12 @@
   (:import-from #:swank-mop)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/document
-                #:document-object)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/render/print))
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/generic-function)
 
 
@@ -33,3 +31,17 @@
 (defmethod canonical-reference ((function generic-function))
   (40ants-doc/reference::make-reference (swank-mop:generic-function-name function) 'generic-function))
 
+
+
+(defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj generic-function))
+  (let* ((arglist (swank-backend:arglist obj))
+         (docstring (40ants-doc/docstring:get-docstring obj 'function))
+         ;; TODO:  we should move text transfromation after it will be parsed
+         (children (when docstring
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring)))
+         (reference (canonical-reference obj)))
+
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :arglist arglist
+                                             :children children
+                                             :dislocated-symbols (40ants-doc/args::function-arg-names arglist))))

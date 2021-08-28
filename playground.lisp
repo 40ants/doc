@@ -1,20 +1,26 @@
 (uiop:define-package #:playground
-  (:use #:cl))
+  (:use #:cl)
+  (:import-from #:40ants-doc
+                #:section
+                #:defsection)
+  (:export
+   #:user))
 (in-package playground)
 
 (defun user ()
-  "Just to check locatives in docstrings"
-  )
+  ;; "Just to check locatives in docstrings"
+  "Var `40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`, turned off to reduce clutter."
+  (values))
 
 (define-compiler-macro bar (&whole form arg)
-  "A custom dostring for a compiler macro"
+  "A custom dostring for a compiler macro. Optimizes a call to the BAR function, when arg is an atom."
   (if (atom arg)
       arg
       form))
 
 ;; Надо разобраться почему не работает явное указание locatives
 (defun bar (user)
-  "Cool! This function prints its USER argument of BAR function."
+  "Cool! This function prints its USER argument. It is also exists as BAR compiler-macro."
   (format t "BAR: ~S~%"
           user))
 
@@ -23,24 +29,32 @@
   (bar arg))
 
 
-(40ants-doc:defsection @index (:title "Playground")
-  "Hello World!"
-  (@asdf 40ants-doc/core::section)
-  (@function 40ants-doc/core::section)
-  (@class 40ants-doc/core::section)
-  (@structure 40ants-doc/core::section)
-  (@compiler-macro 40ants-doc/core::section)
-  (@constant 40ants-doc/core::section)
-  (@vars 40ants-doc/core::section)
-  (@glossary 40ants-doc/core::section)
-  (@locative 40ants-doc/core::section)
-  (@macro 40ants-doc/core::section)
-  (@methods 40ants-doc/core::section)
-  (@package 40ants-doc/core::section)
-  (@restart 40ants-doc/core::section)
-  (@type 40ants-doc/core::section)
-  (@include 40ants-doc/core::section)
-  (@todo 40ants-doc/core::section))
+(40ants-doc:defsection @index (:title "Playground"
+                               :ignore-words ("MGL-PAX"
+                                              "GIT"
+                                              "MIT"))
+  "Hello World!
+
+   And here is a link to @METHODS section.
+
+   And there can be the @SECOND-PAGE section."
+  (@asdf section)
+  (@function section)
+  (@class section)
+  (@structure section)
+  (@compiler-macro section)
+  (@constant section)
+  (@vars section)
+  (@glossary section)
+  (@locative section)
+  (@macro section)
+  (@METHODS section)
+  (@package section)
+  (@restart section)
+  (@type section)
+  (@include section)
+  (@todo section)
+  "Finally the other @SECOND-PAGE section link.")
 
 
 (40ants-doc:defsection @function (:title "Functions")
@@ -86,8 +100,8 @@
   (*var-c* variable))
 
 
-(40ants-doc/glossary::define-glossary-term lisp (:title "The Best Programmin Language")
-                                           "You really should use LISP!")
+(40ants-doc/glossary:define-glossary-term lisp (:title "The Best Programming Language")
+                                          "You really should use LISP!")
 
 (40ants-doc:defsection @glossary (:title "Glossary")
   (lisp glossary-term))
@@ -110,19 +124,47 @@
   (the-macro macro))
 
 
-(defclass user ()
+(defclass the-object ()
+  ()
+  (:documentation "Base class for all objects in the system"))
+
+
+(defun the-object ()
+  "A constructor for THE-OBJECT class objects.")
+
+
+(defclass user (the-object)
   ((nickname :reader user-nickname
              :initform :unauthorized
              :documentation "User's nickname")
    (email :accessor user-email
           :type (or string null)
           :initform nil
-          :documentation "User's Email. Can be empty")))
+          :documentation "User's Email. Can be empty")
+   (processed :writer user-processed
+              :initform nil
+              ;; :documentation "Sets a \"PROCESSED\" flag."
+              ))
+  (:documentation "Class for all users except admins.
+
+
+
+                   ```python
+                   def foo():
+                       pass
+                   ```
+                   
+                   This was the `Python` code.
+
+"))
+
 
 (40ants-doc:defsection @class (:title "Classes")
+  (the-object class)
   (user class)
   (user-nickname (reader user))
-  (user-email (accessor user)))
+  (user-email (accessor user))
+  (user-processed (writer user)))
 
 (defgeneric get-address (entity)
   (:documentation "Docstring of the generic function."))
@@ -138,6 +180,8 @@
 
 
 (40ants-doc:defsection @structure (:title "Structures")
+  "No support for structure type yet (`MGL-PAX` lack it too)"
+  ;; (box structure)
   (box-width structure-accessor)
   (box-height structure-accessor))
 
@@ -162,14 +206,15 @@
   :foo-bar)
 
 
-(40ants-doc:defsection @methods (:title "Generic and methods")
+(40ants-doc:defsection @METHODS (:title "Generic and methods")
   (get-address generic-function)
   (get-address (method () (user))))
 
 
 (40ants-doc:defsection @package (:title "Package")
   (40ants-doc package)
-  (40ants-doc/full package))
+  (40ants-doc/full package)
+  (playground package))
 
 
 
@@ -187,21 +232,25 @@
    (include
     (:start (user function)
      :end (bar function))
-    :header-nl "```commonlisp"
+    :lang "lisp"
+    ;; TODO: remove after refactoring
+    :header-nl "```lisp"
     :footer-nl "```")))
 
-(40ants-doc:defsection @todo (:title "TODO")
-  "Here what I need to check and fix:
+(40ants-doc:defsection @todo (:title "TODO"
+                              :ignore-words ("SLIME"
+                                             "SLY"
+                                             "M-."))
+    "Here what I need to [check](https://yandex.ru) and fix:
 
-- enable all locatives
-- check dependencies of core
-- reenable tests suite
-- fix how do M-. work in SLIME
-- fix transcribe
-- create integration with SLY
+     1. enable all locatives
+     1. check dependencies of core
+     1. reenable tests suite
+     1. fix how do `M-.` work in `SLIME`
+     1. fix transcribe
+     1. create integration with `SLY`
 "
   )
-
 
 
 (defun print-dependency-graph (system-name &key (level 0)
@@ -254,7 +303,11 @@
       (sort (rec system-name)
             #'string<))))
 
+;; To load:
 #+nil
+(load (asdf:system-relative-pathname :40ants-doc "playground.lisp"))
+
+;; #+nil
 (defun render ()
   (40ants-doc/builder::update-asdf-system-html-docs
    playground::@index :40ants-doc
@@ -264,6 +317,81 @@
       :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
+
+
+(40ants-doc:defsection @second-page (:title "Second Page")
+;;   "This is a second page.
+
+;; It mentions only the:
+
+;; "
+  ;; (playground package)
+  (user class)
+  ;; (user-nickname (reader user))
+  
+  ;; "But can also refer @INDEX section or @MACRO."
+  )
+
+
+(defun render-multi ()
+  (40ants-doc/builder::update-asdf-system-html-docs
+   (list playground::@index
+         playground::@second-page)
+   :40ants-doc
+   :pages
+   `((:objects
+      (,playground::@index)
+      :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
+                       :40ants-doc
+                       "https://github.com/40ants/doc"))
+     (:objects
+      (,playground::@second-page)
+      :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
+                       :40ants-doc
+                       "https://github.com/40ants/doc")))))
+
+(defsection @experiment (:title "Experiment"
+                         :link-title-to (the-object function))
+  "Checking how trans work
+
+   THE-OBJECT function and THE-OBJECT class.
+"
+  (the-object function)
+  )
+
+
+(defsection @readme (:title "Experiment")
+  "See SECTION class. This should be a full link to the site.")
+
+
+(defun new-render-multi ()
+  (40ants-doc/builder:render-to-files (list ;; @index
+                                       ;; 40ants-doc/doc::@index
+                                       ;; @second-page
+                                       
+                                       (40ants-doc/page:make-page @experiment)
+                                       ;; (40ants-doc/page:make-page @readme
+                                       ;;                            :format 'commondoc-markdown:markdown
+                                       ;;                            :base-dir "./new-docs/")
+                                       )
+                                      :base-url "https://40ants.com/doc/"
+                                      :base-dir "./new-docs/html/"
+                                      ;; :format 'commondoc-markdown:markdown
+                                      ))
+
+
+(defun render-readme ()
+  (40ants-doc/builder::page-to-markdown
+   (list
+    40ants-doc/doc::@index
+    ;; @second-page
+    ;; @experiment
+    )
+   "NEW.md")
+
+  (format t "====~%~A~%====~%"
+          (alexandria:read-file-into-string "NEW.md"))
+  (values))
 
 
 #+nil

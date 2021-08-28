@@ -6,7 +6,9 @@
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/locatives/base)
-  (:import-from #:40ants-doc/source-api))
+  (:import-from #:40ants-doc/source-api)
+  (:export
+   #:locate-definition-for-emacs))
 (in-package 40ants-doc/swank)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -62,9 +64,9 @@
     (when found
       (let ((locative (read-marked-up-locative-from-string locative-string)))
         (when locative
-          (let ((thing (40ants-doc/locatives/base::locate symbol locative :errorp nil)))
+          (let ((thing (40ants-doc/locatives/base:locate symbol locative :errorp nil)))
             (when thing
-              (40ants-doc/source-api::find-source thing))))))))
+              (40ants-doc/source-api:find-source thing))))))))
 
 ;;; Ensure that some Swank internal facilities (such as
 ;;; SWANK::FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE,
@@ -101,11 +103,18 @@
                     (swank::parse-symbol
                      (subseq string (1+ first-char-pos) delimiter-pos))
                   (declare (ignore symbol))
+                  
                   (when found
                     ;; The rest of the symbols in the string need not be
                     ;; already interned, so let's just read it.
-                    (ignore-errors (let ((*read-eval* t))
-                                     (read-from-string string))))))))))))
+                    (ignore-errors
+                     (let* ((*read-eval* t)
+                            (result (read-from-string string)))
+                       ;; Some string may be read as cons,
+                       ;; for example, reading "'foo"
+                       ;; will result in (cons 'QUOTE 'FOO)
+                       ;; but we only want this function to return symbols.
+                       result)))))))))))
 
 (defun locate-reference-link-definition-for-emacs (string)
   (when (and (= 2 (count #\[ string))

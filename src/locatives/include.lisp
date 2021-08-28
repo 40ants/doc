@@ -2,22 +2,17 @@
   (:use #:cl)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-and-find-source
-                #:locate-and-document
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
   (:import-from #:40ants-doc/locatives
                 #:include)
-  (:import-from #:40ants-doc/document
-                #:document-object)
   (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/render/print)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/page)
   (:import-from #:named-readtables)
@@ -30,8 +25,7 @@
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
-(define-locative-type include (source &key line-prefix header footer
-                                      header-nl footer-nl)
+(define-locative-type include (source &key lang)
   """Refers to a region of a file. SOURCE can be a string or a
   pathname in which case the whole file is being pointed to or it can
   explicitly supply START, END locatives. INCLUDE is typically used to
@@ -39,14 +33,13 @@
   as in the next example) or regions of lisp source files. This can
   reduce clutter and duplication.
 
-  ```commonlisp
+  ```lisp
   (defsection example-section ()
     (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
-                     :header-nl "```elisp" :footer-nl "```"))
+                     :lang "elisp"))
     (foo-example (include (:start (foo function)
                            :end (end-of-foo-example variable))
-                          :header-nl "```commonlisp"
-                          :footer-nl "```"))
+                          :lang "commonlisp")))
 
   (defun foo (x)
     (1+ x))
@@ -68,22 +61,16 @@
   locative)` locative.
 
   When documentation is generated, the entire `pax.el` file is
-  included in the markdown surrounded by the strings given as
-  HEADER-NL and FOOTER-NL (if any). The trailing newline character is
-  assumed implicitly. If that's undesirable, then use HEADER and
-  FOOTER instead. The documentation of `FOO-EXAMPLE` will be the
-  region of the file from the source location of the START
-  locative (inclusive) to the source location of the END
+  included in the markdown as a code block. The documentation of
+  `FOO-EXAMPLE` will be the region of the file from the source location
+  of the START locative (inclusive) to the source location of the END
   locative (exclusive). START and END default to the beginning and end
   of the file, respectively.
 
   Note that the file of the source location of :START and :END must be
   the same. If SOURCE is pathname designator, then it must be absolute
   so that the locative is context independent.
-
-  Finally, if specified LINE-PREFIX is a string that's prepended to
-  each line included in the documentation. For example, a string of
-  four spaces makes markdown think it's a code block.""")
+  """)
 
 
 (defmethod exportable-locative-type-p ((locative-type (eql 'include)))
@@ -91,9 +78,8 @@
 
 (defmethod locate-object (symbol (locative-type (eql 'include))
                           locative-args)
-  (destructuring-bind (source &key line-prefix header footer
-                                   header-nl footer-nl) locative-args
-    (declare (ignore source line-prefix header footer header-nl footer-nl))
+  (destructuring-bind (source &key lang) locative-args
+    (declare (ignore source lang))
     (40ants-doc/reference::make-reference symbol (cons locative-type locative-args))))
 
 
@@ -107,27 +93,16 @@
       (:position ,(1+ start))
       nil)))
 
-(defmethod locate-and-document (symbol (locative-type (eql 'include))
-                                locative-args stream)
-  (destructuring-bind (source &key (line-prefix "")
-                                   header
-                                   footer
-                                   header-nl
-                                   footer-nl)
+
+(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'include)) locative-args)
+  (destructuring-bind (source &key 
+                              lang)
       locative-args
-    
-    (when header
-      (format stream "~A" header))
-    (when header-nl
-      (format stream "~A~%" header-nl))
-    (format stream "~A"
-            (40ants-doc/utils::prefix-lines line-prefix
-                                            (multiple-value-call #'file-subseq
-                                              (include-region source))))
-    (when footer
-      (format stream "~A" footer))
-    (when footer-nl
-      (format stream "~A~%" footer-nl))))
+    (common-doc:make-code-block lang
+                                (common-doc:make-text
+                                 (multiple-value-call #'file-subseq
+                                   (include-region source))))))
+
 
 ;;; Return the filename and start, end positions of the region to be
 ;;; included.
@@ -140,12 +115,12 @@
          (values source 0 nil))
         ((and source (listp source))
          (destructuring-bind (&key start end) source
-           (let* ((start-reference (40ants-doc/reference::resolve
+           (let* ((start-reference (40ants-doc/reference:resolve
                                     (40ants-doc/core::entry-to-reference start)))
-                  (end-reference (40ants-doc/reference::resolve
+                  (end-reference (40ants-doc/reference:resolve
                                   (40ants-doc/core::entry-to-reference end)))
-                  (start (40ants-doc/source-api::find-source start-reference))
-                  (end (40ants-doc/source-api::find-source end-reference)))
+                  (start (40ants-doc/source-api:find-source start-reference))
+                  (end (40ants-doc/source-api:find-source end-reference)))
              (when start
                (check-location start))
              (when end
@@ -187,10 +162,17 @@
           location '(:file :position)))
 
 (defun location-file (location)
-  (second (find :file (rest location) :key #'first)))
+  (or (second (find :file (rest location) :key #'first))
+      ;; If function was redefined using C-c C-c in Emacs, then
+      ;; location will have :BUFFER-AND-FILE instead of :FILE.
+      (second (find :buffer-and-file (rest location) :key #'first))))
 
 (defun location-position (location)
-  (1- (second (find :position (rest location) :key #'first))))
+  (or (fare-utils:aif (second (find :position (rest location) :key #'first))
+                      (1- fare-utils:it))
+      ;; If function was redefined using C-c C-c in Emacs, then
+      ;; location will have :OFFSET instead of :POSITION.
+      (second (find :offset (rest location) :key #'first))))
 
 ;; TODO: Find why this get called three times when I have only one include in my document :(
 (defun file-subseq (pathname &optional start end)

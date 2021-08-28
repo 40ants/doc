@@ -8,14 +8,14 @@
   (:import-from #:swank-mop)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
-  (:import-from #:40ants-doc/builder/bullet)
   (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/document
-                #:document-object)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/render/print))
+  (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown))
 (in-package 40ants-doc/locatives/function)
 
 
@@ -36,14 +36,16 @@
 (defmethod canonical-reference ((function function))
   (40ants-doc/reference::make-reference (swank-backend:function-name function) 'function))
 
-(defmethod document-object ((function function) stream)
-  (let ((reference (canonical-reference function)))
-    (40ants-doc/builder/bullet::print-bullet reference stream)
-    (write-char #\Space stream)
-    (let ((arglist (swank-backend:arglist function)))
-      (40ants-doc/render/args::print-arglist arglist stream)
-      (40ants-doc/builder/bullet::print-end-bullet stream)
-      (40ants-doc/args::with-dislocated-symbols ((40ants-doc/args::function-arg-names arglist))
-        (40ants-doc/render/print::maybe-print-docstring (40ants-doc/reference::reference-object reference)
-                                                        'function
-                                                        stream)))))
+
+(defmethod 40ants-doc/commondoc/builder::to-commondoc ((obj function))
+  (let* ((arglist (swank-backend:arglist obj))
+         (docstring (40ants-doc/docstring:get-docstring obj 'function))
+         (children (when docstring
+                     (40ants-doc/commondoc/markdown:parse-markdown docstring)))
+         (reference (canonical-reference obj))
+         (dislocated (40ants-doc/args::function-arg-names arglist)))
+
+    (40ants-doc/commondoc/bullet:make-bullet reference
+                                             :arglist arglist
+                                             :children children
+                                             :dislocated-symbols dislocated)))

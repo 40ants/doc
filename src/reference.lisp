@@ -1,12 +1,17 @@
 (uiop:define-package #:40ants-doc/reference
   (:use #:cl)
   (:import-from #:40ants-doc/reference-api
-                #:canonical-reference
-                #:collect-reachable-objects)
-  (:import-from #:40ants-doc/document)
+                #:canonical-reference)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/locatives/base)
-  (:import-from #:40ants-doc/locatives/dislocated))
+  (:import-from #:40ants-doc/locatives/dislocated)
+  (:import-from #:40ants-doc/object-package)
+  (:export
+   #:resolve
+   #:reference
+   #:reference-object
+   #:reference-locative
+   #:make-reference))
 (in-package 40ants-doc/reference)
 
 
@@ -23,6 +28,9 @@
   (print-unreadable-object (object stream :type t)
     (format stream "~S ~S" (reference-object object)
             (reference-locative object))))
+
+(defmethod 40ants-doc/object-package::object-package ((obj reference))
+  (40ants-doc/object-package::object-package (reference-object obj)))
 
 (defun reference= (reference-1 reference-2)
   (and (equal (reference-object reference-1)
@@ -46,20 +54,6 @@
       reference)))
 
 
-(defmethod collect-reachable-objects (object)
-  "This default implementation returns the empty list. This means that
-  nothing is reachable from OBJECT."
-  (declare (ignore object))
-  ())
-
-
-(defun reachable-canonical-references (objects)
-  (mapcan (lambda (object)
-            (mapcar #'canonical-reference
-                    (cons object (collect-reachable-objects object))))
-          objects))
-
-
 ;;; Return the unescaped name of the HTML anchor for REFERENCE. See
 ;;; HTML-SAFE-NAME.
 (defun reference-to-anchor (reference)
@@ -76,7 +70,7 @@
   ;; be recognized without markup because its name is too short. The
   ;; correct solution would be to add links automatically for the
   ;; hyperspec.
-  (list (make-reference t '40ants-doc/locatives/dislocated::dislocated)))
+  (list (make-reference t '40ants-doc/locatives:dislocated)))
 
 
 ;;; Return the references from REFS which are for SYMBOL or which are
@@ -100,7 +94,7 @@
                        refs)
         ;; Don't codify A, I and similar.
         (if (< 2 n-chars-read)
-            (list (make-reference symbol '40ants-doc/locatives/dislocated::dislocated))
+            (list (make-reference symbol '40ants-doc/locatives:dislocated))
             ()))))
 
 
@@ -110,7 +104,7 @@
 ;;; If there is a DISLOCATED reference, then don't link anywhere
 ;;; (remove all the other references).
 (defun resolve-dislocated (refs)
-  (let ((ref (find '40ants-doc/locatives/dislocated::dislocated refs :key #'reference-locative-type)))
+  (let ((ref (find '40ants-doc/locatives:dislocated refs :key #'reference-locative-type)))
     (if ref
         (list ref)
         refs)))
@@ -131,14 +125,19 @@
        refs))))
 
 
-(defmethod 40ants-doc/source-api::find-source ((reference reference))
-  "If REFERENCE can be resolved to a non-reference, call 40ANTS-DOC/SOURCE-API::FIND-SOURCE
-  with it, else call 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE on the object,
-  locative-type, locative-args of REFERENCE."
-  (let ((locative (reference-locative reference)))
-    (40ants-doc/locatives/base::locate-and-find-source (reference-object reference)
-                                                       (40ants-doc/locatives/base::locative-type locative)
-                                                       (40ants-doc/locatives/base::locative-args locative))))
+(defmethod 40ants-doc/source-api:find-source ((reference reference))
+  "If REFERENCE can be resolved to a non-reference, call 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function
+  with it, else call [40ANTS-DOC/LOCATIVES/BASE:LOCATE-AND-FIND-SOURCE][generic-function] on the object,
+  locative-type, locative-args slots of REFERENCE."
+  (let ((object (resolve reference)))
+    (typecase object
+      (reference
+       (let ((locative (reference-locative reference)))
+         (40ants-doc/locatives/base:locate-and-find-source (reference-object reference)
+                                                           (40ants-doc/locatives/base:locative-type locative)
+                                                           (40ants-doc/locatives/base:locative-args locative))))
+      (t
+       (40ants-doc/source-api:find-source object)))))
 
 
 ;;; REFERENCE-OBJECT on a CANONICAL-REFERENCE of ASDF:SYSTEM is a
@@ -151,34 +150,15 @@
       refs))
 
 
-(defmethod collect-reachable-objects ((reference reference))
-  "If REFERENCE can be resolved to a non-reference, call
-  COLLECT-REACHABLE-OBJECTS with it, else call
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS on the object, locative-type,
-  locative-args of REFERENCE"
-  (let ((object (resolve reference)))
-    (if (typep object 'reference)
-        (let ((locative (reference-locative reference)))
-          (40ants-doc/locatives/base::locate-and-collect-reachable-objects
-           (reference-object reference)
-           (40ants-doc/locatives/base::locative-type locative)
-           (40ants-doc/locatives/base::locative-args locative)))
-        (collect-reachable-objects object))))
-
-
 (defun resolve (reference &key (errorp t))
-  "A convenience function to 40ANTS-DOC/LOCATIVES/BASE::LOCATE REFERENCE's object with its
+  "A convenience function to 40ANTS-DOC/LOCATIVES/BASE:LOCATE REFERENCE's object with its
   locative."
-  (40ants-doc/locatives/base::locate (reference-object reference)
-                                     (reference-locative reference)
-                                     :errorp errorp))
+  (40ants-doc/locatives/base:locate (reference-object reference)
+                                    (reference-locative reference)
+                                    :errorp errorp))
 
 
 ;;; We need this for more informative ERRORs and WARNINGs
+;; TODO: Remove this var
 (defvar *reference-being-documented* nil)
 
-
-(defmethod 40ants-doc/locatives/base::locate-and-document :around (object locative-type locative-args stream)
-  (let ((*reference-being-documented*
-          (make-reference object locative-type)))
-    (call-next-method)))

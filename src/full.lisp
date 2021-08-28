@@ -2,8 +2,7 @@
   (:use #:cl)
   (:nicknames #:40ants-doc/full)
   (:import-from #:40ants-doc/builder)
-  (:import-from #:40ants-doc/builder/reference)
-
+  
   ;; TODO: Все эти locatives надо сделать доступными в минимальном пакете
   ;; может быть не загружать сами модули, но сделать так, чтобы на них можно было ссылаться
   (:import-from #:40ants-doc/locatives/section)
@@ -26,8 +25,8 @@
   (:import-from #:40ants-doc/locatives/structure-accessor)
   (:import-from #:40ants-doc/locatives/type)
   (:import-from #:40ants-doc/locatives/include)
-  
-  (:import-from #:40ants-doc/render/navigation)
-  (:import-from #:40ants-doc/document/string)
-  (:import-from #:40ants-doc/github))
+  (:import-from #:40ants-doc/locatives/stdout-of)
+  (:import-from #:40ants-doc/github)
+  (:import-from #:40ants-doc/commondoc/section)
+  (:import-from #:40ants-doc/object-package-impl))
 (in-package 40ants-doc/full)

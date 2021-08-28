@@ -18,34 +18,50 @@
   (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/source-api)
-  (:import-from #:40ants-doc/document))
+  (:import-from #:40ants-doc/changelog
+                #:@changelog)
+  (:export
+   #:@index
+   #:@readme))
 (in-package 40ants-doc/doc)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 
-(defsection @index (:title "40Ants Doc Manual"
-                    :ignore-words ("HTML"
-                                   "HTMLs"
-                                   "README"
-                                   "JSON"
-                                   "MGL-PAX"
-                                   "SLIME"
-                                   "SWANK"
-                                   "SLY"
-                                   "URI"
-                                   "URL"
-                                   "URLs"
-                                   "LISP"
-                                   "SBCL"
-                                   "FOO"
-                                   "FOO-SLOT"
-                                   "FOO-EXAMPLE"
-                                   "*FOO-STATE*"
-                                   "BAZ"
-                                   "BAR"
-                                   "OTHER-PACKAGE:SOMETHING"))
-  "
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defparameter *ignore-words*
+    '("HTML"
+      "HTMLs"
+      "README"
+      "JSON"
+      "MGL-PAX"
+      "SLIME"
+      "SWANK"
+      "SLY"
+      "URI"
+      "URL"
+      "URLs"
+      "LISP"
+      "SBCL"
+      "FOO"
+      "FOO-SLOT"
+      "FOO-EXAMPLE"
+      "*FOO-STATE*"
+      "BAZ"
+      "BAR"
+      "OTHER-PACKAGE:SOMETHING"
+      "MIT"
+      "GIT"
+      "ASDF"
+      "CSS"
+      "3BMD"
+      "PYTHONIC-STRING-READER"
+      "DOCS-BUILDER"
+      "COMMON-DOC:DOCUMENT-NODE"))
+
+
+  (defparameter *badges*
+    "
 <table>
 <tr>
 <td><a href=\"https://github.com/40ants/doc/actions/workflows/ci.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests\"/></a></td>
@@ -55,9 +71,14 @@
 <td><a href=\"https://coveralls.io/github/40ants/doc?branch=master\"><img src=\"https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master\"></a></td>
 </tr>
 </table>
-"
+"))
+
+(defsection @index (:title "40Ants Doc Manual"
+                    :ignore-words *ignore-words*)
+  *badges*
   (@about section)
   (40ants-doc system)
+  (40ants-doc-full system)
   (@links section)
   (@background section)
   (@tutorial section)
@@ -72,13 +93,28 @@
   (@todo section))
 
 
-(defsection @about (:title "About this fork")
+(defsection @readme (:title "40ANTS-DOC Documentation Generator"
+                     :ignore-words (list* "DEFSECTION"
+                                          *ignore-words*))
+  *badges*
+  (@about section)
+  (@full-doc-link section)
+  (@tutorial section)
+  (@todo section))
+
+
+(defsection @full-doc-link (:title "Full Documentation")
+  "Read full documentation at [site 40ants.com/doc/](https://40ants.com/doc/).")
+
+
+(defsection @about (:title "About this fork"
+                    :ignore-words ("IRONCLAD"))
   "
 This system is a fork of [MGL-PAX](https://github.com/melisgl/mgl-pax).
 
 There are a few reasons, why I've created the fork.
 
-The main goal is to extract a core features into the system 40ANTS-DOC
+The main goal is to extract a core features into the 40ANTS-DOC system
 with as little dependencies as possible. This is important, because with MGL-PAX's
 style, you define documentation sections in your library's code, which makes
 it dependent on the documentation system. However, heavy weight dependencies
@@ -89,18 +125,28 @@ a smaller modules to make navigation easier. This will help any person
 who will decide to learn how the documentation builder works. Also,
 granular design will make it possible loading subsystems like SLIME or SLY
 integration.
+
+The third goal was to make documentation processing more sequential and hackable.
+To introduce hooks for adding new markup languages, and HTML themes.
 "
   (@difference-from-mgl-pax section))
 
 (defsection @difference-from-mgl-pax (:title "Why this fork is different"
                                       :ignore-words ("NAMED-READTABLES"
-                                                     "PYTHONIC-STRING-READER"))
+                                                     "PYTHONIC-STRING-READER"
+                                                     "API"
+                                                     "@INDEX"
+                                                     "SECTION"
+                                                     "JS"
+                                                     "XREF"
+                                                     "40A"
+                                                     "FIND-SOURCE"))
   "
-Here is features already implemented in this fork:
+Here are features already implemented in this fork:
 
 * Core system `40ANTS-DOC` now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
-  `40ANTS-DOC/FULL` system which will download such dependencies as markdown
+  `40ANTS-DOC-FULL` system which will download such dependencies as markdown
   parser and more.
 * Now you don't have to import any locative symbols into your package. Import
   only a DEFSECTION macro and it will be enough to define documentation for
@@ -109,12 +155,22 @@ Here is features already implemented in this fork:
   like a symbol, but when real symbol or reference is absent:
 
   ```
-   WARNING: Unable to find symbol \"API\" mentioned in (CL-INFO:@INDEX SECTION)
+  WARNING: Unable to find target for reference #<XREF \"FIND-SOURCE\" GENERIC-FUNCTION>
+           mentioned at 40Ants Doc Manual / Extension API / Reference Based Extensions
   ```
+
+* Documentation processing now uses CommonDoc as intermediate format, and markup languages
+  other than Markdown can be supported.
+* Added a JS search index which will work when you are hosting pages on a static website
+  like GitHub pages.
+* It is possible to render pages in multiple formats and having cross references between them.
+  See 40ANTS-DOC/BUILDER::@RENDERING-MULTIPLE-FORMATS.
 
 I'm planning to extend this fork even more. Read @TODO section to learn about
 proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)
 on the GitHub to suggest a new feature.
+
+See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 ")
 
 
@@ -128,8 +184,16 @@ on the GitHub to suggest a new feature.
 ")
 
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (load
+   (asdf:system-relative-pathname :40ants-doc "tutorial.lisp")))
+
+
 (defsection @background (:export nil :title "Background"
                          :ignore-words ("OAOO"))
+  "Here is the story behind the MGL-PAX, precursor of 40ANTS-DOC, written
+   by Gábor Melis."
+  
   "As a user, I frequently run into documentation that's incomplete
   and out of date, so I tend to stay in the editor and explore the
   code by jumping around with SLIME's [`M-.`][slime-M-.]. As a library
@@ -174,7 +238,7 @@ on the GitHub to suggest a new feature.
   birds to kill, and the symbol got accompanied by a type which was
   later generalized into the concept of locatives:
 
-  ```commonlisp
+  ```lisp
   (defsection @introduction ()
     \"A single line for one man ...\"
     (foo class)
@@ -200,7 +264,19 @@ on the GitHub to suggest a new feature.
 
   [markdown]: https://daringfireball.net/projects/markdown/")
 
-(defsection @tutorial (:title "Tutorial")
+(defsection @tutorial (:title "Tutorial"
+                       :ignore-words ("UIOP:DEFINE-PACKAGE"
+                                      "@FOO-RANDOM-MANUAL"
+                                      "LIMIT"
+                                      "STDDEV"
+                                      "HELLO"
+                                      "FOO-RANDOM-STATE"
+                                      "FOO-RANDOM"
+                                      "STATE"
+                                      "OBJECT"
+                                      "KEY"
+                                      "GAUSSIAN-RANDOM"
+                                      "UNIFORM-RANDOM"))
   """40ANTS-DOC provides an extremely poor man's Explorable Programming
   environment. Narrative primarily lives in so called sections that
   mix markdown docstrings with references to functions, variables,
@@ -217,149 +293,64 @@ on the GitHub to suggest a new feature.
   from code, not vice versa and there is no support for chunking yet.
   Code is first, code must look pretty, documentation is code.
 
-  In typical use, using 40ANTS-DOC, packages have no :EXPORT's defined.
-  Instead the UIOP:DEFINE-PACKAGE form gets a docstring which may mention section
-  names (defined with DEFSECTION). When the code is loaded into the
-  lisp, pressing `M-.` in SLIME on the name of the section will take
-  you there. Sections can also refer to other sections, packages,
-  functions, etc and you can keep exploring.
+  When the code is loaded into the lisp, pressing `M-.` in SLIME on
+  the name of the section will take you there. Sections can also refer
+  to other sections, packages, functions, etc and you can keep exploring.
 
   Here is an example of how it all works together:
 
-  ```commonlisp
-  (uiop:define-package #:foo-random
-    (:documentation "This package provides various utilities for
-  random. See @FOO-RANDOM-MANUAL.")
-    (:use #:common-lisp #:40ants-doc))
+  """
 
-  (in-package foo-random)
+  (tutorial-code (include (:start (foo-random package)
+                           :end (foo-random::+end+ variable))
+                          :lang "commonlisp"))
 
-  (defsection @foo-random-manual (:title "Foo Random manual")
-    "Here you describe what's common to all the referenced (and
-                                                            exported) functions that follow. They work with *FOO-STATE*,
-  and have a :RANDOM-STATE keyword arg. Also explain when to
-  choose which."
-    (foo-random-state class)
-    (state (reader foo-random-state))
-    "Hey we can also print states!"
-    (print-object (method () (foo-random-state t)))
-    (*foo-state* variable)
-    (gaussian-random function)
-    (uniform-random function)
-    ;; this is a subsection
-    (@foo-random-examples section))
-
-  (defclass foo-random-state ()
-    ((state :reader state)))
-
-  (defmethod print-object ((object foo-random-state) stream)
-    (print-unreadable-object (object stream :type t)))
-
-  (defvar *foo-state* (make-instance 'foo-random-state)
-    "Much like *RANDOM-STATE* but uses the FOO algorithm.")
-
-  (defun uniform-random (limit &key (random-state *foo-state*))
-    "Return a random number from the between 0 and LIMIT (exclusive)
-  uniform distribution."
-    nil)
-
-  (defun gaussian-random (stddev &key (random-state *foo-state*))
-    "Return a random number from a zero mean normal distribution with
-  STDDEV."
-    nil)
-
-  (defsection @foo-random-examples (:title "Examples")
-    "Let's see the transcript of a real session of someone working
-  with FOO:
-
-  ```cl-transcript
-  (values (princ :hello) (list 1 2))
-  .. HELLO
-  => :HELLO
-  => (1 2)
-
-  (make-instance 'foo-random-state)
-  ==> #<FOO-RANDOM-STATE >
-  ```")
-  ```
-
+  """
   Generating documentation in a very stripped down markdown format is
   easy:
 
-  ```commonlisp
-  (describe @foo-random-manual)
+  ```lisp
+  (40ants-doc/builder:render-to-string
+    @foo-random-manual
+    :format :markdown)
   ```
 
-  For this example, the generated markdown would look like this:
+  For this example, the generated markdown would look like this:"""
 
-      # Foo Random manual
+  (render-to-stribg-output
+   (stdout-of (format t (40ants-doc/builder:render-to-string
+                         foo-random::@foo-random-manual
+                         :format :markdown))
+              :lang "markdown"))
 
-      ###### \[in package FOO-RANDOM\]
-      Here you describe what's common to all the referenced (and
-      exported) functions that follow. They work with *FOO-STATE*,
-      and have a :RANDOM-STATE keyword arg. Also explain when to
-      choose which.
+  """
+  MGL-PAX supported the plain text format which was more readble when viewed
+  from a simple text editor, but I've dropped support for plain text in this fork
+  because most time documentation are read in the browser these days.
 
-      - [class] FOO-RANDOM-STATE
+  To render into the files, use 40ANTS-DOC/BUILDER:RENDER-TO-FILES
+  and 40ANTS-DOC/BUILDER:UPDATE-ASDF-SYSTEM-DOCS functions.
 
-      - [reader] STATE FOO-RANDOM-STATE
-
-      Hey we can also print states!
-
-      - [method] PRINT-OBJECT (OBJECT FOO-RANDOM-STATE) STREAM
-
-      - [variable] *FOO-STATE* #<FOO-RANDOM-STATE >
-
-          Much like *RANDOM-STATE* but uses the FOO algorithm.
-
-      - [function] GAUSSIAN-RANDOM STDDEV &KEY (RANDOM-STATE *FOO-STATE*)
-
-          Return a random number from a zero mean normal distribution with
-          STDDEV.
-
-      - [function] UNIFORM-RANDOM LIMIT &KEY (RANDOM-STATE *FOO-STATE*)
-
-          Return a random number from the between 0 and LIMIT (exclusive)
-          uniform distribution.
-
-      ## Examples
-
-      Let's see the transcript of a real session of someone working
-      with FOO:
-
-      ```cl-transcript
-      (values (princ :hello) (list 1 2))
-      .. HELLO
-      => :HELLO
-      => (1 2)
-
-      (make-instance 'foo-random-state)
-      ==> #<FOO-RANDOM-STATE >
-
-      ```
-
-  More fancy markdown or HTML output with automatic markup and linking
-  of uppercase symbol names found in docstrings, section numbering,
-  table of contents, etc is possible by calling the `40ANTS-DOC/DOCUMENT::DOCUMENT`
-  function.
-
-  One can even generate documentation for different, but related
+  Last one can even generate documentation for different, but related
   libraries at the same time with the output going to different files,
   but with cross-page links being automatically added for symbols
   mentioned in docstrings. See `40ANTS-DOC/BUILDER::@GENERATING-DOCUMENTATION` for
   some convenience functions to cover the most common cases.
 
-  Note how `(VARIABLE *FOO-STATE*)` in the DEFSECTION form both
-  exports `*FOO-STATE*` and includes its documentation in
+  Note how `(*FOO-STATE* VARIABLE)` in the DEFSECTION form includes its documentation in
   `@FOO-RANDOM-MANUAL`. The symbols VARIABLE and FUNCTION are just two
   instances of 'locatives' which are used in DEFSECTION to refer to
   definitions tied to symbols. See @LOCATIVE-TYPES.
 
   The transcript in the code block tagged with `cl-transcript` is
   automatically checked for up-to-dateness. See
-  `40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT`.""")
+  `40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT`.
+"""
+  )
 
-(defsection @emacs-integration (:title "Emacs Integration")
+(defsection @emacs-integration (:title "Emacs Integration"
+                                :ignore-words ("SWANK-BACKEND:FIND-SOURCE-LOCATION"
+                                               "SWANK-BACKEND:FIND-DEFINITIONS"))
   "Integration into SLIME's `M-.` (`slime-edit-definition`) allows one
   to visit the source location of the thing that's identified by a
   symbol and the locative before or after the symbol in a buffer. With
@@ -373,7 +364,8 @@ on the GitHub to suggest a new feature.
   *Note that the this feature is implemented in terms of
   SWANK-BACKEND:FIND-SOURCE-LOCATION and
   SWANK-BACKEND:FIND-DEFINITIONS whose support varies across the Lisp
-  implementations.*
+  implementations. Sadly, but this integration does not with SLY because
+  it does not support hooks on finding definition.*
 
   In the following examples, pressing `M-.` when the cursor is on one
   of the characters of `FOO` or just after `FOO`, will visit the
@@ -391,7 +383,7 @@ on the GitHub to suggest a new feature.
   this example pressing `M-.` on `FOO` will visit `FOO`'s default
   method:
 
-  ```commonlisp
+  ```lisp
   ;;;; See FOO `(method () (t t t))` for how this all works.
   ;;;; But if the locative has semicolons inside: FOO `(method
   ;;;; () (t t t))`, then it won't, so be wary of line breaks
@@ -404,15 +396,67 @@ on the GitHub to suggest a new feature.
 
   The `M-.` extensions can be enabled by adding this to your Emacs
   initialization file (or loading `src/pax.el`):"
-  (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
-                   :header-nl "```elisp" :footer-nl "```")))
+  (edit-locative.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/edit-locative.el")
+                             :lang "elisp"))
+  (40ants-doc/swank:locate-definition-for-emacs function)
+
+  "Note, there is also another part of Emacs code, related to
+   transcription blocks. It is described in 40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT section.")
 
 
-(defsection @basics (:title "Basics")
+(defsection @basics (:title "Basics"
+                     :ignore-words ("@BAR"
+                                    "UIOP:DEFINE-PACKAGE"
+                                    "OBJECT"
+                                    "LOCATIVE"
+                                    "3BMD"
+                                    "@MANUAL"
+                                    "@MGL-PAX-EXTENSION-API"
+                                    "SECTION"
+                                    "FIND-SOURCE"))
   "Now let's examine the most important pieces in detail."
-  (40ants-doc::*discard-documentation-p* variable)
-  (40ants-doc::defsection macro)
-  (40ants-doc/document::document generic-function))
+  (@defining-sections section)
+  (@cross-referencing section))
+
+
+(defsection @defining-sections (:title "Defining Sections")
+  (40ants-doc:defsection macro)
+  (40ants-doc:*discard-documentation-p* variable))
+
+
+(defsection @cross-referencing (:title "Cross-referencing")
+  "
+  You can cross-reference entries from different documentation parts be it
+  content of the DEFSECTION or a documentation string of some lisp entity.
+
+  The simples form of cross reference is uppercased name of the entity, like:
+  40ANTS-DOC/REFERENCE:MAKE-REFERENCE. But if there are more than one locative
+  bound to the name, then all these links will be rendered in a parenthesis.
+  For example, docstring:
+
+  ```text
+  See 40ANTS-DOC/SOURCE-API:FIND-SOURCE.
+  ```
+
+  will be rendered as \"See 40ANTS-DOC/SOURCE-API:FIND-SOURCE.\" because
+  there is a generic-function and a method called FIND-SOURCE.
+
+  But you can mention a locative type in a docstring before or after a symbol name:
+
+  ```text
+  See 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function.
+  ```
+
+  and it will be rendered as: See 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function.
+
+  In case if you don't want locative type to appear in the resulting documentation
+  or if locative type is complex, then you can use in a docstring markdown reference:
+
+  ```text
+  See [40ANTS-DOC/SOURCE-API:FIND-SOURCE][(method () (40ants-doc/reference:reference))].
+  ```
+
+  and link will lead to the specified method: See [40ANTS-DOC/SOURCE-API:FIND-SOURCE][(method () (40ants-doc/reference:reference))].")
 
 
 (defsection @locatives-and-references
@@ -421,7 +465,7 @@ on the GitHub to suggest a new feature.
   "While Common Lisp has rather good introspective abilities, not
   everything is first class. For example, there is no object
   representing the variable defined with `(DEFVAR
-  FOO)`. `(MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a 40ANTS-DOC/REFERENCE::REFERENCE that
+  FOO)`. `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO 'VARIABLE)` constructs a 40ANTS-DOC/REFERENCE:REFERENCE that
   captures the path to take from an object (the symbol FOO) to an
   entity of interest (for example, the documentation of the variable).
   The path is called the locative. A locative can be applied to an
@@ -431,50 +475,52 @@ on the GitHub to suggest a new feature.
   (locate 'foo 'variable)
   ```
 
-  which will return the same reference as `(MAKE-REFERENCE 'FOO
+  which will return the same reference as `(40ANTS-DOC/REFERENCE:MAKE-REFERENCE 'FOO
   'VARIABLE)`. Operations need to know how to deal with references
-  which we will see in 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-COLLECT-REACHABLE-OBJECTS,
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE.
+  which we will see in 40ANTS-DOC/LOCATIVES/BASE:LOCATE-AND-FIND-SOURCE.
 
-  Naturally, `(LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
+  Naturally, `(40ANTS-DOC/LOCATIVES/BASE:LOCATE 'FOO 'FUNCTION)` will simply return `#'FOO`, no
   need to muck with references when there is a perfectly good object."
-  (40ants-doc/locatives/base::locate function)
-  (40ants-doc/locatives/base::locate-error condition)
-  (40ants-doc/locatives/base::locate-error-message (reader 40ants-doc/locatives/base::locate-error))
-  (40ants-doc/locatives/base::locate-error-object (reader 40ants-doc/locatives/base::locate-error))
-  (40ants-doc/locatives/base::locate-error-locative (reader 40ants-doc/locatives/base::locate-error))
-  (40ants-doc/reference::resolve function)
-  (40ants-doc/reference::reference class)
-  (40ants-doc/reference::reference-object (reader 40ants-doc/reference::reference))
-  (40ants-doc/reference::reference-locative (reader 40ants-doc/reference::reference))
-  (40ants-doc/reference::make-reference function)
-  (40ants-doc/locatives/base::locative-type function)
-  (40ants-doc/locatives/base::locative-args function))
+  (40ants-doc/locatives/base:locate function)
+  (40ants-doc/locatives/base:locate-error condition)
+  (40ants-doc/locatives/base:locate-error-message (reader 40ants-doc/locatives/base:locate-error))
+  (40ants-doc/locatives/base:locate-error-object (reader 40ants-doc/locatives/base:locate-error))
+  (40ants-doc/locatives/base:locate-error-locative (reader 40ants-doc/locatives/base:locate-error))
+  (40ants-doc/reference:resolve function)
+  (40ants-doc/reference:reference class)
+  (40ants-doc/reference:reference-object (reader 40ants-doc/reference:reference))
+  (40ants-doc/reference:reference-locative (reader 40ants-doc/reference:reference))
+  (40ants-doc/reference:make-reference function)
+  (40ants-doc/locatives/base:locative-type function)
+  (40ants-doc/locatives/base:locative-args function))
 
 
 (defsection @documentation-printer-variables
-    (:title "Documentation Printer Variables")
+    (:title "Documentation Printer Variables"
+     :ignore-words ("@FOO-MANUAL"))
   "Docstrings are assumed to be in markdown format and they are pretty
   much copied verbatim to the documentation subject to a few knobs
-  described below."
-  (40ants-doc/builder/printer::*document-uppercase-is-code* variable)
-  (40ants-doc/builder/printer::*document-downcase-uppercase-code* variable)
-  (40ants-doc/builder/printer::*document-normalize-packages* variable)
-  (40ants-doc/link::*document-link-code* variable)
-  (40ants-doc/link::*document-link-sections* variable)
-  (40ants-doc/link::*document-min-link-hash-length* variable)
-  (40ants-doc/builder/vars::*document-mark-up-signatures* variable)
-  (40ants-doc/builder/vars::*document-max-numbering-level* variable)
-  (40ants-doc/builder/vars::*document-max-table-of-contents-level* variable)
-  (40ants-doc/builder/vars::*document-text-navigation* variable)
-  (40ants-doc/builder/vars::*document-fancy-html-navigation* variable))
+  described below.
+
+  **Note, some of these variables might be not supported yet in this fork.**
+"
+  (40ants-doc/builder/printer:*document-uppercase-is-code* variable)
+  (40ants-doc/builder/printer:*document-normalize-packages* variable)
+  (40ants-doc/link:*document-link-code* variable)
+  (40ants-doc/builder/vars:*document-max-numbering-level* variable))
 
 
-(defsection @locative-types (:title "Locative Types")
+(defsection @locative-types (:title "Locative Types"
+                             :ignore-words ("SWANK-BACKEND:ARGLIST"
+                                            "START"
+                                            "END")
+                             :package-symbol :40ants-doc/locatives)
   "These are the locatives type supported out of the box. As all
   locative types, they are symbols and their names should make it
   obvious what kind of things they refer to. Unless otherwise noted,
   locatives take no arguments."
+  
+  (40ants-doc/locatives package)
   (system locative)
   (section locative)
   (variable locative)
@@ -496,10 +542,14 @@ on the GitHub to suggest a new feature.
   (argument locative)
   (locative locative)
   (include locative)
-  (40ants-doc/restart::define-restart macro)
+  (stdout-of locative)
+  (40ants-doc/restart:define-restart macro)
   (restart locative)
-  (40ants-doc/glossary::define-glossary-term macro)
-  (glossary-term locative))
+  (40ants-doc/glossary:define-glossary-term macro)
+  (glossary-term locative)
+
+  "There is also a helper function to compare locatives:"
+  (40ants-doc/locatives/base:locative-equal function))
 
 
 (defsection @extension-api (:title "Extension API")
@@ -509,76 +559,93 @@ on the GitHub to suggest a new feature.
   (@sections section))
 
 
-(defsection @new-object-types (:title "Adding New Object Types")
-  "One may wish to make the 40ANTS-DOC/DOCUMENT::DOCUMENT function and `M-.` navigation
-  work with new object types. Extending 40ANTS-DOC/DOCUMENT::DOCUMENT can be done by
-  defining a 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT method. To allow these objects to be
-  referenced from DEFSECTION, a 40ANTS-DOC/LOCATIVES/BASE::LOCATE-OBJECT method is to be defined.
-  Finally, for `M-.` 40ANTS-DOC/SOURCE-API::FIND-SOURCE can be specialized. Finally,
-  40ANTS-DOC::EXPORTABLE-LOCATIVE-TYPE-P may be overridden if exporting does not
-  makes sense. Here is a stripped down example of how all this is done
+(defsection @new-object-types (:title "Adding New Object Types"
+                               :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"))
+  "
+  If you wish to make it possible to render documentation for a new
+  object type, then you have to define a method for the
+  40ANTS-DOC/COMMONDOC/BUILDER:TO-COMMONDOC generic function.
+  And to make `M-.` navigation work with new object types, a methods of
+  40ANTS-DOC/LOCATIVES/BASE:LOCATE-OBJECT generic-function and
+  40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function are to be defined.
+  Also, additional method for 40ANTS-DOC/REFERENCE-API:CANONICAL-REFERENCE generic-function
+  need to be defined to make an opposite to [40ANTS-DOC/LOCATIVES/BASE:LOCATE-OBJECT][generic-function]'s action.
+
+  Finally, 40ANTS-DOC:EXPORTABLE-LOCATIVE-TYPE-P generic-function
+  may be overridden if exporting does not makes sense.
+  Here is a stripped down example of how all this is done
   for ASDF:SYSTEM:"
   (asdf-example (include (:start (asdf:system locative)
                           :end (40ants-doc/locatives/asdf-system::end-of-asdf-example variable))
-                         :header-nl "```commonlisp"
-                         :footer-nl "```"))
-  (40ants-doc/locatives/base::define-locative-type macro)
-  (40ants-doc::exportable-locative-type-p generic-function)
-  (40ants-doc/locatives/base::locate-object generic-function)
-  (40ants-doc/locatives/base::locate-error function)
-  (40ants-doc/reference-api::canonical-reference generic-function)
-  (40ants-doc/reference-api::collect-reachable-objects generic-function)
-  (40ants-doc/reference-api::collect-reachable-objects (method () (t)))
-  (40ants-doc/document::document-object generic-function)
-  (40ants-doc/document::document-object (method () (string t)))
-  (40ants-doc/source-api::find-source generic-function))
+                         :lang "commonlisp"))
+  (40ants-doc/locatives/base:define-locative-type macro)
+  (40ants-doc:exportable-locative-type-p generic-function)
+  (40ants-doc/locatives/base:locate-object generic-function)
+  (40ants-doc/locatives/base:locate-error function)
+  (40ants-doc/reference-api:canonical-reference generic-function)
+  (40ants-doc/source-api:find-source generic-function)
+  (40ants-doc/commondoc/builder:to-commondoc generic-function)
+  (40ants-doc/commondoc/bullet:make-bullet function))
 
 
 (defsection @reference-based-extensions
     (:title "Reference Based Extensions"
-     :ignore-words ("DEFINE-DIRECTION"))
-  "Let's see how to extend 40ANTS-DOC/DOCUMENT::DOCUMENT and `M-.` navigation if there is
+     :ignore-words ("DEFINE-DIRECTION"
+                    "UP"
+                    "DIRECTION"))
+  "Let's see how to extend 40ANTS-DOC/BUILDER:RENDER-TO-FILES and `M-.` navigation if there is
   no first class object to represent the thing of interest. Recall
-  that 40ANTS-DOC/LOCATIVES/BASE::LOCATE returns a 40ANTS-DOC/REFERENCE::REFERENCE object in this case. 40ANTS-DOC/DOCUMENT::DOCUMENT-OBJECT
-  and 40ANTS-DOC/SOURCE-API::FIND-SOURCE defer to 40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-DOCUMENT and
-  40ANTS-DOC/LOCATIVES/BASE::LOCATE-AND-FIND-SOURCE, which have 40ANTS-DOC/LOCATIVES/BASE::LOCATIVE-TYPE in their argument
-  list for EQL specializing pleasure. Here is a stripped down example
-  of how the VARIABLE locative is defined:"
+  that 40ANTS-DOC/LOCATIVES/BASE:LOCATE returns a 40ANTS-DOC/REFERENCE:REFERENCE object in this case:
+
+  ```cl-transcript
+  (40ants-doc/locatives/base:locate
+     '40ants-doc:*discard-documentation-p*
+     'variable)
+  ==> #<40ANTS-DOC/REFERENCE:REFERENCE 40ANTS-DOC:*DISCARD-DOCUMENTATION-P* (VARIABLE)>
+  ```
+
+  Some methods of 40ANTS-DOC/SOURCE-API:FIND-SOURCE generic-function defer to
+  40ANTS-DOC/LOCATIVES/BASE:LOCATE-AND-FIND-SOURCE generic-function,
+  which have [LOCATIVE-TYPE][argument] in their argument
+  list for EQL specializing pleasure.
+
+  Here is a stripped down example of how the VARIABLE locative is defined.
+  Pay attention how it defines a method of
+  40ANTS-DOC/COMMONDOC/BUILDER:REFERENCE-TO-COMMONDOC generic-function instead of
+  [40ANTS-DOC/COMMONDOC/BUILDER:TO-COMMONDOC][generic-function]. This is because we have no
+  a lisp object to represent a variable and have to specialize method on
+  LOCATIVE-TYPE argument:"
   (variable-example (include (:start (variable locative)
                               :end (40ants-doc/locatives/variable::end-of-variable-example variable))
-                             :header-nl "```commonlisp"
-                             :footer-nl "```"))
-  (40ants-doc/reference-api::collect-reachable-objects (method () (40ants-doc/reference::reference)))
-  (40ants-doc/locatives/base::locate-and-collect-reachable-objects generic-function)
-  (40ants-doc/locatives/base::locate-and-collect-reachable-objects (method () (t t t)))
-  (40ants-doc/document::document-object (method () (40ants-doc/reference::reference t)))
-  (40ants-doc/locatives/base::locate-and-document generic-function)
-  (40ants-doc/source-api::find-source (method () (40ants-doc/reference::reference)))
-  (40ants-doc/locatives/base::locate-and-find-source generic-function)
-  (40ants-doc/locatives/base::locate-and-find-source (method () (t t t)))
+                             :lang "commonlisp"))
+  (40ants-doc/source-api:find-source (method () (40ants-doc/reference:reference)))
+  (40ants-doc/locatives/base:locate-and-find-source generic-function)
+  (40ants-doc/locatives/base:locate-and-find-source (method () (t t t)))
+  (40ants-doc/commondoc/builder:reference-to-commondoc generic-function)
+  
   "We have covered the basic building blocks of reference based
   extensions. Now let's see how the obscure
-  40ANTS-DOC/LOCATIVES/DEFINERS::DEFINE-SYMBOL-LOCATIVE-TYPE and
-  40ANTS-DOC/LOCATIVES/DEFINE-DEFINER::DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
+  40ANTS-DOC/LOCATIVES/DEFINERS:DEFINE-SYMBOL-LOCATIVE-TYPE and
+  40ANTS-DOC/LOCATIVES/DEFINE-DEFINER:DEFINE-DEFINER-FOR-SYMBOL-LOCATIVE-TYPE macros work together to
   simplify the common task of associating definition and documentation
   with symbols in a certain context."
-  (40ants-doc/locatives/definers::define-symbol-locative-type macro)
-  (40ants-doc/locatives/define-definer::define-definer-for-symbol-locative-type macro))
+  (40ants-doc/locatives/definers:define-symbol-locative-type macro)
+  (40ants-doc/locatives/define-definer:define-definer-for-symbol-locative-type macro))
 
 
 (defsection @sections (:title "Sections")
-  "[Section][class] objects rarely need to be dissected since
-  40ANTS-DOC::DEFSECTION and `40ANTS-DOC/DOCUMENT::DOCUMENT` cover most needs. However, it is plausible
+  "40ANTS-DOC:SECTION objects rarely need to be dissected since
+  40ANTS-DOC:DEFSECTION and 40ANTS-DOC/BUILDER:RENDER-TO-FILES cover most needs. However, it is plausible
   that one wants to subclass them and maybe redefine how they are
   presented."
-  (40ants-doc::section class)
-  (40ants-doc::section-name (reader 40ants-doc::section))
-  (40ants-doc::section-package (reader 40ants-doc::section))
-  (40ants-doc::section-readtable (reader 40ants-doc::section))
-  (40ants-doc::section-title (reader 40ants-doc::section))
-  (40ants-doc::section-link-title-to (reader 40ants-doc::section))
-  (40ants-doc::section-entries (reader 40ants-doc::section))
-  (describe-object (method () (40ants-doc::section t))))
+  (40ants-doc:section class)
+  (40ants-doc:section-name (reader 40ants-doc:section))
+  (40ants-doc:section-package (reader 40ants-doc:section))
+  (40ants-doc:section-readtable (reader 40ants-doc:section))
+  (40ants-doc:section-title (reader 40ants-doc:section))
+  (40ants-doc:section-link-title-to (reader 40ants-doc:section))
+  (40ants-doc:section-entries (reader 40ants-doc:section))
+  (40ants-doc:section-ignore-words (reader 40ants-doc:section)))
 
 
 (defsection @todo (:title "TODO"
@@ -589,11 +656,11 @@ on the GitHub to suggest a new feature.
   "
 - <s>Refactor code and make a core package with only a few dependencies.</s>
 - <s>Add warnings on UPPERCASED symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
-- Make some warnings compile-time for defsection and show them in the Emacs, if possible.
+- <s>Support SLY and make both SLIME and SLY integrations optional.</s>
+- <s>Add a search facility which will build an index for static file like Sphinx does.</s>
+- <s>Separate markup parsing and result rendering code to support markups other than Markdown and HTML.</s>
+- <s>Add a new section type to render ChangeLog.</s>
 - Support custom HTML themes.
-- Support SLY and make both SLIME and SLY integrations optional.
-- Add a search facility which will build an index for static file like Sphinx does.
-- Separate markup parsing and result rendering code to support markups other than Markdown and HTML.
-- Add a new section type to render ChangeLog.
+- Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 ")
 

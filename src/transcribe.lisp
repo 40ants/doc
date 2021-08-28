@@ -23,15 +23,26 @@
                 #:read-line*
                 #:whitespacep)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/page)
-  (:import-from #:swank))
+  ;; (:import-from #:40ants-doc/page)
+  (:import-from #:swank)
+  (:import-from #:slynk)
+  (:export
+   #:transcribe
+   #:*syntaxes*
+   #:transcription-consistency-error
+   #:transcription-output-consistency-error
+   #:transcription-values-consistency-error
+   #:transcription-error))
 (in-package 40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
 (defsection @transcript (:title "Transcripts"
                          :ignore-words ("PAX"
-                                        "REPL"))
+                                        "REPL"
+                                        "PREFIX-STRING"
+                                        "PREFIXES"
+                                        "40ANTS-DOC-RETRANSCRIBE-REGION"))
   "What are transcripts for? When writing a tutorial, one often wants
   to include a REPL session with maybe a few defuns and a couple of
   forms whose output or return values are shown. Also, in a function's
@@ -118,7 +129,7 @@
   `prefixes` is a list of `(PREFIX-ID PREFIX-STRING)` elements. For
   example the syntax :COMMENTED-1 looks like this:
 
-  ```commonlisp
+  ```lisp
   (:commented-1
    (:output \";..\")
    (:no-value \";=>  No value\")
@@ -168,13 +179,13 @@
   uses TRANSCRIBE markup syntax in this very example, so let's do it
   differently. If we have a file with these contents:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   ```
 
   it is transcribed to:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   .. 42
   => 42
@@ -193,14 +204,14 @@
   all output markers, leave only a placeholder value marker and
   pass :UPDATE-ONLY T with source:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   =>
   ```
 
   we get this:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   => 42
   => (1 2)
@@ -218,7 +229,7 @@
   INCLUDE-NO-OUTPUT and INCLUDE-NO-VALUE, respectively. By default,
   neither is on so:
 
-  ```commonlisp
+  ```lisp
   (values)
   ..
   =>
@@ -226,7 +237,7 @@
 
   is transcribed to
 
-  ```commonlisp
+  ```lisp
   (values)
   ```
 
@@ -235,7 +246,7 @@
   UPDATE-ONLY, INCLUDE-NO-OUTPUT and INCLUDE-NO-VALUE default to true.
   So with UPDATE-ONLY the above example is transcribed to:
 
-  ```commonlisp
+  ```lisp
   (values)
   ..
   => ; No value
@@ -254,7 +265,7 @@
   This allows readable values to be hand-indented without failing
   consistency checks:
 
-  ```commonlisp
+  ```lisp
   (list 1 2)
   => (1
         2)
@@ -266,7 +277,7 @@
   cannot be treated the same. In fact, unreadable values must even be
   printed differently for transcribe to be able to read them back:
 
-  ```commonlisp
+  ```lisp
   (defclass some-class () ())
   
   (defmethod print-object ((obj some-class) stream)
@@ -308,7 +319,7 @@
   To produce a transcript that's executable Lisp code,
   use :DEFAULT-SYNTAX :COMMENTED-1:
 
-  ```commonlisp
+  ```lisp
   (make-instance 'some-class)
   ;==> #<SOME-CLASS
   ;-->
@@ -1012,7 +1023,8 @@
 
 (defsection @transcript-emacs-integration
     (:title "Transcribing with Emacs"
-     :ignore-words ("PAX"))
+     :ignore-words ("PAX"
+                    ":HELLO-WORLD"))
   """Typical transcript usage from within Emacs is simple: add a lisp
   form to a docstring or comment at any indentation level. Move the
   cursor right after the end of the form as if you were to evaluate it
@@ -1028,7 +1040,7 @@
   `cl-transcript` is only to tell PAX to perform consistency checks at
   documentation generation time.
 
-  Now invoke the elisp function `40ants-doc-transcribe` where the cursor
+  Now invoke the emacs command `mgl-pax-transcribe-last-expression` where the cursor
   is and the fenced code block from the docstring becomes:
 
       (values (princ :hello) (list 1 2))
@@ -1037,7 +1049,7 @@
       => (1 2)
       ^
 
-  Then you change the printed message and add a comment to the second
+  Then you change the printed message to :HELLO-WORLD and add a comment to the second
   return value:
 
       (values (princ :hello-world) (list 1 2))
@@ -1048,9 +1060,23 @@
           2)
 
   When generating the documentation you get a
-  TRANSCRIPTION-CONSISTENCY-ERROR because the printed output and the
+  a warning:
+
+      WARNING:
+         Transcription error. Inconsistent output found.
+      
+      Source:
+         "HELLO"
+
+      Output:
+         "HELLO-WORLD"
+
+      Form:
+         "(values (princ :hello-world) (list 1 2))"
+
+  because the printed output and the
   first return value changed so you regenerate the documentation by
-  marking the region of bounded by `#\|` and the cursor at `#\^` in
+  marking the region of bounded by `|` and the cursor at `^` in
   the example:
 
       |(values (princ :hello-world) (list 1 2))
@@ -1061,7 +1087,7 @@
           2)
       ^
 
-  then invoke the elisp function `40ANTS-DOC-RETRANSCRIBE-REGION` to get:
+  then invoke the emacs command `40ants-doc-retranscribe-region` to get:
 
       (values (princ :hello-world) (list 1 2))
       .. HELLO-WORLD
@@ -1074,16 +1100,18 @@
   Note how the indentation and the comment of `(1 2)` was left alone
   but the output and the first return value got updated.
 
-  Alternatively, `C-u 1 40ants-doc-transcribe` will emit commented markup:
+  Alternatively, `C-u 1 40ants-doc-transcribe-last-expression` will emit commented markup:
 
       (values (princ :hello) (list 1 2))
       ;.. HELLO
       ;=> :HELLO
       ;=> (1 2)
 
+  This can be useful for producing results outside of the docstrings.
+
   `C-u 0 40ants-doc-retranscribe-region` will turn commented into
   non-commented markup. In general, the numeric prefix argument is the
-  index of the syntax to be used in 40ants-doc:*SYNTAXES*. Without a
+  index of the syntax to be used in 40ANTS-DOC/TRANSCRIBE:*SYNTAXES*. Without a
   prefix argument `40ants-doc-retranscribe-region` will not change the
   markup style.
 
@@ -1099,8 +1127,18 @@
   Emacs initialization file (or loading `elisp/transcribe.el`):"""
   (transcribe.el (include
                   #.(asdf:system-relative-pathname :40ants-doc "elisp/transcribe.el")
-                  :header-nl "```elisp"
-                  :footer-nl "```")))
+                  :lang "elisp")))
+
+
+(defmacro with-buffer-syntax ((&optional package readtable) &body body)
+  "Execute BODY with appropriate *package* and *readtable* bindings.
+
+This should be used for code that is conceptionally executed in an
+Emacs buffer."
+  `(if (boundp 'swank::*buffer-package*)
+      (swank::call-with-buffer-syntax ,package (lambda () ,@body))
+      (slynk::call-with-buffer-syntax ,package ,readtable (lambda () ,@body))))
+
 
 (defun transcribe-for-emacs (string default-syntax* update-only echo
                              first-line-special-p)
@@ -1110,7 +1148,7 @@
                                nil)
                               (t (error "Unexpected default syntax ~S."
                                         default-syntax*)))))
-    (swank::with-buffer-syntax ()
+    (with-buffer-syntax ()
       (multiple-value-bind (string prefix)
           (40ants-doc/utils::strip-longest-common-prefix
            string "; " :first-line-special-p first-line-special-p)

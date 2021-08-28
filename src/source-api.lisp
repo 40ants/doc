@@ -1,7 +1,9 @@
 (defpackage #:40ants-doc/source-api
   (:use #:cl)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:export
+   #:find-source))
 (in-package 40ants-doc/source-api)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -11,12 +13,12 @@
   (:documentation """Like SWANK:FIND-DEFINITION-FOR-THING, but this
   one is a generic function to be extensible. In fact, the default
   implementation simply defers to SWANK:FIND-DEFINITION-FOR-THING.
-  This function is called by 40ANTS-DOC/SWANK::LOCATE-DEFINITION-FOR-EMACS which lies
+  This function is called by 40ANTS-DOC/SWANK:LOCATE-DEFINITION-FOR-EMACS which lies
   behind the `M-.` extension (see 40ANTS-DOC/DOC:@EMACS-INTEGRATION).
 
   If successful, the return value looks like this:
 
-  ```commonlisp
+  ```lisp
   (:location (:file "/home/mega/own/mgl/pax/test/test.lisp")
              (:position 24) nil)
   ```
@@ -25,6 +27,6 @@
   1 is the first character. If unsuccessful, the return values is
   like:
 
-  ```commonlisp
+  ```lisp
   (:error "Unknown source location for SOMETHING")
   ```"""))

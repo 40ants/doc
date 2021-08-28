@@ -1,40 +1,28 @@
 (defpackage #:40ants-doc/render/args
   (:use #:cl)
   (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/builder/printer)
-  (:import-from #:40ants-doc/markdown/transform))
+  (:import-from #:40ants-doc/builder/printer))
 (in-package 40ants-doc/render/args)
 
 
-(defun print-arglist (arglist stream)
-  (let ((string (cond ((stringp arglist)
-                       ;; must be escaped markdown
-                       arglist)
-                      ((eq arglist :not-available)
-                       "")
-                      (t (arglist-to-string arglist)))))
-    (if 40ants-doc/builder/vars::*document-mark-up-signatures*
-        (if (eq 40ants-doc/builder/printer::*format* :html)
-            (format stream "<span class=\"locative-args\">~A</span>" string)
-            (40ants-doc/utils::italic string stream))
-        (format stream "~A" string))))
+(defun arglist-to-string (arglist)
+  (cond ((stringp arglist)
+         ;; must be escaped markdown
+         arglist)
+        ((eq arglist :not-available)
+         "")
+        (t (%arglist-to-string arglist))))
+
 
 ;;; Print arg names without the package prefix to a string. The
 ;;; default value with prefix. Works for macro arglists too.
-(defun arglist-to-string (arglist)
+(defun %arglist-to-string (arglist)
   (with-output-to-string (out)
     (let ((seen-special-p nil)
           (*print-pretty* t)
           (*print-right-margin* nil))
       (labels ((resolve* (object)
-                 (if (and 40ants-doc/builder/vars::*document-mark-up-signatures*
-                          ;; KLUDGE: github has trouble displaying
-                          ;; things like '`*package*`, so disable
-                          ;; this.
-                          (eq 40ants-doc/builder/printer::*format* :html))
-                     (40ants-doc/markdown/transform::replace-known-references
-                      (40ants-doc/utils::prin1-and-escape-markdown object))
-                     (40ants-doc/utils::prin1-and-escape-markdown object)))
+                 (40ants-doc/utils::prin1-and-escape-markdown object))
                (foo (arglist level)
                  (unless (= level 0)
                    (format out "("))

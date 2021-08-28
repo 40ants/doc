@@ -3,7 +3,9 @@
   (:import-from #:40ants-doc/locatives/define-definer
                 #:define-definer-for-symbol-locative-type)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:export
+   #:define-restart))
 (in-package 40ants-doc/restart)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
