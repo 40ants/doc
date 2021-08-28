@@ -27,7 +27,7 @@
   being able to reference `(LOCATIVE-TYPE LOCATIVE)`. For example, if
   you have:
 
-  ```common-lisp
+  ```lisp
   (define-locative-type variable (&optional initform)
     "Dummy docstring.")
   ```

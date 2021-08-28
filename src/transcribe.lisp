@@ -129,7 +129,7 @@
   `prefixes` is a list of `(PREFIX-ID PREFIX-STRING)` elements. For
   example the syntax :COMMENTED-1 looks like this:
 
-  ```commonlisp
+  ```lisp
   (:commented-1
    (:output \";..\")
    (:no-value \";=>  No value\")
@@ -179,13 +179,13 @@
   uses TRANSCRIBE markup syntax in this very example, so let's do it
   differently. If we have a file with these contents:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   ```
 
   it is transcribed to:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   .. 42
   => 42
@@ -204,14 +204,14 @@
   all output markers, leave only a placeholder value marker and
   pass :UPDATE-ONLY T with source:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   =>
   ```
 
   we get this:
 
-  ```commonlisp
+  ```lisp
   (values (princ 42) (list 1 2))
   => 42
   => (1 2)
@@ -229,7 +229,7 @@
   INCLUDE-NO-OUTPUT and INCLUDE-NO-VALUE, respectively. By default,
   neither is on so:
 
-  ```commonlisp
+  ```lisp
   (values)
   ..
   =>
@@ -237,7 +237,7 @@
 
   is transcribed to
 
-  ```commonlisp
+  ```lisp
   (values)
   ```
 
@@ -246,7 +246,7 @@
   UPDATE-ONLY, INCLUDE-NO-OUTPUT and INCLUDE-NO-VALUE default to true.
   So with UPDATE-ONLY the above example is transcribed to:
 
-  ```commonlisp
+  ```lisp
   (values)
   ..
   => ; No value
@@ -265,7 +265,7 @@
   This allows readable values to be hand-indented without failing
   consistency checks:
 
-  ```commonlisp
+  ```lisp
   (list 1 2)
   => (1
         2)
@@ -277,7 +277,7 @@
   cannot be treated the same. In fact, unreadable values must even be
   printed differently for transcribe to be able to read them back:
 
-  ```commonlisp
+  ```lisp
   (defclass some-class () ())
   
   (defmethod print-object ((obj some-class) stream)
@@ -319,7 +319,7 @@
   To produce a transcript that's executable Lisp code,
   use :DEFAULT-SYNTAX :COMMENTED-1:
 
-  ```commonlisp
+  ```lisp
   (make-instance 'some-class)
   ;==> #<SOME-CLASS
   ;-->

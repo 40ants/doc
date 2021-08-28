@@ -72,7 +72,7 @@
   get URL from ASDF system's description. To make this work,
   your system description should look like this:
 
-  ```commonlisp
+  ```lisp
   (defsystem 40ants-doc
     ...
     :source-control (:git \"https://github.com/40ants/doc\")

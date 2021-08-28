@@ -51,9 +51,43 @@
   (update-asdf-system-docs function)
   (*document-html-top-blocks-of-links* variable)
   (*document-html-bottom-blocks-of-links* variable)
+  (@rendering-multiple-formats section)
   (40ants-doc/changelog::@index section)
   (40ants-doc/github::@github-workflow section)
   (40ants-doc/world::@world section))
+
+
+(defsection @rendering-multiple-formats (:title "Multiple Formats")
+  "With 40ANTS-DOC you can render HTML and Markdown documentation simultaneously.
+   This way, you can cross-reference entities from the README.md or ChangeLog.md to HTML docs.
+
+   To render documents in multiple formats, you have to pass to function RENDER-TO-FILES not
+   SECTION objects, but PAGE objects. Page object consists of one or more sections and additional
+   information such as document format. A section can belong to a multiple pages usually having different
+   formats. This allows you to include \"tutorial\" section into both HTML docs and README.
+
+   Here is an example of rendering the full documentation and a README with only introduction and tutorial:
+
+   ```lisp
+   (defsection @full-manual (:title \"Manual\")
+     (@introduction)
+     (@tutorial)
+     (@api)
+     (@changelog))
+
+   (render-to-files
+    (list @full-manual
+          (40ants-doc/page:make-page (list @introduction
+                                           @tutorial)
+                                     :format :markdown
+                                     :base-filename \"README\")
+          (40ants-doc/page:make-page @changelog
+                                     :format :markdown
+                                     :base-filename \"ChangeLog\")))
+   ```
+
+   The same approach works with the UPDATE-ASDF-SYSTEM-DOCS function.
+   ")   
 
 
 (defparameter *default-output-options*
@@ -91,7 +125,7 @@
 
   Example usage:
 
-  ```commonlisp
+  ```lisp
   (40ants-doc/builder:update-asdf-system-docs 40ants-doc/doc:@index
                                               :40ants-doc
                                               :readme-sections 40ants-doc/doc:@readme)

@@ -33,11 +33,14 @@ who will decide to learn how the documentation builder works. Also,
 granular design will make it possible loading subsystems like `SLIME` or `SLY`
 integration.
 
+The third goal was to make documentation processing more sequential and hackable.
+To introduce hooks for adding new markup languages, and `HTML` themes.
+
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40DIFFERENCE-FROM-MGL-PAX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ### Why this fork is different
 
-Here is features already implemented in this fork:
+Here are features already implemented in this fork:
 
 * Core system [`40ants-doc`](index.html#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29) now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
@@ -51,9 +54,20 @@ Here is features already implemented in this fork:
 * Added a warning mechanism, which will issue such warnings on words which looks
   like a symbol, but when real symbol or reference is absent:
 
-```
-WARNING: Unable to find symbol "API" mentioned in (CL-INFO:@INDEX SECTION)
-```
+`
+  WARNING: Unable to find target for reference #<XREF "FIND-SOURCE" [generic-function](index.html#x-28GENERIC-FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29)>
+           mentioned at 40Ants Doc Manual / Extension API / Reference Based Extensions
+`
+
+* Documentation processing now uses CommonDoc as intermediate format, and markup languages
+  other than Markdown can be supported.
+
+* Added a `JS` search index which will work when you are hosting pages on a static website
+  like GitHub pages.
+
+* It is possible to render pages in multiple formats and having cross references between them.
+  See [`Multiple Formats`](index.html#x-2840ANTS-DOC-2FBUILDER-3A-3A-40RENDERING-MULTIPLE-FORMATS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29).
+
 I'm planning to extend this fork even more. Read [`todo`](#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29) section to learn about
 proposed features or [start a new discussion][6f00]
 on the GitHub to suggest a new feature.
@@ -163,7 +177,7 @@ Here is an example of how it all works together:
 Generating documentation in a very stripped down markdown format is
 easy:
 
-```commonlisp
+```lisp
 (describe @foo-random-manual)
 ```
 For this example, the generated markdown would look like this:

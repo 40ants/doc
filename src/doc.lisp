@@ -125,6 +125,9 @@ a smaller modules to make navigation easier. This will help any person
 who will decide to learn how the documentation builder works. Also,
 granular design will make it possible loading subsystems like SLIME or SLY
 integration.
+
+The third goal was to make documentation processing more sequential and hackable.
+To introduce hooks for adding new markup languages, and HTML themes.
 "
   (@difference-from-mgl-pax section))
 
@@ -133,9 +136,13 @@ integration.
                                                      "PYTHONIC-STRING-READER"
                                                      "API"
                                                      "@INDEX"
-                                                     "SECTION"))
+                                                     "SECTION"
+                                                     "JS"
+                                                     "XREF"
+                                                     "40A"
+                                                     "FIND-SOURCE"))
   "
-Here is features already implemented in this fork:
+Here are features already implemented in this fork:
 
 * Core system `40ANTS-DOC` now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
@@ -147,9 +154,17 @@ Here is features already implemented in this fork:
 * Added a warning mechanism, which will issue such warnings on words which looks
   like a symbol, but when real symbol or reference is absent:
 
-```
-WARNING: Unable to find symbol \"API\" mentioned in (CL-INFO:@INDEX SECTION)
-```
+  ```
+  WARNING: Unable to find target for reference #<XREF \"FIND-SOURCE\" GENERIC-FUNCTION>
+           mentioned at 40Ants Doc Manual / Extension API / Reference Based Extensions
+  ```
+
+* Documentation processing now uses CommonDoc as intermediate format, and markup languages
+  other than Markdown can be supported.
+* Added a JS search index which will work when you are hosting pages on a static website
+  like GitHub pages.
+* It is possible to render pages in multiple formats and having cross references between them.
+  See 40ANTS-DOC/BUILDER::@RENDERING-MULTIPLE-FORMATS.
 
 I'm planning to extend this fork even more. Read @TODO section to learn about
 proposed features or [start a new discussion](https://github.com/40ants/doc/discussions)
@@ -221,7 +236,7 @@ on the GitHub to suggest a new feature.
   birds to kill, and the symbol got accompanied by a type which was
   later generalized into the concept of locatives:
 
-  ```commonlisp
+  ```lisp
   (defsection @introduction ()
     \"A single line for one man ...\"
     (foo class)
@@ -292,7 +307,7 @@ on the GitHub to suggest a new feature.
   Generating documentation in a very stripped down markdown format is
   easy:
 
-  ```commonlisp
+  ```lisp
   (describe @foo-random-manual)
   ```
 
@@ -360,7 +375,7 @@ on the GitHub to suggest a new feature.
   this example pressing `M-.` on `FOO` will visit `FOO`'s default
   method:
 
-  ```commonlisp
+  ```lisp
   ;;;; See FOO `(method () (t t t))` for how this all works.
   ;;;; But if the locative has semicolons inside: FOO `(method
   ;;;; () (t t t))`, then it won't, so be wary of line breaks

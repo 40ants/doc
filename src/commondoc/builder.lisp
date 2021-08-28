@@ -31,7 +31,7 @@
     LOCATIVE-ARGS argument is a list which will be non-nil in case if
     object is referenced in a 40ANTS-DOC:DEFSECTION like this:
 
-    ```commonlisp
+    ```lisp
     (40ants-doc/source-api:find-source (method () (40ants-doc/reference:reference)))
     ```
 

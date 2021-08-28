@@ -33,7 +33,7 @@
   It is useful to attach documentation and source location to symbols
   in a particular context. An example will make everything clear:
 
-  ```commonlisp
+  ```lisp
   (define-symbol-locative-type direction ()
     "A direction is a symbol. (After this `M-.` on `DIRECTION LOCATIVE`
                                      works and it can also be included in DEFSECTION forms.)")

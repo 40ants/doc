@@ -23,7 +23,7 @@
 
   Here is an example of the usage:
 
-  ```commonlisp
+  ```lisp
   (defsection @example ()
    (describe-output (stdout-of (format t "Hello World!"))))
   ```

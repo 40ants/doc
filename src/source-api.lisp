@@ -18,7 +18,7 @@
 
   If successful, the return value looks like this:
 
-  ```commonlisp
+  ```lisp
   (:location (:file "/home/mega/own/mgl/pax/test/test.lisp")
              (:position 24) nil)
   ```
@@ -27,6 +27,6 @@
   1 is the first character. If unsuccessful, the return values is
   like:
 
-  ```commonlisp
+  ```lisp
   (:error "Unknown source location for SOMETHING")
   ```"""))

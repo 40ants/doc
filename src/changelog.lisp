@@ -36,7 +36,7 @@
 
   Here is an example:
 
-  ```commonlisp
+  ```lisp
   (defchangelog ()
     (0.2.0
      "- Feature B implemented.

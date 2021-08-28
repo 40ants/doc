@@ -33,7 +33,7 @@
   as in the next example) or regions of lisp source files. This can
   reduce clutter and duplication.
 
-  ```commonlisp
+  ```lisp
   (defsection example-section ()
     (pax.el (include #.(asdf:system-relative-pathname :40ants-doc "elisp/pax.el")
                      :lang "elisp"))

@@ -21,7 +21,7 @@
   sections being documented. Assuming `BAR` is defined, the
   documentation for:
 
-  ```commonlisp
+  ```lisp
   (defsection @foo
     (foo function)
     (bar function))
@@ -43,7 +43,7 @@
 
   Now, if `BAR` has references with different locatives:
 
-  ```commonlisp
+  ```lisp
   (defsection @foo
     (foo function)
     (bar function)
