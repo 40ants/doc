@@ -351,7 +351,10 @@ var DOCUMENTATION_OPTIONS = {
   (with-node-path
     (flet ((check-xref (node)
              (when (typep node '40ants-doc/commondoc/xref:xref)
-               (let ((name (40ants-doc/commondoc/xref:xref-name node)))
+               (let* ((name (40ants-doc/commondoc/xref:xref-name node))
+                      (name (etypecase name
+                              (common-doc:document-node (common-doc.ops:collect-all-text name))
+                              (string name))))
                  (when (str:containsp "::" name)
                    (warn "External symbol is referenced as internal: ~A mentioned at ~{~A~^ / ~}"
                          name
