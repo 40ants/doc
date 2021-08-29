@@ -28,6 +28,7 @@
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/commondoc/format)
   (:import-from #:40ants-doc/page
+                #:page-title
                 #:page-base-url
                 #:base-filename
                 #:page-format)
@@ -96,8 +97,9 @@
   "")
 
 
-(defun make-page (sections base-filename &key format base-dir base-url)
+(defun make-page (sections base-filename &key title format base-dir base-url)
   (make-instance 'page
+                 :title title
                  :children (uiop:ensure-list sections)
                  :base-filename base-filename
                  :base-dir base-dir
@@ -110,7 +112,7 @@
     nil))
 
 
-(defun call-with-page-template (func uri &optional toc)
+(defun call-with-page-template (func uri title toc)
   (check-type uri string)
   
   (let ((theme-uri (make-relative-path uri "theme.css"))
@@ -124,7 +126,7 @@
        (:head
         (:meta :name "viewport"
                :content "width=device-width, initial-scale=1")
-        (:title "Example page")
+        (:title title)
         (:link :rel "stylesheet"
                :type "text/css"
                :href theme-uri)
@@ -177,18 +179,20 @@
                     (funcall func))))))))
 
 
-(defmacro with-page-template ((uri &optional toc) &body body)
+(defmacro with-page-template ((uri title &key toc) &body body)
   `(call-with-page-template
     (lambda ()
       ,@body)
     ,uri
+    ,title
     ,toc))
 
 
 (define-emitter (obj page)
   "Emit an piece of documentation."
   (with-page-template ((make-page-uri obj)
-                       (make-page-toc obj))
+                       (page-title obj)
+                       :toc (make-page-toc obj))
     (mapc #'common-html.emitter::emit
           (common-doc::children obj))))
 
@@ -197,7 +201,8 @@
   "Emit an piece of documentation."
   (let* ((uri (make-page-uri page)))
     (with-page-template (uri
-                         (make-page-toc page))
+                         (page-title page)
+                         :toc (make-page-toc page))
       (with-html
         ;; This should go before doctools
         ;; URL_ROOT: document.getElementById('documentation_options').getAttribute('data-url_root'),

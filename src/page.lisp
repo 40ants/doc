@@ -1,6 +1,8 @@
 (uiop:define-package #:40ants-doc/page
   (:use #:cl)
-  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc
+                #:section-name
+                #:section-title/utils)
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/link)
@@ -18,12 +20,16 @@
            #:base-filename
            #:page-base-dir
            #:page-base-url
-           #:page-sections))
+           #:page-sections
+           #:page-title))
 (in-package 40ants-doc/page)
 
 
 (defclass page-common-mixin ()
-  ((base-filename :initarg :base-filename
+  ((title :initarg :title
+          :reader page-title
+          :type string)
+   (base-filename :initarg :base-filename
                   :reader base-filename
                   :type string
                   :documentation "Keeps a filename without extension.
@@ -74,14 +80,21 @@
                               (first sections))))))
 
 
-(defun make-page (sections &key base-filename
+(defun make-page (sections &key title
+                                base-filename
                                 base-dir
                                 base-url
                                 format)
   (let* ((sections (uiop:ensure-list sections))
+         (first-section (first sections))
+         (real-title (or title
+                         (section-title first-section)
+                         (str:title-case (symbol-name
+                                          (section-name first-section)))))
          (base-filename (or base-filename
                             (make-base-filename sections))))
     (make-instance 'page
+                   :title real-title
                    :sections sections
                    :base-filename base-filename
                    :base-dir base-dir
@@ -101,6 +114,7 @@
                     (mapcar #'40ants-doc/commondoc/builder:to-commondoc
                             (page-sections obj))
                     (base-filename obj)
+                    :title (page-title obj)
                     :format (page-format obj)
                     :base-dir (page-base-dir obj)
                     :base-url (page-base-url obj)))

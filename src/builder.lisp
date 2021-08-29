@@ -314,6 +314,7 @@
                 (terpri stream))
 
               (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
+                                                                :title "Search Page"
                                                                 :format :html))
                      (filename (make-full-filename page)))
                 (ensure-directories-exist filename)
