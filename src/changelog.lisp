@@ -114,7 +114,8 @@
     - Variable *DOCUMENT-MARK-UP-SIGNATURES* was removed.
     - Added DOWNCASE-UPPERCASE-CODE argument instead of *DOCUMENT-DOWNCASE-UPPERCASE-CODE*.
       This argument is true by default.
-    - Added warnings on symbols, referenced like internals, using `::`.")
+    - Added warnings on symbols, referenced like internals, using `::`.
+    - Added 40ANTS-DOC:DEFSECTION-COPY macro to define copy of the section but with a different name.")
   
   (0.1.0
    "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).

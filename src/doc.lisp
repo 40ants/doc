@@ -421,6 +421,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 
 (defsection @defining-sections (:title "Defining Sections")
   (40ants-doc:defsection macro)
+  (40ants-doc:defsection-copy macro)
   (40ants-doc:*discard-documentation-p* variable))
 
 

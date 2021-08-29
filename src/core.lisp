@@ -15,7 +15,8 @@
            #:section-link-title-to
            #:section-entries
            #:*discard-documentation-p*
-           #:section-ignore-words))
+           #:section-ignore-words
+           #:defsection-copy))
 (in-package 40ants-doc)
 
 
@@ -173,6 +174,29 @@
     :documentation "A list of strings to not warn about."))
   (:documentation "DEFSECTION stores its :NAME, :TITLE, :PACKAGE,
   :READTABLE and :ENTRIES in [SECTION][class] objects."))
+
+
+(defmacro defsection-copy (name section)
+  "When you use [DOCS-BUILDER](https://40ants.com/docs-builder), you might want
+   to define a @readme variable to make README.md file with the same content as
+   your main documentation. This case might be popular for libraries having
+   a short documentation.
+
+   To define @readme as a copy of the main doc, export @readme symbol and do this in the code:
+
+   ```lisp
+   (defparameter @readme (40ants-doc:copy-section @index))
+   ```"
+
+  `(defparameter ,name
+     (make-instance 'section
+                    :name ',name
+                    :package (section-package ,section)
+                    :readtable (section-readtable ,section)
+                    :title (section-title ,section)
+                    :link-title-to (section-link-title-to ,section)
+                    :entries (section-entries ,section)
+                    :ignore-words (section-ignore-words ,section))))
 
 (defmethod print-object ((section section) stream)
   (print-unreadable-object (section stream :type t)
