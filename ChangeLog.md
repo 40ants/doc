@@ -61,6 +61,8 @@
 
 * Added warnings on symbols, referenced like internals, using `::`.
 
+* Added [`40ants-doc:defsection-copy`](ad02) macro to define copy of the section but with a different name.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E1-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.1.0
@@ -103,5 +105,6 @@
 [8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [359f]: https://40ants.com/doc/#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
 [4e8b]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
+[ad02]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-COPY-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [7927]: https://github.com/melisgl/mgl-pax
 [140c]: https://www.sphinx-doc.org/
