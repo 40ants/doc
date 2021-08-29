@@ -1,8 +1,8 @@
 (uiop:define-package #:40ants-doc/page
   (:use #:cl)
   (:import-from #:40ants-doc
-                #:section-name
-                #:section-title/utils)
+                #:section-title
+                #:section-name)
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/link)
@@ -76,7 +76,7 @@
   (concatenate 'string
                (string-downcase
                 (string-trim "@"
-                             (40ants-doc:section-name
+                             (section-name
                               (first sections))))))
 
 
