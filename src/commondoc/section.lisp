@@ -28,7 +28,6 @@
   (:export
    #:documentation-section
    #:section-definition
-   #:documentation-section-uri-fragment
    #:make-section-with-reference))
 (in-package 40ants-doc/commondoc/section)
 
@@ -103,18 +102,9 @@
   (make-documentation-section obj))
 
 
-(defun documentation-section-uri-fragment (obj)
-  (check-type obj documentation-section)
-  
-  (let* ((definition (section-definition obj))
-         (reference (40ants-doc/reference-api::canonical-reference definition)))
-    (40ants-doc/utils::html-safe-name
-     (40ants-doc/reference::reference-to-anchor reference))))
-
-
 (common-html.emitter::define-emitter (obj documentation-section)
   "Emit a documentation section with a link."
-  (let ((uri-fragment (documentation-section-uri-fragment obj))
+  (let ((uri-fragment (common-doc:reference obj))
         ;; Here we change package to a package for which section was defined,
         ;; to make all symbols from this package be printed in their short form
         ;; without package prefix.
@@ -147,3 +137,15 @@
 (defmethod 40ants-doc/commondoc/xref:link-text ((obj 40ants-doc:section))
   (40ants-doc:section-title obj))
 
+
+(defun fill-html-fragments (document)
+  (flet ((fill-fragments (node)
+           (when (and (typep node 'common-doc:section)
+                      (not (common-doc:reference node)))
+             (let* ((title (common-doc:title node))
+                    (text (common-doc.ops:collect-all-text title))
+                    (reference (str:param-case text)))
+               (setf (common-doc:reference node)
+                     reference)))
+           node))
+    (40ants-doc/commondoc/mapper:map-nodes document #'fill-fragments)))

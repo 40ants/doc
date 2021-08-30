@@ -1,7 +1,6 @@
 (uiop:define-package #:40ants-doc/commondoc/toc
   (:use #:cl)
-  (:import-from #:40ants-doc/commondoc/section
-                #:documentation-section-uri-fragment)
+  (:import-from #:40ants-doc/commondoc/section)
   (:import-from #:40ants-doc/utils
                 #:make-relative-path)
   (:import-from #:40ants-doc/commondoc/page
@@ -28,13 +27,13 @@
                (or (40ants-doc/page:page-format page)
                    40ants-doc/commondoc/format::*current-format*))
              (collector (node)
-               (when (and (typep node '40ants-doc/commondoc/section:documentation-section)
+               (when (and (typep node 'common-doc:section)
                           ;; We only want to include HTML documents into the TOC for HTML
                           ;; and Markdown documents to the TOC for Markdown.
                           (or (null current-page)
                               (eql (page-format page)
                                    (page-format current-page))))
-                 (let* ((html-fragment (documentation-section-uri-fragment node))
+                 (let* ((html-fragment (common-doc:reference node))
                         (page-uri
                           (when current-page
                             (full-filename current-page)))
@@ -91,5 +90,4 @@
 (defmethod 40ants-doc/commondoc/page:make-page-toc ((obj 40ants-doc/commondoc/page:page))
   (unless (boundp '*full-document*)
     (error "Please, set 40ANTS-DOC/COMMONDOC/TOC:*FULL-DOCUMENT* variable to generate TOC."))
-  
   (make-toc *full-document* obj))
