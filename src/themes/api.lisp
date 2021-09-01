@@ -1,6 +1,15 @@
 (uiop:define-package #:40ants-doc/themes/api
   (:use #:cl)
-  (:export #:render-css))
+  (:export #:render-css
+           #:render-page
+           #:render-html-head
+           #:render-toc
+           #:render-search-form
+           #:render-sidebar-footer
+           #:render-sidebar-header
+           #:render-sidebar
+           #:render-sidebar-content
+           #:render-content))
 (in-package 40ants-doc/themes/api)
 
 
@@ -17,6 +26,33 @@
 
 (defgeneric render-css (theme)
   (:documentation "Returns a string with CSS."))
+
+(defgeneric render-page (theme uri title &key toc content)
+  (:documentation "Renders whole page using theme and callable CONTENT-FUNC."))
+
+(defgeneric render-html-head (theme uri title)
+  (:documentation "Renders content of the HTML HEAD tag."))
+
+(defgeneric render-content (theme uri toc content-func)
+  (:documentation "Renders page's content"))
+
+(defgeneric render-sidebar (theme uri toc)
+  (:documentation "Renders page's sidebar"))
+
+(defgeneric render-sidebar-header (theme uri toc)
+  (:documentation "Renders sidebar's header. Usually it contains a search input."))
+
+(defgeneric render-sidebar-footer (theme uri toc)
+  (:documentation "Renders sidebar's header. By default it contains a link to the 40ANTS-DOC system."))
+
+(defgeneric render-sidebar-content (theme uri toc)
+  (:documentation "Renders sidebar's content. By default it calls RENDER-TOC generic-function."))
+
+(defgeneric render-toc (theme uri toc)
+  (:documentation "Renders documentation TOC."))
+
+(defgeneric render-search-form (theme uri toc)
+  (:documentation "Renders a search form."))
 
 
 (defun check-theme ()
@@ -48,3 +84,23 @@
                                                             (concatenate 'string
                                                                          "static/" from))
                              (uiop:merge-pathnames* to absolute-dir)))))
+
+
+(defun call-with-page-template (func uri title toc)
+  (check-type uri string)
+  (check-theme)
+  (render-page *theme* uri title
+               :toc toc
+               :content func))
+
+
+(defmacro with-page-template ((uri title &key toc) &body body)
+  `(call-with-page-template
+    (lambda ()
+      ,@body)
+    ,uri
+    ,title
+    ,toc))
+
+
+
