@@ -2,7 +2,9 @@
   (:use #:cl)
   (:import-from #:40ants-doc/themes/api
                 #:render-css)
-  (:import-from #:lass))
+  (:import-from #:lass)
+  (:export
+   #:default-theme))
 (in-package 40ants-doc/themes/default)
 
 
@@ -205,6 +207,7 @@
      (|#toc-footer|
       :margin-left 1.5em
       :margin-top 2em
+      :margin-bottom 1em
       (a
        :font-size 80%
        :color "#777777"))

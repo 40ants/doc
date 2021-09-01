@@ -259,100 +259,81 @@
                               (declare (ignore c))
                               (incf num-warnings))))
       (40ants-doc/commondoc/format:with-format (format)
-        (let* ((theme (make-instance theme))
-               (sections (uiop:ensure-list sections))
-               (pages (mapcar #'40ants-doc/page:ensure-page sections))
-               (page-documents (mapcar
-                                #'40ants-doc/commondoc/builder:to-commondoc
-                                pages))
-               (full-document (process-document
-                               (common-doc:make-document "Documentation"
-                                                         :children page-documents)
-                               :base-url base-url))
-               (absolute-dir (uiop:ensure-absolute-pathname base-dir
-                                                            (probe-file ".")))
-               (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
-               (40ants-doc/commondoc/toc::*full-document* full-document)
-               (output-paths nil))
+        (40ants-doc/themes/api::with-theme (theme)
+          (let* ((sections (uiop:ensure-list sections))
+                 (pages (mapcar #'40ants-doc/page:ensure-page sections))
+                 (page-documents (mapcar
+                                  #'40ants-doc/commondoc/builder:to-commondoc
+                                  pages))
+                 (full-document (process-document
+                                 (common-doc:make-document "Documentation"
+                                                           :children page-documents)
+                                 :base-url base-url))
+                 (absolute-dir (uiop:ensure-absolute-pathname base-dir
+                                                              (probe-file ".")))
+                 (40ants-doc/commondoc/toc::*full-document* full-document)
+                 (output-paths nil))
 
-          (ensure-directories-exist absolute-dir)
+            (ensure-directories-exist absolute-dir)
 
-          (flet ((make-full-filename (page)
-                   ;; PAGE argument could be either PAGE object or string denoting a relative path
-                   ;; of HTML page.
-                   (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
-                                               (page-base-dir page))
-                                             base-dir))
-                          (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
-                                                                       (probe-file ".")))
-                          (filename (etypecase page
-                                      (40ants-doc/commondoc/page:page
-                                       (40ants-doc/commondoc/page::full-filename page))
-                                      (string
-                                       page))))
-                     (uiop:merge-pathnames* filename absolute-dir))))
-            (loop with global-format = format
-                  for document in page-documents
-                  for full-filename = (make-full-filename document)
-                  for format = (or
-                                ;; Page may override global format setting
-                                (page-format document)
-                                global-format)
-                  do (ensure-directories-exist full-filename)
-                     (uiop:with-output-file (stream full-filename
-                                                    :if-exists :supersede)
-                       (common-doc.format:emit-document (make-instance format)
-                                                        document
-                                                        stream)
-                       (push full-filename output-paths)))
-         
-            (when (eql format
-                       'common-html:html)
-              (uiop:with-output-file (stream css-filename
-                                             :if-exists :supersede)
-                (write-string (40ants-doc/themes/api:render-css theme)
-                              stream)
-                (terpri stream))
+            (flet ((make-full-filename (page)
+                     ;; PAGE argument could be either PAGE object or string denoting a relative path
+                     ;; of HTML page.
+                     (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
+                                                 (page-base-dir page))
+                                               base-dir))
+                            (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
+                                                                         (probe-file ".")))
+                            (filename (etypecase page
+                                        (40ants-doc/commondoc/page:page
+                                         (40ants-doc/commondoc/page::full-filename page))
+                                        (string
+                                         page))))
+                       (uiop:merge-pathnames* filename absolute-dir))))
+              (loop with global-format = format
+                    for document in page-documents
+                    for full-filename = (make-full-filename document)
+                    for format = (or
+                                  ;; Page may override global format setting
+                                  (page-format document)
+                                  global-format)
+                    do (ensure-directories-exist full-filename)
+                       (uiop:with-output-file (stream full-filename
+                                                      :if-exists :supersede)
+                         (common-doc.format:emit-document (make-instance format)
+                                                          document
+                                                          stream)
+                         (push full-filename output-paths)))
+             
+              (when (eql format
+                         'common-html:html)
+                (40ants-doc/themes/api::render-static absolute-dir)
 
-              (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
-                                                                :title "Search Page"
-                                                                :format :html))
-                     (filename (make-full-filename page)))
-                (ensure-directories-exist filename)
-                (uiop:with-output-file (common-html.emitter::*output-stream*
-                                        filename
-                                        :if-exists :supersede)
-                  (40ants-doc/commondoc/page::emit-search-page page))
+                (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
+                                                                  :title "Search Page"
+                                                                  :format :html))
+                       (filename (make-full-filename page)))
+                  (ensure-directories-exist filename)
+                  (uiop:with-output-file (common-html.emitter::*output-stream*
+                                          filename
+                                          :if-exists :supersede)
+                    (40ants-doc/commondoc/page::emit-search-page page))
 
-                (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
-                                               :if-exists :supersede)
-                  (write-string (40ants-doc/search::generate-search-index full-document page)
-                                stream)
-                  (terpri stream)))
+                  (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
+                                                 :if-exists :supersede)
+                    (write-string (40ants-doc/search::generate-search-index full-document page)
+                                  stream)
+                    (terpri stream)))))
 
-              (loop with paths = '(("toc.js" "toc.js")
-                                   ("highlight/highlight.min.js" "highlight.min.js")
-                                   ("highlight/styles/atom-one-dark.min.css" "highlight.min.css")
-                                   ("search/searchtools.js" "searchtools.js")
-                                   ("search/language_data.js" "language_data.js")
-                                   ("search/doctools.js" "doctools.js")
-                                   ("underscore.js" "underscore.js")
-                                   ("jquery.js" "jquery.js"))
-                    for (from to) in paths
-                    do (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                                      (concatenate 'string
-                                                                                   "static/" from))
-                                       (uiop:merge-pathnames* to absolute-dir)))))
-
-          (unless (zerop num-warnings)
-            (warn "~A warning~:P ~A caught"
-                  num-warnings
-                  (if (= num-warnings 1)
-                      "was"
-                      "were")))
-          (apply #'values
-                 absolute-dir
-                 (nreverse output-paths)))))))
+            (unless (zerop num-warnings)
+              (warn "~A warning~:P ~A caught"
+                    num-warnings
+                    (if (= num-warnings 1)
+                        "was"
+                        "were")))
+            (apply #'values
+                   absolute-dir
+                   (nreverse output-paths))))))))
 
 
 (defvar *document-html-top-blocks-of-links* ()
