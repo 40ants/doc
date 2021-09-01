@@ -62,7 +62,7 @@
 
   (defparameter *badges*
     "
-<table>
+<table class=\"badges\">
 <tr>
 <td><a href=\"https://github.com/40ants/doc/actions/workflows/ci.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests\"/></a></td>
 

@@ -9,7 +9,9 @@
            #:render-sidebar-header
            #:render-sidebar
            #:render-sidebar-content
-           #:render-content))
+           #:render-content
+           #:render-page-header
+           #:render-page-footer))
 (in-package 40ants-doc/themes/api)
 
 
@@ -29,6 +31,12 @@
 
 (defgeneric render-page (theme uri title &key toc content)
   (:documentation "Renders whole page using theme and callable CONTENT-FUNC."))
+
+(defgeneric render-page-header (theme uri title)
+  (:documentation "Renders whole page header. Does nothing by default."))
+
+(defgeneric render-page-footer (theme uri)
+  (:documentation "Renders whole page footer. Does nothing by default."))
 
 (defgeneric render-html-head (theme uri title)
   (:documentation "Renders content of the HTML HEAD tag."))

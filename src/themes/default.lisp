@@ -232,8 +232,17 @@
       (40ants-doc/themes/api:render-html-head theme uri title))
      (:body
       (:div :class "page"
+            (40ants-doc/themes/api:render-page-header theme uri title)
             (40ants-doc/themes/api:render-sidebar theme uri toc)
-            (40ants-doc/themes/api:render-content theme uri toc content))))))
+            (40ants-doc/themes/api:render-content theme uri toc content)
+            (40ants-doc/themes/api:render-page-footer theme uri))))))
+
+
+(defmethod 40ants-doc/themes/api:render-page-header ((theme default-theme) uri title)
+  (declare (ignore uri title)))
+
+(defmethod 40ants-doc/themes/api:render-page-footer ((theme default-theme) uri)
+  (declare (ignore uri)))
 
 
 (defmethod 40ants-doc/themes/api:render-html-head ((theme default-theme) uri title)
