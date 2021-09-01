@@ -148,8 +148,9 @@
 
    Also, this function replaces markdown references with
    40ANTS-DOC/COMMONDOC:XREF nodes."
-  (replace-markdown-links
-   (transform-uppercase-italic-nodes-back-to-text
-    (join-italic-var-names
-     (common-doc.format:parse-document (make-instance 'commondoc-markdown:markdown)
-                                       text)))))
+  (when text
+    (replace-markdown-links
+     (transform-uppercase-italic-nodes-back-to-text
+      (join-italic-var-names
+       (common-doc.format:parse-document (make-instance 'commondoc-markdown:markdown)
+                                         text))))))
