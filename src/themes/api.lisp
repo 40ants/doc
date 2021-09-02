@@ -1,5 +1,7 @@
 (uiop:define-package #:40ants-doc/themes/api
   (:use #:cl)
+  (:import-from #:40ants-doc/highlight
+                #:download-highlight-js)
   (:export #:render-css
            #:render-page
            #:render-html-head
@@ -11,7 +13,9 @@
            #:render-sidebar-content
            #:render-content
            #:render-page-header
-           #:render-page-footer))
+           #:render-page-footer
+           #:highlight-languages
+           #:highlight-theme))
 (in-package 40ants-doc/themes/api)
 
 
@@ -25,6 +29,19 @@
                       (t ,theme))))
        ,@body)))
 
+
+(defgeneric highlight-languages (theme)
+  (:documentation "Returns a list of languages to highlight in snippets. Each language should be supported by Highlight.js.")
+  (:method ((theme t))
+    (list :lisp
+          :bash)))
+
+(defgeneric highlight-theme (theme)
+  (:documentation "Returns a string with the name of the Highlight.js color theme for highlighted snippets.
+
+                   To preview themes, use this site: https://highlightjs.org/static/demo/")
+  (:method ((theme t))
+    "magula"))
 
 (defgeneric render-css (theme)
   (:documentation "Returns a string with CSS."))
@@ -68,7 +85,7 @@
     (error "Please, use WITH-THEME macro around the call")))
 
 
-(defun render-static (absolute-dir)
+(defun render-static (absolute-dir &key highlight-languages highlight-theme)
   (check-theme)
   
   (let ((css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir)))
@@ -78,10 +95,14 @@
                     stream)
       (terpri stream))
 
+    (download-highlight-js (or highlight-languages
+                               (highlight-languages *theme*))
+                           :to absolute-dir
+                           :theme (or highlight-theme
+                                      (highlight-theme *theme*)))
+
     ;; TODO: Probably let to override these files too
     (loop with paths = '(("toc.js" "toc.js")
-                         ("highlight/highlight.min.js" "highlight.min.js")
-                         ("highlight/styles/atom-one-dark.min.css" "highlight.min.css")
                          ("search/searchtools.js" "searchtools.js")
                          ("search/language_data.js" "language_data.js")
                          ("search/doctools.js" "doctools.js")

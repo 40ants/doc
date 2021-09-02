@@ -223,6 +223,11 @@
      (.unresolved-reference
       :color magenta))))
 
+(defmethod 40ants-doc/themes/api:highlight-languages ((theme default-theme))
+  '("lisp" "bash" "css" "json" "yaml" "plaintext" "xml" "markdown"))
+
+(defmethod 40ants-doc/themes/api:highlight-theme ((theme default-theme))
+  "atom-one-dark")
 
 (defmethod 40ants-doc/themes/api:render-page ((theme default-theme) uri title
                                               &key toc content)

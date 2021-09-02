@@ -106,7 +106,9 @@
                                 (base-url nil)
                                 (docs-dir #P"docs/")
                                 (clean-urls 40ants-doc/rewrite::*clean-urls*)
-                                (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*))
+                                (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
+                                highlight-languages
+                                highlight-theme)
   "Generate pretty HTML documentation for a single ASDF system,
   possibly linking to github. If you are migrating from MGL-PAX,
   then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
@@ -170,6 +172,8 @@
                    :clean-urls clean-urls
                    :downcase-uppercase-code downcase-uppercase-code
                    :theme theme
+                   :highlight-languages highlight-languages
+                   :highlight-theme highlight-theme
                    :format :html))
 
 ;;; Generate with the default HTML look
@@ -221,7 +225,9 @@
                                       (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
                                       (clean-urls 40ants-doc/rewrite::*clean-urls*)
                                       (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
-                                      (format :html))
+                                      (format :html)
+                                      highlight-languages
+                                      highlight-theme)
   "Renders given sections or pages into a files on disk.
 
    By default, it renders in to HTML, but you can specify FORMAT argument.
@@ -307,7 +313,9 @@
              
               (when (eql format
                          'common-html:html)
-                (40ants-doc/themes/api::render-static absolute-dir)
+                (40ants-doc/themes/api::render-static absolute-dir
+                                                      :highlight-languages highlight-languages
+                                                      :highlight-theme highlight-theme)
 
                 (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
                                                                   :title "Search Page"
