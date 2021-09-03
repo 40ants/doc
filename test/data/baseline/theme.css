@@ -183,23 +183,18 @@ body .highlighted{
     background: #adff2f;
 }
 
-body #content-container{
+body .page{
     margin: 0;
     padding: 0;
 }
 
-body #content{
+body .page > .content{
     margin-left: 40ex;
     padding-left: 2.5em;
     max-width: 85ex;
 }
 
-body form.search{
-    margin-left: 1.5em;
-    margin-top: 1.5em;
-}
-
-body #toc{
+body .sidebar{
     top: 0px;
     left: 0px;
     height: 100%;
@@ -217,36 +212,36 @@ body #toc{
     color: #aaa;
 }
 
-body #toc p{
+body .sidebar p{
     padding: 5px;
     margin: 0;
     margin-left: 10px;
     font-size: 14px;
 }
 
-body #toc ul{
+body .sidebar ul{
     margin-left: 10px;
     padding: 0;
     list-style: none;
 }
 
-body #toc li{
+body .sidebar li{
     line-height: 1.0;
     padding: 0;
     margin: 0;
 }
 
-body #toc a{
+body .sidebar a{
     border-bottom: none;
 }
 
-body #toc hr{
+body .sidebar hr{
     height: 0.05em;
     border: 0;
     background: #777;
 }
 
-body #toc .toc-active{
+body .sidebar .toc-active{
     background: #336699;
     -moz-box-shadow: inset -5px 0px 10px -5px #000;
     -o-box-shadow: inset -5px 0px 10px -5px #000;
@@ -257,7 +252,29 @@ body #toc .toc-active{
 
 
 
-body #page-toc a{
+body .sidebar > .header a{
+    color: #777777;
+}
+
+body .sidebar > .footer{
+    margin-left: 1.5em;
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+body .sidebar > .footer a{
+    font-size: 80%;
+    color: #777777;
+}
+
+body form.search{
+    margin-left: 1.5em;
+    margin-top: 1.5em;
+}
+
+
+
+body .page-toc a{
     color: #fff;
 }
 
@@ -273,22 +290,6 @@ body .menu-block a{
 
 body .menu-block-title{
     font-size: 90%;
-}
-
-
-
-body #toc-header a{
-    color: #777777;
-}
-
-body #toc-footer{
-    margin-left: 1.5em;
-    margin-top: 2em;
-}
-
-body #toc-footer a{
-    font-size: 80%;
-    color: #777777;
 }
 
 
