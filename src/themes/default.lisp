@@ -7,6 +7,7 @@
                 #:with-html)
   (:import-from #:40ants-doc/utils
                 #:make-relative-path)
+  (:import-from #:40ants-doc/rewrite)
   (:export
    #:default-theme))
 (in-package 40ants-doc/themes/default)

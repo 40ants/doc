@@ -3,14 +3,19 @@
   (:import-from #:dexador)
   (:import-from #:log4cl)
   (:import-from #:alexandria
-                #:when-let)
+                #:when-let
+                #:write-string-into-file
+                #:write-byte-vector-into-file
+                #:read-file-into-string)
   (:import-from #:cl-cookie
                 #:cookie-value
                 #:cookie-name
                 #:make-cookie-jar
                 #:cookie-jar-cookies)
   (:import-from #:tmpdir
-                #:with-tmpdir))
+                #:with-tmpdir)
+  (:import-from #:trivial-extract
+                #:extract-zip))
 (in-package 40ants-doc/highlight)
 
 
@@ -246,7 +251,7 @@
 
       (cond
         ((and (probe-file metadata-path)
-              (string= (alexandria:read-file-into-string metadata-path)
+              (string= (read-file-into-string metadata-path)
                        metadata))
          (log:info "METADATA file lists same languages and theme. Skipping download of Highlight.js"))
         (t
@@ -274,9 +279,9 @@
            (ensure-directories-exist path)
            (ensure-directories-exist to)
            
-           (alexandria:write-byte-vector-into-file response path
-                                                   :if-exists :supersede)
-           (trivial-extract:extract-zip path)
+           (write-byte-vector-into-file response path
+                                        :if-exists :supersede)
+           (extract-zip path)
 
            (uiop:copy-file (uiop:merge-pathnames* "highlight.min.js" tmpdir)
                            (uiop:merge-pathnames* "highlight.min.js" to))
@@ -290,6 +295,6 @@
              (uiop:copy-file theme-path
                              (uiop:merge-pathnames* "highlight.min.css" to)))
 
-           (alexandria:write-string-into-file metadata metadata-path
-                                              :if-exists :supersede))))))
+           (write-string-into-file metadata metadata-path
+                                   :if-exists :supersede))))))
   (values))
