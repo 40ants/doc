@@ -8,9 +8,14 @@
   (:import-from #:40ants-doc/utils
                 #:make-relative-path)
   (:import-from #:40ants-doc/rewrite)
+  (:import-from #:40ants-doc
+                #:defsection)
   (:export
    #:default-theme))
 (in-package 40ants-doc/themes/default)
+
+
+(defsection @themes (:title "Defining a Custom Theme"))
 
 
 (defclass default-theme ()
