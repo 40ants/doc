@@ -28,6 +28,7 @@
       :font-family "serif"
       :font-weight "bold"
       :text-shadow "0.05em 0.05em 0.02em #DDDDDD"
+      :line-height 1.2
       (a.header-link
        :color "#DDD"
        :padding 0 4px
