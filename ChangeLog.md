@@ -11,7 +11,7 @@
 
 * Added a protocol to define new color themes and change page layout.
   Three new themes are available out of the box.
-  Read more at [`Defining a Custom Theme`](bcaa) section.
+  Read more at [`Defining a Custom Theme`][bcaa] section.
 
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E2-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -28,7 +28,7 @@
 * Now defsection does not export nor mentioned symbols nor the name of the section
   It is better to have explicit exports.
 
-* [`40ants-doc/locatives:include`](359f) locative now does not support `:HEADER`, `:FOOTER` and some other arguments. Use `:LANG` argument instead.
+* [`40ants-doc/locatives:include`][359f] locative now does not support `:HEADER`, `:FOOTER` and some other arguments. Use `:LANG` argument instead.
 
 * Added code highlighting using Highlight.js library.
 
@@ -38,12 +38,12 @@
 * Elisp code for transcriptions was fixed and now should word not
   only with `SLIME`, but also with `SLY`.
 
-* [`40ants-doc:defsection`](4e8b) macro now does not generate export code
+* [`40ants-doc:defsection`][4e8b] macro now does not generate export code
   if `:EXPORT` argument is `NIL`.
 
 * Functions `UPDATE-ASDF-SYSTEM-HTML-DOCS` and `UPDATE-ASDF-SYSTEM-README`
-  were replaced with [`40ants-doc/builder:update-asdf-system-docs`](0983), which also supports
-  ChangeLog.md generation. Use [`40ants-doc/changelog:defchangelog`](8c40) to define versions.
+  were replaced with [`40ants-doc/builder:update-asdf-system-docs`][0983], which also supports
+  ChangeLog.md generation. Use [`40ants-doc/changelog:defchangelog`][8c40] to define versions.
 
 * Variables `*DOCUMENT-HTML-MAX-NAVIGATION-TABLE-OF-CONTENTS-LEVEL*` and
   `*DOCUMENT-MAX-TABLE-OF-CONTENTS-LEVEL*` were removed. Probably we'll return this
@@ -52,7 +52,7 @@
 * Removed `LOCATE-AND-DOCUMENT` generic function.
 
 * Links to the GitHub now are generated automatically,
-  if [`40ants-doc/builder:update-asdf-system-docs`](0983) function is used
+  if [`40ants-doc/builder:update-asdf-system-docs`][0983] function is used
   and system definition has a `:SOURCE-CONTROL` slot.
 
 * Generic functions `COLLECT-REACHABLE-OBJECTS` and `LOCATE-AND-COLLECT-REACHABLE-OBJECTS`
@@ -62,7 +62,7 @@
 
 * Variable `*DOCUMENT-MIN-LINK-HASH-LENGTH*` was removed. Use `COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*`
 
-* Functions [`40ants-doc/builder:update-asdf-system-docs`](0983) and [`40ants-doc/builder:render-to-files`](05c0)
+* Functions [`40ants-doc/builder:update-asdf-system-docs`][0983] and [`40ants-doc/builder:render-to-files`][05c0]
   now accept `WARN-ON-UNDOCUMENTED-PACKAGES` argument and `CLEAN-URLS` argument.
 
 * Variable `*DOCUMENT-MARK-UP-SIGNATURES*` was removed.
@@ -72,7 +72,7 @@
 
 * Added warnings on symbols, referenced like internals, using `::`.
 
-* Added [`40ants-doc:defsection-copy`](ad02) macro to define copy of the section but with a different name.
+* Added [`40ants-doc:defsection-copy`][ad02] macro to define copy of the section but with a different name.
 
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E1-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -88,7 +88,7 @@
   file-subseq function was rewritten.
 
 * Locatives can be specified without a package prefix inside the defsection
-  because all locative symbols now live in [`40ants-doc/locatives`](d889) package.
+  because all locative symbols now live in [`40ants-doc/locatives`][d889] package.
 
 * Function update-asdf-system-readmes was renamed to update-asdf-system-readmes and now
   it generates only one `README` file.
