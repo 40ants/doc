@@ -47,13 +47,18 @@
     - Feature A implemented."))
   ```
   """
-  `(progn
-     (defsection @changelog (:title ,title
-                             :ignore-words (list ,@ignore-words))
-       ,@(loop for (version) in versions
-               collect `(,version section)))
-     ,@(loop for (version . content) in versions
-             collect (make-version-section version content))))
+  (let ((section-name (intern "@CHANGELOG")))
+    `(progn
+       ;; Symbol should be exported, to allow DOCS-BUILDER
+       ;; to discover a changelog.
+       (export ',section-name)
+      
+       (defsection ,section-name (:title ,title
+                               :ignore-words (list ,@ignore-words))
+         ,@(loop for (version) in versions
+                 collect `(,version section)))
+       ,@(loop for (version . content) in versions
+               collect (make-version-section version content)))))
 
 
 (defchangelog (:ignore-words ("MGL-PAX"
