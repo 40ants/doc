@@ -9,6 +9,7 @@
   (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/commondoc/format)
   (:import-from #:40ants-doc/rewrite)
+  (:import-from #:40ants-doc/commondoc/changelog)
   (:export
    #:make-toc))
 (in-package 40ants-doc/commondoc/toc)
