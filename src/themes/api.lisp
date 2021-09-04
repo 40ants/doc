@@ -18,12 +18,7 @@
            #:highlight-theme))
 (in-package 40ants-doc/themes/api)
 
-
-
-
-
 (defvar *theme*)
-
 
 (defmacro with-theme ((theme) &body body)
   (alexandria:once-only (theme)
@@ -31,7 +26,6 @@
                       (symbol (make-instance ,theme))
                       (t ,theme))))
        ,@body)))
-
 
 (defgeneric highlight-languages (theme)
   (:documentation "Returns a list of languages to highlight in snippets. Each language should be supported by Highlight.js.")
@@ -42,7 +36,7 @@
 (defgeneric highlight-theme (theme)
   (:documentation "Returns a string with the name of the Highlight.js color theme for highlighted snippets.
 
-                   To preview themes, use this site: https://highlightjs.org/static/demo/")
+                   To preview themes, use this site: <https://highlightjs.org/static/demo/>")
   (:method ((theme t))
     "magula"))
 
@@ -62,7 +56,7 @@
   (:documentation "Renders content of the HTML HEAD tag."))
 
 (defgeneric render-content (theme uri toc content-func)
-  (:documentation "Renders page's content"))
+  (:documentation "Renders page's content. It can wrap content into HTML tags and should funcall CONTENT-FUNC without arguments."))
 
 (defgeneric render-sidebar (theme uri toc)
   (:documentation "Renders page's sidebar"))
@@ -82,11 +76,9 @@
 (defgeneric render-search-form (theme uri toc)
   (:documentation "Renders a search form."))
 
-
 (defun check-theme ()
   (unless (boundp '*theme*)
     (error "Please, use WITH-THEME macro around the call")))
-
 
 (defun render-static (absolute-dir &key highlight-languages highlight-theme)
   (check-theme)
@@ -117,14 +109,12 @@
                                                                          "static/" from))
                              (uiop:merge-pathnames* to absolute-dir)))))
 
-
 (defun call-with-page-template (func uri title toc)
   (check-type uri string)
   (check-theme)
   (render-page *theme* uri title
                :toc toc
                :content func))
-
 
 (defmacro with-page-template ((uri title &key toc) &body body)
   `(call-with-page-template
@@ -133,6 +123,3 @@
     ,uri
     ,title
     ,toc))
-
-
-

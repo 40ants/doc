@@ -5,7 +5,8 @@
   (:import-from #:3bmd-code-blocks)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
-  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:40ants-doc/builder/vars
+                #:*current-page*)
   (:import-from #:40ants-doc/page
                 #:page-base-dir
                 #:page-format)
@@ -22,6 +23,7 @@
   (:import-from #:40ants-doc/search)
   (:import-from #:40ants-doc/commondoc/transcribe)
   (:import-from #:40ants-doc/changelog)
+  (:import-from #:40ants-doc/commondoc/image)
   (:export
    #:*document-html-top-blocks-of-links*
    #:*document-html-bottom-blocks-of-links*
@@ -123,7 +125,7 @@
 
   See docs on RENDER-TO-FILES function to learn about meaning of
   BASE-DIR, BASE-URL, SOURCE-URI-FN, WARN-ON-UNDOCUMENTED-PACKAGES, CLEAN-URLS,
-  and DOWNCASE-UPPERCASE-CODE arguments.
+  DOWNCASE-UPPERCASE-CODE, THEME, HIGHLIGHT-LANGUAGES and HIGHLIGHT-THEME arguments.
 
   Example usage:
 
@@ -193,7 +195,8 @@
          (document (if 40ants-doc/link:*document-link-code*
                        (40ants-doc/commondoc/page::replace-xrefs document references
                                                                  :base-url base-url)
-                       document)))
+                       document))
+         (document (40ants-doc/commondoc/image::replace-images document)))
     document))
 
 
@@ -218,7 +221,7 @@
                                            stream))))))
 
 
-(defun render-to-files (sections &key (theme '40ants-doc/themes/default::default-theme)
+(defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
                                       (base-dir #P"./")
                                       (base-url nil)
                                       (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
@@ -247,7 +250,20 @@
    markdown files together with HTML.
 
    If DOWNCASE-UPPERCASE-CODE is true, then all references to symbols will be
-   downcased."
+   downcased.
+
+   THEME argument should be a theme class name. By default it is
+   40ANTS-DOC/THEMES/DEFAULT:DEFAULT-THEME. See 40ANTS-DOC/THEMES/DEFAULT::@DEFINING-A-THEME
+   to learn how to define themes.
+
+   HIGHLIGHT-LANGUAGES and HIGHLIGHT-THEME arguments allow to redefine theme's
+   settings for Highlight.js. Languages should be a list of strings where each
+   item is a language name, [supported by Highlight.js][langs]. Theme should be a
+   name of a supported theme. You can preview different highlighting themes [here][themes]
+
+   [langs]: https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
+   [themes]: https://highlightjs.org/static/demo/
+"
 
   (setf format
         (40ants-doc/commondoc/format::ensure-format-class-name format))
@@ -259,7 +275,8 @@
         (40ants-doc/commondoc/page::*warn-on-undocumented-packages* warn-on-undocumented-packages)
         (40ants-doc/rewrite::*clean-urls* clean-urls)
         (40ants-doc/reference-api:*source-uri-fn* source-uri-fn)
-        (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code))
+        (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code)
+        (40ants-doc/builder/vars::*base-dir* base-dir))
     
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
@@ -297,17 +314,17 @@
                                          page))))
                        (uiop:merge-pathnames* filename absolute-dir))))
               (loop with global-format = format
-                    for document in page-documents
-                    for full-filename = (make-full-filename document)
+                    for *current-page* in page-documents
+                    for full-filename = (make-full-filename *current-page*)
                     for format = (or
                                   ;; Page may override global format setting
-                                  (page-format document)
+                                  (page-format *current-page*)
                                   global-format)
                     do (ensure-directories-exist full-filename)
                        (uiop:with-output-file (stream full-filename
                                                       :if-exists :supersede)
                          (common-doc.format:emit-document (make-instance format)
-                                                          document
+                                                          *current-page*
                                                           stream)
                          (push full-filename output-paths)))
              

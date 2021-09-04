@@ -40,3 +40,4 @@
 
 (defmethod 40ants-doc/themes/api:highlight-theme ((theme light-theme))
   "atom-one-light")
+
