@@ -24,8 +24,7 @@
   (:import-from #:40ants-doc/themes/default)
   (:import-from #:40ants-doc/themes/light)
   (:import-from #:40ants-doc/themes/dark)
-  (:export
-   #:default-theme))
+  (:export #:default-theme))
 (in-package 40ants-doc/themes/docs)
 
 
