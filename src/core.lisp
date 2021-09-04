@@ -28,6 +28,7 @@
 
 (defmacro defsection (name (&key (package-symbol '*package*)
                                  (readtable-symbol '*readtable*)
+                                 (section-class 'section)
                                  (export nil)
                                  title
                                  link-title-to
@@ -124,7 +125,7 @@
        ,@export-form
       
        (defparameter ,name
-         (make-instance 'section
+         (make-instance ',section-class
                         :name ',name
                         :package ,package-symbol
                         :readtable ,readtable-symbol

@@ -28,6 +28,7 @@
   (:import-from #:40ants-doc/locatives/stdout-of)
   (:import-from #:40ants-doc/github)
   (:import-from #:40ants-doc/commondoc/section)
+  (:import-from #:40ants-doc/commondoc/changelog)
   (:import-from #:40ants-doc/object-package-impl)
   (:import-from #:40ants-doc/themes/default)
   (:import-from #:40ants-doc/themes/light)

@@ -17,13 +17,21 @@
   (defchangelog macro))
 
 
+(defclass changelog (40ants-doc:section)
+  ())
+
+(defclass version (40ants-doc:section)
+  ())
+
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
- (defun make-version-section (version content)
-   `(defsection ,version (:title ,(symbol-name version))
-      ,@content)))
+  (defun make-version-section (version content)
+    `(defsection ,version (:title ,(symbol-name version)
+                           :section-class version)
+       ,@content)))
 
 
-(defmacro defchangelog ((&key (title "Changes")
+(defmacro defchangelog ((&key (title "ChangeLog")
                               ignore-words)
                         &body versions)
   """
@@ -40,11 +48,11 @@
   (defchangelog ()
     (0.2.0
      "- Feature B implemented.
-    - Bug was fixed in function FOO.")
+      - Bug was fixed in function FOO.")
     
     (0.1.0
      "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
-    - Feature A implemented."))
+      - Feature A implemented."))
   ```
   """
   (let ((section-name (intern "@CHANGELOG")))
@@ -54,7 +62,8 @@
        (export ',section-name)
       
        (defsection ,section-name (:title ,title
-                               :ignore-words (list ,@ignore-words))
+                                  :ignore-words (list ,@ignore-words)
+                                  :section-class changelog)
          ,@(loop for (version) in versions
                  collect `(,version section)))
        ,@(loop for (version . content) in versions

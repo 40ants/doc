@@ -22,12 +22,14 @@
    and returns a table of content CommonDoc node."
   (let* ((current-sublist (list (common-doc:make-unordered-list (list))))
          (last-list-item nil)
-         (current-page nil))
+         (current-page nil)
+         (inside-changelog nil))
     (labels ((page-format (page)
                (or (40ants-doc/page:page-format page)
                    40ants-doc/commondoc/format::*current-format*))
              (collector (node)
                (when (and (typep node 'common-doc:section)
+                          (not inside-changelog)
                           ;; We only want to include HTML documents into the TOC for HTML
                           ;; and Markdown documents to the TOC for Markdown.
                           (or (null current-page)
@@ -37,7 +39,6 @@
                         (page-uri
                           (when current-page
                             (full-filename current-page)))
-                      
                         (text (if page-uri
                                   (let* ((from-uri (full-filename page))
                                          (link-uri (make-relative-path from-uri
@@ -61,7 +62,10 @@
                (typecase node
                  (40ants-doc/commondoc/page:page
                   (setf current-page node))
-               
+                 
+                 (40ants-doc/commondoc/changelog::changelog
+                  (setf inside-changelog t))
+
                  (40ants-doc/commondoc/section:documentation-section
                   (push (common-doc:make-unordered-list (list))
                         current-sublist)
@@ -69,8 +73,11 @@
                         (append (common-doc:children last-list-item)
                                 (list (car current-sublist)))))))
              (on-up (node)
-               (when (typep node '40ants-doc/commondoc/section:documentation-section)
-                 (pop current-sublist))))
+               (typecase node
+                 (40ants-doc/commondoc/changelog::changelog
+                  (setf inside-changelog nil))
+                 (40ants-doc/commondoc/section:documentation-section
+                  (pop current-sublist)))))
       (40ants-doc/commondoc/mapper:map-nodes document #'collector
                                              :on-going-down #'on-down
                                              :on-going-up #'on-up))

@@ -62,7 +62,7 @@
                    :children (uiop:ensure-list children))))
 
 
-(defun make-documentation-section (section)
+(defun make-documentation-section (section &key (class-name 'documentation-section))
   (check-type section 40ants-doc:section)
   
   (let* ((link-to (40ants-doc:section-link-title-to section))
@@ -80,7 +80,7 @@
            (html-fragment (40ants-doc/utils::html-safe-name
                            (40ants-doc/reference::reference-to-anchor reference))))
     
-      (make-instance 'documentation-section
+      (make-instance class-name
                      :definition section
                      :doc-reference (40ants-doc/reference-api::canonical-reference
                                      section)
