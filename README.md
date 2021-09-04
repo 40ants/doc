@@ -199,11 +199,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](e0cc) `foo-random-state` ()
+## [class](d2ef) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](e725) `state` (foo-random-state) ()
+## [reader](2950) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -211,24 +211,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](1e53) `print-object` (object foo-random-state) stream
+## [method](4bdb) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](6a4d) `*foo-state*` #<foo-random-state >
+## [variable](8546) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](bc0a) `gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](f6ee) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](098a) `uniform-random` limit &key (random-state \*foo-state\*)
+## [function](a0f5) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -251,12 +251,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[e0cc]: https://github.com/40ants/doc/blob/20ccb97d0ea0dd604cf5fcab4e39c1649fb5fed0/tutorial.lisp#L34
-[e725]: https://github.com/40ants/doc/blob/20ccb97d0ea0dd604cf5fcab4e39c1649fb5fed0/tutorial.lisp#L35
-[1e53]: https://github.com/40ants/doc/blob/20ccb97d0ea0dd604cf5fcab4e39c1649fb5fed0/tutorial.lisp#L38
-[6a4d]: https://github.com/40ants/doc/blob/20ccb97d0ea0dd604cf5fcab4e39c1649fb5fed0/tutorial.lisp#L41
-[098a]: https://github.com/40ants/doc/blob/20ccb97d0ea0dd604cf5fcab4e39c1649fb5fed0/tutorial.lisp#L44
-[bc0a]: https://github.com/40ants/doc/blob/20ccb97d0ea0dd604cf5fcab4e39c1649fb5fed0/tutorial.lisp#L50
+[d2ef]: https://github.com/40ants/doc/blob/a7adbb77183039f71408e4b233860dd916a3448a/tutorial.lisp#L34
+[2950]: https://github.com/40ants/doc/blob/a7adbb77183039f71408e4b233860dd916a3448a/tutorial.lisp#L35
+[4bdb]: https://github.com/40ants/doc/blob/a7adbb77183039f71408e4b233860dd916a3448a/tutorial.lisp#L38
+[8546]: https://github.com/40ants/doc/blob/a7adbb77183039f71408e4b233860dd916a3448a/tutorial.lisp#L41
+[a0f5]: https://github.com/40ants/doc/blob/a7adbb77183039f71408e4b233860dd916a3448a/tutorial.lisp#L44
+[f6ee]: https://github.com/40ants/doc/blob/a7adbb77183039f71408e4b233860dd916a3448a/tutorial.lisp#L50
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
@@ -298,6 +298,9 @@ automatically checked for up-to-dateness. See
 
 * <s>Support custom `HTML` themes.</s>
 
+* Generate `RSS` or Atom feed out of changelog items, defined with
+  [`40ants-doc/changelog:defchangelog`][8c40] macro.
+
 * Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 
 
@@ -310,6 +313,7 @@ automatically checked for up-to-dateness. See
 [0b09]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3A-3A-40RENDERING-MULTIPLE-FORMATS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [05c0]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29
 [0983]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
+[8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [1201]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [f187]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [c301]: https://40ants.com/doc/#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
