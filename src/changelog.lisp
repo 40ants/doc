@@ -79,6 +79,12 @@
                               "*DOCUMENT-MIN-LINK-HASH-LENGTH*"
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
+  (0.3.0
+   "- Now images are copied to target folder together with HTML documentation
+      and links are adjusted accordingly.
+    - Added a protocol to define new color themes and change page layout.
+      Three new themes are available out of the box.
+      Read more at 40ANTS-DOC/THEMES/DOCS::@DEFINING-A-THEME section.")
   (0.2.0
    "- Now defsection does not exports symbols by default
     - You can render documents in multiple formats in a single run having cross links.
