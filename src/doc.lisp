@@ -21,6 +21,7 @@
   (:import-from #:40ants-doc/changelog
                 #:@changelog)
   (:import-from #:40ants-doc/themes/default)
+  (:import-from #:40ants-doc/themes/docs)
   (:export
    #:@index
    #:@readme))
@@ -555,7 +556,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 
 
 (defsection @extension-api (:title "Extension API")
-  (40ants-doc/themes/default::@defining-a-theme section)
+  (40ants-doc/themes/docs::@defining-a-theme section)
   (@locatives-and-references section)
   (@new-object-types section)
   (@reference-based-extensions section)
