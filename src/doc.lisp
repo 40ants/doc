@@ -22,6 +22,9 @@
                 #:@changelog)
   (:import-from #:40ants-doc/themes/default)
   (:import-from #:40ants-doc/themes/docs)
+  (:import-from #:40ants-doc-theme-40ants)
+  (:import-from #:docs-config
+                #:docs-config)
   (:export
    #:@index
    #:@readme))
@@ -668,3 +671,6 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 - Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 ")
 
+
+(defmethod docs-config ((system (eql (asdf:find-system "40ants-doc"))))
+  (list :theme '40ants-doc-theme-40ants:40ants-theme))
