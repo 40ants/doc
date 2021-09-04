@@ -60,6 +60,7 @@
                               "UPDATE-ASDF-SYSTEM-HTML-DOCS"
                               "UPDATE-ASDF-SYSTEM-README"
                               "README"
+                              "HTML"
                               "URL"
                               "JS"
                               "MGL-PAX:DEFINE-PACKAGE"
