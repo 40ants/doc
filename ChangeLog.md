@@ -2,6 +2,17 @@
 
 # Changes
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E3-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.3.0
+
+* Now images are copied to target folder together with `HTML` documentation
+  and links are adjusted accordingly.
+
+* Added a protocol to define new color themes and change page layout.
+  Three new themes are available out of the box.
+  Read more at [`Defining a Custom Theme`](bcaa) section.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E2-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.2.0
@@ -104,6 +115,7 @@
 [0983]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
 [8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [359f]: https://40ants.com/doc/#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
+[bcaa]: https://40ants.com/doc/#x-2840ANTS-DOC-2FTHEMES-2FDOCS-3A-3A-40DEFINING-A-THEME-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [4e8b]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [ad02]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-COPY-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [7927]: https://github.com/melisgl/mgl-pax
