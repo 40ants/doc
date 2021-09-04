@@ -2,7 +2,7 @@
 
 # Test other title
 
-backlink [`@TEST`](8a3c)
+backlink [`@TEST`][8a3c]
 
 
 [8a3c]: ../test.md#x-2840ANTS-DOC-TEST-2FTEST-3A-3A-40TEST-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29

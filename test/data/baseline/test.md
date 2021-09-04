@@ -2,70 +2,70 @@
 
 # Untitled
 
-[`*TEST-VARIABLE*`](0ac1)
-[`*TEST-VARIABLE*`](0ac1)
+[`*TEST-VARIABLE*`][0ac1]
+[`*TEST-VARIABLE*`][0ac1]
 `test-variable`
-[`*test-variable*`](0ac1)
+[`*test-variable*`][0ac1]
 `40ants-doc-test/test:*test-variable*`
-[`FOO`](9ca9) function, function `FOO` ([`1`](d5eb) [`2`](9ca9)),
-[`FOO`](9ca9) function, function `FOO` ([`1`](d5eb) [`2`](9ca9)),
-`FOO` ([`1`](d5eb) [`2`](9ca9)) `function`, `function` `FOO` ([`1`](d5eb) [`2`](9ca9)),
-`FOO` ([`1`](d5eb) [`2`](9ca9)) `function`, `function` `FOO` ([`1`](d5eb) [`2`](9ca9)),
-[`foo`](9ca9),
-[`foo`](9ca9),
-[`FOO`](9ca9),
-[`FOO`](9ca9),
-[`foo`](9ca9),
-[`foo`](9ca9),
-[`FOO`](9ca9),
-[`FOO`](9ca9),
+[`FOO`][9ca9] function, function `FOO` ([`1`][d5eb] [`2`][9ca9]),
+[`FOO`][9ca9] function, function `FOO` ([`1`][d5eb] [`2`][9ca9]),
+`FOO` ([`1`][d5eb] [`2`][9ca9]) `function`, `function` `FOO` ([`1`][d5eb] [`2`][9ca9]),
+`FOO` ([`1`][d5eb] [`2`][9ca9]) `function`, `function` `FOO` ([`1`][d5eb] [`2`][9ca9]),
+[`foo`][9ca9],
+[`foo`][9ca9],
+[`FOO`][9ca9],
+[`FOO`][9ca9],
+[`foo`][9ca9],
+[`foo`][9ca9],
+[`FOO`][9ca9],
+[`FOO`][9ca9],
 
-[`FOO-A`](742b) `(accessor foo)`, `(accessor foo)` [`FOO-A`](742b),
-[`FOO-A`](742b) `(accessor foo)`, `(accessor foo)` [`FOO-A`](742b),
-[`foo-a`](742b),
-[`foo-a`](742b),
-[`FOO-A`](742b),
-[`FOO-A`](742b),
-[`foo-a`](742b),
-[`foo-a`](742b),
-[`FOO-A`](742b),
-[`FOO-A`](742b)
+[`FOO-A`][742b] `(accessor foo)`, `(accessor foo)` [`FOO-A`][742b],
+[`FOO-A`][742b] `(accessor foo)`, `(accessor foo)` [`FOO-A`][742b],
+[`foo-a`][742b],
+[`foo-a`][742b],
+[`FOO-A`][742b],
+[`FOO-A`][742b],
+[`foo-a`][742b],
+[`foo-a`][742b],
+[`FOO-A`][742b],
+[`FOO-A`][742b]
 
 ->`MAX`
 
-Escaped: \`FOO` ([`1`](d5eb) [`2`](9ca9)) `FOO` \`NAVIGATION-TEST-CASES`
-Non escaped: `FOO` ([`1`](d5eb) [`2`](9ca9)) [`*TEST-VARIABLE*`](0ac1)
-[`Test other title`](bec1)
+Escaped: \`FOO` ([`1`][d5eb] [`2`][9ca9]) `FOO` \`NAVIGATION-TEST-CASES`
+Non escaped: `FOO` ([`1`][d5eb] [`2`][9ca9]) [`*TEST-VARIABLE*`][0ac1]
+[`Test other title`][bec1]
 
-This should be no link because the page of [`@TEST-EXAMPLES`](3bc3)
+This should be no link because the page of [`@TEST-EXAMPLES`][3bc3]
 has `:URI-FRAGMENT` `NIL`.
 
 This is code: T
 
-Plural uppercase ambiguous symbol: see `FOO` ([`1`](d5eb) [`2`](9ca9))s
+Plural uppercase ambiguous symbol: see `FOO` ([`1`][d5eb] [`2`][9ca9])s
 
-Plural uppercase symbol: `TEST-GF` ([`1`](97c8) [`2`](7f0a) [`3`](57ea))s
+Plural uppercase symbol: `TEST-GF` ([`1`][97c8] [`2`][7f0a] [`3`][57ea])s
 
 Plural uppercase dislocated symbol: ->`MAX`s
 
 See
-[`FOO`](d5eb) compiler-macro
+[`FOO`][d5eb] compiler-macro
 
-See [`FOO`](d5eb)
+See [`FOO`][d5eb]
 compiler-macro
 
 See
-compiler-macro [`FOO`](d5eb)
+compiler-macro [`FOO`][d5eb]
 
 See compiler-macro
-[`FOO`](d5eb)
+[`FOO`][d5eb]
 
 See
 compiler-macro 
-[`FOO`](d5eb)
+[`FOO`][d5eb]
 
 See
-`FOO` ([`1`](d5eb) [`2`](9ca9))
+`FOO` ([`1`][d5eb] [`2`][9ca9])
 
 ```cl-transcript
 (values (print (1+ 2)) :aaa)
@@ -87,7 +87,7 @@ See
 ```
 In documentation, when the only ambiguity is between a generic
 function and its methods, it's resolved in favor if the gf:
-`TEST-GF` ([`1`](97c8) [`2`](7f0a) [`3`](57ea)).
+`TEST-GF` ([`1`][97c8] [`2`][7f0a] [`3`][57ea]).
 
 <a id="x-2840ANTS-DOC-TEST-2FTEST-3A-3AFOO-20FUNCTION-29"></a>
 
@@ -125,21 +125,21 @@ example section
 
 <a id="x-2840ANTS-DOC-TEST-2FTEST-3A-3A-40TEST-SECTION-WITH-LINK-TO-OTHER-PAGE-IN-TITLE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
-## [`Test other title`](bec1)
+## [`Test other title`][bec1]
 
-Same link in docstring to [`Test other title`](bec1).
+Same link in docstring to [`Test other title`][bec1].
 
 <a id="x-2840ANTS-DOC-TEST-2FTEST-3A-3A-40TEST-SECTION-WITH-LINK-TO-SAME-PAGE-IN-TITLE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
-## [Link to @TEST](e40d)
+## [Link to @TEST][e40d]
 
-Same link in docstring to [`@TEST`](e40d).
+Same link in docstring to [`@TEST`][e40d].
 
 <a id="x-2840ANTS-DOC-TEST-2FTEST-3A-3A-40TEST-TRICKY-TITLE-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## `CODE` *italic* _italic2_ *bold* [link][sdf] <thing>
 
-backlink [`@TEST`](e40d)
+backlink [`@TEST`][e40d]
 
 
 [0ac1]: #x-2840ANTS-DOC-TEST-2FTEST-3A-3A-2ATEST-VARIABLE-2A-20-28VARIABLE-29-29
