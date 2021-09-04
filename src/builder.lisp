@@ -110,7 +110,8 @@
                                 (clean-urls 40ants-doc/rewrite::*clean-urls*)
                                 (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
                                 highlight-languages
-                                highlight-theme)
+                                highlight-theme
+                                (full-package-names t))
   "Generate pretty HTML documentation for a single ASDF system,
   possibly linking to github. If you are migrating from MGL-PAX,
   then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
@@ -176,6 +177,7 @@
                    :theme theme
                    :highlight-languages highlight-languages
                    :highlight-theme highlight-theme
+                   :full-package-names full-package-names
                    :format :html))
 
 ;;; Generate with the default HTML look
@@ -201,7 +203,8 @@
 
 
 (defun render-to-string (object &key (format :html)
-                                     (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*))
+                                     (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
+                                     (full-package-names t))
   "Renders given CommonDoc node into the string using specified format.
    Supported formats are :HTML and :MARKDOWN.
 
@@ -214,7 +217,8 @@
       (let* ((document
                (40ants-doc/commondoc/builder:to-commondoc object))
              (processed-document
-               (process-document document)))
+               (process-document document))
+             (40ants-doc/builder/printer::*full-package-names* full-package-names))
         (uiop/cl:with-output-to-string (stream)
           (common-doc.format:emit-document (make-instance format)
                                            processed-document
@@ -230,7 +234,8 @@
                                       (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
                                       (format :html)
                                       highlight-languages
-                                      highlight-theme)
+                                      highlight-theme
+                                      (full-package-names t))
   "Renders given sections or pages into a files on disk.
 
    By default, it renders in to HTML, but you can specify FORMAT argument.
@@ -261,6 +266,10 @@
    item is a language name, [supported by Highlight.js][langs]. Theme should be a
    name of a supported theme. You can preview different highlighting themes [here][themes]
 
+   When FULL-PACKAGE-NAMES is true (default), then all symbols in documentation headers
+   are rendered in their fully qualified form. This helps a lot when you are documenting
+   a package inferred ASDF system.
+
    [langs]: https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
    [themes]: https://highlightjs.org/static/demo/
 "
@@ -276,7 +285,8 @@
         (40ants-doc/rewrite::*clean-urls* clean-urls)
         (40ants-doc/reference-api:*source-uri-fn* source-uri-fn)
         (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code)
-        (40ants-doc/builder/vars::*base-dir* base-dir))
+        (40ants-doc/builder/vars::*base-dir* base-dir)
+        (40ants-doc/builder/printer::*full-package-names* full-package-names))
     
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))

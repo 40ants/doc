@@ -9,7 +9,7 @@
 
 (defun user ()
   ;; "Just to check locatives in docstrings"
-  "Var `40ANTS-DOC/BUILDER/PRINTER::*DOCUMENT-NORMALIZE-PACKAGES*`, turned off to reduce clutter."
+  "Set FULL-PACKAGE-NAMES to NIL to reduce clutter."
   (values))
 
 (define-compiler-macro bar (&whole form arg)

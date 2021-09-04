@@ -24,6 +24,7 @@
                 #:maybe-downcase)
   (:import-from #:commondoc-markdown/emitter
                 #:hash-link)
+  (:import-from #:40ants-doc/builder/printer)
   (:export
    #:make-bullet))
 (in-package 40ants-doc/commondoc/bullet)
@@ -49,7 +50,10 @@
              (object (40ants-doc/reference::reference-object reference)))
         (typecase object
           (string object)
-          (t (prin1-to-string object))))))
+          (t (if 40ants-doc/builder/printer::*full-package-names*
+                 (let ((*package* (find-package :keyword)))
+                   (prin1-to-string object))
+                 (prin1-to-string object)))))))
 
 
 (defmethod 40ants-doc/ignored-words:supports-ignored-words-p ((obj bullet))

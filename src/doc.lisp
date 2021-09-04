@@ -511,7 +511,6 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   **Note, some of these variables might be not supported yet in this fork.**
 "
   (40ants-doc/builder/printer:*document-uppercase-is-code* variable)
-  (40ants-doc/builder/printer:*document-normalize-packages* variable)
   (40ants-doc/link:*document-link-code* variable)
   (40ants-doc/builder/vars:*document-max-numbering-level* variable))
 
@@ -659,6 +658,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
                    :ignore-words ("SLIME"
                                   "SLY"
                                   "UPPERCASED"
+                                  "RSS"
                                   "HTML"))
   "
 - <s>Refactor code and make a core package with only a few dependencies.</s>

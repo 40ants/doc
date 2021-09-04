@@ -79,8 +79,12 @@
                               "COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*"
                               "*DOCUMENT-MIN-LINK-HASH-LENGTH*"
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
+                              "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
-  (0.3.0
+  (0.4.0 ;; 2021-09-05
+   "- *DOCUMENT-NORMALIZE-PACKAGES* variable was replaced with FULL-PACKAGE-NAMES argument
+      of 40ANTS-DOC/BUILDER:RENDER-TO-FILES function.")
+  (0.3.0 ;; 2021-09-04
    "- Now images are copied to target folder together with HTML documentation
       and links are adjusted accordingly.
     - Added a protocol to define new color themes and change page layout.
