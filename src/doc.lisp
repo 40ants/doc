@@ -667,7 +667,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 - <s>Add a search facility which will build an index for static file like Sphinx does.</s>
 - <s>Separate markup parsing and result rendering code to support markups other than Markdown and HTML.</s>
 - <s>Add a new section type to render ChangeLog.</s>
-- Support custom HTML themes.
+- <s>Support custom HTML themes.</s>
 - Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 ")
 
