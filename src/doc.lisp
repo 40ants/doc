@@ -668,6 +668,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 - <s>Separate markup parsing and result rendering code to support markups other than Markdown and HTML.</s>
 - <s>Add a new section type to render ChangeLog.</s>
 - <s>Support custom HTML themes.</s>
+- Generate RSS or Atom feed out of changelog items, defined with
+  40ANTS-DOC/CHANGELOG:DEFCHANGELOG macro.
 - Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 ")
 
