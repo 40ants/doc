@@ -253,7 +253,7 @@
    downcased.
 
    THEME argument should be a theme class name. By default it is
-   40ANTS-DOC/THEMES/DEFAULT:DEFAULT-THEME. See 40ANTS-DOC/THEMES/DEFAULT::@DEFINING-A-THEME
+   40ANTS-DOC/THEMES/DEFAULT:DEFAULT-THEME. See 40ANTS-DOC/THEMES/DOCS::@DEFINING-A-THEME
    to learn how to define themes.
 
    HIGHLIGHT-LANGUAGES and HIGHLIGHT-THEME arguments allow to redefine theme's

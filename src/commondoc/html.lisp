@@ -8,7 +8,7 @@
 
 (defmacro with-html (&body body)
   "Use this macro to render HTML inside generic-functions,
-   listed in the 40ANTS-DOC/THEMES/DEFAULT::@DEFINING-A-THEME section."
+   listed in the 40ANTS-DOC/THEMES/DOCS::@DEFINING-A-THEME section."
   `(let ((spinneret:*html* common-html.emitter::*output-stream*))
      (spinneret:with-html
        ,@body)))
