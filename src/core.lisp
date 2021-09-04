@@ -223,16 +223,28 @@
   (equal (ensure-list locative-1)
          (ensure-list locative-2)))
 
+
+(defun add-a-newline (text)
+  "Adds a new line text entries to make markdown parser correctly parse a header at the end of the text.
+
+   Often you might end your text entry with a header like:
+
+   ## API"
+  ;; and this function makes it work well
+  (concatenate 'string text "
+"))
+
+
 (defun transform-entries (entries)
   (mapcar (lambda (entry)
             (typecase entry
-              (string entry)
+              (string (add-a-newline entry))
               (symbol
                (let ((value (symbol-value entry)))
                  (unless (typep value 'string)
                    (error "~S value should be a string."
                           entry))
-                 value))
+                 (add-a-newline value)))
               (t
                (entry-to-reference entry))))
           entries))

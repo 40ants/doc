@@ -2,7 +2,13 @@
   (:use #:cl)
   (:import-from #:40ants-doc/themes/api
                 #:render-css)
-  (:import-from #:lass))
+  (:import-from #:lass)
+  (:import-from #:40ants-doc/commondoc/html
+                #:with-html)
+  (:import-from #:40ants-doc/utils
+                #:make-relative-path)
+  (:import-from #:40ants-doc/rewrite)
+  (:export #:default-theme))
 (in-package 40ants-doc/themes/default)
 
 
@@ -135,22 +141,17 @@
       :background "#adff2f")
 
      ;; Content
-     (|#content-container|
+
+     (.page
       :margin 0
       :padding 0)
-
-     (|#content|
+     
+     ((.page > .content)
       :margin-left 40ex
       :padding-left 2.5em
       :max-width 85ex)
-
-     ;; Side-bar
-
-     (form.search
-      :margin-left 1.5em
-      :margin-top 1.5em)
      
-     (|#toc|
+     (.sidebar
       :top 0px
       :left 0px
       :height 100%
@@ -185,7 +186,23 @@
        :background "#336699"
        :box-shadow inset -5px 0px 10px -5px "#000"))
 
-     (|#page-toc|
+     ((.sidebar > .header)
+      (a
+       :color "#777777"))
+
+     ((.sidebar > .footer)
+      :margin-left 1.5em
+      :margin-top 2em
+      :margin-bottom 1em
+      (a
+       :font-size 80%
+       :color "#777777"))
+
+     (form.search
+      :margin-left 1.5em
+      :margin-top 1.5em)
+     
+     (.page-toc
       (a
        :color "#fff"))
 
@@ -198,17 +215,6 @@
      (.menu-block-title 
       :font-size 90%)
 
-     (|#toc-header|
-      (a
-       :color "#777777"))
-
-     (|#toc-footer|
-      :margin-left 1.5em
-      :margin-top 2em
-      (a
-       :font-size 80%
-       :color "#777777"))
-
      (|#search-results|
       (.search
        (li
@@ -216,3 +222,125 @@
 
      (.unresolved-reference
       :color magenta))))
+
+(defmethod 40ants-doc/themes/api:highlight-languages ((theme default-theme))
+  '("lisp" "bash" "css" "json" "yaml" "plaintext" "xml" "markdown"))
+
+(defmethod 40ants-doc/themes/api:highlight-theme ((theme default-theme))
+  "atom-one-dark")
+
+(defmethod 40ants-doc/themes/api:render-page ((theme default-theme) uri title
+                                              &key toc content)
+  (with-html
+    (:html
+     (:head
+      (40ants-doc/themes/api:render-html-head theme uri title))
+     (:body
+      (:div :class "page"
+            (40ants-doc/themes/api:render-page-header theme uri title)
+            (40ants-doc/themes/api:render-sidebar theme uri toc)
+            (40ants-doc/themes/api:render-content theme uri toc content)
+            (40ants-doc/themes/api:render-page-footer theme uri))))))
+
+
+(defmethod 40ants-doc/themes/api:render-page-header ((theme default-theme) uri title)
+  (declare (ignore uri title)))
+
+(defmethod 40ants-doc/themes/api:render-page-footer ((theme default-theme) uri)
+  (declare (ignore uri)))
+
+
+(defmethod 40ants-doc/themes/api:render-html-head ((theme default-theme) uri title)
+  (let ((theme-uri (make-relative-path uri "theme.css"))
+        (highlight-css-uri (make-relative-path uri "highlight.min.css"))
+        (highlight-js-uri (make-relative-path uri "highlight.min.js"))
+        (jquery-uri (make-relative-path uri "jquery.js"))
+        (toc-js-uri (make-relative-path uri "toc.js")))
+    (with-html
+      (:meta :name "viewport"
+             :content "width=device-width, initial-scale=1")
+      (:title title)
+      (:link :rel "stylesheet"
+             :type "text/css"
+             :href theme-uri)
+      (:script :type "text/javascript"
+               :src jquery-uri)
+      (:script :type "text/javascript"
+               :src toc-js-uri)
+      (:link :rel "stylesheet"
+             :type "text/css"
+             :href highlight-css-uri)
+      (:script :type "text/javascript"
+               :src highlight-js-uri)
+      (:script "hljs.highlightAll();")
+      ;; MathJax configuration to display inline formulas
+      (:script
+       "
+             MathJax = {
+               tex: {
+                 inlineMath: [['$','$']],
+                 processEscapes: true
+               }
+             };
+        ")
+      (:script :type "text/javascript"
+               :src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"))))
+
+
+(defmethod 40ants-doc/themes/api:render-content ((theme default-theme) uri toc content-func)
+  (declare (ignore uri toc))
+  (with-html
+    (:div :class "content"
+          ;; This role is required for Sphinx Doc's
+          ;; Javascript code. It searches texts inside
+          ;; the role[main] block
+          :role "main"
+          (when content-func
+            (funcall content-func)))))
+
+
+(defmethod 40ants-doc/themes/api:render-sidebar ((theme default-theme) uri toc)
+  (with-html
+    (:div :class "sidebar"
+          (40ants-doc/themes/api:render-sidebar-header theme uri toc)
+          (40ants-doc/themes/api:render-sidebar-content theme uri toc)
+          (40ants-doc/themes/api:render-sidebar-footer theme uri toc))))
+
+
+(defmethod 40ants-doc/themes/api:render-search-form ((theme default-theme) uri toc)
+  (with-html
+    (:form :method "GET"
+           :action (40ants-doc/rewrite::rewrite-url
+                    (make-relative-path uri "search/index.html"))
+           :class "search"
+           (:input :type "text"
+                   :name "q")
+           (:input :type "submit"
+                   :value "Search")
+           (:span :id "search-progress"))))
+
+
+(defmethod 40ants-doc/themes/api:render-toc ((theme default-theme) uri toc)
+  (with-html
+    (:div :class "page-toc"
+          (common-html.emitter::emit toc))))
+
+
+(defmethod 40ants-doc/themes/api:render-sidebar-header ((theme default-theme) uri toc)
+  (with-html
+    (:div :class "header"
+          (40ants-doc/themes/api:render-search-form theme uri toc))))
+
+
+(defmethod 40ants-doc/themes/api:render-sidebar-content ((theme default-theme) uri toc)
+  (with-html
+    (:div :class "content"
+          (40ants-doc/themes/api:render-toc theme uri toc))))
+
+
+(defmethod 40ants-doc/themes/api:render-sidebar-footer ((theme default-theme) uri toc)
+  (declare (ignore uri toc))
+  (with-html
+    (:div :class "footer"
+          (:a :href "https://40ants.com/doc"
+              "[generated by 40ANTS-DOC]"))))

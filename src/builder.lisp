@@ -5,7 +5,8 @@
   (:import-from #:3bmd-code-blocks)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
-  (:import-from #:40ants-doc/builder/vars)
+  (:import-from #:40ants-doc/builder/vars
+                #:*current-page*)
   (:import-from #:40ants-doc/page
                 #:page-base-dir
                 #:page-format)
@@ -22,6 +23,7 @@
   (:import-from #:40ants-doc/search)
   (:import-from #:40ants-doc/commondoc/transcribe)
   (:import-from #:40ants-doc/changelog)
+  (:import-from #:40ants-doc/commondoc/image)
   (:export
    #:*document-html-top-blocks-of-links*
    #:*document-html-bottom-blocks-of-links*
@@ -106,7 +108,9 @@
                                 (base-url nil)
                                 (docs-dir #P"docs/")
                                 (clean-urls 40ants-doc/rewrite::*clean-urls*)
-                                (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*))
+                                (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
+                                highlight-languages
+                                highlight-theme)
   "Generate pretty HTML documentation for a single ASDF system,
   possibly linking to github. If you are migrating from MGL-PAX,
   then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
@@ -121,7 +125,7 @@
 
   See docs on RENDER-TO-FILES function to learn about meaning of
   BASE-DIR, BASE-URL, SOURCE-URI-FN, WARN-ON-UNDOCUMENTED-PACKAGES, CLEAN-URLS,
-  and DOWNCASE-UPPERCASE-CODE arguments.
+  DOWNCASE-UPPERCASE-CODE, THEME, HIGHLIGHT-LANGUAGES and HIGHLIGHT-THEME arguments.
 
   Example usage:
 
@@ -170,6 +174,8 @@
                    :clean-urls clean-urls
                    :downcase-uppercase-code downcase-uppercase-code
                    :theme theme
+                   :highlight-languages highlight-languages
+                   :highlight-theme highlight-theme
                    :format :html))
 
 ;;; Generate with the default HTML look
@@ -189,7 +195,8 @@
          (document (if 40ants-doc/link:*document-link-code*
                        (40ants-doc/commondoc/page::replace-xrefs document references
                                                                  :base-url base-url)
-                       document)))
+                       document))
+         (document (40ants-doc/commondoc/image::replace-images document)))
     document))
 
 
@@ -214,14 +221,16 @@
                                            stream))))))
 
 
-(defun render-to-files (sections &key (theme '40ants-doc/themes/default::default-theme)
+(defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
                                       (base-dir #P"./")
                                       (base-url nil)
                                       (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
                                       (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
                                       (clean-urls 40ants-doc/rewrite::*clean-urls*)
                                       (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
-                                      (format :html))
+                                      (format :html)
+                                      highlight-languages
+                                      highlight-theme)
   "Renders given sections or pages into a files on disk.
 
    By default, it renders in to HTML, but you can specify FORMAT argument.
@@ -241,7 +250,20 @@
    markdown files together with HTML.
 
    If DOWNCASE-UPPERCASE-CODE is true, then all references to symbols will be
-   downcased."
+   downcased.
+
+   THEME argument should be a theme class name. By default it is
+   40ANTS-DOC/THEMES/DEFAULT:DEFAULT-THEME. See 40ANTS-DOC/THEMES/DEFAULT::@DEFINING-A-THEME
+   to learn how to define themes.
+
+   HIGHLIGHT-LANGUAGES and HIGHLIGHT-THEME arguments allow to redefine theme's
+   settings for Highlight.js. Languages should be a list of strings where each
+   item is a language name, [supported by Highlight.js][langs]. Theme should be a
+   name of a supported theme. You can preview different highlighting themes [here][themes]
+
+   [langs]: https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
+   [themes]: https://highlightjs.org/static/demo/
+"
 
   (setf format
         (40ants-doc/commondoc/format::ensure-format-class-name format))
@@ -253,106 +275,90 @@
         (40ants-doc/commondoc/page::*warn-on-undocumented-packages* warn-on-undocumented-packages)
         (40ants-doc/rewrite::*clean-urls* clean-urls)
         (40ants-doc/reference-api:*source-uri-fn* source-uri-fn)
-        (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code))
+        (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code)
+        (40ants-doc/builder/vars::*base-dir* base-dir))
     
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
                               (incf num-warnings))))
       (40ants-doc/commondoc/format:with-format (format)
-        (let* ((theme (make-instance theme))
-               (sections (uiop:ensure-list sections))
-               (pages (mapcar #'40ants-doc/page:ensure-page sections))
-               (page-documents (mapcar
-                                #'40ants-doc/commondoc/builder:to-commondoc
-                                pages))
-               (full-document (process-document
-                               (common-doc:make-document "Documentation"
-                                                         :children page-documents)
-                               :base-url base-url))
-               (absolute-dir (uiop:ensure-absolute-pathname base-dir
-                                                            (probe-file ".")))
-               (css-filename (uiop:merge-pathnames* #P"theme.css" absolute-dir))
-               (40ants-doc/commondoc/toc::*full-document* full-document)
-               (output-paths nil))
+        (40ants-doc/themes/api::with-theme (theme)
+          (let* ((sections (uiop:ensure-list sections))
+                 (pages (mapcar #'40ants-doc/page:ensure-page sections))
+                 (page-documents (mapcar
+                                  #'40ants-doc/commondoc/builder:to-commondoc
+                                  pages))
+                 (full-document (process-document
+                                 (common-doc:make-document "Documentation"
+                                                           :children page-documents)
+                                 :base-url base-url))
+                 (absolute-dir (uiop:ensure-absolute-pathname base-dir
+                                                              (probe-file ".")))
+                 (40ants-doc/commondoc/toc::*full-document* full-document)
+                 (output-paths nil))
 
-          (ensure-directories-exist absolute-dir)
+            (ensure-directories-exist absolute-dir)
 
-          (flet ((make-full-filename (page)
-                   ;; PAGE argument could be either PAGE object or string denoting a relative path
-                   ;; of HTML page.
-                   (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
-                                               (page-base-dir page))
-                                             base-dir))
-                          (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
-                                                                       (probe-file ".")))
-                          (filename (etypecase page
-                                      (40ants-doc/commondoc/page:page
-                                       (40ants-doc/commondoc/page::full-filename page))
-                                      (string
-                                       page))))
-                     (uiop:merge-pathnames* filename absolute-dir))))
-            (loop with global-format = format
-                  for document in page-documents
-                  for full-filename = (make-full-filename document)
-                  for format = (or
-                                ;; Page may override global format setting
-                                (page-format document)
-                                global-format)
-                  do (ensure-directories-exist full-filename)
-                     (uiop:with-output-file (stream full-filename
-                                                    :if-exists :supersede)
-                       (common-doc.format:emit-document (make-instance format)
-                                                        document
-                                                        stream)
-                       (push full-filename output-paths)))
-         
-            (when (eql format
-                       'common-html:html)
-              (uiop:with-output-file (stream css-filename
-                                             :if-exists :supersede)
-                (write-string (40ants-doc/themes/api:render-css theme)
-                              stream)
-                (terpri stream))
+            (flet ((make-full-filename (page)
+                     ;; PAGE argument could be either PAGE object or string denoting a relative path
+                     ;; of HTML page.
+                     (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
+                                                 (page-base-dir page))
+                                               base-dir))
+                            (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
+                                                                         (probe-file ".")))
+                            (filename (etypecase page
+                                        (40ants-doc/commondoc/page:page
+                                         (40ants-doc/commondoc/page::full-filename page))
+                                        (string
+                                         page))))
+                       (uiop:merge-pathnames* filename absolute-dir))))
+              (loop with global-format = format
+                    for *current-page* in page-documents
+                    for full-filename = (make-full-filename *current-page*)
+                    for format = (or
+                                  ;; Page may override global format setting
+                                  (page-format *current-page*)
+                                  global-format)
+                    do (ensure-directories-exist full-filename)
+                       (uiop:with-output-file (stream full-filename
+                                                      :if-exists :supersede)
+                         (common-doc.format:emit-document (make-instance format)
+                                                          *current-page*
+                                                          stream)
+                         (push full-filename output-paths)))
+             
+              (when (eql format
+                         'common-html:html)
+                (40ants-doc/themes/api::render-static absolute-dir
+                                                      :highlight-languages highlight-languages
+                                                      :highlight-theme highlight-theme)
 
-              (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
-                                                                :title "Search Page"
-                                                                :format :html))
-                     (filename (make-full-filename page)))
-                (ensure-directories-exist filename)
-                (uiop:with-output-file (common-html.emitter::*output-stream*
-                                        filename
-                                        :if-exists :supersede)
-                  (40ants-doc/commondoc/page::emit-search-page page))
+                (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
+                                                                  :title "Search Page"
+                                                                  :format :html))
+                       (filename (make-full-filename page)))
+                  (ensure-directories-exist filename)
+                  (uiop:with-output-file (common-html.emitter::*output-stream*
+                                          filename
+                                          :if-exists :supersede)
+                    (40ants-doc/commondoc/page::emit-search-page page))
 
-                (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
-                                               :if-exists :supersede)
-                  (write-string (40ants-doc/search::generate-search-index full-document page)
-                                stream)
-                  (terpri stream)))
+                  (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
+                                                 :if-exists :supersede)
+                    (write-string (40ants-doc/search::generate-search-index full-document page)
+                                  stream)
+                    (terpri stream)))))
 
-              (loop with paths = '(("toc.js" "toc.js")
-                                   ("highlight/highlight.min.js" "highlight.min.js")
-                                   ("highlight/styles/atom-one-dark.min.css" "highlight.min.css")
-                                   ("search/searchtools.js" "searchtools.js")
-                                   ("search/language_data.js" "language_data.js")
-                                   ("search/doctools.js" "doctools.js")
-                                   ("underscore.js" "underscore.js")
-                                   ("jquery.js" "jquery.js"))
-                    for (from to) in paths
-                    do (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
-                                                                      (concatenate 'string
-                                                                                   "static/" from))
-                                       (uiop:merge-pathnames* to absolute-dir)))))
-
-          (unless (zerop num-warnings)
-            (warn "~A warning~:P ~A caught"
-                  num-warnings
-                  (if (= num-warnings 1)
-                      "was"
-                      "were")))
-          (apply #'values
-                 absolute-dir
-                 (nreverse output-paths)))))))
+            (unless (zerop num-warnings)
+              (warn "~A warning~:P ~A caught"
+                    num-warnings
+                    (if (= num-warnings 1)
+                        "was"
+                        "were")))
+            (apply #'values
+                   absolute-dir
+                   (nreverse output-paths))))))))
 
 
 (defvar *document-html-top-blocks-of-links* ()

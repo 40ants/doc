@@ -20,3 +20,15 @@
   "If true, then the names of symbols recognized as code (including
   those found if *DOCUMENT-UPPERCASE-IS-CODE*) are downcased in the
   output if they only consist of uppercase characters.")
+
+
+(defvar *base-dir*)
+(setf (documentation '*base-dir* 'variable)
+      "This variable will be set to BASE-DIR argument value when calling RENDER-TO-FILES function.
+
+       Some code might use it to place static files near HTML files.")
+
+
+(defvar *current-page*)
+(setf (documentation '*current-page* 'variable)
+      "This variable will be set to a current page when rendering documents inside RENDER-TO-FILES function.")

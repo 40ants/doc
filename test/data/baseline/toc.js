@@ -3,7 +3,7 @@
 
 $(document).ready(function() {
   $(window).scroll(function() {
-      $("#page-toc p").removeClass("toc-active");
+      $(".page-toc p").removeClass("toc-active");
       currentAnchor().addClass("toc-active");
   })
 });
@@ -31,7 +31,7 @@ var _anchors = null;
 
 function anchors() {
     if (!_anchors) {
-        _anchors = $("#page-toc a").map(function() {
+        _anchors = $(".page-toc a").map(function() {
             return $(this).attr("href");
         })
     }
