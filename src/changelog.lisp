@@ -117,6 +117,7 @@
                               "UPDATE-ASDF-SYSTEM-README"
                               "README"
                               "HTML"
+                              "RSS"
                               "URL"
                               "JS"
                               "MGL-PAX:DEFINE-PACKAGE"
