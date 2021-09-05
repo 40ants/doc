@@ -65,7 +65,7 @@
   (with-rss2 (stream)
     (rss-channel-header (if 40ants-doc/builder/vars::*current-asdf-system*
                             (format nil "~A ChangeLog"
-                                    (asdf:component-name
+                                    (asdf:primary-system-name
                                      40ants-doc/builder/vars::*current-asdf-system*))
                             "ChangeLog")
                         (if (boundp '*base-url*)
