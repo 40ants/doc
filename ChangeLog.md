@@ -2,6 +2,13 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E4-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.4.1
+
+* Function [`40ants-doc/builder:get-current-asdf-system`][15d3] was added. Now you can use it to do something interesting
+   like showing "Fork me on the GitHub" stripe [as my own theme do][2fa5].
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E4-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.4.0
@@ -118,6 +125,7 @@ of [`40ants-doc/builder:render-to-files`][05c0] function.
 
 
 [d889]: https://40ants.com/doc/#x-28-23A-28-2820-29-20BASE-CHAR-20-2E-20-2240ANTS-DOC-2FLOCATIVES-22-29-20PACKAGE-29
+[15d3]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3AGET-CURRENT-ASDF-SYSTEM-20FUNCTION-29
 [05c0]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29
 [0983]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
 [8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
@@ -125,5 +133,6 @@ of [`40ants-doc/builder:render-to-files`][05c0] function.
 [bcaa]: https://40ants.com/doc/#x-2840ANTS-DOC-2FTHEMES-2FDOCS-3A-3A-40DEFINING-A-THEME-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [4e8b]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [ad02]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-COPY-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
+[2fa5]: https://github.com/40ants/40ants-doc-theme-40ants/commit/917a4c1e72b0379f509bdee4864531e641c9ec4e#diff-47d16baea2d4ef710747f19c24df8cf7ef4f6bbbfd1dbb0ade55f47457b1e8feR155-R161
 [7927]: https://github.com/melisgl/mgl-pax
 [140c]: https://www.sphinx-doc.org/
