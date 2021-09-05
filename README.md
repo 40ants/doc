@@ -72,7 +72,7 @@ I'm planning to extend this fork even more. Read [`todo`][e36f] section to learn
 proposed features or [start a new discussion][6f00]
 on the GitHub to suggest a new feature.
 
-See full list of changes in the [`Changes`][8f05] section.
+See full list of changes in the [`ChangeLog`][8f05] section.
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40FULL-DOC-LINK-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -199,11 +199,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](d306) `foo-random:foo-random-state` ()
+## [class](0792) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](2759) `foo-random:state` (foo-random-state) ()
+## [reader](60f8) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -211,24 +211,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](5425) `common-lisp:print-object` (object foo-random-state) stream
+## [method](9482) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](a283) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](8dc1) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](7aec) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](04e5) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](1ba9) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](e742) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -251,12 +251,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[d306]: https://github.com/40ants/doc/blob/933fe7a77aab574afe5cc4210a4c7b36fb12c115/tutorial.lisp#L34
-[2759]: https://github.com/40ants/doc/blob/933fe7a77aab574afe5cc4210a4c7b36fb12c115/tutorial.lisp#L35
-[5425]: https://github.com/40ants/doc/blob/933fe7a77aab574afe5cc4210a4c7b36fb12c115/tutorial.lisp#L38
-[a283]: https://github.com/40ants/doc/blob/933fe7a77aab574afe5cc4210a4c7b36fb12c115/tutorial.lisp#L41
-[1ba9]: https://github.com/40ants/doc/blob/933fe7a77aab574afe5cc4210a4c7b36fb12c115/tutorial.lisp#L44
-[7aec]: https://github.com/40ants/doc/blob/933fe7a77aab574afe5cc4210a4c7b36fb12c115/tutorial.lisp#L50
+[0792]: https://github.com/40ants/doc/blob/c8a330099e35773680659d3f32ea152340ac7ee7/tutorial.lisp#L34
+[60f8]: https://github.com/40ants/doc/blob/c8a330099e35773680659d3f32ea152340ac7ee7/tutorial.lisp#L35
+[9482]: https://github.com/40ants/doc/blob/c8a330099e35773680659d3f32ea152340ac7ee7/tutorial.lisp#L38
+[8dc1]: https://github.com/40ants/doc/blob/c8a330099e35773680659d3f32ea152340ac7ee7/tutorial.lisp#L41
+[e742]: https://github.com/40ants/doc/blob/c8a330099e35773680659d3f32ea152340ac7ee7/tutorial.lisp#L44
+[04e5]: https://github.com/40ants/doc/blob/c8a330099e35773680659d3f32ea152340ac7ee7/tutorial.lisp#L50
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
