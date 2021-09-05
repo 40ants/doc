@@ -95,6 +95,11 @@
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
+  (0.4.1 ;; 2021-09-05
+   "- Function 40ANTS-DOC/BUILDER:GET-CURRENT-ASDF-SYSTEM was added. Now you can use it to do something interesting
+      like showing \"Fork me on the GitHub\" stripe [as my own theme do][commit].
+
+   [commit]: https://github.com/40ants/40ants-doc-theme-40ants/commit/917a4c1e72b0379f509bdee4864531e641c9ec4e#diff-47d16baea2d4ef710747f19c24df8cf7ef4f6bbbfd1dbb0ade55f47457b1e8feR155-R161")
   (0.4.0 ;; 2021-09-05
    "- *DOCUMENT-NORMALIZE-PACKAGES* variable was replaced with FULL-PACKAGE-NAMES argument
       of 40ANTS-DOC/BUILDER:RENDER-TO-FILES function.")

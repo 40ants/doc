@@ -29,7 +29,8 @@
    #:*document-html-bottom-blocks-of-links*
    #:render-to-string
    #:render-to-files
-   #:update-asdf-system-docs))
+   #:update-asdf-system-docs
+   #:get-current-asdf-system))
 (in-package 40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -51,6 +52,7 @@
    to serve the common case of having an ASDF system with a readme and a directory for the
   HTML documentation."
   (update-asdf-system-docs function)
+  (get-current-asdf-system function)
   (*document-html-top-blocks-of-links* variable)
   (*document-html-bottom-blocks-of-links* variable)
   (@rendering-multiple-formats section)
@@ -149,36 +151,47 @@
 
   If you want a more generic wrapper for building documentation for your projects,
   take a look at [DOCS-BUILDER](https://40ants.com/docs-builder/)."
-  (render-to-files (append (uiop:ensure-list sections-or-pages)
-                           (when readme-sections
-                             (uiop:ensure-list
-                              (40ants-doc/page:make-page readme-sections
-                                                         :base-filename "README"
-                                                         :base-dir (asdf:system-relative-pathname
-                                                                    asdf-system
-                                                                    "./")
-                                                         :format :markdown)))
-                           (when changelog-sections
-                             (uiop:ensure-list
-                              (40ants-doc/page:make-page changelog-sections
-                                                         :base-filename "ChangeLog"
-                                                         :base-dir (asdf:system-relative-pathname
-                                                                    asdf-system
-                                                                    "./")
-                                                         :format :markdown))))
-                   :base-dir (asdf:system-relative-pathname
-                              asdf-system
-                              (uiop:ensure-directory-pathname docs-dir))
-                   :base-url base-url
-                   :source-uri-fn (40ants-doc/github:make-github-source-uri-fn asdf-system)
-                   :warn-on-undocumented-packages warn-on-undocumented-packages
-                   :clean-urls clean-urls
-                   :downcase-uppercase-code downcase-uppercase-code
-                   :theme theme
-                   :highlight-languages highlight-languages
-                   :highlight-theme highlight-theme
-                   :full-package-names full-package-names
-                   :format :html))
+  (let ((40ants-doc/builder/vars::*current-asdf-system*
+          (asdf:find-system asdf-system)))
+    (render-to-files (append (uiop:ensure-list sections-or-pages)
+                             (when readme-sections
+                               (uiop:ensure-list
+                                (40ants-doc/page:make-page readme-sections
+                                                           :base-filename "README"
+                                                           :base-dir (asdf:system-relative-pathname
+                                                                      asdf-system
+                                                                      "./")
+                                                           :format :markdown)))
+                             (when changelog-sections
+                               (uiop:ensure-list
+                                (40ants-doc/page:make-page changelog-sections
+                                                           :base-filename "ChangeLog"
+                                                           :base-dir (asdf:system-relative-pathname
+                                                                      asdf-system
+                                                                      "./")
+                                                           :format :markdown))))
+                     :base-dir (asdf:system-relative-pathname
+                                asdf-system
+                                (uiop:ensure-directory-pathname docs-dir))
+                     :base-url base-url
+                     :source-uri-fn (40ants-doc/github:make-github-source-uri-fn asdf-system)
+                     :warn-on-undocumented-packages warn-on-undocumented-packages
+                     :clean-urls clean-urls
+                     :downcase-uppercase-code downcase-uppercase-code
+                     :theme theme
+                     :highlight-languages highlight-languages
+                     :highlight-theme highlight-theme
+                     :full-package-names full-package-names
+                     :format :html)))
+
+
+(defun get-current-asdf-system ()
+  "Returns an ASDF system currently documented by call to UPDATE-ASDF-SYSTEM-DOCS.
+
+   This function can be used by your extensions to do add some additional features
+   like github stripe \"Fork Me\"."
+  40ants-doc/builder/vars::*current-asdf-system*)
+
 
 ;;; Generate with the default HTML look
 

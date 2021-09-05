@@ -32,3 +32,6 @@
 (defvar *current-page*)
 (setf (documentation '*current-page* 'variable)
       "This variable will be set to a current page when rendering documents inside RENDER-TO-FILES function.")
+
+
+(defvar *current-asdf-system* nil)
