@@ -20,7 +20,8 @@
   (:import-from #:40ants-doc/commondoc/format)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
-  (:import-from #:str))
+  (:import-from #:str)
+  (:import-from #:40ants-doc/commondoc/page))
 (in-package 40ants-doc/commondoc/changelog)
 
 
