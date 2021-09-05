@@ -2,7 +2,8 @@
   (:use #:cl)
   (:import-from #:40ants-doc/commondoc/section
                 #:documentation-section
-                #:make-documentation-section))
+                #:make-documentation-section)
+  (:import-from #:40ants-doc/changelog))
 (in-package 40ants-doc/commondoc/changelog)
 
 
