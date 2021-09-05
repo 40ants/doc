@@ -1,5 +1,7 @@
 (defpackage #:40ants-doc/commondoc/changelog
   (:use #:cl)
+  (:import-from #:40ants-doc/builder/vars
+                #:*base-url*)
   (:import-from #:40ants-doc/commondoc/section
                 #:documentation-section
                 #:make-documentation-section)
@@ -15,7 +17,10 @@
                 #:rss-channel-header)
   (:import-from #:40ants-doc/builder/vars
                 #:*base-url*)
-  (:import-from #:40ants-doc/commondoc/format))
+  (:import-from #:40ants-doc/commondoc/format)
+  (:import-from #:40ants-doc/commondoc/html
+                #:with-html)
+  (:import-from #:str))
 (in-package 40ants-doc/commondoc/changelog)
 
 
@@ -50,6 +55,23 @@
                     (list (common-doc:make-text (format nil " (~A)"
                                                         date))))))
     version))
+
+
+(defun get-changelog-rss-url ()
+  (when (and (boundp '*base-url*)
+             *base-url*)
+    (concatenate 'string
+                 *base-url*
+                 (unless (str:ends-with-p "/" *base-url*)
+                   "/")
+                 "changelog.xml")))
+
+
+(defmethod 40ants-doc/commondoc/section::emit-html-after-title ((node changelog))
+  (with-html
+    (when-let ((url (get-changelog-rss-url)))
+      (:a :class "rss-icon"
+          :href url))))
 
 
 (defmethod common-doc.format:emit-document ((format rss-feed)

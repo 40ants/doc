@@ -102,10 +102,20 @@
   (make-documentation-section obj))
 
 
+(defgeneric emit-html-after-title (obj)
+  (:method ((obj documentation-section))
+    (let ((uri-fragment (common-doc:reference obj)))
+      (with-html
+        (:a :href (format nil "#~A" uri-fragment)
+            :title "Permalink to this headline"
+            :id uri-fragment
+            :class "header-link"
+            "¶")))))
+
+
 (common-html.emitter::define-emitter (obj documentation-section)
   "Emit a documentation section with a link."
-  (let ((uri-fragment (common-doc:reference obj))
-        ;; Here we change package to a package for which section was defined,
+  (let (;; Here we change package to a package for which section was defined,
         ;; to make all symbols from this package be printed in their short form
         ;; without package prefix.
         (*package* (object-package obj)))
@@ -114,11 +124,7 @@
             (progn
               (emit (common-doc:title obj))
               (values))
-            (:a :href (format nil "#~A" uri-fragment)
-                :title "Permalink to this headline"
-                :id uri-fragment
-                :class "header-link"
-                "¶"))
+            (emit-html-after-title obj))
       (incf *section-depth*)
       (emit (common-doc:children obj))
       (decf *section-depth*))))

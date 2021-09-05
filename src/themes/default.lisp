@@ -8,8 +8,7 @@
   (:import-from #:40ants-doc/utils
                 #:make-relative-path)
   (:import-from #:40ants-doc/rewrite)
-  (:import-from #:40ants-doc/builder/vars
-                #:*base-url*)
+  (:import-from #:40ants-doc/commondoc/changelog)
   (:export #:default-theme))
 (in-package 40ants-doc/themes/default)
 
@@ -20,7 +19,7 @@
 
 (defmethod render-css ((theme default-theme))
   (lass:compile-and-write
-   '(body
+   `(body
      :font-family "sans-serif"
      :margin "auto"
      :background-color "#FFFEFB"
@@ -223,6 +222,19 @@
        (li
         :margin-bottom 1em)))
 
+     (.rss-icon
+      :background ,(alexandria:read-file-into-string
+                    (asdf:system-relative-pathname :40ants-doc
+                                                   "static/rss-icon.base64"))
+      :width 1em
+      :height 1em
+      :background-size 1em 1em !important
+      :margin-left 0.3em
+      :user-select none
+      :display inline-block
+      :text-decoration none
+      :border none)
+     
      (.unresolved-reference
       :color magenta))))
 
@@ -259,13 +271,7 @@
         (highlight-js-uri (make-relative-path uri "highlight.min.js"))
         (jquery-uri (make-relative-path uri "jquery.js"))
         (toc-js-uri (make-relative-path uri "toc.js"))
-        (rss-url (when (and (boundp '*base-url*)
-                            *base-url*)
-                   (concatenate 'string
-                                *base-url*
-                                (unless (str:ends-with-p "/" *base-url*)
-                                  "/")
-                                "changelog.xml"))))
+        (rss-url (40ants-doc/commondoc/changelog::get-changelog-rss-url)))
     (with-html
       (:meta :name "viewport"
              :content "width=device-width, initial-scale=1")
