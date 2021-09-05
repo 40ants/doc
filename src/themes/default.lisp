@@ -8,6 +8,8 @@
   (:import-from #:40ants-doc/utils
                 #:make-relative-path)
   (:import-from #:40ants-doc/rewrite)
+  (:import-from #:40ants-doc/builder/vars
+                #:*base-url*)
   (:export #:default-theme))
 (in-package 40ants-doc/themes/default)
 
@@ -256,11 +258,18 @@
         (highlight-css-uri (make-relative-path uri "highlight.min.css"))
         (highlight-js-uri (make-relative-path uri "highlight.min.js"))
         (jquery-uri (make-relative-path uri "jquery.js"))
-        (toc-js-uri (make-relative-path uri "toc.js")))
+        (toc-js-uri (make-relative-path uri "toc.js"))
+        (rss-url (when (and (boundp '*base-url*)
+                            *base-url*)
+                   (format nil "~Achangelog.xml" *base-url*))))
     (with-html
       (:meta :name "viewport"
              :content "width=device-width, initial-scale=1")
       (:title title)
+      (when rss-url
+        (:link :rel "alternate"
+               :href rss-url
+               :type "application/rss+xml"))
       (:link :rel "stylesheet"
              :type "text/css"
              :href theme-uri)

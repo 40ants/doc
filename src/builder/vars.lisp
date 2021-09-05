@@ -28,6 +28,10 @@
 
        Some code might use it to place static files near HTML files.")
 
+(defvar *base-url*)
+(setf (documentation '*base-url* 'variable)
+      "This variable will be set to BASE-URL argument value when calling RENDER-TO-FILES function.")
+
 
 (defvar *current-page*)
 (setf (documentation '*current-page* 'variable)

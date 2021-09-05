@@ -155,7 +155,7 @@
           (asdf:find-system asdf-system)))
     (render-to-files (append (uiop:ensure-list sections-or-pages)
                              (when readme-sections
-                               (uiop:ensure-list
+                               (list
                                 (40ants-doc/page:make-page readme-sections
                                                            :base-filename "README"
                                                            :base-dir (asdf:system-relative-pathname
@@ -163,13 +163,16 @@
                                                                       "./")
                                                            :format :markdown)))
                              (when changelog-sections
-                               (uiop:ensure-list
+                               (list
                                 (40ants-doc/page:make-page changelog-sections
                                                            :base-filename "ChangeLog"
                                                            :base-dir (asdf:system-relative-pathname
                                                                       asdf-system
                                                                       "./")
-                                                           :format :markdown))))
+                                                           :format :markdown)
+                                (40ants-doc/page:make-page changelog-sections
+                                                           :base-filename "changelog"
+                                                           :format '40ants-doc/commondoc/changelog::rss-feed))))
                      :base-dir (asdf:system-relative-pathname
                                 asdf-system
                                 (uiop:ensure-directory-pathname docs-dir))
@@ -302,6 +305,7 @@
         (40ants-doc/reference-api:*source-uri-fn* source-uri-fn)
         (40ants-doc/builder/vars::*downcase-uppercase-code* downcase-uppercase-code)
         (40ants-doc/builder/vars::*base-dir* base-dir)
+        (40ants-doc/builder/vars::*base-url* base-url)
         (40ants-doc/builder/printer::*full-package-names* full-package-names))
     
     (handler-bind ((warning (lambda (c)
