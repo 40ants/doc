@@ -261,7 +261,11 @@
         (toc-js-uri (make-relative-path uri "toc.js"))
         (rss-url (when (and (boundp '*base-url*)
                             *base-url*)
-                   (format nil "~Achangelog.xml" *base-url*))))
+                   (concatenate 'string
+                                *base-url*
+                                (unless (str:ends-with-p "/" *base-url*)
+                                  "/")
+                                "changelog.xml"))))
     (with-html
       (:meta :name "viewport"
              :content "width=device-width, initial-scale=1")
