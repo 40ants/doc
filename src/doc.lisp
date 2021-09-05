@@ -22,7 +22,6 @@
                 #:@changelog)
   (:import-from #:40ants-doc/themes/default)
   (:import-from #:40ants-doc/themes/docs)
-  (:import-from #:40ants-doc-theme-40ants)
   (:import-from #:docs-config
                 #:docs-config)
   (:export
@@ -675,4 +674,10 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 
 
 (defmethod docs-config ((system (eql (asdf:find-system "40ants-doc"))))
-  (list :theme '40ants-doc-theme-40ants:40ants-theme))
+  ;; 40ANTS-DOC-THEME-40ANTS system will bring
+  ;; as dependency a full 40ANTS-DOC but we don't want
+  ;; unnecessary dependencies here:
+  (ql:quickload :40ants-doc-theme-40ants)
+  (list :theme
+        (find-symbol "40ANTS-THEME"
+                     (find-package "40ANTS-DOC-THEME-40ANTS"))))
