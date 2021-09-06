@@ -1,6 +1,8 @@
 (uiop:define-package #:40ants-doc/builder
   (:use #:cl)
-  (:import-from #:alexandria)
+  (:import-from #:dexador)
+  (:import-from #:alexandria
+                #:assoc-value)
   (:import-from #:3bmd)
   (:import-from #:3bmd-code-blocks)
   (:import-from #:named-readtables)
@@ -24,6 +26,8 @@
   (:import-from #:40ants-doc/commondoc/transcribe)
   (:import-from #:40ants-doc/changelog)
   (:import-from #:40ants-doc/commondoc/image)
+  (:import-from #:40ants-doc/reference
+                #:make-external-reference)
   (:export
    #:*document-html-top-blocks-of-links*
    #:*document-html-bottom-blocks-of-links*
@@ -103,17 +107,18 @@
 (defun update-asdf-system-docs (sections-or-pages
                                 asdf-system
                                 &key
-                                (readme-sections nil)
-                                (changelog-sections nil)
-                                (theme '40ants-doc/themes/default::default-theme)
-                                (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
-                                (base-url nil)
-                                (docs-dir #P"docs/")
-                                (clean-urls 40ants-doc/rewrite::*clean-urls*)
-                                (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
-                                highlight-languages
-                                highlight-theme
-                                (full-package-names t))
+                                  (readme-sections nil)
+                                  (changelog-sections nil)
+                                  (theme '40ants-doc/themes/default::default-theme)
+                                  (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
+                                  (base-url nil)
+                                  (docs-dir #P"docs/")
+                                  (clean-urls 40ants-doc/rewrite::*clean-urls*)
+                                  (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
+                                  highlight-languages
+                                  highlight-theme
+                                  external-reference-urls
+                                  (full-package-names t))
   "Generate pretty HTML documentation for a single ASDF system,
   possibly linking to github. If you are migrating from MGL-PAX,
   then note, this function replaces UPDATE-ASDF-SYSTEM-HTML-DOCS
@@ -185,6 +190,7 @@
                      :highlight-languages highlight-languages
                      :highlight-theme highlight-theme
                      :full-package-names full-package-names
+                     :external-reference-urls external-reference-urls
                      :format :html)))
 
 
@@ -198,8 +204,11 @@
 
 ;;; Generate with the default HTML look
 
-(defun process-document (document &key base-url)
-  (let* ((references (40ants-doc/commondoc/page::collect-references document))
+(defun process-document (document &key base-url external-reference-urls)
+  (let* ((references (append (40ants-doc/commondoc/page::collect-references document)
+                             (loop for url in external-reference-urls
+                                   appending (loop for ref in (read-references-index url)
+                                                   collect (cons ref :no-page)))))
          (document (40ants-doc/commondoc/page:warn-on-missing-exports document))
          (document (40ants-doc/commondoc/page:warn-on-undocumented-exports document
                                                                            references))
@@ -215,12 +224,14 @@
                                                                  :base-url base-url)
                        document))
          (document (40ants-doc/commondoc/image::replace-images document)))
-    document))
+    (values document
+            references)))
 
 
 (defun render-to-string (object &key (format :html)
-                                     (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
-                                     (full-package-names t))
+                                  (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
+                                  (full-package-names t)
+                                  external-reference-urls)
   "Renders given CommonDoc node into the string using specified format.
    Supported formats are :HTML and :MARKDOWN.
 
@@ -233,7 +244,8 @@
       (let* ((document
                (40ants-doc/commondoc/builder:to-commondoc object))
              (processed-document
-               (process-document document))
+               (process-document document
+                                 :external-reference-urls external-reference-urls))
              (40ants-doc/builder/printer::*full-package-names* full-package-names))
         (uiop/cl:with-output-to-string (stream)
           (common-doc.format:emit-document (make-instance format)
@@ -242,19 +254,71 @@
 
 (defun write-footer-for-markdown (format stream)
   (when (typep format 'commondoc-markdown:markdown)
-    (format stream "~2&[generated by [40ANTS-DOC](https://40ants.com/doc/)]~%")))
+    (format stream "~2&* * *~&###### [generated by [40ANTS-DOC](https://40ants.com/doc/)]~%")))
+
+
+(defun make-full-reference-url (reference page base-url-or-dir)
+  (let* ((page-uri (40ants-doc/commondoc/page:full-filename page))
+         (rewritten-link-uri (40ants-doc/rewrite::rewrite-url page-uri))
+         (fragment (40ants-doc/utils::html-safe-name
+                    (40ants-doc/reference::reference-to-anchor reference))))
+    (concatenate 'string
+                 (etypecase base-url-or-dir
+                   (pathname (namestring base-url-or-dir))
+                   (string base-url-or-dir))
+                 (when (and (typep base-url-or-dir 'string)
+                            (not (str:ends-with-p "/" base-url-or-dir)))
+                   "/")
+                 rewritten-link-uri
+                 "#"
+                 fragment)))
+
+(defun write-references-index (filename references base-url-or-dir)
+  
+  (loop with *package* = (find-package :keyword)
+        for (reference . page) in references
+        for url = (make-full-reference-url reference page base-url-or-dir)
+        for object = (40ants-doc/reference:reference-object reference)
+        for locative = (40ants-doc/reference:reference-locative reference)
+        collect (list (cons :url url)
+                      (cons :object
+                            (prin1-to-string object))
+                      (cons :locative locative)) into items
+        finally 
+           (alexandria:write-string-into-file
+            (jonathan:to-json items :from :alist)
+            filename
+            :if-exists :supersede)))
+
+
+(defun read-references-index (filename-or-url)
+  (check-type filename-or-url (or pathname string))
+  (loop with data = (cond
+                      ((and (typep filename-or-url 'string)
+                            (or (str:starts-with-p "https://" filename-or-url)
+                                (str:starts-with-p "http://" filename-or-url)))
+                       (dex:get filename-or-url))
+                      (t
+                       (alexandria:read-file-into-string filename-or-url)))
+        with items = (jonathan:parse data :as :alist)
+        for item in items
+        collect (make-external-reference (assoc-value item "object" :test #'string-equal)
+                                         (assoc-value item "locative" :test #'string-equal)
+                                         (assoc-value item "url" :test #'string-equal))))
+
 
 (defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
-                                      (base-dir #P"./")
-                                      (base-url nil)
-                                      (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
-                                      (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
-                                      (clean-urls 40ants-doc/rewrite::*clean-urls*)
-                                      (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
-                                      (format :html)
-                                      highlight-languages
-                                      highlight-theme
-                                      (full-package-names t))
+                                   (base-dir #P"./")
+                                   (base-url nil)
+                                   (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
+                                   (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
+                                   (clean-urls 40ants-doc/rewrite::*clean-urls*)
+                                   (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
+                                   (format :html)
+                                   highlight-languages
+                                   highlight-theme
+                                   external-reference-urls
+                                   (full-package-names t))
   "Renders given sections or pages into a files on disk.
 
    By default, it renders in to HTML, but you can specify FORMAT argument.
@@ -289,6 +353,10 @@
    are rendered in their fully qualified form. This helps a lot when you are documenting
    a package inferred ASDF system.
 
+   When building HTML documentation, this function also renders and index file `references.json
+   with references to all documented entities. You can give a list of urls to such reference files
+   as EXTERNAL-REFERENCE-URLS argument if you want to reference entities from other libraries.
+
    [langs]: https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
    [themes]: https://highlightjs.org/static/demo/
 "
@@ -317,80 +385,88 @@
                  (pages (mapcar #'40ants-doc/page:ensure-page sections))
                  (page-documents (mapcar
                                   #'40ants-doc/commondoc/builder:to-commondoc
-                                  pages))
-                 (full-document (process-document
-                                 (common-doc:make-document "Documentation"
-                                                           :children page-documents)
-                                 :base-url base-url))
-                 (absolute-dir (uiop:ensure-absolute-pathname base-dir
-                                                              (probe-file ".")))
-                 (40ants-doc/commondoc/toc::*full-document* full-document)
-                 (output-paths nil))
+                                  pages)))
+            (multiple-value-bind (full-document references)
+                (process-document (common-doc:make-document "Documentation"
+                                                            :children page-documents)
+                                  :base-url base-url
+                                  :external-reference-urls external-reference-urls)
+              (let* ((absolute-dir (uiop:ensure-directory-pathname
+                                    (uiop:ensure-absolute-pathname base-dir
+                                                                   (probe-file "."))))
+                     (40ants-doc/commondoc/toc::*full-document* full-document)
+                     (output-paths nil))
+                
+                (ensure-directories-exist absolute-dir)
 
-            (ensure-directories-exist absolute-dir)
+                (when (eql 40ants-doc/commondoc/format::*current-format* 'common-html:html)
+                  (write-references-index (uiop:merge-pathnames* "references.json" absolute-dir)
+                                          references
+                                          (or base-url
+                                              absolute-dir)))
 
-            (flet ((make-full-filename (page)
-                     ;; PAGE argument could be either PAGE object or string denoting a relative path
-                     ;; of HTML page.
-                     (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
-                                                 (page-base-dir page))
-                                               base-dir))
-                            (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
-                                                                         (probe-file ".")))
-                            (filename (etypecase page
-                                        (40ants-doc/commondoc/page:page
-                                         (40ants-doc/commondoc/page::full-filename page))
-                                        (string
-                                         page))))
-                       (uiop:merge-pathnames* filename absolute-dir))))
-              (loop with global-format = format
-                    for *current-page* in page-documents
-                    for full-filename = (make-full-filename *current-page*)
-                    for format-type = (or
-                                       ;; Page may override global format setting
-                                       (page-format *current-page*)
-                                       global-format)
-                    for format = (make-instance format-type)
-                    do (ensure-directories-exist full-filename)
-                       (uiop:with-output-file (stream full-filename
-                                                      :if-exists :supersede)
-                         (common-doc.format:emit-document format
-                                                          *current-page*
-                                                          stream)
-                         (write-footer-for-markdown format stream)
-                         (push full-filename output-paths)))
+                (flet ((make-full-filename (page)
+                         ;; PAGE argument could be either PAGE object or string denoting a relative path
+                         ;; of HTML page.
+                         (let* ((page-base-dir (or (when (typep page '40ants-doc/commondoc/page:page)
+                                                     (page-base-dir page))
+                                                   base-dir))
+                                (absolute-dir (uiop:ensure-absolute-pathname page-base-dir
+                                                                             (probe-file ".")))
+                                (filename (etypecase page
+                                            (40ants-doc/commondoc/page:page
+                                             (40ants-doc/commondoc/page::full-filename page))
+                                            (string
+                                             page))))
+                           (uiop:merge-pathnames* filename absolute-dir))))
+                  (loop with global-format = format
+                        for *current-page* in page-documents
+                        for full-filename = (make-full-filename *current-page*)
+                        for format-type = (or
+                                           ;; Page may override global format setting
+                                           (page-format *current-page*)
+                                           global-format)
+                        for format = (make-instance format-type)
+                        do (ensure-directories-exist full-filename)
+                           (uiop:with-output-file (stream full-filename
+                                                          :if-exists :supersede)
+                             (common-doc.format:emit-document format
+                                                              *current-page*
+                                                              stream)
+                             (write-footer-for-markdown format stream)
+                             (push full-filename output-paths)))
              
-              (when (eql format
-                         'common-html:html)
-                (40ants-doc/themes/api::render-static absolute-dir
-                                                      :highlight-languages highlight-languages
-                                                      :highlight-theme highlight-theme)
+                  (when (eql format
+                             'common-html:html)
+                    (40ants-doc/themes/api::render-static absolute-dir
+                                                          :highlight-languages highlight-languages
+                                                          :highlight-theme highlight-theme)
 
-                (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
-                                                                  :title "Search Page"
-                                                                  :format :html))
-                       (filename (make-full-filename page)))
-                  (ensure-directories-exist filename)
-                  (uiop:with-output-file (common-html.emitter::*output-stream*
-                                          filename
-                                          :if-exists :supersede)
-                    (40ants-doc/commondoc/page::emit-search-page page))
+                    (let* ((page (40ants-doc/commondoc/page:make-page nil "search/index"
+                                                                      :title "Search Page"
+                                                                      :format :html))
+                           (filename (make-full-filename page)))
+                      (ensure-directories-exist filename)
+                      (uiop:with-output-file (common-html.emitter::*output-stream*
+                                              filename
+                                              :if-exists :supersede)
+                        (40ants-doc/commondoc/page::emit-search-page page))
 
-                  (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
-                                                 :if-exists :supersede)
-                    (write-string (40ants-doc/search::generate-search-index full-document page)
-                                  stream)
-                    (terpri stream)))))
+                      (uiop:with-output-file (stream (uiop:merge-pathnames* #P"searchindex.js" absolute-dir)
+                                                     :if-exists :supersede)
+                        (write-string (40ants-doc/search::generate-search-index full-document page)
+                                      stream)
+                        (terpri stream)))))
 
-            (unless (zerop num-warnings)
-              (warn "~A warning~:P ~A caught"
-                    num-warnings
-                    (if (= num-warnings 1)
-                        "was"
-                        "were")))
-            (apply #'values
-                   absolute-dir
-                   (nreverse output-paths))))))))
+                (unless (zerop num-warnings)
+                  (warn "~A warning~:P ~A caught"
+                        num-warnings
+                        (if (= num-warnings 1)
+                            "was"
+                            "were")))
+                (apply #'values
+                       absolute-dir
+                       (nreverse output-paths))))))))))
 
 
 (defvar *document-html-top-blocks-of-links* ()

@@ -337,6 +337,7 @@
 
     (40ants-doc/builder:render-to-files pages
                                         :base-dir basedir
+                                        :base-url "https://40ants.com/doc/"
                                         :format (ecase format
                                                   (:markdown 'commondoc-markdown:markdown)
                                                   (:html 'common-html:html))

@@ -354,7 +354,7 @@
                          :link-title-to (the-object function))
   "Checking how trans work
 
-   THE-OBJECT function and THE-OBJECT class.
+   40ANTS-DOC/BUILDER:RENDER-TO-FILES
 "
   (the-object function)
   )
