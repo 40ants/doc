@@ -21,8 +21,21 @@
   (:documentation "A REFERENCE represents a path (REFERENCE-LOCATIVE)
   to take from an object (REFERENCE-OBJECT)."))
 
+(defclass external-reference (reference)
+  ((url :type string
+        :initarg :url
+        :reader external-reference-url))
+  (:documentation "A full URL of external entity."))
+
 (defun make-reference (object locative)
   (make-instance 'reference :object object :locative locative))
+
+(defun make-external-reference (object locative url)
+  (make-instance 'external-reference :object object
+                                     :locative locative
+                                     :url url))
+(defun external-reference-p (obj)
+  (typep obj 'external-reference))
 
 (defmethod print-object ((object reference) stream)
   (print-unreadable-object (object stream :type t)

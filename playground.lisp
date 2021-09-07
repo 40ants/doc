@@ -351,13 +351,13 @@
                        "https://github.com/40ants/doc")))))
 
 (defsection @experiment (:title "Experiment"
-                         :link-title-to (the-object function))
+                         :link-title-to (the-object function)
+                         :external-docs ("./docs/build/"))
   "Checking how trans work
 
-   THE-OBJECT function and THE-OBJECT class.
+   40ANTS-DOC/BUILDER:RENDER-TO-FILES
 "
-  (the-object function)
-  )
+  (the-object function))
 
 
 (defsection @readme (:title "Experiment")

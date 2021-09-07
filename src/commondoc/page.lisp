@@ -2,14 +2,17 @@
   (:use #:cl)
   (:import-from #:common-doc
                 #:make-code
-                #:make-text)
+                #:make-text
+                #:make-web-link)
   (:import-from #:common-html.emitter)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
   (:import-from #:common-html.emitter
                 #:define-emitter)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/commondoc/section)
+  (:import-from #:40ants-doc/commondoc/section
+                #:documentation-section
+                #:section-definition)
   (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:current-path
@@ -40,6 +43,10 @@
                 #:supports-dislocated-symbols-p)
   (:import-from #:40ants-doc/themes/api
                 #:with-page-template)
+  (:import-from #:alexandria
+                #:when-let)
+  (:import-from #:40ants-doc
+                #:section-external-docs)
   (:export #:make-page
            #:page
            #:make-page-toc
@@ -154,31 +161,6 @@ var DOCUMENTATION_OPTIONS = {
         (:script :src (make-relative-path uri "searchindex.js"))
         
         (:div :id "search-results")))))
-
-
-(defun collect-references (node &aux current-page results)
-  "Returns a list of pairs where the CAR is 40ANTS-DOC/REFERENCE:REFERENCE object
-   and CDR is 40ANTS-DOC/COMMONDOC/PAGE:PAGE."
-  
-  (flet ((track-page (node)
-           (typecase node
-             (page
-              (setf current-page
-                    node))))
-         (collector (node)
-           (let ((node
-                   (when (typep node 'documentation-piece)
-                     (doc-reference node))))
-             (when node
-               (push (cons node
-                           (or current-page
-                               :no-page))
-                     results)))
-           node))
-    (40ants-doc/commondoc/mapper:map-nodes node #'collector
-                                           :on-going-down #'track-page))
-
-  results)
 
 
 (defun warn-on-missing-exports (node)
@@ -477,7 +459,12 @@ var DOCUMENTATION_OPTIONS = {
                        (replacer first-child))
                       (t node))))
                  (40ants-doc/commondoc/xref:xref
-                  (let* ((text (40ants-doc/commondoc/xref:xref-name node))
+                  (let* ((name (40ants-doc/commondoc/xref:xref-name node))
+                         (text (etypecase name
+                                 (string name)
+                                 (common-doc:document-node
+                                  ;; xref-name might return document-node   
+                                  (common-doc.ops:collect-all-text name))))
                          (symbol (40ants-doc/commondoc/xref:xref-symbol node))
                          (locative (40ants-doc/commondoc/xref:xref-locative node))
                          (found-in-dislocated
@@ -540,12 +527,19 @@ var DOCUMENTATION_OPTIONS = {
                          (cond ((= (length found-references) 1)
                                 (destructuring-bind (reference . page)
                                     (first found-references)
-                                  (let* ((object (40ants-doc/reference:resolve reference))
-                                         (text (or (40ants-doc/commondoc/xref:link-text object)
-                                                   text)))
-                                    (make-link reference
-                                               page
-                                               text))))
+                                  (typecase reference
+                                    (40ants-doc/reference::external-reference
+                                     (let ((url (40ants-doc/reference::external-reference-url reference))
+                                           (text (40ants-doc/reference::reference-object reference)))
+                                       (make-web-link url
+                                                      (make-text text))))
+                                    (40ants-doc/reference::reference
+                                     (let* ((object (40ants-doc/reference:resolve reference))
+                                            (text (or (40ants-doc/commondoc/xref:link-text object)
+                                                      text)))
+                                       (make-link reference
+                                                  page
+                                                  text))))))
                                (t
                                 (common-doc:make-content
                                  (append (list (make-code-if-needed text)

@@ -714,5 +714,10 @@
     (maybe-downcase (symbol-name symbol))))
 
 
-;; (defmethod maybe-downcase :before (obj)
-;;   (break))
+(defun url-join (first rest)
+  "Concatenates two pieces of URL while adding / to the end of the FIRST if necessary."
+  (concatenate 'string
+               first
+               (unless (str:ends-with-p "/" first)
+                 "/")
+               rest))

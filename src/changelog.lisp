@@ -138,6 +138,11 @@
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
+  (0.5.0 2021-09-06
+         "- Now 40ANTS-DOC:DEFSECTION macro accepts EXTERNAL-DOCS argument.
+            Together with HTML pages, `references.json` file is rendered, and you can
+            provide a list of urls of external libraries' documentation to have an automatic
+            cross-referencing between them.")
   (0.4.1 2021-09-05
          "- Function 40ANTS-DOC/BUILDER:GET-CURRENT-ASDF-SYSTEM was added. Now you can use it to do something interesting
             like showing \"Fork me on the GitHub\" stripe [as my own theme do][commit].
@@ -146,16 +151,16 @@
 
           [commit]: https://github.com/40ants/40ants-doc-theme-40ants/commit/917a4c1e72b0379f509bdee4864531e641c9ec4e#diff-47d16baea2d4ef710747f19c24df8cf7ef4f6bbbfd1dbb0ade55f47457b1e8feR155-R161")
   (0.4.0 2021-09-05
-   "- *DOCUMENT-NORMALIZE-PACKAGES* variable was replaced with FULL-PACKAGE-NAMES argument
+         "- *DOCUMENT-NORMALIZE-PACKAGES* variable was replaced with FULL-PACKAGE-NAMES argument
       of 40ANTS-DOC/BUILDER:RENDER-TO-FILES function.")
   (0.3.0 2021-09-04
-   "- Now images are copied to target folder together with HTML documentation
+         "- Now images are copied to target folder together with HTML documentation
       and links are adjusted accordingly.
     - Added a protocol to define new color themes and change page layout.
       Three new themes are available out of the box.
       Read more at 40ANTS-DOC/THEMES/DOCS::@DEFINING-A-THEME section.")
   (0.2.0 2021-09-01
-   "- Now defsection does not exports symbols by default
+         "- Now defsection does not exports symbols by default
     - You can render documents in multiple formats in a single run having cross links.
       For example shorter README.md could mention symbols and have correct
       links to the full documentation
@@ -193,7 +198,7 @@
     - Added 40ANTS-DOC:DEFSECTION-COPY macro to define copy of the section but with a different name.")
   
   (0.1.0 2021-05-01
-   "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
+         "- Project forked from [MGL-PAX](https://github.com/melisgl/mgl-pax).
       Code refactored into the package inferred system and core is separated
       to have minimum dependencies.
     - Fixed displaying docstring for constant locative.
