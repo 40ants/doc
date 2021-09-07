@@ -10,7 +10,9 @@
   (:import-from #:common-html.emitter
                 #:define-emitter)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/commondoc/section)
+  (:import-from #:40ants-doc/commondoc/section
+                #:documentation-section
+                #:section-definition)
   (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:current-path
@@ -41,6 +43,10 @@
                 #:supports-dislocated-symbols-p)
   (:import-from #:40ants-doc/themes/api
                 #:with-page-template)
+  (:import-from #:alexandria
+                #:when-let)
+  (:import-from #:40ants-doc
+                #:section-external-docs)
   (:export #:make-page
            #:page
            #:make-page-toc
@@ -155,31 +161,6 @@ var DOCUMENTATION_OPTIONS = {
         (:script :src (make-relative-path uri "searchindex.js"))
         
         (:div :id "search-results")))))
-
-
-(defun collect-references (node &aux current-page results)
-  "Returns a list of pairs where the CAR is 40ANTS-DOC/REFERENCE:REFERENCE object
-   and CDR is 40ANTS-DOC/COMMONDOC/PAGE:PAGE."
-  
-  (flet ((track-page (node)
-           (typecase node
-             (page
-              (setf current-page
-                    node))))
-         (collector (node)
-           (let ((node
-                   (when (typep node 'documentation-piece)
-                     (doc-reference node))))
-             (when node
-               (push (cons node
-                           (or current-page
-                               :no-page))
-                     results)))
-           node))
-    (40ants-doc/commondoc/mapper:map-nodes node #'collector
-                                           :on-going-down #'track-page))
-
-  results)
 
 
 (defun warn-on-missing-exports (node)

@@ -42,7 +42,7 @@
 (deftest test-reference-collection
   (testing "Checking if this section includes two references"
     (let* ((doc (40ants-doc/commondoc/builder::to-commondoc @foo-n-bar))
-           (references-and-pages (40ants-doc/commondoc/page::collect-references doc))
+           (references-and-pages (40ants-doc/commondoc/reference::collect-references doc))
            (references (mapcar #'car references-and-pages)))
       (ok (= (length references)
              3))

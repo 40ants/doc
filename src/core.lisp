@@ -16,7 +16,8 @@
            #:section-entries
            #:*discard-documentation-p*
            #:section-ignore-words
-           #:defsection-copy))
+           #:defsection-copy
+           #:section-external-docs))
 (in-package 40ants-doc)
 
 
@@ -33,6 +34,7 @@
                                  title
                                  link-title-to
                                  (discard-documentation-p *discard-documentation-p*)
+                                 (external-docs nil)
                                  (ignore-words nil))
                       &body entries)
   "Define a documentation section and maybe export referenced symbols.
@@ -95,6 +97,11 @@
   When :DISCARD-DOCUMENTATION-P (defaults to *DISCARD-DOCUMENTATION-P*)
   is true, ENTRIES will not be recorded to save memory.
 
+  EXTERNAL-DOCS argument can be a list of URLs leading to documentation
+  of other libraries. These libraries should be documented using 40ANTS-DOC
+  and you'll be able to mention symbols from them and have automatic
+  cross-links.
+
   :IGNORE-WORDS allows to pass a list of strings which should not cause
   warnings. Usually these are uppercased words which are not symbols
   in the current package, like SLIME, LISP, etc."
@@ -134,6 +141,7 @@
                         :entries ,(if discard-documentation-p
                                       ()
                                       `(transform-entries ',entries))
+                        :external-docs (list ,@(uiop:ensure-list external-docs))
                         :ignore-words (list
                                        ,@(eval ignore-words)))))))
 
@@ -168,6 +176,11 @@
     :reader section-entries
     :documentation "A list of strings and 40ANTS-DOC/REFERENCE:REFERENCE objects in the
     order they occurred in DEFSECTION.")
+   (external-docs
+    :initarg :external-docs
+    :initform nil
+    :reader section-external-docs
+    :documentation "A list of strings with URLs of other system's documentation.")
    (ignore-words
     :initarg :ignore-words
     :initform nil

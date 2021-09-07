@@ -34,6 +34,8 @@
   (make-instance 'external-reference :object object
                                      :locative locative
                                      :url url))
+(defun external-reference-p (obj)
+  (typep obj 'external-reference))
 
 (defmethod print-object ((object reference) stream)
   (print-unreadable-object (object stream :type t)
