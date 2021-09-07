@@ -139,9 +139,9 @@
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
   (0.5.0 2021-09-06
-         "- Now all doc rendering function accept EXTERNAL-REFERENCE-URLS argument.
+         "- Now 40ANTS-DOC:DEFSECTION macro accepts EXTERNAL-DOCS argument.
             Together with HTML pages, `references.json` file is rendered, and you can
-            provide a list of urls of external libraries' references to have an automatic
+            provide a list of urls of external libraries' documentation to have an automatic
             cross-referencing between them.")
   (0.4.1 2021-09-05
          "- Function 40ANTS-DOC/BUILDER:GET-CURRENT-ASDF-SYSTEM was added. Now you can use it to do something interesting
