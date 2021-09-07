@@ -120,7 +120,6 @@
                                   (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
                                   highlight-languages
                                   highlight-theme
-                                  external-reference-urls
                                   (full-package-names t))
   "Generate pretty HTML documentation for a single ASDF system,
   possibly linking to github. If you are migrating from MGL-PAX,
@@ -193,7 +192,6 @@
                      :highlight-languages highlight-languages
                      :highlight-theme highlight-theme
                      :full-package-names full-package-names
-                     :external-reference-urls external-reference-urls
                      :format :html)))
 
 
@@ -256,17 +254,16 @@
 
 
 (defun render-to-files (sections &key (theme '40ants-doc/themes/default:default-theme)
-                                   (base-dir #P"./")
-                                   (base-url nil)
-                                   (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
-                                   (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
-                                   (clean-urls 40ants-doc/rewrite::*clean-urls*)
-                                   (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
-                                   (format :html)
-                                   highlight-languages
-                                   highlight-theme
-                                   external-reference-urls
-                                   (full-package-names t))
+                                      (base-dir #P"./")
+                                      (base-url nil)
+                                      (source-uri-fn 40ants-doc/reference-api:*source-uri-fn*)
+                                      (warn-on-undocumented-packages 40ants-doc/commondoc/page::*warn-on-undocumented-packages*)
+                                      (clean-urls 40ants-doc/rewrite::*clean-urls*)
+                                      (downcase-uppercase-code 40ants-doc/builder/vars::*downcase-uppercase-code*)
+                                      (format :html)
+                                      highlight-languages
+                                      highlight-theme
+                                      (full-package-names t))
   "Renders given sections or pages into a files on disk.
 
    By default, it renders in to HTML, but you can specify FORMAT argument.
