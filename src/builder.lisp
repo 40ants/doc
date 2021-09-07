@@ -243,7 +243,7 @@
              (processed-document
                (process-document document))
              (40ants-doc/builder/printer::*full-package-names* full-package-names))
-        (uiop/cl:with-output-to-string (stream)
+        (with-output-to-string (stream)
           (common-doc.format:emit-document (make-instance format)
                                            processed-document
                                            stream))))))
