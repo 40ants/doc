@@ -27,7 +27,8 @@
   (:import-from #:40ants-doc/utils
                 #:maybe-downcase
                 #:make-relative-path
-                #:is-external)
+                #:is-external
+                #:url-join)
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/commondoc/format)
   (:import-from #:40ants-doc/page
@@ -313,8 +314,7 @@ var DOCUMENTATION_OPTIONS = {
 
 
 (defun make-page-uri (page &key from-page base-url)
-  (let ((filename (full-filename page :from from-page))
-        (base-url (or (page-base-url page)
+  (let ((base-url (or (page-base-url page)
                       base-url)))
     (40ants-doc/rewrite::rewrite-url
      (cond
@@ -328,13 +328,11 @@ var DOCUMENTATION_OPTIONS = {
                       40ants-doc/commondoc/format::*current-format*)
                   'common-html:html)
              base-url)
-        (format nil "~A/~A"
-                (string-right-trim '(#\/)
-                                   base-url)
-                filename))
+        (url-join base-url
+                  (full-filename page)))
        ;; When URL should remain relative:
        (t
-        filename)))))
+        (full-filename page :from from-page))))))
 
 (defun replace-xrefs (node known-references
                       &key base-url
