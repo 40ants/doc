@@ -13,7 +13,9 @@
   (:import-from #:alexandria
                 #:when-let)
   (:import-from #:40ants-doc/commondoc/page
-                #:page))
+                #:page)
+  (:import-from #:40ants-doc/reference
+                #:reference=))
 (in-package 40ants-doc/commondoc/reference)
 
 
@@ -37,14 +39,18 @@
                    for url in (section-external-docs section)
                    for references = (read-references-index url)
                    do (setf results
-                            (nconc results
-                                   (append-no-page-to references)))))
+                            (nunion results
+                                   (append-no-page-to references)
+                                   :key #'car
+                                   :test #'reference=))))
            (when (typep node 'documentation-piece) 
              (when-let ((reference (doc-reference node)))
-               (push (cons reference
-                           (or current-page
-                               :no-page))
-                     results)))
+               (pushnew (cons reference
+                              (or current-page
+                                  :no-page))
+                        results
+                        :key #'car
+                        :test #'reference=)))
            node))
     (40ants-doc/commondoc/mapper:map-nodes node #'collector
                                            :on-going-down #'track-page))

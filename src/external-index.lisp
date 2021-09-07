@@ -15,9 +15,11 @@
 
 
 (defun load-data-from-url (url)
-  (handler-case (dex:get url)
-    (dexador:http-request-not-found ()
-      (dex:get (url-join url "references.json")))))
+  (let ((json-url (url-join url "references.json"))
+        (original-url url))
+    (handler-case (dex:get json-url)
+      (dexador:http-request-not-found ()
+        (dex:get original-url)))))
 
 
 (defun load-data-from-file (path)
@@ -74,7 +76,9 @@
         for locative = (40ants-doc/reference:reference-locative reference)
         collect (list (cons :url url)
                       (cons :object
-                            (prin1-to-string object))
+                            (etypecase object
+                              (string object)
+                              (symbol (prin1-to-string object))))
                       (cons :locative locative)) into items
         finally 
            (alexandria:write-string-into-file

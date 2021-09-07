@@ -73,7 +73,7 @@
    This way, you can cross-reference entities from the README.md or ChangeLog.md to HTML docs.
 
    To render documents in multiple formats, you have to pass to function RENDER-TO-FILES not
-   SECTION objects, but PAGE objects. Page object consists of one or more sections and additional
+   40ANTS-DOC:SECTION objects, but PAGE objects. Page object consists of one or more sections and additional
    information such as document format. A section can belong to a multiple pages usually having different
    formats. This allows you to include \"tutorial\" section into both HTML docs and README.
 

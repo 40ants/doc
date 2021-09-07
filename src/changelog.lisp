@@ -138,6 +138,8 @@
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
+  (0.5.1 2021-09-07
+         "- Fixed reference index generation and comparison of usual references with references where locative is a string.")
   (0.5.0 2021-09-06
          "- Now 40ANTS-DOC:DEFSECTION macro accepts EXTERNAL-DOCS argument.
             Together with HTML pages, `references.json` file is rendered, and you can

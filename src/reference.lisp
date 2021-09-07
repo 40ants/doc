@@ -153,16 +153,6 @@
        (40ants-doc/source-api:find-source object)))))
 
 
-;;; REFERENCE-OBJECT on a CANONICAL-REFERENCE of ASDF:SYSTEM is a
-;;; string, which makes REFERENCES-FOR-THE-SAME-SYMBOL-P return NIL.
-;;; It's rare to link to ASDF systems in an ambiguous situation, so
-;;; don't.
-(defun filter-asdf-system-references (refs)
-  (if (< 1 (length refs))
-      (remove 'asdf:system refs :key #'reference-locative-type)
-      refs))
-
-
 (defun resolve (reference &key (errorp t))
   "A convenience function to 40ANTS-DOC/LOCATIVES/BASE:LOCATE REFERENCE's object with its
   locative."

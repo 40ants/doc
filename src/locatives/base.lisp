@@ -131,9 +131,14 @@
   working with locatives take locative type and locative args as
   separate arguments to allow methods have eql specializers on the
   type symbol."
-  (if (listp locative)
-      (first locative)
-      locative))
+  (check-type locative (or string symbol cons))
+  
+  (let ((value (if (listp locative)
+                   (first locative)
+                   locative)))
+    (etypecase value
+      (string (uiop:symbol-call :40ants-doc/commondoc/utils :read-locative value))
+      (symbol value))))
 
 
 (defun locative-args (locative)

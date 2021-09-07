@@ -5,7 +5,6 @@
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source-api)
   (:export
    #:locate-definition-for-emacs))
@@ -64,7 +63,7 @@
     (when found
       (let ((locative (read-marked-up-locative-from-string locative-string)))
         (when locative
-          (let ((thing (40ants-doc/locatives/base:locate symbol locative :errorp nil)))
+          (let ((thing (uiop:symbol-call :40ants-doc/locatives/base :locate symbol locative :errorp nil)))
             (when thing
               (40ants-doc/source-api:find-source thing))))))))
 
