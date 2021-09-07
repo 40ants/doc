@@ -68,11 +68,11 @@ Here are features already implemented in this fork:
 * It is possible to render pages in multiple formats and having cross references between them.
   See [`Multiple Formats`][0b09].
 
-I'm planning to extend this fork even more. Read [`todo`][e36f] section to learn about
+I'm planning to extend this fork even more. Read [`todo`][db30] section to learn about
 proposed features or [start a new discussion][6f00]
 on the GitHub to suggest a new feature.
 
-See full list of changes in the [`ChangeLog`][8f05] section.
+See full list of changes in the [`ChangeLog`][e991] section.
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40FULL-DOC-LINK-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -199,11 +199,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](31bb) `foo-random:foo-random-state` ()
+## [class](f982) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](e27a) `foo-random:state` (foo-random-state) ()
+## [reader](21c8) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -211,24 +211,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](d905) `common-lisp:print-object` (object foo-random-state) stream
+## [method](265d) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](0073) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](4fb1) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](da53) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](ad87) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](fcb3) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](96bf) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -251,12 +251,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[31bb]: https://github.com/40ants/doc/blob/564eae576a3866d8692b56d28aacd510886573a1/tutorial.lisp#L34
-[e27a]: https://github.com/40ants/doc/blob/564eae576a3866d8692b56d28aacd510886573a1/tutorial.lisp#L35
-[d905]: https://github.com/40ants/doc/blob/564eae576a3866d8692b56d28aacd510886573a1/tutorial.lisp#L38
-[0073]: https://github.com/40ants/doc/blob/564eae576a3866d8692b56d28aacd510886573a1/tutorial.lisp#L41
-[fcb3]: https://github.com/40ants/doc/blob/564eae576a3866d8692b56d28aacd510886573a1/tutorial.lisp#L44
-[da53]: https://github.com/40ants/doc/blob/564eae576a3866d8692b56d28aacd510886573a1/tutorial.lisp#L50
+[f982]: https://github.com/40ants/doc/blob/85879722e9d2a8b48b726e2ea3362487e678220d/tutorial.lisp#L34
+[21c8]: https://github.com/40ants/doc/blob/85879722e9d2a8b48b726e2ea3362487e678220d/tutorial.lisp#L35
+[265d]: https://github.com/40ants/doc/blob/85879722e9d2a8b48b726e2ea3362487e678220d/tutorial.lisp#L38
+[4fb1]: https://github.com/40ants/doc/blob/85879722e9d2a8b48b726e2ea3362487e678220d/tutorial.lisp#L41
+[96bf]: https://github.com/40ants/doc/blob/85879722e9d2a8b48b726e2ea3362487e678220d/tutorial.lisp#L44
+[ad87]: https://github.com/40ants/doc/blob/85879722e9d2a8b48b726e2ea3362487e678220d/tutorial.lisp#L50
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
@@ -304,8 +304,6 @@ automatically checked for up-to-dateness. See
 * Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 
 
-[e36f]: #x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
-[8f05]: ChangeLog.md#x-2840ANTS-DOC-2FCHANGELOG-3A-40CHANGELOG-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [778d]: https://40ants.com/doc/
 [a2c7]: https://40ants.com/doc/#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29
 [a689]: https://40ants.com/doc/#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29
@@ -316,11 +314,13 @@ automatically checked for up-to-dateness. See
 [8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [1201]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [f187]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+[db30]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [c301]: https://40ants.com/doc/#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [4e8b]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [0bdf]: https://40ants.com/doc/#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
 [c0cd]: https://40ants.com/doc/#x-28GENERIC-FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
 [8f5a]: https://40ants.com/doc/#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
+[e991]: https://40ants.com/doc/changelog/#x-2840ANTS-DOC-2FCHANGELOG-3A-40CHANGELOG-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [6f00]: https://github.com/40ants/doc/discussions
 [7927]: https://github.com/melisgl/mgl-pax
 
