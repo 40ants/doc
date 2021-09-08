@@ -95,17 +95,18 @@
     (labels ((filler (node)
                (typecase node
                  (common-doc:text-node
-                  (cond
-                    ((null prev-xref)
-                     (setf locative-on-the-left
-                           (read-locative (right-word node))))
-                    ((null (xref-locative prev-xref))
-                     (let* ((word (left-word node))
-                            (locative-on-the-right (read-locative word)))
-                       (setf (xref-locative prev-xref)
-                             locative-on-the-right)
-                       (setf prev-xref
-                             nil)))))
+                  (when (and prev-xref
+                             (null (xref-locative prev-xref)))
+                    (let* ((word (left-word node))
+                           (locative-on-the-right (read-locative word)))
+                      (setf (xref-locative prev-xref)
+                            locative-on-the-right)))
+
+                  (setf prev-xref
+                        nil)
+
+                  (setf locative-on-the-left
+                        (read-locative (right-word node))))
                  (xref
                   (cond
                     (locative-on-the-left

@@ -139,6 +139,8 @@
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
+  (0.5.3 2021-09-08
+         "- Fixed locatives parsing in case if there are more than one XREF in the text.")
   (0.5.2 2021-09-08
          "- Now default theme removes underline from images nested into the `<a>` HTML tag.
           - Fixed images collection for case when current directory is different from the

@@ -7,8 +7,8 @@
 `test-variable`
 [`*test-variable*`][0ac1]
 `40ants-doc-test/test:*test-variable*`
-[`FOO`][9ca9] function, function `FOO` ([`1`][d5eb] [`2`][9ca9]),
-[`FOO`][9ca9] function, function `FOO` ([`1`][d5eb] [`2`][9ca9]),
+[`FOO`][9ca9] function, function [`FOO`][9ca9],
+[`FOO`][9ca9] function, function [`FOO`][9ca9],
 `FOO` ([`1`][d5eb] [`2`][9ca9]) `function`, `function` `FOO` ([`1`][d5eb] [`2`][9ca9]),
 `FOO` ([`1`][d5eb] [`2`][9ca9]) `function`, `function` `FOO` ([`1`][d5eb] [`2`][9ca9]),
 [`foo`][9ca9],

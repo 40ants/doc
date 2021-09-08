@@ -180,7 +180,20 @@
                        (make-text " and calls a function.")))))
       (fill-locatives doc)
       (ok (eql (xref-locative xref)
-               '40ants-doc/locatives:class)))))
+               '40ants-doc/locatives:class))))
+  
+  (testing "When locative is on the left if it is preceeded by another XREF"
+    (let* ((xref (make-xref "DEPTH"))
+           (another-xref (make-xref "SOME"))
+           (doc (common-doc:make-unordered-list
+                 (common-doc:make-list-item
+                  (list another-xref
+                        (make-text " macro accepts key argument ")
+                        xref
+                        (make-text " to turn this feature on."))))))
+      (fill-locatives doc)
+      (ok (eql (xref-locative xref)
+               '40ants-doc/locatives:argument)))))
 
 
 (defun foo-bar ()
