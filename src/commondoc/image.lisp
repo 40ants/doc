@@ -23,17 +23,22 @@
           :initarg :height
           :reader height)))
 
-(defun make-local-image (path &key width height)
-  (let ((path (if *current-asdf-system*
-                  (namestring
-                   (asdf:system-relative-pathname *current-asdf-system* path))
-                  path)))
-    (unless (probe-file path)
-      (error "Image file \"~A\" not found"
-             path))
-    (make-instance 'local-image :source path
-                                :width width
-                                :height height)))
+(defun full-path (relative-path)
+  (if *current-asdf-system*
+      (asdf:system-relative-pathname *current-asdf-system*
+                                     relative-path)
+      relative-path))
+
+(defun make-local-image (relative-path &key width height)
+  (unless (probe-file (full-path relative-path))
+    (error "Image file \"~A\" not found"
+           (full-path relative-path)))
+  ;; Here we are saving a relative path
+  ;; because we'll need it later for makeing
+  ;; the target path:
+  (make-instance 'local-image :source relative-path
+                              :width width
+                              :height height))
 
 (defun replace-images (document)
   (flet ((replacer (node)
@@ -83,6 +88,7 @@
 (define-emitter (obj local-image)
   "Emit a local-image and move referenced image into the HTML documentation folder."
   (let* ((original-path (common-doc:source obj))
+         (source-path (full-path original-path))
          (target-path (uiop:merge-pathnames* original-path
                                              (uiop:merge-pathnames* #P"images/"
                                                                     (uiop:ensure-directory-pathname
@@ -98,7 +104,8 @@
          (description (common-doc:description obj)))
 
     (ensure-directories-exist target-path)
-    (uiop:copy-file original-path
+    (log:info "Copying image from ~A to ~A" source-path target-path)
+    (uiop:copy-file source-path
                     target-path)
     (with-html
       (:img :src src

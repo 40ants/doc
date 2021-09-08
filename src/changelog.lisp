@@ -117,6 +117,7 @@
                               "UPDATE-ASDF-SYSTEM-README"
                               "README"
                               "HTML"
+                              "ASDF"
                               "RSS"
                               "URL"
                               "JS"
