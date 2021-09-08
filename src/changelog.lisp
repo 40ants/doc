@@ -138,6 +138,10 @@
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
+  (0.5.2 2021-09-08
+         "- Now default theme removes underline from images nested into the `<a>` HTML tag.
+          - Fixed images collection for case when current directory is different from the
+            ASDF system's directory.")
   (0.5.1 2021-09-07
          "- Fixed reference index generation and comparison of usual references with references where locative is a string.")
   (0.5.0 2021-09-06

@@ -10,7 +10,9 @@
   (:import-from #:40ants-doc/utils
                 #:make-relative-path)
   (:import-from #:cl-ppcre
-                #:do-register-groups))
+                #:do-register-groups)
+  (:import-from #:40ants-doc/builder/vars
+                #:*current-asdf-system*))
 (in-package 40ants-doc/commondoc/image)
 
 (defclass local-image (common-doc:image)
@@ -22,12 +24,16 @@
           :reader height)))
 
 (defun make-local-image (path &key width height)
-  (unless (probe-file path)
-    (error "Image file \"~A\" not found"
-           path))
-  (make-instance 'local-image :source path
-                              :width width
-                              :height height))
+  (let ((path (if *current-asdf-system*
+                  (namestring
+                   (asdf:system-relative-pathname *current-asdf-system* path))
+                  path)))
+    (unless (probe-file path)
+      (error "Image file \"~A\" not found"
+             path))
+    (make-instance 'local-image :source path
+                                :width width
+                                :height height)))
 
 (defun replace-images (document)
   (flet ((replacer (node)
