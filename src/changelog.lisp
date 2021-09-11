@@ -1,12 +1,11 @@
 (defpackage #:40ants-doc/changelog
   (:use #:cl)
-  (:import-from #:40ants-doc
+  (:import-from #:40ants-doc/core
                 #:defsection)
   (:import-from #:pythonic-string-reader)
   (:import-from #:named-readtables)
-  (:export
-   #:@changelog
-   #:defchangelog))
+  (:export #:@changelog
+           #:defchangelog))
 (in-package 40ants-doc/changelog)
 
 
