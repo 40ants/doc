@@ -678,7 +678,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   ;; 40ANTS-DOC-THEME-40ANTS system will bring
   ;; as dependency a full 40ANTS-DOC but we don't want
   ;; unnecessary dependencies here:
-  (ql:quickload :40ants-doc-theme-40ants)
+  (uiop:symbol-call :ql :quickload
+                    :40ants-doc-theme-40ants)
   (list :theme
         (find-symbol "40ANTS-THEME"
                      (find-package "40ANTS-DOC-THEME-40ANTS"))))
