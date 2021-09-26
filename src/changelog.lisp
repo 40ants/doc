@@ -137,7 +137,22 @@
                               "*DOCUMENT-MIN-LINK-HASH-LENGTH*"
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
-                              "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"))
+                              "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
+                              ;; These objects are not documented yet:
+                              "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.5.5 2021-09-26
+         "Warning messages like:
+
+          ```
+          Unable to find target for reference #<XREF 40ANTS-DOC/COMMONDOC/XREF:XREF> mentioned at ChangeLog / 0.5.3  (2021-09-08)
+          ```
+
+          were rewritten to be more actionable:
+
+          ```
+          Object referenced as #<XREF 40ANTS-DOC/COMMONDOC/XREF:XREF> in ChangeLog / 0.5.3  (2021-09-08) is not documented.
+          ```
+          ")
   (0.5.4 2021-09-11
          "- Included changelog.lisp into the 40ANTS-DOC system.")
   (0.5.3 2021-09-08

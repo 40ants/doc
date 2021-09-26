@@ -551,7 +551,7 @@ var DOCUMENTATION_OPTIONS = {
                                          (list (common-doc:make-text ")"))))))))
                      
                       (t
-                       (warn "Unable to find target for reference ~A mentioned at ~{~A~^ / ~}"
+                       (warn "Object referenced as ~A in ~{~A~^ / ~} is not documented."
                              node
                              (current-path))
                        node))))

@@ -2,6 +2,18 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E5-2E4-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.5.4 (2021-09-11)
+
+* Included changelog.lisp into the [`40ants-doc`][a2c7] system.
+
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E5-2E3-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.5.3 (2021-09-08)
+
+* Fixed locatives parsing in case if there are more than one `40ANTS-DOC/COMMONDOC/XREF:XREF` in the text.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E5-2E2-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.5.2 (2021-09-08)
