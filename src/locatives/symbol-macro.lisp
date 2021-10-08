@@ -43,7 +43,7 @@
   (40ants-doc/builder/bullet::locate-and-print-bullet locative-type locative-args symbol stream)
   (40ants-doc/builder/bullet::print-end-bullet stream)
   (40ants-doc/args::with-dislocated-symbols ((list symbol))
-    (40ants-doc/render/print::maybe-print-docstring symbol 'function stream)))
+    (40ants-doc/render/print::maybe-print-docstring symbol :symbol-macro stream)))
 
 
 (defmethod locate-and-find-source (symbol
