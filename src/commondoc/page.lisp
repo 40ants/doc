@@ -194,7 +194,6 @@ var DOCUMENTATION_OPTIONS = {
   "Checks all documentation pieces if there are some documented but not exported symbols."
   
   (let ((packages nil)
-        (common-lisp-package (find-package :common-lisp))
         (references-symbols
           (loop for (reference . page) in references
                 for obj = (40ants-doc/reference:reference-object reference)
@@ -203,8 +202,9 @@ var DOCUMENTATION_OPTIONS = {
     (flet ((collect-packages (node)
              (let ((package (40ants-doc/object-package::object-package node)))
                (when (and package
-                          (not (eql package
-                                    common-lisp-package))
+                          (not (find package
+                                     (mapcar #'find-package
+					     '(:common-lisp :keyword))))
                           (not (str:starts-with-p "ASDF/"
                                                   (package-name package))))
                  (pushnew package packages)))
@@ -213,7 +213,7 @@ var DOCUMENTATION_OPTIONS = {
              (member symbol references-symbols)))
       
       (40ants-doc/commondoc/mapper:map-nodes node #'collect-packages)
-
+     
       ;; This blocks extends PACKAGES list with all other
       ;; package-inferred packages for the system
       (when *warn-on-undocumented-packages* (loop with primary-names = nil
@@ -256,7 +256,6 @@ var DOCUMENTATION_OPTIONS = {
                                         do (format s "~&  - ~A"
                                                    symbol)))))))))
   node)
-
 
 (defun warn-on-references-to-internals (document)
   "This function checks and warns on symbols references using :: notation.
