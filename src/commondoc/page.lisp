@@ -174,11 +174,11 @@ var DOCUMENTATION_OPTIONS = {
                       (not (typep node '40ants-doc/commondoc/section:documentation-section)))
              (let* ((reference (40ants-doc/commondoc/piece::doc-reference node))
                     (obj (40ants-doc/reference::reference-object reference)))
-               (typecase obj
-                 (symbol
-                  (unless (is-external obj)
-                    (warn "Symbol ~S is documented but not exported from it's package."
-                          obj))))))
+               (when (and (typep obj 'symbol)
+                          (not (is-external obj))
+                          (not (typep obj 'keyword)))
+                 (warn "Symbol ~S is documented but not exported from it's package."
+                       obj))))
            node))
     (40ants-doc/commondoc/mapper:map-nodes node #'checker))
   node)
@@ -194,6 +194,8 @@ var DOCUMENTATION_OPTIONS = {
   "Checks all documentation pieces if there are some documented but not exported symbols."
   
   (let ((packages nil)
+	(common-lisp-package (find-package :common-lisp))
+	(keyword-package (find-package :keyword))
         (references-symbols
           (loop for (reference . page) in references
                 for obj = (40ants-doc/reference:reference-object reference)
@@ -202,9 +204,10 @@ var DOCUMENTATION_OPTIONS = {
     (flet ((collect-packages (node)
              (let ((package (40ants-doc/object-package::object-package node)))
                (when (and package
-                          (not (find package
-                                     (mapcar #'find-package
-					     '(:common-lisp :keyword))))
+			  (not (eql package
+                                    common-lisp-package))
+			  (not (eql package
+                                    keyword-package))
                           (not (str:starts-with-p "ASDF/"
                                                   (package-name package))))
                  (pushnew package packages)))
