@@ -248,7 +248,7 @@ var DOCUMENTATION_OPTIONS = {
                        (with-output-to-string (s)
                          (format s "These symbols are external, but not documented:")
                          (loop for package being the hash-key of undocumented-symbols
-                               using (hash-value symbols)
+                                 using (hash-value symbols)
                                do (format s "~2&  ~A:"
                                           (package-name package))
                                   (loop for symbol in (sort symbols #'string<
