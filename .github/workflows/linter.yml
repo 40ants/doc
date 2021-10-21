@@ -23,10 +23,7 @@
         },
         {
           "name": "Setup Common Lisp Environment",
-          "uses": "40ants/setup-lisp@v1",
-          "with": {
-            "asdf-system": "40ants-doc/full"
-          }
+          "uses": "40ants/setup-lisp@v1"
         },
         {
           "name": "Change dist to Ultralisp",
