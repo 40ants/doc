@@ -2,6 +2,20 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E5-2E5-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.5.5 (2021-09-26)
+
+Warning messages like:
+
+```
+Unable to find target for reference #<XREF 40ANTS-DOC/COMMONDOC/XREF:XREF> mentioned at ChangeLog / 0.5.3  (2021-09-08)
+```
+were rewritten to be more actionable:
+
+```
+Object referenced as #<XREF 40ANTS-DOC/COMMONDOC/XREF:XREF> in ChangeLog / 0.5.3  (2021-09-08) is not documented.
+```
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E5-2E4-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.5.4 (2021-09-11)
