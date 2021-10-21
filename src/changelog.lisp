@@ -142,10 +142,11 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.5.7 2021-10-21
+         "* DEFSECTION macro now supports EXTERNAL-DOCS argument.")
   (0.5.6 2021-10-21
          "* Blockquotes markup is supported now.
-          * Now external references are rendered as code and downcased according to the settings.
-          * DEFSECTION macro now supports EXTERNAL-DOCS argument.")
+          * Now external references are rendered as code and downcased according to the settings.")
   (0.5.5 2021-09-26
          "Warning messages like:
 
