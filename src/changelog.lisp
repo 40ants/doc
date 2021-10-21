@@ -73,7 +73,8 @@
 
 
 (defmacro defchangelog ((&key (title "ChangeLog")
-                              ignore-words)
+                           ignore-words
+                           external-docs)
                         &body versions)
   """
   This macro might be used to define a ChangeLog in a structured way.
@@ -104,7 +105,8 @@
       
        (defsection ,section-name (:title ,title
                                   :ignore-words (list ,@ignore-words)
-                                  :section-class changelog)
+                                  :section-class changelog
+                                  :external-docs ,external-docs)
          ,@(loop for (version) in versions
                  collect `(,version section)))
        ,@(loop for (version . content) in versions
@@ -142,7 +144,8 @@
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
   (0.5.6 2021-10-21
          "* Blockquotes markup is supported now.
-          * Now external references are rendered as code and downcased according to the settings.")
+          * Now external references are rendered as code and downcased according to the settings.
+          * DEFSECTION macro now supports EXTERNAL-DOCS argument.")
   (0.5.5 2021-09-26
          "Warning messages like:
 
