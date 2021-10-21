@@ -29,8 +29,18 @@
           }
         },
         {
-          "name": "Install SBLint",
-          "run": "\necho 'dist ultralisp http://dist.ultralisp.org' > qlfile\nqlot update\nqlot exec ros install 40ants-linter\n",
+          "name": "Change dist to Ultralisp",
+          "run": "echo 'dist ultralisp http://dist.ultralisp.org' > qlfile",
+          "shell": "bash"
+        },
+        {
+          "name": "Update Qlot",
+          "run": "qlot update || qlot update",
+          "shell": "bash"
+        },
+        {
+          "name": "Install SBLint wrapper",
+          "run": "qlot exec ros install 40ants-linter",
           "shell": "bash"
         },
         {

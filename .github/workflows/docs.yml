@@ -5,7 +5,8 @@
       "branches": [
         "master"
       ]
-    }
+    },
+    "pull_request": null
   },
   "jobs": {
     "build-docs": {
