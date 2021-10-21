@@ -530,7 +530,7 @@ var DOCUMENTATION_OPTIONS = {
                                      (let ((url (40ants-doc/reference::external-reference-url reference))
                                            (text (40ants-doc/reference::reference-object reference)))
                                        (make-web-link url
-                                                      (make-text text))))
+                                                      (make-code-if-needed text))))
                                     (40ants-doc/reference::reference
                                      (let* ((object (40ants-doc/reference:resolve reference))
                                             (text (or (40ants-doc/commondoc/xref:link-text object)
