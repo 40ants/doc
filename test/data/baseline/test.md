@@ -33,7 +33,7 @@
 
 ->`MAX`
 
-Escaped: \`FOO` ([`1`][d5eb] [`2`][9ca9]) `FOO` \`NAVIGATION-TEST-CASES`
+Escaped: \`FOO` ([`1`][d5eb] [`2`][9ca9]) `FOO` *\`NAVIGATION-TEST-CASES`*
 Non escaped: `FOO` ([`1`][d5eb] [`2`][9ca9]) [`*TEST-VARIABLE*`][0ac1]
 [`Test other title`][bec1]
 
