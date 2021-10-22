@@ -297,6 +297,11 @@
 
 
 (defun test-document (format)
+  ;; To ensure the URI-FRAGMENT will always exist in the keyword package.
+  ;; Because at some point CI on GitHub was broken (probably because uri-fragment
+  ;; keyword was added by some other ASDF system and disappeared.
+  (alexandria:make-keyword "URI-FRAGMENT")
+  
   (destructuring-bind (output-dir &rest pages-pathnames)
       (multiple-value-list
        (write-test-document-files
