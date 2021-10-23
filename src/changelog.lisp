@@ -133,6 +133,7 @@
                               "TOC"
                               "SLIME"
                               "SLY"
+                              "COMMONDOC:SECTION"
                               "COLLECT-REACHABLE-OBJECTS"
                               "LOCATE-AND-COLLECT-REACHABLE-OBJECTS"
                               "COMMONDOC-MARKDOWN:*MIN-LINK-HASH-LENGTH*"
@@ -142,6 +143,8 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.5.8 2021-10-23
+         "* Fixed the way of how a TOC is built. Previosly it incorrectly shown nested COMMONDOC:SECTION objects.")
   (0.5.7 2021-10-21
          "* DEFSECTION macro now supports EXTERNAL-DOCS argument.")
   (0.5.6 2021-10-21
