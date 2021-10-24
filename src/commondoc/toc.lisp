@@ -67,7 +67,7 @@
                  (40ants-doc/commondoc/changelog::changelog
                   (setf inside-changelog t))
 
-                 (40ants-doc/commondoc/section:documentation-section
+                 (common-doc:section
                   (push (common-doc:make-unordered-list (list))
                         current-sublist)
                   (setf (common-doc:children last-list-item)
@@ -77,7 +77,7 @@
                (typecase node
                  (40ants-doc/commondoc/changelog::changelog
                   (setf inside-changelog nil))
-                 (40ants-doc/commondoc/section:documentation-section
+                 (common-doc:section
                   (pop current-sublist)))))
       (40ants-doc/commondoc/mapper:map-nodes document #'collector
                                              :on-going-down #'on-down
@@ -89,7 +89,7 @@
                (setf (common-doc:children node)
                      (loop for child in (common-doc:children node)
                            unless (null (common-doc:children child))
-                           collect child)))
+                             collect child)))
              node))
       (40ants-doc/commondoc/mapper:map-nodes (car current-sublist)
                                              #'remove-empty-sublists))))
