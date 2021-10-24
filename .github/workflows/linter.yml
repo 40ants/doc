@@ -25,7 +25,8 @@
           "name": "Setup Common Lisp Environment",
           "uses": "40ants/setup-lisp@v1",
           "with": {
-            "asdf-system": "40ants-doc/full"
+            "asdf-system": "40ants-doc/full",
+            "asdf-version": "3.3.5.1"
           }
         },
         {
