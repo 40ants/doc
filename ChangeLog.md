@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E5-2E8-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.5.8 (2021-10-23)
+
+* Fixed the way of how a `TOC` is built. Previosly it incorrectly shown nested `COMMONDOC:SECTION` objects.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E5-2E7-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.5.7 (2021-10-21)
