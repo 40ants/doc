@@ -234,6 +234,11 @@
       :display inline-block
       :text-decoration none
       :border none)
+
+     (blockquote
+      :border-left 0.5em solid lightgray
+      :padding-left 1em
+      :margin-bottom 1em)
      
      (.unresolved-reference
       :color magenta))))

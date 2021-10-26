@@ -318,6 +318,12 @@ body .rss-icon{
     border: none;
 }
 
+body blockquote{
+    border-left: 0.5em solid lightgray;
+    padding-left: 1em;
+    margin-bottom: 1em;
+}
+
 body .unresolved-reference{
     color: magenta;
 }

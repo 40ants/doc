@@ -251,7 +251,7 @@ var DOCUMENTATION_OPTIONS = {
                        (with-output-to-string (s)
                          (format s "These symbols are external, but not documented:")
                          (loop for package being the hash-key of undocumented-symbols
-                               using (hash-value symbols)
+                                 using (hash-value symbols)
                                do (format s "~2&  ~A:"
                                           (package-name package))
                                   (loop for symbol in (sort symbols #'string<
@@ -532,7 +532,7 @@ var DOCUMENTATION_OPTIONS = {
                                      (let ((url (40ants-doc/reference::external-reference-url reference))
                                            (text (40ants-doc/reference::reference-object reference)))
                                        (make-web-link url
-                                                      (make-text text))))
+                                                      (make-code-if-needed text))))
                                     (40ants-doc/reference::reference
                                      (let* ((object (40ants-doc/reference:resolve reference))
                                             (text (or (40ants-doc/commondoc/xref:link-text object)
