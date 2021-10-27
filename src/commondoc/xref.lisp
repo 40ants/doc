@@ -21,6 +21,7 @@
                 #:with-node-package)
   (:import-from #:commondoc-markdown)
   (:import-from #:40ants-doc/object-package)
+  (:import-from #:40ants-doc/link)
   (:export
    #:make-xref
    #:xref
