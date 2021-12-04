@@ -206,18 +206,23 @@
       ((go-down (node)
          ;; We need this flag because we want to turn off
          ;; symbol extraction inside code blocks
-         (when (typep node
-                      'common-doc:code-block)
+         (when (or (typep node
+                          'common-doc:code-block)
+                   (typep node
+                       'common-doc:code))
            (setf inside-code-block t)))
        (go-up (node)
-         (when (typep node
-                      'common-doc:code-block)
+         (when (or (typep node
+                          'common-doc:code-block)
+                   (typep node
+                       'common-doc:code))
            (setf inside-code-block nil)))
        (extractor (node)
          (typecase node
            (common-doc:text-node
             (if (or inside-code-block
-                    40ants-doc/commondoc/mapper::*inside-title*)
+                    40ants-doc/commondoc/mapper::*inside-title*
+                    40ants-doc/commondoc/mapper::*inside-link*)
                 node
                 (extract-symbols-from-text node)))
            (t node))))

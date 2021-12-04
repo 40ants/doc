@@ -22,6 +22,12 @@
    This can be useful if we don't want to do something
    inside titles.")
 
+(defvar *inside-link* nil
+  "Will be set to T when mapper goes down into a link
+
+   This can be useful if we don't want to do something
+   inside web link.")
+
 
 (defun do-nothing (node)
   (declare (ignore node))
@@ -171,6 +177,13 @@
     (process-node-with-children node func
                                 :on-going-down on-going-down
                                 :on-going-up on-going-up))
+  
+  (:method ((node common-doc:link) func &key
+                                        (on-going-down #'do-nothing)
+                                        (on-going-up #'do-nothing))
+    (declare (ignore on-going-down on-going-up))
+    (let ((*inside-link* t))
+      (call-next-method)))
 
   (:method  ((node common-doc:section) func &key (on-going-down #'do-nothing)
                                                  (on-going-up #'do-nothing))

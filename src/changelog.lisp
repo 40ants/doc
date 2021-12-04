@@ -143,6 +143,8 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.6.0 2021-12-05
+         "* Fixed the issue, when we tried to find uppercased xrefs inside inline code and links.")
   (0.5.8 2021-10-23
          "* Fixed the way of how a TOC is built. Previosly it incorrectly shown nested COMMONDOC:SECTION objects.")
   (0.5.7 2021-10-21
