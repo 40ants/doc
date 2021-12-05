@@ -44,9 +44,9 @@
 
   ENTRIES consists of docstrings and references. Docstrings are
   arbitrary strings in markdown format, references are defined in the
-  form:
+  forms:
 
-      (symbol locative)
+      (symbol locative) or ((symbol1 symbol2 ... symboln) locative)
 
   For example, `(FOO FUNCTION)` refers to the function `FOO`, `(@BAR
   SECTION)` says that `@BAR` is a subsection of this
@@ -291,16 +291,21 @@
 
 (defun transform-locative-symbols (entries &aux (locatives-package (find-package "40ANTS-DOC/LOCATIVES")))
   (labels ((transform (locative)
-           (etypecase locative
-             (symbol (intern (symbol-name locative) locatives-package))
-             (cons (cons (transform (car locative))
-                         (cdr locative))))))
-    
+             (etypecase locative
+               (symbol (intern (symbol-name locative) locatives-package))
+               (cons (cons (transform (car locative))
+                           (cdr locative)))))
+	   (transform-entry (entry)
+	     (destructuring-bind (symbols locative) entry
+	       (if (atom symbols)
+		   (list
+		    (list symbols
+			  (transform locative)))
+		   (loop for symbol in symbols
+			 collect (list symbol (transform locative)))))))
     (loop for entry in entries
           if (listp entry)
-          collect (destructuring-bind (symbol locative) entry
-                    (list symbol
-                          (transform locative)))
+          nconc (transform-entry entry)
           else collect entry)))
 
 (defun symbol-accessible-in-package-p (symbol package)

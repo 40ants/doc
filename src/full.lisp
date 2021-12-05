@@ -23,6 +23,7 @@
   (:import-from #:40ants-doc/locatives/restart)
   (:import-from #:40ants-doc/locatives/slots)
   (:import-from #:40ants-doc/locatives/structure-accessor)
+  (:import-from #:40ants-doc/locatives/symbol-macro)
   (:import-from #:40ants-doc/locatives/type)
   (:import-from #:40ants-doc/locatives/include)
   (:import-from #:40ants-doc/locatives/stdout-of)

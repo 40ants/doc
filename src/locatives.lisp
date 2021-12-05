@@ -29,6 +29,7 @@
            #:reader
            #:writer
            #:structure-accessor
+	   #:symbol-macro
            #:type
            #:variable))
 (in-package 40ants-doc/locatives)
