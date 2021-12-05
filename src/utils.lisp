@@ -4,6 +4,9 @@
   (:import-from #:alexandria)
   (:import-from #:cl-ppcre)
   (:import-from #:str)
+  (:import-from #:40ants-doc/docstring
+                #:whitespacep
+                #:blankp)
   (:export
    #:is-external
    #:get-package-from-symbol-name
@@ -190,19 +193,6 @@
 
 
 ;;;; String utilities
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (defparameter *whitespace-chars*
-    '(#\Space #\Tab #\Return #\Newline #\Linefeed #\Page)))
-
-(defun whitespacep (char)
-  (member char *whitespace-chars*))
-
-(defun blankp (string)
-  (every #'whitespacep string))
-
-(defun trim-whitespace (string)
-  (string-trim #.(format nil "~{~A~}" *whitespace-chars*) string))
 
 ;; TODO: probably replace it with strip-docstring-indentation?
 (defun strip-longest-common-prefix (string chars &key (first-line-special-p t))
