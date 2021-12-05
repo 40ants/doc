@@ -3,8 +3,7 @@
   (:export
    #:ignored-words
    #:supports-ignored-words-p
-   #:ignore-words-in-package
-   #:ignored-in-package))
+   #:ignore-words-in-package))
 (in-package 40ants-doc/ignored-words)
 
 
@@ -13,6 +12,7 @@
 
 
 (defgeneric supports-ignored-words-p (obj)
+  (:documentation "Should return `T` if objects implements a method for IGNORED-WORDS generic-function.")
   (:method ((obj t))
     nil)
   (:method ((obj package))
@@ -20,6 +20,7 @@
 
 
 (defgeneric ignored-words (obj)
+  (:documentation "Returns a list of words or symbols to ignore in OBJ's documentation.")
   (:method ((obj package))
     (gethash obj *package-ignore-words*)))
 
@@ -38,6 +39,7 @@
 
 
 (defun ignored-in-package (symbol-or-string package)
+  "Checks if given symbol or string is ignored in a package."
   (member symbol-or-string
           (gethash package *package-ignore-words*)
           :test #'equal))
