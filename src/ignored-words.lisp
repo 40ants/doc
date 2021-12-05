@@ -25,9 +25,16 @@
 
 
 (defmacro ignore-words-in-package (&rest symbols-or-strings)
+  "Adds given symbols or string to ignore list bound to the current package.
+
+   You will not be warned when one of these symbols is not documented
+   or documented and not exported from the package."
   `(eval-when (:compile-toplevel :load-toplevel :execute)
      (setf (gethash *package* *package-ignore-words*)
-           (list ,@symbols-or-strings))))
+           (union
+            (gethash *package* *package-ignore-words*)
+            (list ,@symbols-or-strings)
+            :test 'equal))))
 
 
 (defun ignored-in-package (symbol-or-string package)
