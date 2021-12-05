@@ -42,9 +42,9 @@ To introduce hooks for adding new markup languages, and `HTML` themes.
 
 Here are features already implemented in this fork:
 
-* Core system `40ANTS-DOC` now has only two dependencies on `NAMED-READTABLES`
+* Core system [`40ants-doc`][bdb2] now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
-  `40ANTS-DOC-FULL` system which will download such dependencies as markdown
+  [`40ants-doc-full`][32b2] system which will download such dependencies as markdown
   parser and more.
 
 * Now you don't have to import any locative symbols into your package. Import
@@ -199,11 +199,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](2898) `foo-random:foo-random-state` ()
+## [class](f976) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](b444) `foo-random:state` (foo-random-state) ()
+## [reader](7ba8) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -211,24 +211,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](6412) `common-lisp:print-object` (object foo-random-state) stream
+## [method](3081) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](9bdc) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](7c40) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](a169) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](d17b) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](e414) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](20fd) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -251,12 +251,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[2898]: https://github.com/40ants/doc/blob/26d259fe3c44285e327d24b181ad87f2e9910b68/tutorial.lisp#L34
-[b444]: https://github.com/40ants/doc/blob/26d259fe3c44285e327d24b181ad87f2e9910b68/tutorial.lisp#L35
-[6412]: https://github.com/40ants/doc/blob/26d259fe3c44285e327d24b181ad87f2e9910b68/tutorial.lisp#L38
-[9bdc]: https://github.com/40ants/doc/blob/26d259fe3c44285e327d24b181ad87f2e9910b68/tutorial.lisp#L41
-[e414]: https://github.com/40ants/doc/blob/26d259fe3c44285e327d24b181ad87f2e9910b68/tutorial.lisp#L44
-[a169]: https://github.com/40ants/doc/blob/26d259fe3c44285e327d24b181ad87f2e9910b68/tutorial.lisp#L50
+[f976]: https://github.com/40ants/doc/blob/8fcdfabaf4f7e06de256d6a4813ca4a97c617db4/tutorial.lisp#L34
+[7ba8]: https://github.com/40ants/doc/blob/8fcdfabaf4f7e06de256d6a4813ca4a97c617db4/tutorial.lisp#L35
+[3081]: https://github.com/40ants/doc/blob/8fcdfabaf4f7e06de256d6a4813ca4a97c617db4/tutorial.lisp#L38
+[7c40]: https://github.com/40ants/doc/blob/8fcdfabaf4f7e06de256d6a4813ca4a97c617db4/tutorial.lisp#L41
+[20fd]: https://github.com/40ants/doc/blob/8fcdfabaf4f7e06de256d6a4813ca4a97c617db4/tutorial.lisp#L44
+[d17b]: https://github.com/40ants/doc/blob/8fcdfabaf4f7e06de256d6a4813ca4a97c617db4/tutorial.lisp#L50
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
@@ -268,7 +268,7 @@ and [`40ants-doc/builder:update-asdf-system-docs`][f11d] functions.
 Last one can even generate documentation for different, but related
 libraries at the same time with the output going to different files,
 but with cross-page links being automatically added for symbols
-mentioned in docstrings. See `40ANTS-DOC/BUILDER::@GENERATING-DOCUMENTATION` for
+mentioned in docstrings. See [`Generating Documentation`][c93a] for
 some convenience functions to cover the most common cases.
 
 Note how `(*FOO-STATE* VARIABLE)` in the [`defsection`][3e7c] form includes its documentation in
@@ -278,7 +278,7 @@ definitions tied to symbols. See [`Locative Types`][5922].
 
 The transcript in the code block tagged with `cl-transcript` is
 automatically checked for up-to-dateness. See
-`40ANTS-DOC/TRANSCRIBE::@TRANSCRIPT`.
+[`Transcripts`][1f61].
 
 <a id="x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
@@ -309,6 +309,8 @@ automatically checked for up-to-dateness. See
 [6f00]: https://github.com/40ants/doc/discussions
 [7927]: https://github.com/melisgl/mgl-pax
 [bdb2]: index.html#x-28-2240ants-doc-22-20ASDF-2FSYSTEM-3ASYSTEM-29
+[32b2]: index.html#x-28-2240ants-doc-full-22-20ASDF-2FSYSTEM-3ASYSTEM-29
+[c93a]: index.html#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [3a45]: index.html#x-2840ANTS-DOC-2FBUILDER-3A-3A-40RENDERING-MULTIPLE-FORMATS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [084c]: index.html#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29
 [f11d]: index.html#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
@@ -316,6 +318,7 @@ automatically checked for up-to-dateness. See
 [03a4]: index.html#x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [5922]: index.html#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [2797]: index.html#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+[1f61]: index.html#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [3e7c]: index.html#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [ccf9]: index.html#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
 [d242]: index.html#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29

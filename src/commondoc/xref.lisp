@@ -234,8 +234,9 @@
                    ;; If whole content of inline code is recognized
                    ;; as a symbol, then we'll replace it with XREF:
                    (let ((result (extract-symbols-from-text node)))
-                     (if (= (length (common-doc:text node))
-                            (length (common-doc:text result)))
+                     (if (and (typep result 'xref)
+                              (= (length (common-doc:text node))
+                                 (length (common-doc:text result))))
                          result
                          node))
                    )
