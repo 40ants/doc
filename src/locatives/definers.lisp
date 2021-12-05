@@ -49,27 +49,32 @@
   After all this, `(UP DIRECTION)` refers to the `DEFINE-DIRECTION`
   form above."""
   (check-body-docstring docstring)
-  `(progn
-     (40ants-doc/locatives/base::define-locative-type ,locative-type ,lambda-list ,@docstring)
-     (defmethod 40ants-doc/locatives/base::locate-object (symbol (locative-type (eql ',locative-type)) locative-args)
-       (or (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)
-           (40ants-doc/locatives/base::locate-error))
-       (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
-     
-     
-     (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql ',locative-type)) locative-args)
-       (let* ((method (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type))
-              (arglist (40ants-doc/locatives/base::symbol-lambda-list symbol ',locative-type))
-              (reference (40ants-doc/reference::make-reference
-                          symbol (cons locative-type locative-args)))
-              (docstring (40ants-doc/docstring:get-docstring method t))
-              (children (when docstring
-                          (40ants-doc/commondoc/markdown:parse-markdown docstring))))
+  ;; We need to create a symbol with the name of locative-type inside 40ANTS-DOC/LOCATIVES,
+  ;; because when we refer this locative from the documentation section, the symbol denoting
+  ;; a locative will be searched in that package
+  (let ((locative-type (intern (symbol-name locative-type)
+                               (find-package "40ANTS-DOC/LOCATIVES"))))
+    `(progn
+       (40ants-doc/locatives/base::define-locative-type ,locative-type ,lambda-list ,@docstring)
+       (defmethod 40ants-doc/locatives/base::locate-object (symbol (locative-type (eql ',locative-type)) locative-args)
+         (or (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)
+             (40ants-doc/locatives/base::locate-error))
+         (40ants-doc/reference::make-reference symbol (cons locative-type locative-args)))
+      
+      
+       (defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql ',locative-type)) locative-args)
+         (let* ((method (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type))
+                (arglist (40ants-doc/locatives/base::symbol-lambda-list symbol ',locative-type))
+                (reference (40ants-doc/reference::make-reference
+                            symbol (cons locative-type locative-args)))
+                (docstring (40ants-doc/docstring:get-docstring method t))
+                (children (when docstring
+                            (40ants-doc/commondoc/markdown:parse-markdown docstring))))
 
-         (40ants-doc/commondoc/bullet:make-bullet reference
-                                                  :arglist arglist
-                                                  :children children
-                                                  :ignore-words symbol)))
-     
-     (defmethod 40ants-doc/locatives/base:locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
-       (40ants-doc/source-api:find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type)))))
+           (40ants-doc/commondoc/bullet:make-bullet reference
+                                                    :arglist arglist
+                                                    :children children
+                                                    :ignore-words symbol)))
+      
+       (defmethod 40ants-doc/locatives/base:locate-and-find-source (symbol (locative-type (eql ',locative-type)) locative-args)
+         (40ants-doc/source-api:find-source (40ants-doc/locatives/base::symbol-lambda-list-method symbol ',locative-type))))))

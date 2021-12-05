@@ -1,11 +1,13 @@
 (defpackage #:40ants-doc/docstring
   (:use #:cl)
-  (:import-from #:40ants-doc/utils)
   (:export
    #:strip-docstring-indentation
    #:get-docstring))
 (in-package 40ants-doc/docstring)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defparameter *whitespace-chars*
+    '(#\Space #\Tab #\Return #\Newline #\Linefeed #\Page)))
 
 (defun n-leading-spaces (line)
   (let ((n 0))
@@ -13,6 +15,16 @@
           while (char= (aref line i) #\Space)
           do (incf n))
     n))
+
+(defun whitespacep (char)
+  (member char *whitespace-chars*))
+
+(defun blankp (string)
+  (every #'whitespacep string))
+
+(defun trim-whitespace (string)
+  (string-trim #.(format nil "~{~A~}" *whitespace-chars*) string))
+
 
 ;;; Return the minimum number of leading spaces in non-blank lines
 ;;; after the first.
@@ -23,7 +35,7 @@
             for line = (read-line s nil nil)
             while line
             do (when (and (or (not first-line-special-p) (plusp i))
-                          (not (40ants-doc/utils::blankp line)))
+                          (not (blankp line)))
                  (when (or (null n-min-indentation)
                            (< (n-leading-spaces line) n-min-indentation))
                    (setq n-min-indentation (n-leading-spaces line))))))
@@ -44,7 +56,9 @@
                              (return))
                            (if (and first-line-special-p (zerop i))
                                (write-string line out)
-                               (write-string (40ants-doc/utils::subseq* line indentation) out))
+                               (write-string (subseq line (min (length line)
+                                                               indentation))
+                                             out))
                            (unless missing-newline-p
                              (terpri out))))))
             indentation)))

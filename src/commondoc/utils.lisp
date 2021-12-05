@@ -2,7 +2,8 @@
   (:use #:cl)
   (:import-from #:40ants-doc/swank)
   (:import-from #:40ants-doc/utils
-                #:maybe-downcase
+                #:maybe-downcase)
+  (:import-from #:40ants-doc/docstring
                 #:*whitespace-chars*)
   (:import-from #:str)
   (:import-from #:40ants-doc/commondoc/mapper

@@ -143,6 +143,12 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.6.0 2021-12-05
+         "* Fixed the issue, when we tried to find uppercased xrefs inside inline code and links.
+          * Added EXTERNAL-LINKS argument to DEFSECTION macro. It can be useful, if you have a multiple
+            text sections having the same external link.
+          * Now it is possible to use 40ANTS-DOC/IGNORED-WORDS:IGNORE-WORDS-IN-PACKAGE
+            to suppress warning on symbols which are exported but not documented.")
   (0.5.8 2021-10-23
          "* Fixed the way of how a TOC is built. Previosly it incorrectly shown nested COMMONDOC:SECTION objects.")
   (0.5.7 2021-10-21

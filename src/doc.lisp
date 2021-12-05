@@ -24,6 +24,7 @@
   (:import-from #:40ants-doc/themes/docs)
   (:import-from #:docs-config
                 #:docs-config)
+  (:import-from #:40ants-doc/ignored-words)
   (:export
    #:@index
    #:@readme))
@@ -426,7 +427,10 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 (defsection @defining-sections (:title "Defining Sections")
   (40ants-doc:defsection macro)
   (40ants-doc:defsection-copy macro)
-  (40ants-doc:*discard-documentation-p* variable))
+  (40ants-doc:*discard-documentation-p* variable)
+  (40ants-doc/ignored-words:ignored-words generic-function)
+  (40ants-doc/ignored-words:supports-ignored-words-p generic-function)
+  (40ants-doc/ignored-words:ignore-words-in-package macro))
 
 
 (defsection @cross-referencing (:title "Cross-referencing")
@@ -531,6 +535,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (constant locative)
   (macro locative)
   (compiler-macro locative)
+  (symbol-macro locative)
   (function locative)
   (generic-function locative)
   (method locative)

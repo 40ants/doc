@@ -173,10 +173,12 @@ var DOCUMENTATION_OPTIONS = {
                       ;; exported, because these can be some inner chapters.
                       (not (typep node '40ants-doc/commondoc/section:documentation-section)))
              (let* ((reference (40ants-doc/commondoc/piece::doc-reference node))
+                    (package (40ants-doc/object-package::object-package node))
                     (obj (40ants-doc/reference::reference-object reference)))
                (when (and (typep obj 'symbol)
                           (not (is-external obj))
-                          (not (typep obj 'keyword)))
+                          (not (typep obj 'keyword))
+                          (not (ignored-in-package obj package)))
                  (warn "Symbol ~S is documented but not exported from it's package."
                        obj))))
            node))

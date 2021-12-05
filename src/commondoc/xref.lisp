@@ -77,6 +77,10 @@
                  :locative locative))
 
 
+(defmethod common-doc:text ((xref xref))
+  (xref-name xref))
+
+
 (defmethod print-object ((xref xref) stream)
   (print-unreadable-object (xref stream :type t)
     (format stream "~S~:[~; ~A~]"
@@ -199,7 +203,7 @@
   *package*)
 
 
-(defun extract-symbols (node &aux inside-code-block)
+(defun extract-symbols (node &aux inside-code-block inside-inline-code)
   "Extracts non marked up symbols from COMMON-DOC:TEXT-NODE and replaces them with XREF objects."
   
   (labels
@@ -208,18 +212,36 @@
          ;; symbol extraction inside code blocks
          (when (typep node
                       'common-doc:code-block)
-           (setf inside-code-block t)))
+           (setf inside-code-block t))
+         (when (typep node
+                      'common-doc:code)
+           (setf inside-inline-code t)))
        (go-up (node)
          (when (typep node
                       'common-doc:code-block)
-           (setf inside-code-block nil)))
+           (setf inside-code-block nil))
+         (when (typep node
+                      'common-doc:code)
+           (setf inside-inline-code nil)))
        (extractor (node)
          (typecase node
            (common-doc:text-node
-            (if (or inside-code-block
-                    40ants-doc/commondoc/mapper::*inside-title*)
-                node
-                (extract-symbols-from-text node)))
+            (cond ((or inside-code-block
+                       40ants-doc/commondoc/mapper::*inside-title*
+                       40ants-doc/commondoc/mapper::*inside-link*)
+                   node)
+                  (inside-inline-code
+                   ;; If whole content of inline code is recognized
+                   ;; as a symbol, then we'll replace it with XREF:
+                   (let ((result (extract-symbols-from-text node)))
+                     (if (and (typep result 'xref)
+                              (= (length (common-doc:text node))
+                                 (length (common-doc:text result))))
+                         result
+                         node))
+                   )
+                  (t
+                   (extract-symbols-from-text node))))
            (t node))))
     ;; Here we we need to change *package*
     ;; to make sure, that all symbol mentions are parsed as if we being

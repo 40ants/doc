@@ -6,6 +6,8 @@
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/source-api)
+  (:import-from #:40ants-doc/docstring
+                #:trim-whitespace)
   (:export
    #:locate-definition-for-emacs))
 (in-package 40ants-doc/swank)
@@ -27,7 +29,7 @@
 ;;; string arguments and returns a location suitable for
 ;;; make-slime-xref.
 (defun locate-definition-for-emacs (name locative-string)
-  (let ((locative-string (40ants-doc/utils::trim-whitespace locative-string)))
+  (let ((locative-string (trim-whitespace locative-string)))
     (swank-backend::converting-errors-to-error-location
       (swank::with-buffer-syntax ()
         (or
@@ -91,7 +93,7 @@
           (swank::find-definitions-find-symbol-or-package string))
       (if found
           symbol
-          (let ((first-char-pos (position-if-not #'40ants-doc/utils::whitespacep string)))
+          (let ((first-char-pos (position-if-not #'40ants-doc/docstring::whitespacep string)))
             (when (and first-char-pos
                        (char= #\())
               ;; Looks like a list. The first element must be an

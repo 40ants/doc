@@ -20,7 +20,8 @@
   (:import-from #:40ants-doc/utils
                 #:write-prefixed-lines
                 #:read-prefixed-lines
-                #:read-line*
+                #:read-line*)
+  (:import-from #:40ants-doc/docstring
                 #:whitespacep)
   (:import-from #:40ants-doc/reference)
   ;; (:import-from #:40ants-doc/page)
