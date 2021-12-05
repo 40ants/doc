@@ -5,6 +5,8 @@
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives)
   (:import-from #:40ants-doc/object-package)
+  (:import-from #:40ants-doc/docstring
+                #:strip-docstring-indentation)
   (:export #:defsection
            #:exportable-locative-type-p
            #:section
@@ -35,6 +37,7 @@
                                  link-title-to
                                  (discard-documentation-p *discard-documentation-p*)
                                  (external-docs nil)
+                                 (external-links nil)
                                  (ignore-words nil))
                       &body entries)
   "Define a documentation section and maybe export referenced symbols.
@@ -102,6 +105,12 @@
   and you'll be able to mention symbols from them and have automatic
   cross-links.
 
+  EXTERNAL-LINKS argument could contain an alist of (\"name\" . \"URL\") pairs.
+  These pairs will be tranformed to [name]: URL text and appended to each
+  markdown part of the defined chapter. This argument is useful when you are
+  having more than one text part in the chapter and want to reference same
+  URL from all of them using short markdown links.
+
   :IGNORE-WORDS allows to pass a list of strings which should not cause
   warnings. Usually these are uppercased words which are not symbols
   in the current package, like SLIME, LISP, etc."
@@ -111,7 +120,7 @@
         (transform-locative-symbols
          entries))
   
-  (transform-entries entries)
+  (transform-entries entries external-links)
   (transform-link-title-to link-title-to)
 
   (when (and (typep ignore-words
@@ -140,7 +149,7 @@
                         :link-title-to (transform-link-title-to ',link-title-to)
                         :entries ,(if discard-documentation-p
                                       ()
-                                      `(transform-entries ',entries))
+                                      `(transform-entries ',entries ',external-links))
                         :external-docs (list ,@(uiop:ensure-list external-docs))
                         :ignore-words (list
                                        ,@(eval ignore-words)))))))
@@ -238,30 +247,38 @@
          (ensure-list locative-2)))
 
 
-(defun add-a-newline (text)
-  "Adds a new line text entries to make markdown parser correctly parse a header at the end of the text.
+(defun transform-entries (entries external-links)
+  (let ((external-links
+          (with-output-to-string (s)
+            (loop for (name . url) in external-links
+                  do (format s "[~A]: ~A~&"
+                             name
+                             url)))))
+    (flet ((add-external-links (text)
+             "Adds markdown references to the end of the section piece.
 
-   Often you might end your text entry with a header like:
+              Beside that, it adds a new line text entries to make
+              markdown parser correctly parse a header at the
+              end of the text.
 
-   ## API"
-  ;; and this function makes it work well
-  (concatenate 'string text "
-"))
+              Often you might end your text entry with a header like:
 
-
-(defun transform-entries (entries)
-  (mapcar (lambda (entry)
-            (typecase entry
-              (string (add-a-newline entry))
-              (symbol
-               (let ((value (symbol-value entry)))
-                 (unless (typep value 'string)
-                   (error "~S value should be a string."
-                          entry))
-                 (add-a-newline value)))
-              (t
-               (entry-to-reference entry))))
-          entries))
+              ## API"
+             (format nil "~A~2&~A"
+                     (strip-docstring-indentation text)
+                     external-links)))
+      (mapcar (lambda (entry)
+                (typecase entry
+                  (string (add-external-links entry))
+                  (symbol
+                   (let ((value (symbol-value entry)))
+                     (unless (typep value 'string)
+                       (error "~S value should be a string."
+                              entry))
+                     (add-external-links value)))
+                  (t
+                   (entry-to-reference entry))))
+              entries))))
 
 (defun entry-to-reference (entry)
   (destructuring-bind (symbol locative &key export) entry
