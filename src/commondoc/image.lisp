@@ -3,6 +3,8 @@
   (:import-from #:common-html.emitter
                 #:define-emitter)
   (:import-from #:str)
+  (:import-from #:log)
+  (:import-from #:common-doc)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
   (:import-from #:40ants-doc/commondoc/page
@@ -12,7 +14,9 @@
   (:import-from #:cl-ppcre
                 #:do-register-groups)
   (:import-from #:40ants-doc/builder/vars
-                #:*current-asdf-system*))
+                #:*current-asdf-system*)
+  (:import-from #:40ants-doc/commondoc/mapper
+                #:map-nodes))
 (in-package 40ants-doc/commondoc/image)
 
 (defclass local-image (common-doc:image)
@@ -54,7 +58,7 @@
                                         :width width
                                         :height height)))))
              (t node))))
-    (40ants-doc/commondoc/mapper:map-nodes document #'replacer)))
+    (map-nodes document #'replacer)))
 
 (defun extract-width-and-height (path)
   "Returns 3 values, real path, width and height. Width and height might be NIL.

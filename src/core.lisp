@@ -3,7 +3,7 @@
   (:use #:cl)
   (:nicknames #:40ants-doc/core)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/locatives)
+  (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/docstring
                 #:strip-docstring-indentation)

@@ -10,7 +10,9 @@
   (:import-from #:40ants-doc/commondoc/page)
   (:import-from #:40ants-doc/rewrite)
   (:import-from #:str)
-  (:import-from #:jonathan))
+  (:import-from #:jonathan)
+  (:import-from #:dexador
+                #:http-request-not-found))
 (in-package 40ants-doc/external-index)
 
 
@@ -18,7 +20,7 @@
   (let ((json-url (url-join url "references.json"))
         (original-url url))
     (handler-case (dex:get json-url)
-      (dexador:http-request-not-found ()
+      (http-request-not-found ()
         (dex:get original-url)))))
 
 

@@ -5,11 +5,8 @@
                 #:locate-object
                 #:define-locative-type)
   (:import-from #:swank-backend)
-  (:import-from #:swank-mop)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
-  (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/commondoc/builder)

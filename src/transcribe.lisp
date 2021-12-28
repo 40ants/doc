@@ -27,6 +27,9 @@
   ;; (:import-from #:40ants-doc/page)
   (:import-from #:swank)
   (:import-from #:slynk)
+  (:import-from #:alexandria
+                #:with-gensyms
+                #:once-only)
   (:export
    #:transcribe
    #:*syntaxes*
@@ -505,7 +508,7 @@
          (assert nil))))
 
 (defmacro with-load-environment ((stream) &body body)
-  (alexandria:once-only (stream)
+  (once-only (stream)
     `(let* ((*readtable* *readtable*)
             (*package* *package*)
             (*load-pathname* (handler-case (pathname ,stream)
@@ -793,7 +796,7 @@
                                                value value-capture)))))))
 
 (defmacro with-transcription-syntax (() &body body)
-  (alexandria:with-gensyms (package)
+  (with-gensyms (package)
     `(let ((,package *package*))
        (with-standard-io-syntax
          (let ((*package* ,package)

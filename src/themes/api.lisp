@@ -2,6 +2,8 @@
   (:use #:cl)
   (:import-from #:40ants-doc/highlight
                 #:download-highlight-js)
+  (:import-from #:alexandria
+                #:once-only)
   (:export #:render-css
            #:render-page
            #:render-html-head
@@ -21,7 +23,7 @@
 (defvar *theme*)
 
 (defmacro with-theme ((theme) &body body)
-  (alexandria:once-only (theme)
+  (once-only (theme)
     `(let ((*theme* (typecase ,theme
                       (symbol (make-instance ,theme))
                       (t ,theme))))

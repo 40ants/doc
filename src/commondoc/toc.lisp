@@ -1,15 +1,17 @@
 (uiop:define-package #:40ants-doc/commondoc/toc
   (:use #:cl)
-  (:import-from #:40ants-doc/commondoc/section)
   (:import-from #:40ants-doc/utils
                 #:make-relative-path)
   (:import-from #:40ants-doc/commondoc/page
                 #:full-filename
                 #:base-filename)
   (:import-from #:40ants-doc/page)
+  (:import-from #:common-doc)
   (:import-from #:40ants-doc/commondoc/format)
   (:import-from #:40ants-doc/rewrite)
   (:import-from #:40ants-doc/commondoc/changelog)
+  (:import-from #:40ants-doc/commondoc/mapper
+                #:map-nodes)
   (:export
    #:make-toc))
 (in-package 40ants-doc/commondoc/toc)
@@ -79,9 +81,9 @@
                   (setf inside-changelog nil))
                  (common-doc:section
                   (pop current-sublist)))))
-      (40ants-doc/commondoc/mapper:map-nodes document #'collector
-                                             :on-going-down #'on-down
-                                             :on-going-up #'on-up))
+      (map-nodes document #'collector
+                 :on-going-down #'on-down
+                 :on-going-up #'on-up))
     
     (assert (= (length current-sublist) 1))
     (flet ((remove-empty-sublists (node)
@@ -91,8 +93,8 @@
                            unless (null (common-doc:children child))
                              collect child)))
              node))
-      (40ants-doc/commondoc/mapper:map-nodes (car current-sublist)
-                                             #'remove-empty-sublists))))
+      (map-nodes (car current-sublist)
+                 #'remove-empty-sublists))))
 
 
 (defmethod 40ants-doc/commondoc/page:make-page-toc ((obj 40ants-doc/commondoc/page:page))

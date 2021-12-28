@@ -4,21 +4,19 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/locatives
                 #:macro)
-  (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/docstring)
-  (:import-from #:40ants-doc/commondoc/markdown))
+  (:import-from #:40ants-doc/commondoc/markdown)
+  (:import-from #:40ants-doc/source-api
+                #:find-source))
 (in-package 40ants-doc/locatives/macro)
 
 
@@ -49,4 +47,4 @@
 (defmethod 40ants-doc/locatives/base:locate-and-find-source (symbol (locative-type (eql 'macro))
                                                              locative-args)
   (declare (ignore locative-args))
-  (40ants-doc/source-api:find-source (macro-function symbol)))
+  (find-source (macro-function symbol)))

@@ -1,5 +1,9 @@
 (defpackage #:40ants-doc/rewrite
-  (:use #:cl))
+  (:use #:cl)
+  (:import-from #:cl-ppcre
+                #:regex-replace)
+  (:import-from #:str
+                #:ends-with-p))
 (in-package 40ants-doc/rewrite)
 
 
@@ -12,7 +16,7 @@
    https://40ants.com/doc/some-lib/changelog.html
 "
   (if *clean-urls*
-      (cl-ppcre:regex-replace "index\\.html$" url "")
+      (regex-replace "index\\.html$" url "")
       url))
 
 
@@ -28,9 +32,9 @@
 "
   (cond
     ((and *clean-urls*
-          (str:ends-with-p ".html" file)
-          (not (str:ends-with-p "index.html" file)))
-     (cl-ppcre:regex-replace "\\.html"
-                             file
-                             "/index.html"))
+          (ends-with-p ".html" file)
+          (not (ends-with-p "index.html" file)))
+     (regex-replace "\\.html"
+                    file
+                    "/index.html"))
     (t file)))

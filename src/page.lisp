@@ -4,16 +4,13 @@
                 #:section-title
                 #:section-name)
   (:import-from #:40ants-doc/object-package)
-  (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/link)
-  (:import-from #:40ants-doc/builder/printer)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/locatives/dislocated)
   (:import-from #:40ants-doc/commondoc/builder)
   ;; TODO: solve circular dependency :(
   ;; (:import-from #:40ants-doc/commondoc/page)
   (:import-from #:40ants-doc/commondoc/format
                 #:ensure-format-class-name)
+  (:import-from #:str
+                #:title-case)
   (:export #:make-page
            #:ensure-page
            #:page-format
@@ -89,8 +86,8 @@
          (first-section (first sections))
          (real-title (or title
                          (section-title first-section)
-                         (str:title-case (symbol-name
-                                          (section-name first-section)))))
+                         (title-case (symbol-name
+                                      (section-name first-section)))))
          (base-filename (or base-filename
                             (make-base-filename sections))))
     (make-instance 'page

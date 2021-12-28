@@ -7,16 +7,13 @@
                 #:define-locative-type)
   (:import-from #:40ants-doc/locatives
                 #:include)
-  (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/reference-api
-                #:canonical-reference)
-  (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
+  (:import-from #:babel)
+  (:import-from #:common-doc)
+  (:import-from #:fare-utils)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
+  (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/core
                 #:exportable-locative-type-p)
   (:import-from #:40ants-doc/source-api))

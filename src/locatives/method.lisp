@@ -4,18 +4,22 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
-  (:import-from #:swank-backend)
+  ;; NO LINT
   (:import-from #:swank-mop)
   (:import-from #:named-readtables)
-  (:import-from #:pythonic-string-reader))
+  (:import-from #:pythonic-string-reader)
+  (:import-from #:40ants-doc/commondoc/builder
+                #:to-commondoc)
+  (:import-from #:40ants-doc/commondoc/bullet
+                #:make-bullet)
+  (:import-from #:40ants-doc/commondoc/markdown
+                #:parse-markdown)
+  (:import-from #:40ants-doc/docstring
+                #:get-docstring))
 (in-package 40ants-doc/locatives/method)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -68,20 +72,20 @@
           (swank-mop:method-specializers method)))
 
 
-(defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj method))
+(defmethod to-commondoc ((obj method))
   (let* ((arglist (rest (method-for-inspect-value obj)))
-         (docstring (40ants-doc/docstring:get-docstring obj t))
+         (docstring (get-docstring obj t))
          ;; TODO:  we should move text transfromation after it will be parsed
          (children (when docstring
-                     (40ants-doc/commondoc/markdown:parse-markdown docstring)))
+                     (parse-markdown docstring)))
          (dislocated-symbols
            (40ants-doc/args::function-arg-names arglist))
          (reference (canonical-reference obj)))
 
-    (40ants-doc/commondoc/bullet:make-bullet reference
-                                             :arglist arglist
-                                             :children children
-                                             :dislocated-symbols dislocated-symbols)))
+    (make-bullet reference
+                 :arglist arglist
+                 :children children
+                 :dislocated-symbols dislocated-symbols)))
 
 ;;;; These were lifted from the fancy inspector contrib and then
 ;;;; tweaked.

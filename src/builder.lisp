@@ -1,9 +1,8 @@
 (uiop:define-package #:40ants-doc/builder
   (:use #:cl)
-  (:import-from #:dexador)
-  (:import-from #:alexandria
-                #:assoc-value)
+  ;; NO LINT
   (:import-from #:3bmd)
+  ;; NO LINT
   (:import-from #:3bmd-code-blocks)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
@@ -12,7 +11,6 @@
   (:import-from #:40ants-doc/page
                 #:page-base-dir
                 #:page-format)
-  (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc
                 #:defsection)
@@ -25,12 +23,24 @@
   (:import-from #:40ants-doc/search)
   (:import-from #:40ants-doc/commondoc/transcribe)
   (:import-from #:40ants-doc/changelog)
+  (:import-from #:40ants-doc/commondoc/changelog)
+  (:import-from #:40ants-doc/commondoc/section)
+  (:import-from #:40ants-doc/commondoc/xref)
   (:import-from #:40ants-doc/commondoc/image)
-  (:import-from #:40ants-doc/reference
-                #:make-external-reference)
   (:import-from #:40ants-doc/external-index
                 #:write-references-index)
   (:import-from #:40ants-doc/commondoc/reference)
+  (:import-from #:40ants-doc/commondoc/builder
+                #:to-commondoc)
+  (:import-from #:40ants-doc/link)
+  (:import-from #:40ants-doc/rewrite)
+  (:import-from #:40ants-doc/themes/api)
+  (:import-from #:common-doc)
+  (:import-from #:common-doc.format)
+  (:import-from #:common-html)
+  (:import-from #:common-html.emitter)
+  (:import-from #:commondoc-markdown)
+
   (:export
    #:*document-html-top-blocks-of-links*
    #:*document-html-bottom-blocks-of-links*
@@ -238,10 +248,8 @@
         (40ants-doc/reference-api:*source-uri-fn* source-uri-fn))
     
     (40ants-doc/commondoc/format:with-format (format)
-      (let* ((document
-               (40ants-doc/commondoc/builder:to-commondoc object))
-             (processed-document
-               (process-document document))
+      (let* ((document (to-commondoc object))
+             (processed-document (process-document document))
              (40ants-doc/builder/printer::*full-package-names* full-package-names))
         (with-output-to-string (stream)
           (common-doc.format:emit-document (make-instance format)
@@ -328,9 +336,7 @@
         (40ants-doc/themes/api::with-theme (theme)
           (let* ((sections (uiop:ensure-list sections))
                  (pages (mapcar #'40ants-doc/page:ensure-page sections))
-                 (page-documents (mapcar
-                                  #'40ants-doc/commondoc/builder:to-commondoc
-                                  pages)))
+                 (page-documents (mapcar #'to-commondoc pages)))
             (multiple-value-bind (full-document references)
                 (process-document (common-doc:make-document "Documentation"
                                                             :children page-documents)

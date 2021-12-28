@@ -1,5 +1,7 @@
 (uiop:define-package #:40ants-doc/commondoc/format
   (:use #:cl)
+  (:import-from #:common-html)
+  (:import-from #:commondoc-markdown)
   (:export #:with-format
            #:current-files-extension
            #:files-extension

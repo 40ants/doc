@@ -3,8 +3,8 @@
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/source-api)
+  (:import-from #:40ants-doc/locatives)
   (:import-from #:40ants-doc/locatives/base)
-  (:import-from #:40ants-doc/locatives/dislocated)
   (:import-from #:40ants-doc/object-package)
   (:export
    #:resolve

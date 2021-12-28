@@ -1,7 +1,5 @@
 (defpackage #:40ants-doc/args
-  (:use #:cl)
-  (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/reference))
+  (:use #:cl))
 (in-package 40ants-doc/args)
 
 

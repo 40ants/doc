@@ -2,6 +2,9 @@
   (:use #:cl)
   (:import-from #:40ants-doc)
   (:import-from #:common-doc)
+  (:import-from #:common-doc.ops)
+  (:import-from #:common-doc.format)
+  (:import-from #:commondoc-markdown)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
   (:import-from #:common-html.emitter
@@ -25,6 +28,14 @@
                 #:reference-object)
   (:import-from #:40ants-doc/object-package
                 #:object-package)
+  (:import-from #:40ants-doc/commondoc/builder
+                #:to-commondoc)
+  (:import-from #:40ants-doc/commondoc/mapper
+                #:map-nodes)
+  (:import-from #:40ants-doc/reference-api
+                #:canonical-reference)
+  (:import-from #:str
+                #:param-case)
   (:export
    #:documentation-section
    #:section-definition
@@ -46,7 +57,7 @@
 
 (defun make-section-body (section)
   (loop for entry in (40ants-doc:section-entries section)
-        collect (40ants-doc/commondoc/builder:to-commondoc entry)))
+        collect (to-commondoc entry)))
 
 
 (defun make-section-with-reference (title children reference)
@@ -76,13 +87,13 @@
                      title-text)))
         (children (make-section-body section)))
 
-    (let* ((reference (40ants-doc/reference-api::canonical-reference section))
+    (let* ((reference (canonical-reference section))
            (html-fragment (40ants-doc/utils::html-safe-name
                            (40ants-doc/reference::reference-to-anchor reference))))
     
       (make-instance class-name
                      :definition section
-                     :doc-reference (40ants-doc/reference-api::canonical-reference
+                     :doc-reference (canonical-reference
                                      section)
                      :title title
                      :reference html-fragment
@@ -98,7 +109,7 @@
     (40ants-doc::section-ignore-words definition)))
 
 
-(defmethod 40ants-doc/commondoc/builder:to-commondoc ((obj 40ants-doc:section))
+(defmethod to-commondoc ((obj 40ants-doc:section))
   (make-documentation-section obj))
 
 
@@ -150,8 +161,8 @@
                       (not (common-doc:reference node)))
              (let* ((title (common-doc:title node))
                     (text (common-doc.ops:collect-all-text title))
-                    (reference (str:param-case text)))
+                    (reference (param-case text)))
                (setf (common-doc:reference node)
                      reference)))
            node))
-    (40ants-doc/commondoc/mapper:map-nodes document #'fill-fragments)))
+    (map-nodes document #'fill-fragments)))

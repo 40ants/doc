@@ -1,7 +1,7 @@
 (defpackage #:40ants-doc/highlight
   (:use #:cl)
   (:import-from #:dexador)
-  (:import-from #:log4cl)
+  (:import-from #:log)
   (:import-from #:alexandria
                 #:when-let
                 #:write-string-into-file

@@ -5,19 +5,17 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
-  (:import-from #:40ants-doc/source-api)
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/locatives/utils)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
-  (:import-from #:40ants-doc/docstring))
+  (:import-from #:40ants-doc/docstring)
+  (:import-from #:40ants-doc/commondoc/markdown
+                #:parse-markdown))
 (in-package 40ants-doc/locatives/variable)
 
 
@@ -44,7 +42,7 @@
                             (t
                              (prin1-to-string value)))))
            (children (when docstring
-                       (40ants-doc/commondoc/markdown:parse-markdown docstring))))
+                       (parse-markdown docstring))))
 
       (40ants-doc/commondoc/bullet:make-bullet reference
                                                :arglist arglist

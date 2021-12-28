@@ -3,6 +3,7 @@
   (:import-from #:40ants-doc/locatives
                 #:stdout-of)
   (:import-from #:named-readtables)
+  (:import-from #:common-doc)
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-object

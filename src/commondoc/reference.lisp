@@ -15,7 +15,9 @@
   (:import-from #:40ants-doc/commondoc/page
                 #:page)
   (:import-from #:40ants-doc/reference
-                #:reference=))
+                #:reference=)
+  (:import-from #:40ants-doc/commondoc/mapper
+                #:map-nodes))
 (in-package 40ants-doc/commondoc/reference)
 
 
@@ -52,7 +54,7 @@
                         :key #'car
                         :test #'reference=)))
            node))
-    (40ants-doc/commondoc/mapper:map-nodes node #'collector
-                                           :on-going-down #'track-page))
+    (map-nodes node #'collector
+               :on-going-down #'track-page))
 
   results)
