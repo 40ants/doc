@@ -1,6 +1,5 @@
 (uiop:define-package #:40ants-doc/commondoc/piece
   (:use #:cl)
-  (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/object-package))
 (in-package 40ants-doc/commondoc/piece)

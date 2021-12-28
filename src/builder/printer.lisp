@@ -2,9 +2,6 @@
   (:use #:cl)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/core
-                #:defsection)
   (:export #:*document-uppercase-is-code*))
 (in-package 40ants-doc/builder/printer)
 

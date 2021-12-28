@@ -1,10 +1,16 @@
 (uiop:define-package #:40ants-doc/commondoc/markdown
   (:use #:cl)
-  (:import-from #:commondoc-markdown)
+  (:import-from #:str)
+  (:import-from #:commondoc-markdown
+                #:markdown-link)
   (:import-from #:common-doc)
+  (:import-from #:common-doc.ops)
+  (:import-from #:common-doc.format)
   (:import-from #:40ants-doc/commondoc/xref)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:node-supports-children)
+  (:import-from #:40ants-doc/swank
+                #:read-locative-from-string)
   (:export
    #:parse-markdown))
 (in-package 40ants-doc/commondoc/markdown)
@@ -31,15 +37,15 @@
   "Replaces unresolved markdown nodes with XREF objects."
   (flet ((replacer (node)
            (cond
-             ((typep node 'commondoc-markdown::markdown-link)
+             ((typep node 'markdown-link)
               (let* ((children (common-doc:children node)))
                 
                 (let* ((text (common-doc.ops:collect-all-text children))
-                       (symbol (40ants-doc/swank::read-locative-from-string text))
+                       (symbol (read-locative-from-string text))
                        (locative-name (commondoc-markdown:markdown-link-definition node))
                        (locative (when locative-name
-                                   (40ants-doc/swank::read-locative-from-string locative-name
-                                                                                :package (find-package "40ANTS-DOC/LOCATIVES")))))
+                                   (read-locative-from-string locative-name
+                                                              :package (find-package "40ANTS-DOC/LOCATIVES")))))
                   (40ants-doc/commondoc/xref:make-xref text
                                                        :symbol symbol
                                                        :locative locative))))

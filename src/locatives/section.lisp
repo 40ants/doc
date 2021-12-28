@@ -1,23 +1,27 @@
 (defpackage #:40ants-doc/locatives/section
   (:use #:cl)
-  (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/reference-api)
-  (:import-from #:40ants-doc/source)
-  (:import-from #:40ants-doc/locatives/base)
-  (:import-from #:40ants-doc/builder/printer)
-  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/reference
+                #:make-reference)
+  (:import-from #:40ants-doc/reference-api
+                #:canonical-reference)
+  (:import-from #:40ants-doc/locatives/base
+                #:define-locative-type
+                #:locate-object
+                #:locate-and-find-source)
   (:import-from #:40ants-doc/locatives
                 #:section)
   (:import-from #:40ants-doc/core
                 ;; #:section
-                ))
+                )
+  (:import-from #:40ants-doc/source-api
+                #:find-source))
 (in-package 40ants-doc/locatives/section)
 
 
-(40ants-doc/locatives/base::define-locative-type section ()
+(define-locative-type section ()
   "Refers to a section defined by 40ANTS-DOC:DEFSECTION.")
 
-(defmethod 40ants-doc/locatives/base::locate-object (symbol (locative-type (eql 'section))
+(defmethod locate-object (symbol (locative-type (eql 'section))
                           locative-args)
   (declare (ignore locative-args))
   (unless (typep (symbol-value symbol)
@@ -25,9 +29,9 @@
     (error "Section locative works only with objects defined by 40ANTS-DOC:DEFSECTION."))
   (symbol-value symbol))
 
-(defmethod 40ants-doc/reference-api::canonical-reference ((section 40ants-doc/core::section))
-  (40ants-doc/reference::make-reference (40ants-doc/core::section-name section)
-                                        'section))
+(defmethod canonical-reference ((section 40ants-doc/core::section))
+  (make-reference (40ants-doc/core::section-name section)
+                  'section))
 
-(defmethod 40ants-doc/source-api:find-source ((section 40ants-doc/core::section))
-  (40ants-doc/locatives/base:locate-and-find-source (40ants-doc/core::section-name section) 'variable ()))
+(defmethod find-source ((section 40ants-doc/core::section))
+  (locate-and-find-source (40ants-doc/core::section-name section) 'variable ()))

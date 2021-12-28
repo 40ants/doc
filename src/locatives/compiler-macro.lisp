@@ -5,18 +5,17 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
+  (:import-from #:swank-backend)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/docstring)
-  (:import-from #:40ants-doc/commondoc/markdown))
+  (:import-from #:40ants-doc/commondoc/markdown)
+  (:import-from #:40ants-doc/args
+                #:macro-arg-names))
 (in-package 40ants-doc/locatives/compiler-macro)
 
 
@@ -41,7 +40,7 @@
     (40ants-doc/commondoc/bullet::make-bullet reference
                                               :arglist locative-args
                                               :children children
-                                              :dislocated-symbols (40ants-doc/args::macro-arg-names arglist))))
+                                              :dislocated-symbols (macro-arg-names arglist))))
 
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'compiler-macro))

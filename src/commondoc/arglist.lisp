@@ -1,7 +1,9 @@
 (uiop:define-package #:40ants-doc/commondoc/arglist
   (:use #:cl)
   (:import-from #:common-doc)
+  (:import-from #:common-doc.format)
   (:import-from #:common-html.emitter)
+  (:import-from #:commondoc-markdown)
   (:import-from #:spinneret
                 #:with-html)
   (:import-from #:40ants-doc/utils

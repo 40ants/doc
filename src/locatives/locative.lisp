@@ -5,21 +5,19 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
   (:import-from #:40ants-doc/args
                 #:function-arg-names)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/locatives
                 #:locative)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/docstring)
-  (:import-from #:40ants-doc/commondoc/markdown))
+  (:import-from #:40ants-doc/commondoc/markdown)
+  (:import-from #:40ants-doc/source-api
+                #:find-source))
 (in-package 40ants-doc/locatives/locative)
 
 
@@ -60,4 +58,4 @@
 (defmethod locate-and-find-source (symbol (locative-type (eql 'locative))
                                    locative-args)
   (declare (ignore locative-args))
-  (40ants-doc/source-api:find-source (locative-lambda-list-method-for-symbol symbol)))
+  (find-source (locative-lambda-list-method-for-symbol symbol)))

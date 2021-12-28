@@ -1,9 +1,6 @@
 (uiop:define-package #:40ants-doc/link
   (:use #:cl)
-  (:import-from #:40ants-doc/reference)
   (:import-from #:named-readtables)
-  (:import-from #:ironclad)
-  (:import-from #:babel)
   (:import-from #:pythonic-string-reader)
   (:export
    #:*document-link-code*))

@@ -3,12 +3,16 @@
   (:import-from #:40ants-doc
                 #:defsection)
   (:import-from #:cl-fad)
-  (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source)
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:cl-ppcre)
   (:import-from #:str)
+  (:import-from #:alexandria
+                #:starts-with-subseq)
+  (:import-from #:40ants-doc/reference-api
+                #:*source-uri-fn*
+                #:source-uri)
   (:export
    #:make-github-source-uri-fn))
 (in-package 40ants-doc/github)
@@ -38,8 +42,8 @@
   idea to add section like the 40ANTS-DOC/DOC:@LINKS section to allow jumping
   between the repository and the gh-pages site."
   (make-github-source-uri-fn function)
-  (40ants-doc/reference-api:*source-uri-fn* variable)
-  (40ants-doc/reference-api:source-uri function))
+  (*source-uri-fn* variable)
+  (source-uri function))
 
 
 (defun asdf-system-github-uri (asdf-system)
@@ -116,7 +120,7 @@
 (defun git-version (git-dir)
   (let ((head-string (read-first-line
                       (merge-pathnames (make-pathname :name "HEAD") git-dir))))
-    (if (alexandria:starts-with-subseq "ref: " head-string)
+    (if (starts-with-subseq "ref: " head-string)
         (let ((ref (subseq head-string 5)))
           (values (read-first-line (merge-pathnames ref git-dir)) ref))
         head-string)))

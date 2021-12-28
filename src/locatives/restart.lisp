@@ -1,19 +1,5 @@
 (uiop:define-package #:40ants-doc/locatives/restart
   (:use #:cl)
-  (:import-from #:40ants-doc/locatives/base
-                #:locate-error
-                #:locate-object
-                #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/reference-api
-                #:canonical-reference)
-  (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
-  (:import-from #:swank-backend)
-  (:import-from #:swank-mop)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/locatives/define-definer

@@ -6,6 +6,7 @@
   (:import-from #:40ants-doc/docstring
                 #:*whitespace-chars*)
   (:import-from #:str)
+  (:import-from #:common-doc)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:map-nodes)
   (:export))

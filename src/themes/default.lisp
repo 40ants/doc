@@ -1,5 +1,6 @@
 (uiop:define-package #:40ants-doc/themes/default
   (:use #:cl)
+  (:import-from #:common-html.emitter)
   (:import-from #:40ants-doc/themes/api
                 #:render-css)
   (:import-from #:lass)

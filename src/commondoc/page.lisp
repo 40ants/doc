@@ -4,16 +4,20 @@
                 #:make-code
                 #:make-text
                 #:make-web-link)
+  (:import-from #:common-doc.ops)
+  (:import-from #:str)
   (:import-from #:common-html.emitter)
+  (:import-from #:40ants-doc/commondoc/xref)
+  (:import-from #:40ants-doc/locatives)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:common-html)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
   (:import-from #:common-html.emitter
                 #:define-emitter)
-  (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/section
                 #:documentation-section
                 #:section-definition)
-  (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:current-path
                 #:with-node-path)
@@ -44,8 +48,6 @@
                 #:supports-dislocated-symbols-p)
   (:import-from #:40ants-doc/themes/api
                 #:with-page-template)
-  (:import-from #:alexandria
-                #:when-let)
   (:import-from #:40ants-doc
                 #:section-external-docs)
   (:export #:make-page

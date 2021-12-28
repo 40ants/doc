@@ -12,7 +12,11 @@
                 #:with-tag)
   (:import-from #:40ants-doc/render/args
                 #:arglist-to-string)
+  (:import-from #:common-doc)
+  (:import-from #:spinneret)
   (:import-from #:40ants-doc/commondoc/arglist)
+  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/reference-api)
   (:import-from #:40ants-doc/ignored-words
                 #:ignored-words)
   (:import-from #:40ants-doc/dislocated-symbols
@@ -25,6 +29,8 @@
   (:import-from #:commondoc-markdown/emitter
                 #:hash-link)
   (:import-from #:40ants-doc/builder/printer)
+  (:import-from #:common-doc.format
+                #:emit-document)
   (:export
    #:make-bullet))
 (in-package 40ants-doc/commondoc/bullet)
@@ -150,9 +156,9 @@
                      (common-doc::children obj))))))))
 
 
-(defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
-                                            (node bullet)
-                                            stream)
+(defmethod emit-document ((format commondoc-markdown:markdown)
+                          (node bullet)
+                          stream)
   (let* ((reference (doc-reference node))
          (arglists (bullet-arglist node))
          (locative-type (string-downcase

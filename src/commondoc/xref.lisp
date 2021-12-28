@@ -1,7 +1,8 @@
 (uiop:define-package #:40ants-doc/commondoc/xref
   (:use #:cl)
-  (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:common-doc)
+  (:import-from #:common-doc.ops)
+  (:import-from #:common-doc.format)
   (:import-from #:40ants-doc/commondoc/html
                 #:with-html)
   (:import-from #:common-html.emitter
@@ -10,11 +11,7 @@
                 #:read-locative
                 #:left-word
                 #:right-word)
-  (:import-from #:40ants-doc/swank)
   (:import-from #:cl-ppcre)
-  (:import-from #:40ants-doc/ignored-words
-                #:ignored-words
-                #:supports-ignored-words-p)
   (:import-from #:40ants-doc/utils
                 #:maybe-downcase)
   (:import-from #:40ants-doc/commondoc/mapper

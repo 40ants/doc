@@ -4,7 +4,7 @@
                 #:object-package)
   (:import-from #:swank)
   (:import-from #:closer-mop
-                #:method-generic-function
+                ;; NO-LINT
                 #:generic-function-name)
   (:import-from #:40ants-doc/utils))
 (in-package 40ants-doc/object-package-impl)

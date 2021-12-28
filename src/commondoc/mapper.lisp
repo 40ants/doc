@@ -1,7 +1,10 @@
 (defpackage #:40ants-doc/commondoc/mapper
   (:use #:cl)
   (:import-from #:common-doc)
+  (:import-from #:common-doc.ops)
   (:import-from #:40ants-doc/commondoc/bullet)
+  (:import-from #:40ants-doc/object-package
+                #:object-package)
   (:export
    #:map-nodes
    #:node-supports-children
@@ -37,7 +40,7 @@
 (defun call-with-node-package (func)
   (let ((packages-stack nil))
     (flet ((set-package (node)
-             (let ((package (or (40ants-doc/object-package::object-package node)
+             (let ((package (or (object-package node)
                                 *package*)))
                (push *package* packages-stack)
                (setf *package* package)))

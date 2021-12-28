@@ -4,18 +4,15 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
-  (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/arglist)
   (:import-from #:40ants-doc/docstring)
-  (:import-from #:40ants-doc/commondoc/markdown))
+  (:import-from #:40ants-doc/commondoc/markdown)
+  (:import-from #:40ants-doc/commondoc/builder
+                #:to-commondoc))
 (in-package 40ants-doc/locatives/class)
 
 (define-locative-type class ())
@@ -42,7 +39,7 @@
       (40ants-doc/reference:make-reference (class-name class) 'class)))
 
 
-(defmethod 40ants-doc/commondoc/builder:to-commondoc ((class class))
+(defmethod to-commondoc ((class class))
   (let* ((conditionp (subtypep class 'condition))
          (symbol (class-name class))
          (superclasses

@@ -1,5 +1,7 @@
 (defpackage #:40ants-doc/commondoc/transcribe
   (:use #:cl)
+  (:import-from #:common-doc)
+  (:import-from #:common-doc.ops)
   (:import-from #:40ants-doc/transcribe)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:with-node-package))

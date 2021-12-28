@@ -19,6 +19,10 @@
 
 
 (asdf:register-system-packages "common-html" '("COMMON-HTML.EMITTER"))
+(asdf:register-system-packages "common-doc" '("COMMON-DOC.OPS"
+                                              "COMMON-DOC.FORMAT"))
+
+(asdf:register-system-packages "log4cl" '("LOG"))
 
 (asdf:register-system-packages "3bmd-ext-code-blocks" '("3BMD-CODE-BLOCKS"))
 

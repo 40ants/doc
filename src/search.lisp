@@ -1,11 +1,30 @@
-(defpackage #:40ants-doc/search
+(uiop:define-package #:40ants-doc/search
   (:use #:cl)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:map-nodes)
   (:import-from #:40ants-doc/commondoc/section)
   (:import-from #:40ants-doc/commondoc/page)
+  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc/utils)
+  (:import-from #:40ants-doc/locatives)
+  (:import-from #:common-html)
   (:import-from #:stem)
-  (:import-from #:jonathan))
+  (:import-from #:str)
+  (:import-from #:jonathan)
+  (:import-from #:40ants-doc/commondoc/bullet
+                #:bullet)
+  (:import-from #:40ants-doc/commondoc/format
+                #:with-format)
+  (:import-from #:40ants-doc/commondoc/piece
+                #:doc-reference)
+  (:import-from #:40ants-doc/reference
+                #:reference-locative
+                #:reference-object)
+  (:import-from #:40ants-doc/locatives/base
+                #:locative-type)
+  (:import-from #:common-doc)
+  (:import-from #:common-doc.ops
+                #:collect-all-text))
 (in-package 40ants-doc/search)
 
 
@@ -46,7 +65,7 @@
 
 
 (defun generate-search-index (document page)
-  (40ants-doc/commondoc/format:with-format (:html)
+  (with-format (:html)
     (let ((docnames nil)
           (filenames nil)
           (objects (make-hash-table :test 'equal))
@@ -83,12 +102,12 @@
                                                    :omit-nulls t)
                             do (pushnew document-idx
                                         (gethash (stem:stem word) terms)))))
-                   (40ants-doc/commondoc/bullet::bullet
+                   (bullet
                     (when current-page
-                      (let* ((reference (40ants-doc/commondoc/piece::doc-reference node))
-                             (object (40ants-doc/reference:reference-object reference))
-                             (locative (40ants-doc/reference:reference-locative reference))
-                             (locative-type (40ants-doc/locatives/base:locative-type locative))
+                      (let* ((reference (doc-reference node))
+                             (object (reference-object reference))
+                             (locative (reference-locative reference))
+                             (locative-type (locative-type locative))
                              (package (typecase object
                                         (symbol (symbol-package object))
                                         (t nil)))
@@ -118,7 +137,7 @@
                                   (list 'common-html:html nil))
                       (setf current-page node)
                       (incf document-idx)
-                      (push (common-doc.ops:collect-all-text
+                      (push (collect-all-text
                              (common-doc:title
                               (first-section node)))
                             titles)

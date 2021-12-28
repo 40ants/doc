@@ -5,14 +5,7 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
-  (:import-from #:40ants-doc/reference-api
-                #:canonical-reference)
-  (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
   (:import-from #:swank-backend)
   (:import-from #:40ants-doc/locatives/utils)
   (:import-from #:40ants-doc/commondoc/builder)

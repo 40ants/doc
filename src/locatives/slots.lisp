@@ -5,16 +5,11 @@
                 #:locate-error
                 #:locate-object
                 #:define-locative-type)
-  (:import-from #:40ants-doc/render/args)
   (:import-from #:40ants-doc/reference-api
                 #:canonical-reference)
-  (:import-from #:40ants-doc/args)
   (:import-from #:40ants-doc/reference)
-  (:import-from #:40ants-doc/builder/vars)
   (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/page)
   (:import-from #:swank-mop)
-  (:import-from #:40ants-doc/builder/printer)
   (:import-from #:40ants-doc/locatives
                 #:accessor
                 #:reader
@@ -22,7 +17,13 @@
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/commondoc/arglist
                 #:make-arglist)
-  (:import-from #:40ants-doc/commondoc/markdown))
+  (:import-from #:40ants-doc/commondoc/markdown)
+  (:import-from #:40ants-doc/commondoc/builder
+                #:reference-to-commondoc)
+  (:import-from #:40ants-doc/docstring
+                #:strip-docstring-indentation)
+  (:import-from #:40ants-doc/source-api
+                #:find-source))
 (in-package 40ants-doc/locatives/slots)
 
 
@@ -122,7 +123,7 @@
          (docstring (unless (subtypep (find-class (first locative-args)) 'condition)
                       (let ((docstring (swank-mop:slot-definition-documentation slot-def)))
                         (when docstring
-                          (40ants-doc/docstring:strip-docstring-indentation docstring)))))
+                          (strip-docstring-indentation docstring)))))
          (children (when docstring
                      (40ants-doc/commondoc/markdown:parse-markdown docstring))))
     (40ants-doc/commondoc/bullet:make-bullet reference
@@ -131,28 +132,28 @@
                                              :ignore-words symbol)))
 
 
-(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'reader)) locative-args)
+(defmethod reference-to-commondoc ((symbol symbol) (locative-type (eql 'reader)) locative-args)
   (inner-reference-to-commondoc symbol locative-type locative-args))
 
-(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'writer)) locative-args)
+(defmethod reference-to-commondoc ((symbol symbol) (locative-type (eql 'writer)) locative-args)
   (inner-reference-to-commondoc symbol locative-type locative-args))
 
-(defmethod 40ants-doc/commondoc/builder::reference-to-commondoc ((symbol symbol) (locative-type (eql 'accessor)) locative-args)
+(defmethod reference-to-commondoc ((symbol symbol) (locative-type (eql 'accessor)) locative-args)
   (inner-reference-to-commondoc symbol locative-type locative-args))
 
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'accessor))
                                    locative-args)
-  (40ants-doc/source-api:find-source (find-method (symbol-function symbol)
-                                                  '() (list (find-class (first locative-args))))))
+  (find-source (find-method (symbol-function symbol)
+                            '() (list (find-class (first locative-args))))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'reader))
                                    locative-args)
-  (40ants-doc/source-api:find-source (find-method (symbol-function symbol)
-                                                  '() (list (find-class (first locative-args))))))
+  (find-source (find-method (symbol-function symbol)
+                            '() (list (find-class (first locative-args))))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'writer))
                                    locative-args)
-  (40ants-doc/source-api:find-source (find-method (symbol-function symbol)
-                                                  '() (mapcar #'find-class
-                                                              (list t (first locative-args))))))
+  (find-source (find-method (symbol-function symbol)
+                            '() (mapcar #'find-class
+                                        (list t (first locative-args))))))
