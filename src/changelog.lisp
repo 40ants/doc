@@ -151,7 +151,9 @@
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
   (0.7.0 2021-12-31
-         "* 40ANTS/CHANGELOG:DEFCHANGELOG now supports EXTERNAL-LINKS argument.")
+         "* 40ANTS/CHANGELOG:DEFCHANGELOG now supports EXTERNAL-LINKS argument.
+          * Automatic symbol extraction now ignores dates like 2021-12-31. Now
+            to make it work, the symbol should contain at least one alpha character.")
   (0.6.0 2021-12-05
          "* Fixed the issue, when we tried to find uppercased xrefs inside inline code and links.
           * Added EXTERNAL-LINKS argument to DEFSECTION macro. It can be useful, if you have a multiple
