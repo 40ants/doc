@@ -61,12 +61,14 @@
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defun make-version-section (version content)
+  (defun make-version-section (version content external-docs external-links)
     (multiple-value-bind (date content)
         (split-date-if-given content)
       `(progn
          (defsection ,version (:title ,(symbol-name version)
-                               :section-class version)
+                               :section-class version
+                               :external-docs ,external-docs
+                               :external-links ,external-links)
            ,@content)
          (setf (version-date ,version)
                ,date)))))
@@ -74,7 +76,8 @@
 
 (defmacro defchangelog ((&key (title "ChangeLog")
                            ignore-words
-                           external-docs)
+                           external-docs
+                           external-links)
                         &body versions)
   """
   This macro might be used to define a ChangeLog in a structured way.
@@ -106,11 +109,15 @@
        (defsection ,section-name (:title ,title
                                   :ignore-words (list ,@ignore-words)
                                   :section-class changelog
-                                  :external-docs ,external-docs)
+                                  :external-docs ,external-docs
+                                  :external-links ,external-links)
          ,@(loop for (version) in versions
                  collect `(,version section)))
        ,@(loop for (version . content) in versions
-               collect (make-version-section version content)))))
+               collect (make-version-section version
+                                             content
+                                             external-docs
+                                             external-links)))))
 
 
 (defchangelog (:ignore-words ("MGL-PAX"
@@ -143,6 +150,10 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.7.0 2021-12-31
+         "* 40ANTS/CHANGELOG:DEFCHANGELOG now supports EXTERNAL-LINKS argument.
+          * Automatic symbol extraction now ignores dates like 2021-12-31. Now
+            to make it work, the symbol should contain at least one alpha character.")
   (0.6.0 2021-12-05
          "* Fixed the issue, when we tried to find uppercased xrefs inside inline code and links.
           * Added EXTERNAL-LINKS argument to DEFSECTION macro. It can be useful, if you have a multiple

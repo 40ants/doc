@@ -143,6 +143,17 @@
         always (digit-char-p char)))
 
 
+(defun valid (symbol-name)
+  (loop with trimmed-string = (string-left-trim
+                               ;; it is ok for symbol to start with : if it is a keyword
+                               ;; or from the @ if it is a section name
+                               ;; but the rest should include at least one ASCII symbol
+                               '(#\: #\@)
+                               symbol-name)
+        for char across trimmed-string
+          thereis (alpha-char-p char)))
+
+
 (defun extract-symbols-from-text (node)
   ;; TODO: Find if this a replacement for FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE.
   (let ((text (common-doc:text node))
@@ -151,12 +162,7 @@
 
     (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-/.]+::?)?[+*@&:]?[A-Z0-9][A-Z0-9-]*[A-Z0-9]+[+*]?" text)
       (let ((symbol-name (subseq text start end)))
-        (unless (all-digits (string-left-trim
-                             ;; it is ok for symbol to start with : if it is a keyword
-                             ;; or from the @ if it is a section name
-                             ;; but the rest shouldn't be constructed from digits only
-                             '(#\: #\@)
-                             symbol-name))
+        (when (valid symbol-name)
           (when (> start processed-to-idx)
             (push (common-doc:make-text (subseq text processed-to-idx start))
                   new-nodes))
