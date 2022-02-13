@@ -26,7 +26,7 @@
                 #:with-html)
   (:import-from #:str)
   (:import-from #:40ants-doc/commondoc/page))
-(in-package 40ants-doc/commondoc/changelog)
+(in-package #:40ants-doc/commondoc/changelog)
 
 
 (defclass rss-feed (common-doc.format:document-format)

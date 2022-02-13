@@ -4,7 +4,7 @@
   (:import-from #:pythonic-string-reader)
   (:export
    #:find-source))
-(in-package 40ants-doc/source-api)
+(in-package #:40ants-doc/source-api)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

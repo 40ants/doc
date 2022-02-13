@@ -3,7 +3,7 @@
   (:export
    #:strip-docstring-indentation
    #:get-docstring))
-(in-package 40ants-doc/docstring)
+(in-package #:40ants-doc/docstring)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defparameter *whitespace-chars*

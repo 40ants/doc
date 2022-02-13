@@ -19,7 +19,7 @@
                 #:make-section-with-reference)
   (:import-from #:40ants-doc/commondoc/builder
                 #:to-commondoc))
-(in-package 40ants-doc/locatives/asdf-system)
+(in-package #:40ants-doc/locatives/asdf-system)
 
 (define-locative-type asdf:system ()
   "Refers to an asdf system. The generated documentation will include

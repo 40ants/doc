@@ -3,7 +3,7 @@
   (:import-from #:40ants-doc/locatives/base)
   (:export
    #:define-definer-for-symbol-locative-type))
-(in-package 40ants-doc/locatives/define-definer)
+(in-package #:40ants-doc/locatives/define-definer)
 
 
 (defun expand-define-definer-for-symbol-as-locative-definer-body

@@ -16,7 +16,7 @@
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/docstring)
   (:import-from #:40ants-doc/commondoc/markdown))
-(in-package 40ants-doc/locatives/constant)
+(in-package #:40ants-doc/locatives/constant)
 
 
 (define-locative-type constant (&optional initform)

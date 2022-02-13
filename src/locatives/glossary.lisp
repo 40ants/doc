@@ -17,7 +17,7 @@
                 #:strip-docstring-indentation)
   (:import-from #:40ants-doc/utils
                 #:maybe-downcase))
-(in-package 40ants-doc/locatives/glossary)
+(in-package #:40ants-doc/locatives/glossary)
 
 
 (40ants-doc/locatives/base:define-locative-type glossary-term ()

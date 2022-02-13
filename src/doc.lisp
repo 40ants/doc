@@ -28,7 +28,7 @@
   (:export
    #:@index
    #:@readme))
-(in-package 40ants-doc/doc)
+(in-package #:40ants-doc/doc)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
@@ -570,7 +570,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 
 
 (defsection @new-object-types (:title "Adding New Object Types"
-                               :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"))
+                               :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"
+                                              "COMMON-DOC:CHILDREN"))
   "
   If you wish to make it possible to render documentation for a new
   object type, then you have to define a method for the
@@ -595,7 +596,10 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (40ants-doc/reference-api:canonical-reference generic-function)
   (40ants-doc/source-api:find-source generic-function)
   (40ants-doc/commondoc/builder:to-commondoc generic-function)
-  (40ants-doc/commondoc/bullet:make-bullet function))
+  (40ants-doc/commondoc/bullet:make-bullet function)
+  (40ants-doc/commondoc/mapper:map-nodes generic-function)
+  (40ants-doc/commondoc/mapper:node-supports-children generic-function)
+  (40ants-doc/commondoc/mapper:with-node-package macro))
 
 
 (defsection @reference-based-extensions

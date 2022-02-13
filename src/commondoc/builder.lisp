@@ -7,7 +7,7 @@
   (:import-from #:40ants-doc/reference)
   (:export #:to-commondoc
            #:reference-to-commondoc))
-(in-package 40ants-doc/commondoc/builder)
+(in-package #:40ants-doc/commondoc/builder)
 
 
 (defgeneric to-commondoc (obj)

@@ -6,7 +6,7 @@
            #:current-files-extension
            #:files-extension
            #:*keyword-format-to-real-class*))
-(in-package 40ants-doc/commondoc/format)
+(in-package #:40ants-doc/commondoc/format)
 
 
 (defvar *current-format*)

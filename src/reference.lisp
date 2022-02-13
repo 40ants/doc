@@ -12,7 +12,7 @@
    #:reference-object
    #:reference-locative
    #:make-reference))
-(in-package 40ants-doc/reference)
+(in-package #:40ants-doc/reference)
 
 
 (defclass reference ()

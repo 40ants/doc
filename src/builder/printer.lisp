@@ -3,7 +3,7 @@
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
   (:export #:*document-uppercase-is-code*))
-(in-package 40ants-doc/builder/printer)
+(in-package #:40ants-doc/builder/printer)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

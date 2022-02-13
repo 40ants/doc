@@ -13,7 +13,7 @@
   (:import-from #:jonathan)
   (:import-from #:dexador
                 #:http-request-not-found))
-(in-package 40ants-doc/external-index)
+(in-package #:40ants-doc/external-index)
 
 
 (defun load-data-from-url (url)

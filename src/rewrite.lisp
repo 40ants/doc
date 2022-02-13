@@ -4,7 +4,7 @@
                 #:regex-replace)
   (:import-from #:str
                 #:ends-with-p))
-(in-package 40ants-doc/rewrite)
+(in-package #:40ants-doc/rewrite)
 
 
 (defvar *clean-urls* t)

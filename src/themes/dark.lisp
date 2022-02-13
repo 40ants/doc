@@ -5,7 +5,7 @@
   (:import-from #:lass)
   (:import-from #:40ants-doc/themes/api)
   (:export #:dark-theme))
-(in-package 40ants-doc/themes/dark)
+(in-package #:40ants-doc/themes/dark)
 
 
 (defclass dark-theme (default-theme)

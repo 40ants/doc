@@ -4,7 +4,7 @@
    #:ignored-words
    #:supports-ignored-words-p
    #:ignore-words-in-package))
-(in-package 40ants-doc/ignored-words)
+(in-package #:40ants-doc/ignored-words)
 
 
 (defvar *package-ignore-words*

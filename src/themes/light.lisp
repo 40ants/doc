@@ -5,7 +5,7 @@
   (:import-from #:lass)
   (:import-from #:40ants-doc/themes/api)
   (:export #:light-theme))
-(in-package 40ants-doc/themes/light)
+(in-package #:40ants-doc/themes/light)
 
 
 (defclass light-theme (default-theme)

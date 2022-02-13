@@ -2,7 +2,7 @@
   (:use #:cl)
   (:import-from #:40ants-doc
                 #:defsection))
-(in-package 40ants-doc/world)
+(in-package #:40ants-doc/world)
 
 
 (defsection @world (:title "PAX World"

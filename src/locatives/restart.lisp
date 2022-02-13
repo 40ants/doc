@@ -6,7 +6,7 @@
                 #:define-definer-for-symbol-locative-type)
   (:import-from #:40ants-doc/locatives/definers
                 #:define-symbol-locative-type))
-(in-package 40ants-doc/locatives/restart)
+(in-package #:40ants-doc/locatives/restart)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

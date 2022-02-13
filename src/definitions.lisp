@@ -3,7 +3,7 @@
   (:import-from #:swank)
   (:import-from #:40ants-doc/swank)
   (:import-from #:40ants-doc/builder/vars))
-(in-package 40ants-doc/definitions)
+(in-package #:40ants-doc/definitions)
 
 
 (defun find-definitions-find-symbol-or-package (name)

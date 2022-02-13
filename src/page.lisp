@@ -19,7 +19,7 @@
            #:page-base-url
            #:page-sections
            #:page-title))
-(in-package 40ants-doc/page)
+(in-package #:40ants-doc/page)
 
 
 (defclass page-common-mixin ()

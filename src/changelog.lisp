@@ -6,7 +6,7 @@
   (:import-from #:named-readtables)
   (:export #:@changelog
            #:defchangelog))
-(in-package 40ants-doc/changelog)
+(in-package #:40ants-doc/changelog)
 
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
@@ -150,6 +150,12 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.8.0 2022-02-14
+         "* Now 40ANTS-DOC/COMMONDOC/MAPPER:MAP-NODES generic-function
+            supports any node type which defines a method for
+            generic-function 40ANTS-DOC/COMMONDOC/MAPPER:NODE-SUPPORTS-CHILDREN.
+          * Default theme was fixed to work with latest Spinneret, which now
+            escapes single quotes inside HTML nodes.")
   (0.7.0 2021-12-31
          "* 40ANTS/CHANGELOG:DEFCHANGELOG now supports EXTERNAL-LINKS argument.
           * Automatic symbol extraction now ignores dates like 2021-12-31. Now

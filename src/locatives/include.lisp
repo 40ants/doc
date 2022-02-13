@@ -17,7 +17,7 @@
   (:import-from #:40ants-doc/core
                 #:exportable-locative-type-p)
   (:import-from #:40ants-doc/source-api))
-(in-package 40ants-doc/locatives/include)
+(in-package #:40ants-doc/locatives/include)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

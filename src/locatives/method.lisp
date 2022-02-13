@@ -20,7 +20,7 @@
                 #:parse-markdown)
   (:import-from #:40ants-doc/docstring
                 #:get-docstring))
-(in-package 40ants-doc/locatives/method)
+(in-package #:40ants-doc/locatives/method)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

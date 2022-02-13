@@ -16,7 +16,7 @@
   (:import-from #:40ants-doc/docstring)
   (:import-from #:40ants-doc/commondoc/markdown
                 #:parse-markdown))
-(in-package 40ants-doc/locatives/variable)
+(in-package #:40ants-doc/locatives/variable)
 
 
 (define-locative-type variable (&optional initform)

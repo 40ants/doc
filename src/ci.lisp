@@ -5,7 +5,7 @@
   (:import-from #:40ants-ci/jobs/linter)
   (:import-from #:40ants-ci/jobs/run-tests)
   (:import-from #:40ants-ci/jobs/docs))
-(in-package 40ants-doc/ci)
+(in-package #:40ants-doc/ci)
 
 
 (defparameter *asdf-version* "3.3.5.1"

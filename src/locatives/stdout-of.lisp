@@ -10,7 +10,7 @@
                 #:define-locative-type)
   (:import-from #:40ants-doc/commondoc/builder)
   (:import-from #:40ants-doc/reference))
-(in-package 40ants-doc/locatives/stdout-of)
+(in-package #:40ants-doc/locatives/stdout-of)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

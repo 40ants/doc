@@ -17,7 +17,7 @@
                 #:to-commondoc)
   (:import-from #:40ants-doc/commondoc/bullet
                 #:make-bullet))
-(in-package 40ants-doc/locatives/generic-function)
+(in-package #:40ants-doc/locatives/generic-function)
 
 
 (define-locative-type generic-function ())

@@ -16,7 +16,7 @@
   (:import-from #:40ants-doc/commondoc/markdown)
   (:import-from #:40ants-doc/args
                 #:macro-arg-names))
-(in-package 40ants-doc/locatives/compiler-macro)
+(in-package #:40ants-doc/locatives/compiler-macro)
 
 
 (define-locative-type compiler-macro ())

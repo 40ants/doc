@@ -18,7 +18,7 @@
                 #:reference=)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:map-nodes))
-(in-package 40ants-doc/commondoc/reference)
+(in-package #:40ants-doc/commondoc/reference)
 
 
 (defun append-no-page-to (references)

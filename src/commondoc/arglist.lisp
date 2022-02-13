@@ -8,7 +8,7 @@
                 #:with-html)
   (:import-from #:40ants-doc/utils
                 #:maybe-downcase))
-(in-package 40ants-doc/commondoc/arglist)
+(in-package #:40ants-doc/commondoc/arglist)
 
 
 (defclass arglist (common-doc:document-node)

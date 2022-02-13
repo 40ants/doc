@@ -5,7 +5,7 @@
   (:import-from #:40ants-doc/transcribe)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:with-node-package))
-(in-package 40ants-doc/commondoc/transcribe)
+(in-package #:40ants-doc/commondoc/transcribe)
 
 
 (defun warn-on-differences-in-transcriptions (document)

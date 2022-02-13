@@ -33,7 +33,7 @@
                 #:emit-document)
   (:export
    #:make-bullet))
-(in-package 40ants-doc/commondoc/bullet)
+(in-package #:40ants-doc/commondoc/bullet)
 
 
 (defclass bullet (documentation-piece common-doc:content-node)

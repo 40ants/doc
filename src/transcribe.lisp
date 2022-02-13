@@ -37,7 +37,7 @@
    #:transcription-output-consistency-error
    #:transcription-values-consistency-error
    #:transcription-error))
-(in-package 40ants-doc/transcribe)
+(in-package #:40ants-doc/transcribe)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

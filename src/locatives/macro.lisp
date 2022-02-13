@@ -17,7 +17,7 @@
   (:import-from #:40ants-doc/commondoc/markdown)
   (:import-from #:40ants-doc/source-api
                 #:find-source))
-(in-package 40ants-doc/locatives/macro)
+(in-package #:40ants-doc/locatives/macro)
 
 
 (define-locative-type macro ())

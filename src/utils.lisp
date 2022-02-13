@@ -13,7 +13,7 @@
    #:parse-symbol-name
    #:get-symbol-from-string
    #:make-relative-path))
-(in-package 40ants-doc/utils)
+(in-package #:40ants-doc/utils)
 
 
 (defun symbol-global-value (symbol)

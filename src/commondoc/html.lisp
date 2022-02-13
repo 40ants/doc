@@ -3,7 +3,7 @@
   (:import-from #:spinneret)
   (:import-from #:common-html.emitter)
   (:export #:with-html))
-(in-package 40ants-doc/commondoc/html)
+(in-package #:40ants-doc/commondoc/html)
 
 
 (defmacro with-html (&body body)

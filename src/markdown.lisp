@@ -5,7 +5,7 @@
   (:import-from #:40ants-doc/utils)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader))
-(in-package 40ants-doc/markdown)
+(in-package #:40ants-doc/markdown)
 
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

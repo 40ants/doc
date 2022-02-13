@@ -6,7 +6,7 @@
   (:import-from #:swank)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader))
-(in-package 40ants-doc/source)
+(in-package #:40ants-doc/source)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

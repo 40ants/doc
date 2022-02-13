@@ -13,7 +13,7 @@
   (:import-from #:40ants-doc/commondoc/bullet)
   (:import-from #:40ants-doc/docstring)
   (:import-from #:40ants-doc/commondoc/markdown))
-(in-package 40ants-doc/locatives/function)
+(in-package #:40ants-doc/locatives/function)
 
 
 (define-locative-type function ()

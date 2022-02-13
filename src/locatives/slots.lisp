@@ -24,7 +24,7 @@
                 #:strip-docstring-indentation)
   (:import-from #:40ants-doc/source-api
                 #:find-source))
-(in-package 40ants-doc/locatives/slots)
+(in-package #:40ants-doc/locatives/slots)
 
 
 (define-locative-type accessor (class-name)

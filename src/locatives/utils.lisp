@@ -1,7 +1,7 @@
 (defpackage #:40ants-doc/locatives/utils
   (:use #:cl)
   (:import-from #:str))
-(in-package 40ants-doc/locatives/utils)
+(in-package #:40ants-doc/locatives/utils)
 
 ;;; A utility for writing FIND-SOURCE methods. Try FILTER-STRINGS one
 ;;; by one, and if one matches exactly one of LOCATIONS, then return

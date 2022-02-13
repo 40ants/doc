@@ -15,7 +15,7 @@
                 #:source-uri)
   (:export
    #:make-github-source-uri-fn))
-(in-package 40ants-doc/github)
+(in-package #:40ants-doc/github)
 
 
 (defsection @github-workflow (:title "Github Workflow"
