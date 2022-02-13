@@ -2,6 +2,15 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E7-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.7.0 (2021-12-31)
+
+* [`40ants/changelog:defchangelog`][8c40] now supports `EXTERNAL-LINKS` argument.
+
+* Automatic symbol extraction now ignores dates like 2021-12-31. Now
+  to make it work, the symbol should contain at least one alpha character.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E6-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.6.0 (2021-12-05)
