@@ -570,7 +570,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 
 
 (defsection @new-object-types (:title "Adding New Object Types"
-                               :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"))
+                               :ignore-words ("SWANK:FIND-DEFINITION-FOR-THING"
+                                              "COMMON-DOC:CHILDREN"))
   "
   If you wish to make it possible to render documentation for a new
   object type, then you have to define a method for the
