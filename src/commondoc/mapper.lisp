@@ -157,8 +157,14 @@
 (defgeneric map-nodes (node func &key)
   (:documentation "Recursively replaces or modifies a CommonDoc NODE with results of the FUNC call.")
   
-  (:method (node func &key &allow-other-keys)
-    (funcall func node))
+  (:method (node func &key
+                        (on-going-down #'do-nothing)
+                        (on-going-up #'do-nothing))
+    (if (node-supports-children node)
+        (process-node-with-children node func
+                                    :on-going-down on-going-down
+                                    :on-going-up on-going-up)
+        (funcall func node)))
   
   (:method ((node common-doc:base-list) func &key
                                              (on-going-down #'do-nothing)
