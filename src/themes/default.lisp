@@ -302,20 +302,23 @@
                "hljs.highlightAll();")
       ;; MathJax configuration to display inline formulas
       (:script :type "text/javascript"
-       "
+               ;; Here we need this :RAW
+               ;; because of the bug in the Spinneret
+               ;; https://github.com/ruricolist/spinneret/issues/59
+               (:raw "
              MathJax = {
                tex: {
                  inlineMath: [['$','$']],
                  processEscapes: true
                }
              };
-        ")
+        "))
       (:script :type "text/javascript"
                :src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js")
       ;; This hack is required, because :HAS CSS selector is not supported by
       ;; browsers yet: https://caniuse.com/css-has
       (:script :type "text/javascript"
-               "$(document).ready(function() {$('a:has(img)').css('border-bottom', 'none')})"))))
+               (:raw "$(document).ready(function() {$('a:has(img)').css('border-bottom', 'none')})")))))
 
 
 (defmethod 40ants-doc/themes/api:render-content ((theme default-theme) uri toc content-func)
