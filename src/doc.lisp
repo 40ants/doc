@@ -595,7 +595,10 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (40ants-doc/reference-api:canonical-reference generic-function)
   (40ants-doc/source-api:find-source generic-function)
   (40ants-doc/commondoc/builder:to-commondoc generic-function)
-  (40ants-doc/commondoc/bullet:make-bullet function))
+  (40ants-doc/commondoc/bullet:make-bullet function)
+  (40ants-doc/commondoc/mapper:map-nodes generic-function)
+  (40ants-doc/commondoc/mapper:node-supports-children generic-function)
+  (40ants-doc/commondoc/mapper:with-node-package macro))
 
 
 (defsection @reference-based-extensions
