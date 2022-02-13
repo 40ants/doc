@@ -1,7 +1,7 @@
 (defpackage #:40ants-doc/render/args
   (:use #:cl)
   (:import-from #:40ants-doc/utils))
-(in-package 40ants-doc/render/args)
+(in-package #:40ants-doc/render/args)
 
 
 (defun arglist-to-string (arglist)

@@ -4,7 +4,7 @@
   (:import-from #:pythonic-string-reader)
   (:export
    #:*document-link-code*))
-(in-package 40ants-doc/link)
+(in-package #:40ants-doc/link)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

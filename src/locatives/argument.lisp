@@ -8,7 +8,7 @@
                 #:argument)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader))
-(in-package 40ants-doc/locatives/argument)
+(in-package #:40ants-doc/locatives/argument)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

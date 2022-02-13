@@ -13,7 +13,7 @@
                 #:read-locative-from-string)
   (:export
    #:parse-markdown))
-(in-package 40ants-doc/commondoc/markdown)
+(in-package #:40ants-doc/commondoc/markdown)
 
 
 ;; TODO: Remove if common-doc.ops:collect-all-text will be OK:

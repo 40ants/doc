@@ -11,7 +11,7 @@
   (:import-from #:40ants-doc/rewrite)
   (:import-from #:40ants-doc/commondoc/changelog)
   (:export #:default-theme))
-(in-package 40ants-doc/themes/default)
+(in-package #:40ants-doc/themes/default)
 
 
 (defclass default-theme ()

@@ -13,7 +13,7 @@
   (:import-from #:40ants-doc/commondoc/markdown)
   (:import-from #:40ants-doc/commondoc/builder
                 #:to-commondoc))
-(in-package 40ants-doc/locatives/class)
+(in-package #:40ants-doc/locatives/class)
 
 (define-locative-type class ())
 

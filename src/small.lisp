@@ -23,4 +23,4 @@
   (:import-from #:40ants-doc/locatives/symbol-macro)
   (:import-from #:40ants-doc/locatives/type)
   (:import-from #:40ants-doc/locatives/include))
-(in-package 40ants-doc/small)
+(in-package #:40ants-doc/small)

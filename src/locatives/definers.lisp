@@ -11,7 +11,7 @@
   (:import-from #:40ants-doc/commondoc/markdown)
   (:export
    #:define-symbol-locative-type))
-(in-package 40ants-doc/locatives/definers)
+(in-package #:40ants-doc/locatives/definers)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

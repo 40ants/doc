@@ -1,6 +1,6 @@
 (defpackage #:40ants-doc/args
   (:use #:cl))
-(in-package 40ants-doc/args)
+(in-package #:40ants-doc/args)
 
 
 ;;; Return the names of the function arguments in ARGLIST that's a

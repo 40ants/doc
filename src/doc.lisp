@@ -28,7 +28,7 @@
   (:export
    #:@index
    #:@readme))
-(in-package 40ants-doc/doc)
+(in-package #:40ants-doc/doc)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

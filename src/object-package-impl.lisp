@@ -7,7 +7,7 @@
                 ;; NO-LINT
                 #:generic-function-name)
   (:import-from #:40ants-doc/utils))
-(in-package 40ants-doc/object-package-impl)
+(in-package #:40ants-doc/object-package-impl)
 
 
 (defmethod object-package ((object t))

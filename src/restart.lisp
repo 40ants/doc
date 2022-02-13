@@ -6,7 +6,7 @@
   (:import-from #:pythonic-string-reader)
   (:export
    #:define-restart))
-(in-package 40ants-doc/restart)
+(in-package #:40ants-doc/restart)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

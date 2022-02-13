@@ -10,7 +10,7 @@
                 #:trim-whitespace)
   (:export
    #:locate-definition-for-emacs))
-(in-package 40ants-doc/swank)
+(in-package #:40ants-doc/swank)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

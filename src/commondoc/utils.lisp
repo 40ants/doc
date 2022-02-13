@@ -10,7 +10,7 @@
   (:import-from #:40ants-doc/commondoc/mapper
                 #:map-nodes)
   (:export))
-(in-package 40ants-doc/commondoc/utils)
+(in-package #:40ants-doc/commondoc/utils)
 
 
 (defun left-word (node)

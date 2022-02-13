@@ -1,7 +1,7 @@
 (uiop:define-package #:40ants-doc/builder/vars
   (:use #:cl)
   (:export #:*document-max-numbering-level*))
-(in-package 40ants-doc/builder/vars)
+(in-package #:40ants-doc/builder/vars)
 
 
 (defvar *document-max-numbering-level* 3

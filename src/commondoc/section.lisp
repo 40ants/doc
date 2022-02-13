@@ -40,7 +40,7 @@
    #:documentation-section
    #:section-definition
    #:make-section-with-reference))
-(in-package 40ants-doc/commondoc/section)
+(in-package #:40ants-doc/commondoc/section)
 
 
 (defclass section-with-reference (documentation-piece common-doc:section)

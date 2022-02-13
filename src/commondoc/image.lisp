@@ -17,7 +17,7 @@
                 #:*current-asdf-system*)
   (:import-from #:40ants-doc/commondoc/mapper
                 #:map-nodes))
-(in-package 40ants-doc/commondoc/image)
+(in-package #:40ants-doc/commondoc/image)
 
 (defclass local-image (common-doc:image)
   ((width :initform nil

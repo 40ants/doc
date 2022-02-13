@@ -48,7 +48,7 @@
    #:render-to-files
    #:update-asdf-system-docs
    #:get-current-asdf-system))
-(in-package 40ants-doc/builder)
+(in-package #:40ants-doc/builder)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 
@@ -337,6 +337,8 @@
           (let* ((sections (uiop:ensure-list sections))
                  (pages (mapcar #'40ants-doc/page:ensure-page sections))
                  (page-documents (mapcar #'to-commondoc pages)))
+            ;; Probably it is a good idea to bind references to a special variable
+            ;; and provide some function to generate a URL pointing to a reference?
             (multiple-value-bind (full-document references)
                 (process-document (common-doc:make-document "Documentation"
                                                             :children page-documents)

@@ -18,7 +18,7 @@
   (:import-from #:40ants-doc/commondoc/markdown)
   (:import-from #:40ants-doc/source-api
                 #:find-source))
-(in-package 40ants-doc/locatives/locative)
+(in-package #:40ants-doc/locatives/locative)
 
 
 (define-locative-type locative (lambda-list)

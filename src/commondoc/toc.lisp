@@ -14,7 +14,7 @@
                 #:map-nodes)
   (:export
    #:make-toc))
-(in-package 40ants-doc/commondoc/toc)
+(in-package #:40ants-doc/commondoc/toc)
 
 
 (defvar *full-document*)

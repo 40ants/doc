@@ -9,7 +9,7 @@
    #:map-nodes
    #:node-supports-children
    #:with-node-package))
-(in-package 40ants-doc/commondoc/mapper)
+(in-package #:40ants-doc/commondoc/mapper)
 
 
 (defvar *on-going-down* nil

@@ -34,4 +34,4 @@
   (:import-from #:40ants-doc/themes/default)
   (:import-from #:40ants-doc/themes/light)
   (:import-from #:40ants-doc/themes/dark))
-(in-package 40ants-doc/full)
+(in-package #:40ants-doc/full)

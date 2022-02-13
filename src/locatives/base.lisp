@@ -15,7 +15,7 @@
    #:locate-object
    #:locate-and-find-source
    #:locative-equal))
-(in-package 40ants-doc/locatives/base)
+(in-package #:40ants-doc/locatives/base)
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)
 

@@ -18,8 +18,7 @@
   (:import-from #:40ants-doc/docstring)
   (:import-from #:40ants-doc/commondoc/markdown
                 #:parse-markdown))
-
-(in-package 40ants-doc/locatives/symbol-macro)
+(in-package #:40ants-doc/locatives/symbol-macro)
 
 (define-locative-type symbol-macro ()
   "")

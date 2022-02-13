@@ -28,7 +28,7 @@
    #:fill-locatives
    #:link-text
    #:extract-xrefs))
-(in-package 40ants-doc/commondoc/xref)
+(in-package #:40ants-doc/commondoc/xref)
 
 
 (defclass xref (common-doc:document-node)
@@ -53,12 +53,22 @@
 
                              In some cases locative might be a list. For example METHOD
                              locative has a few arguments and XREFS to methods might
-                             be like that (METHOD :AFTER (STRING T))"))
+                             be like that (METHOD :AFTER (STRING T))")
+   (format :reader xref-preferred-format
+           :initform nil
+           :initarg :format
+           :type (or null symbol)
+           :documentation "If this slot is not NULL then XREF will exists only
+                           in given document format and all pages in other format will
+                           link to the format from this slot.
+
+                           This makes it possible to force linking from Markdown documents
+                           to HTML in case if HTML entity representation is provides more information."))
   (:documentation "A link some entity, refered in markdown as a link like [Some text][the-id]
                    or just being UPPERCASED-SYMBOL mentioned."))
 
 
-(defun make-xref (name &key symbol locative)
+(defun make-xref (name &key symbol locative format)
   (check-type name (or string
                        common-doc:document-node))
   (check-type symbol (or null symbol))
@@ -71,7 +81,8 @@
   (make-instance 'xref
                  :name name
                  :symbol symbol
-                 :locative locative))
+                 :locative locative
+                 :format format))
 
 
 (defmethod common-doc:text ((xref xref))

@@ -4,7 +4,7 @@
    #:canonical-reference
    #:*source-uri-fn*
    #:source-uri))
-(in-package 40ants-doc/reference-api)
+(in-package #:40ants-doc/reference-api)
 
 
 (defgeneric canonical-reference (object)

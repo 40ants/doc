@@ -20,7 +20,7 @@
            #:section-ignore-words
            #:defsection-copy
            #:section-external-docs))
-(in-package 40ants-doc)
+(in-package #:40ants-doc)
 
 
 ;;; Should this remove docstrings of referenced things?

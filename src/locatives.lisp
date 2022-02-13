@@ -32,5 +32,5 @@
 	   #:symbol-macro
            #:type
            #:variable))
-(in-package 40ants-doc/locatives)
+(in-package #:40ants-doc/locatives)
 

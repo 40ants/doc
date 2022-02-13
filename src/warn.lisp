@@ -1,6 +1,6 @@
 (defpackage #:40ants-doc/warn
   (:use #:cl))
-(in-package 40ants-doc/warn)
+(in-package #:40ants-doc/warn)
 
 
 (defvar *dont-warn-on* nil

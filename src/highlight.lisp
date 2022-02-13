@@ -16,7 +16,7 @@
                 #:with-tmpdir)
   (:import-from #:trivial-extract
                 #:extract-zip))
-(in-package 40ants-doc/highlight)
+(in-package #:40ants-doc/highlight)
 
 
 (defvar *supported-languages*

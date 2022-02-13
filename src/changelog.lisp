@@ -6,7 +6,7 @@
   (:import-from #:named-readtables)
   (:export #:@changelog
            #:defchangelog))
-(in-package 40ants-doc/changelog)
+(in-package #:40ants-doc/changelog)
 
 
 (named-readtables:in-readtable pythonic-string-reader:pythonic-string-syntax)

@@ -15,7 +15,7 @@
                 )
   (:import-from #:40ants-doc/source-api
                 #:find-source))
-(in-package 40ants-doc/locatives/section)
+(in-package #:40ants-doc/locatives/section)
 
 
 (define-locative-type section ()

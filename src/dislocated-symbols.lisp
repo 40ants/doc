@@ -3,7 +3,7 @@
   (:export
    #:dislocated-symbols
    #:supports-dislocated-symbols-p))
-(in-package 40ants-doc/dislocated-symbols)
+(in-package #:40ants-doc/dislocated-symbols)
 
 
 (defgeneric supports-dislocated-symbols-p (obj)

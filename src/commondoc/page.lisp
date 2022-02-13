@@ -56,7 +56,7 @@
            #:warn-on-missing-exports
            #:warn-on-undocumented-exports
            #:full-filename))
-(in-package 40ants-doc/commondoc/page)
+(in-package #:40ants-doc/commondoc/page)
 
 
 (defclass page (40ants-doc/page::page-common-mixin
@@ -301,11 +301,12 @@ var DOCUMENTATION_OPTIONS = {
          (seen-locatives nil)
          (same-format-references
            (loop for (reference . page) in found-references
-                 when (eql (page-format page)
+                 for page-format = (page-format page)
+                 when (eql page-format
                            current-format)
-                 do (push (40ants-doc/reference:reference-locative reference)
-                          seen-locatives)
-                 and collect (cons reference page))))
+                   do (push (40ants-doc/reference:reference-locative reference)
+                            seen-locatives)
+                   and collect (cons reference page))))
     (append same-format-references
             (loop for (reference . page) in found-references
                   when (and (not (eql (page-format page)
@@ -316,7 +317,7 @@ var DOCUMENTATION_OPTIONS = {
                             (not (member (40ants-doc/reference:reference-locative reference)
                                          seen-locatives
                                          :test #'equal)))
-                  collect (cons reference page)))))
+                    collect (cons reference page)))))
 
 
 (defun make-page-uri (page &key from-page base-url)
@@ -363,7 +364,6 @@ var DOCUMENTATION_OPTIONS = {
    IGNORED-WORDS will be a list of list of strings where each sublist
    contains words, specified as IGNORE-WORDS argument of the 40ANTS-DOC:DEFSECTION macro.
   "
-  
   (with-node-path
     (labels ((collect-dislocated (node)
                (when (supports-dislocated-symbols-p node)
@@ -473,8 +473,8 @@ var DOCUMENTATION_OPTIONS = {
                          (locative (40ants-doc/commondoc/xref:xref-locative node))
                          (found-in-dislocated
                            (loop for sublist in dislocated-symbols
-                                 thereis (member text sublist
-                                                 :test #'string-equal)))
+                                   thereis (member text sublist
+                                                   :test #'string-equal)))
                          (found-references
                            (unless found-in-dislocated
                              (loop for (reference . page) in known-references
@@ -500,8 +500,8 @@ var DOCUMENTATION_OPTIONS = {
                                              (or (null locative)
                                                  (locative-equal (40ants-doc/reference::reference-locative reference)
                                                                  locative)))
-                                   collect (cons reference
-                                                 page))))
+                                     collect (cons reference
+                                                   page))))
                          (found-references
                            (if current-page
                                (remove-references-to-other-document-formats current-page
@@ -553,7 +553,7 @@ var DOCUMENTATION_OPTIONS = {
                                                for text = (format nil "~A" index)
                                                collect (make-link reference page text)
                                                unless (= index (length found-references))
-                                               collect (common-doc:make-text " "))
+                                                 collect (common-doc:make-text " "))
                                          (list (common-doc:make-text ")"))))))))
                      
                       (t

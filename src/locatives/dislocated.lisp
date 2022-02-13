@@ -6,7 +6,7 @@
                 #:define-locative-type)
   (:import-from #:40ants-doc/locatives
                 #:dislocated))
-(in-package 40ants-doc/locatives/dislocated)
+(in-package #:40ants-doc/locatives/dislocated)
 
 
 (define-locative-type dislocated ()

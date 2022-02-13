@@ -25,7 +25,7 @@
   (:import-from #:common-doc)
   (:import-from #:common-doc.ops
                 #:collect-all-text))
-(in-package 40ants-doc/search)
+(in-package #:40ants-doc/search)
 
 
 (defun objects-to-alist (hash)
