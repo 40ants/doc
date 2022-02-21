@@ -2,6 +2,17 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E8-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.8.0 (2022-02-14)
+
+* Now [`40ants-doc/commondoc/mapper:map-nodes`][89f1] generic-function
+  supports any node type which defines a method for
+  generic-function [`40ants-doc/commondoc/mapper:node-supports-children`][6c85].
+
+* Default theme was fixed to work with latest Spinneret, which now
+  escapes single quotes inside `HTML` nodes.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E7-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.7.0 (2021-12-31)
@@ -225,6 +236,8 @@ of [`40ants-doc/builder:render-to-files`][05c0] function.
 [05c0]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29
 [0983]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
 [8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
+[89f1]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCOMMONDOC-2FMAPPER-3AMAP-NODES-20GENERIC-FUNCTION-29
+[6c85]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCOMMONDOC-2FMAPPER-3ANODE-SUPPORTS-CHILDREN-20GENERIC-FUNCTION-29
 [dc59]: https://40ants.com/doc/#x-2840ANTS-DOC-2FIGNORED-WORDS-3AIGNORE-WORDS-IN-PACKAGE-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [359f]: https://40ants.com/doc/#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
 [bcaa]: https://40ants.com/doc/#x-2840ANTS-DOC-2FTHEMES-2FDOCS-3A-3A-40DEFINING-A-THEME-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
