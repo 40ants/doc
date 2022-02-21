@@ -276,14 +276,19 @@ var DOCUMENTATION_OPTIONS = {
     (flet ((check-xref (node)
              (when (typep node '40ants-doc/commondoc/xref:xref)
                (let* ((symbol (40ants-doc/commondoc/xref:xref-symbol node))
-                      (reference-to-section (and symbol
-                                                 (boundp symbol)
-                                                 (typep (symbol-value symbol)
-                                                        '40ants-doc:section)))
                       (name (40ants-doc/commondoc/xref:xref-name node))
                       (name (etypecase name
                               (common-doc:document-node (common-doc.ops:collect-all-text name))
-                              (string name))))
+                              (string name)))
+                      (reference-to-section (if symbol
+                                                (and (boundp symbol)
+                                                     (typep (symbol-value symbol)
+                                                            '40ants-doc:section))
+                                                ;; When we are referencing entity from
+                                                ;; other library, SYMBOL will be NIL,
+                                                ;; and if it is a section, then by a convention,
+                                                ;; its name should start from @ symbol:
+                                                (str:containsp ":@" name))))
                  (when (and (not reference-to-section)
                             (str:containsp "::" name))
                    (warn "External symbol is referenced as internal: ~A mentioned at ~{~A~^ / ~}"

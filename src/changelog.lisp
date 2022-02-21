@@ -150,6 +150,11 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.9.0 2022-02-21
+         "* Now you can refer internal documentation section of other libraries.
+            To do this, put the link to this library documentation to the
+            EXTERNAL-DOCS argument of 40ANTS-DOC:DEFSECTION macro and then
+            mention other section like this: `40ANTS-CI::@CRITIC section`.")
   (0.8.0 2022-02-14
          "* Now 40ANTS-DOC/COMMONDOC/MAPPER:MAP-NODES generic-function
             supports any node type which defines a method for
