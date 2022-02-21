@@ -2,6 +2,15 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E9-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.9.0 (2022-02-21)
+
+* Now you can refer internal documentation section of other libraries.
+To do this, put the link to this library documentation to the
+`EXTERNAL-DOCS` argument of [`40ants-doc:defsection`][4e8b] macro and then
+mention other section like this: `40ANTS-CI::@CRITIC section`.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E8-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.8.0 (2022-02-14)
