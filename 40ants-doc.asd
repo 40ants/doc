@@ -11,7 +11,8 @@
   :description "Allows to put documentation inside lisp files and cross-reference between different entities. Based on MGL-PAX."
   :class :package-inferred-system
   :pathname "src"
-  :depends-on ("40ants-doc/core"
+  :depends-on ("uiop"
+               "40ants-doc/core"
                "40ants-doc/restart"
                "40ants-doc/glossary"
                "40ants-doc/changelog")
