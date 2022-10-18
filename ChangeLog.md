@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E9-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.9.1 (2022-10-19)
+
+* Fixed 40ants-doc asdf system dependency from the 40ants-doc/ignored-words. Because this module should be in the core system.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E9-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.9.0 (2022-02-21)
