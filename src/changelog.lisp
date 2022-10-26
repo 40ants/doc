@@ -151,7 +151,15 @@
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
   (0.9.2 2022-10-26
-         "* Fixed a few issues with ASDF and warnings from find-system generic-function.")
+         "* Fixed a few issues with ASDF and warnings from find-system generic-function:
+
+    ```
+    Computing just-done stamp  for action (ASDF/LISP-ACTION:COMPILE-OP
+      \"40ants-asdf-system/changelog\"), but dependency (ASDF/LISP-ACTION:COMPILE-OP
+      \"40ants-asdf-system/changelog\"
+      \"file-type\") wasn't done yet!
+    ```
+")
   (0.9.1 2022-10-19
          "* Fixed 40ants-doc asdf system dependency from the 40ants-doc/ignored-words. Because this module should be in the core system.")
   (0.9.0 2022-02-21

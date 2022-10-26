@@ -6,7 +6,7 @@
   (:import-from #:40ants-doc/restart)
   (:import-from #:40ants-doc/glossary)
 
-  (:import-from #:40ants-doc/full)
+  (:import-from #:40ants-doc-full)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
   (:import-from #:40ants-doc/builder)

@@ -727,7 +727,8 @@
 
 
 (defmacro with-temp-package ((&key (use (list :cl))) &body body)
-  `(flet ((thunk-with-temp-package (:use ,use)
+  `(flet ((thunk-with-temp-package ()
             ,@body))
      (declare (dynamic-extent (function thunk-with-temp-package)))
-     (call-with-temp-package #'thunk-with-temp-package)))
+     (call-with-temp-package #'thunk-with-temp-package
+                             :use ',use)))
