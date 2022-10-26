@@ -2,6 +2,18 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E9-2E2-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.9.2 (2022-10-26)
+
+* Fixed a few issues with `ASDF` and warnings from find-system generic-function:
+
+```
+Computing just-done stamp  for action (ASDF/LISP-ACTION:COMPILE-OP
+  "40ants-asdf-system/changelog"), but dependency (ASDF/LISP-ACTION:COMPILE-OP
+  "40ants-asdf-system/changelog"
+  "file-type") wasn't done yet!
+```
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E9-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.9.1 (2022-10-19)
