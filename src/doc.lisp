@@ -683,7 +683,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
 ")
 
 
-(defmethod docs-config ((system (eql (asdf:find-system "40ants-doc"))))
+(defmethod docs-config ((system (eql (asdf:registered-system "40ants-doc"))))
   ;; 40ANTS-DOC-THEME-40ANTS system will bring
   ;; as dependency a full 40ANTS-DOC but we don't want
   ;; unnecessary dependencies here:

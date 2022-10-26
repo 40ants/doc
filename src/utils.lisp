@@ -559,7 +559,7 @@
                   (push system-name processed)
                   ;; (format t "Processing ~S system~%" system-name)
                   
-                  (let* ((system (asdf/system:find-system system-name))
+                  (let* ((system (asdf:registered-system system-name))
                          (dependencies (asdf/system:system-depends-on system)))
                     (loop for dep in dependencies
                           for dep-primary = (asdf:primary-system-name dep)
@@ -712,3 +712,22 @@
                (unless (str:ends-with-p "/" first)
                  "/")
                rest))
+
+
+
+(defun call-with-temp-package (thunk &key (use (list :cl)))
+  (let* ((temp-package (make-package (format nil "tmp-package-~A"
+                                             (get-internal-real-time))
+                                     ;; Without this one, ASDF might
+                                     ;; not read some files correctly
+                                     :use use))
+         (*package* temp-package))
+    (unwind-protect (funcall thunk)
+      (delete-package temp-package))))
+
+
+(defmacro with-temp-package ((&key (use (list :cl))) &body body)
+  `(flet ((thunk-with-temp-package ()
+            ,@body))
+     (declare (dynamic-extent (function thunk-with-temp-package)))
+     (call-with-temp-package #'thunk-with-temp-package)))
