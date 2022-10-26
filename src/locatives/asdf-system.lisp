@@ -31,7 +31,8 @@
                           locative-args)
   (assert (endp locative-args))
   ;; FIXME: This is slow as hell.
-  (or (asdf:find-system symbol nil)
+  ;; TODO: check if replacement of find-system with registered-system helped
+  (or (asdf:registered-system symbol)
       (locate-error)))
 
 (defmethod canonical-reference ((system asdf:system))

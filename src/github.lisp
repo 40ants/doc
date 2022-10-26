@@ -47,7 +47,7 @@
 
 
 (defun asdf-system-github-uri (asdf-system)
-  (let* ((asdf-system (asdf:find-system asdf-system))
+  (let* ((asdf-system (asdf:registered-system asdf-system))
          (uri (getf (asdf:system-source-control asdf-system)
                     :git)))
     (when (str:starts-with-p "https://github.com/" uri)
@@ -105,14 +105,14 @@
                           relative-path (1+ line-number)))))))
         (warn "No GIT-VERSION given and can't find .git directory ~
               for ASDF system~% ~A. Links to github will not be generated."
-              (asdf:component-name (asdf:find-system asdf-system))))))
+              (asdf:component-name (asdf:registered-system asdf-system))))))
 
 (defun asdf-system-git-version (system)
-  (let ((git-dir
-          (merge-pathnames (make-pathname :directory '(:relative ".git"))
-                           (asdf:system-relative-pathname
-                            (asdf:component-name (asdf:find-system system))
-                            ""))))
+  (check-type system asdf:system)
+  
+  (let* ((git-dir
+           (merge-pathnames (make-pathname :directory '(:relative ".git"))
+                            (asdf:system-relative-pathname system ""))))
     (if (probe-file git-dir)
         (git-version git-dir)
         nil)))

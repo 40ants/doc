@@ -1,6 +1,7 @@
 (defpackage #:40ants-doc/external-index
   (:use #:cl)
   (:import-from #:40ants-doc/utils
+                #:with-temp-package
                 #:url-join)
   (:import-from #:40ants-doc/reference
                 #:make-external-reference
@@ -69,21 +70,21 @@
 
 
 (defun write-references-index (filename references base-url-or-dir)
-  
-  (loop with *package* = (find-package :keyword)
-        for (reference . page) in (remove-if #'external-reference-p references
-                                             :key #'car)
-        for url = (make-full-reference-url reference page base-url-or-dir)
-        for object = (40ants-doc/reference:reference-object reference)
-        for locative = (40ants-doc/reference:reference-locative reference)
-        collect (list (cons :url url)
-                      (cons :object
-                            (etypecase object
-                              (string object)
-                              (symbol (prin1-to-string object))))
-                      (cons :locative locative)) into items
-        finally 
-           (alexandria:write-string-into-file
-            (jonathan:to-json items :from :alist)
-            filename
-            :if-exists :supersede)))
+  (with-temp-package ()
+    (loop 
+      for (reference . page) in (remove-if #'external-reference-p references
+                                           :key #'car)
+      for url = (make-full-reference-url reference page base-url-or-dir)
+      for object = (40ants-doc/reference:reference-object reference)
+      for locative = (40ants-doc/reference:reference-locative reference)
+      collect (list (cons :url url)
+                    (cons :object
+                          (etypecase object
+                            (string object)
+                            (symbol (prin1-to-string object))))
+                    (cons :locative locative)) into items
+      finally 
+         (alexandria:write-string-into-file
+          (jonathan:to-json items :from :alist)
+          filename
+          :if-exists :supersede))))

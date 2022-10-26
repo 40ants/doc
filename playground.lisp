@@ -266,7 +266,7 @@
        (format t "Circular dependency detected~%")
        (return-from print-dependency-graph))
      
-     (let ((system (asdf/system:find-system system-name)))
+     (let ((system (asdf:registered-system system-name)))
        (loop for dep in (asdf/system:system-depends-on system)
              do (print-dependency-graph dep
                                         :level (1+ level)
@@ -285,7 +285,7 @@
                   (push system-name processed)
                   ;; (format t "Processing ~S system~%" system-name)
                   
-                  (let* ((system (asdf/system:find-system system-name))
+                  (let* ((system (asdf:registered-system system-name))
                          (dependencies (asdf/system:system-depends-on system)))
                     (loop for dep in dependencies
                           for dep-primary = (asdf:primary-system-name dep)

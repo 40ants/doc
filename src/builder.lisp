@@ -169,7 +169,7 @@
   If you want a more generic wrapper for building documentation for your projects,
   take a look at [DOCS-BUILDER](https://40ants.com/docs-builder/)."
   (let ((40ants-doc/builder/vars::*current-asdf-system*
-          (asdf:find-system asdf-system)))
+          (asdf:registered-system asdf-system)))
     (render-to-files (append (uiop:ensure-list sections-or-pages)
                              (when readme-sections
                                (list
