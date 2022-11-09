@@ -44,10 +44,10 @@
        :hover)
       (a.header-link
        :visibility visible)
-      ((:and
-        a.header-link
-        :hover)
-       :color "#777"))
+      ((:and a.header-link :hover)
+       :color "#777")
+      ((:and a.header-link ::after)
+        :content "¶"))
 
      (h1
       :font-size 250%)
@@ -103,29 +103,87 @@
       :color "#222222"
       :text-decoration none
       :border-bottom 1px solid)
-     
-     (.locative-type
-      (a
-       :text-decoration none
-       :border-bottom 0
-       :font-weight bold))
-     
-     (.reference-object
-      :background-color "#EBE8E2"
-      :padding-left 0.3em
-      :padding-right 0.3em
-      :margin-left 0.2em
-      :border "solid gray 1px"
-      :font-weight bold
-      (a
-       :border-bottom none))
 
-     (.locative-args
-      :font-style italic
-      :margin-left 0.2em
-      :color "#777"
-      (code
-       :font-family sans-serif))
+     (.reference-bullet
+      :display flex                     
+      :flex-direction column            
+      :margin-bottom 1rem
+      :margin-top 1rem
+      (.reference-bullet-header
+       :display flex
+       :flex-direction row
+
+       (a :border-bottom none
+          :text-decoration none)
+
+       (a.locative-type
+        :text-decoration underline
+        :white-space nowrap)
+       ((:and a.locative-type :before)
+        :content "[")
+       ((:and a.locative-type :after)
+        :content "]")
+    
+       (a.bullet-link
+        :color "#DDD"
+        :padding 0 4px
+        :text-shadow none
+        :visibility hidden)
+       ((:and a.bullet-link ::after)
+        :content "¶")
+      
+       (.locative-type
+        (a
+         :text-decoration none
+         :border-bottom 0
+         :font-weight bold))
+
+       (.reference-object
+        :display flex
+        :flex-direction row
+        :padding-left 0.3em
+        :padding-right 0.3em
+        :margin-left 0.2em
+        (a
+         :border-bottom none)
+        (.object-name
+         :font-weight bold
+         :white-space nowrap)
+        (.object-args
+         :display flex
+         :flex-direction row
+         :white-space nowrap
+         (.locative-args
+          :font-style italic
+          :margin-left 0.2em
+          :color "#777"
+          (code
+           :font-family sans-serif))))
+
+       ;; Add () around object name and it's arguments
+       ((:and .reference-object :before)
+        :content "(")
+       ((:and .reference-object :after)
+        :content ")"))
+
+      (.bullet-content
+       :border-left solid "#e9e9e9" 0.5rem
+       :padding-left 1rem
+       :margin-top 0.5rem
+       ;; When bullet has some content, we want to make it more
+       ;; distanced from the next block, to make visual spacing.
+       :margin-bottom 1.5rem))
+     
+     ((:and
+       .reference-bullet-header
+       :hover)
+      (a.bullet-link
+       :visibility visible)
+      
+      ((:and
+        a.bullet-link
+        :hover)
+       :color "#777"))
 
      (navigation
       :display block
