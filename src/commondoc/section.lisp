@@ -120,8 +120,7 @@
         (:a :href (format nil "#~A" uri-fragment)
             :title "Permalink to this headline"
             :id uri-fragment
-            :class "header-link"
-            "¶")))))
+            :class "header-link")))))
 
 
 (common-html.emitter::define-emitter (obj documentation-section)

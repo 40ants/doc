@@ -125,35 +125,39 @@
                          (40ants-doc/reference::reference-locative-type reference)))
          (name (bullet-name obj))
          (source-uri (40ants-doc/reference-api:source-uri reference))
-         (spinneret:*html* common-html.emitter::*output-stream*))
+         (spinneret:*html* common-html.emitter::*output-stream*)
+         (spinneret:*suppress-inserted-spaces* t)
+         (*print-pretty* nil))
     (spinneret:with-html
-      (:ul
-       (:li
-        (when (common-doc:reference obj)
-          (:a :href (format nil "#~A"
-                            (common-doc:reference obj))))
-        (:span :class "reference-bullet"
-               (:span :class "reference"
-                      (if source-uri
-                          (:a :href source-uri
-                              :class "locative-type"
-                              (format nil "[~A]"
-                                      locative-type))
-                          (:span :class "locative-type"
-                                 (format nil "[~A]"
-                                         locative-type)))
-                      (:div :class "reference-object"
-                            :style "display: inline-block"
-                            (let ((uri (common-doc:reference obj)))
-                              (:a :href (format nil "#~A" uri)
-                                  :id uri
-                                  (maybe-downcase name)))))
-               
-               (mapc #'common-html.emitter::emit
-                     (maybe-downcase arglists))
+      (:div :class "reference-bullet"
+            (:div :class "reference-bullet-header"
+                  (if source-uri
+                      (:a :href source-uri
+                          :class "locative-type"
+                          (format nil "~A"
+                                  locative-type))
+                      (:span :class "locative-type"
+                             (format nil "~A"
+                                     locative-type)))
+                  (:div :class "reference-object"
+                        (:div :class "object-name" (let ((uri (common-doc:reference obj)))
+                                                     (:a :href (format nil "#~A" uri)
+                                                         :id uri
+                                                         (maybe-downcase name))))
+                        (when arglists
+                          (:div :class "object-args"
+                                (mapc #'common-html.emitter::emit
+                                      (maybe-downcase arglists)))))
+                  
+                  (when (common-doc:reference obj)
+                    (:a :class "bullet-link"
+                        :href (format nil "#~A"
+                                      (common-doc:reference obj)))))
 
-               (mapc #'common-html.emitter::emit
-                     (common-doc::children obj))))))))
+            (when (common-doc::children obj)
+              (:div :class "bullet-content"
+                    (mapc #'common-html.emitter::emit
+                          (common-doc::children obj))))))))
 
 
 (defmethod emit-document ((format commondoc-markdown:markdown)

@@ -139,6 +139,7 @@
                               "LOCATE-AND-DOCUMENT"
                               "TOC"
                               "SLIME"
+                              "CSS"
                               "SLY"
                               "COMMONDOC:SECTION"
                               "COLLECT-REACHABLE-OBJECTS"
@@ -150,6 +151,9 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.10.0 2022-11-09
+          "* Default theme was reworked and now uses divs and flex for rendering \"bullets\".
+             Also, bullets were made more structured and now it is more convenient to change their design using CSS.")
   (0.9.2 2022-10-26
          "* Fixed a few issues with ASDF and warnings from find-system generic-function:
 
