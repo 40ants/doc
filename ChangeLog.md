@@ -2,6 +2,13 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E10-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.10.0 (2022-11-09)
+
+* Default theme was reworked and now uses divs and flex for rendering "bullets".
+Also, bullets were made more structured and now it is more convenient to change their design using `CSS`.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E9-2E2-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.9.2 (2022-10-26)
