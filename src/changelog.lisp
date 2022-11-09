@@ -139,6 +139,7 @@
                               "LOCATE-AND-DOCUMENT"
                               "TOC"
                               "SLIME"
+                              "CSS"
                               "SLY"
                               "COMMONDOC:SECTION"
                               "COLLECT-REACHABLE-OBJECTS"
