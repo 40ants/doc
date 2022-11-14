@@ -1,5 +1,7 @@
 (defpackage #:40ants-doc-test/utils-test
   (:use #:cl)
+  (:import-from #:40ants-doc)
+  (:import-from #:40ants-doc/utils)
   (:import-from #:rove
                 #:ok
                 #:deftest))

@@ -1,5 +1,7 @@
 (uiop:define-package #:40ants-doc-test/test-transcribe
   (:use #:cl)
+  (:import-from #:alexandria)
+  (:import-from #:40ants-doc)
   (:import-from #:40ants-doc/utils)
   (:import-from #:40ants-doc/transcribe)
   (:import-from #:rove

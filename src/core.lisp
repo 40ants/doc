@@ -5,7 +5,6 @@
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/object-package)
-  (:import-from #:40ants-doc/ignored-words)
   (:import-from #:40ants-doc/docstring
                 #:strip-docstring-indentation)
   (:export #:defsection

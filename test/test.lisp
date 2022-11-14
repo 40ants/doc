@@ -4,6 +4,14 @@
   (:import-from #:40ants-doc
                 #:defsection)
   (:import-from #:40ants-doc/doc)
+  (:import-from #:40ants-doc/args)
+  (:import-from #:40ants-doc/builder)
+  (:import-from #:40ants-doc/locatives/base)
+  (:import-from #:40ants-doc/source-api)
+  (:import-from #:40ants-doc/page)
+  (:import-from #:common-html)
+  (:import-from #:commondoc-markdown)
+  (:import-from #:alexandria)
   (:import-from #:rove
                 #:ok
                 #:deftest

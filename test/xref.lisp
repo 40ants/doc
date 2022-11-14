@@ -4,7 +4,11 @@
                 #:ok
                 #:testing
                 #:deftest)
+  (:import-from #:40ants-doc)
   (:import-from #:40ants-doc/commondoc/builder)
+  (:import-from #:40ants-doc/commondoc/reference)
+  (:import-from #:40ants-doc/locatives)
+  (:import-from #:40ants-doc/reference)
   (:import-from #:common-doc
                 #:make-text
                 #:make-content)

@@ -1,5 +1,8 @@
 (defpackage #:40ants-doc-test/markdown
   (:use #:cl)
+  (:import-from #:40ants-doc)
+  (:import-from #:common-doc)
+  (:import-from #:40ants-doc/commondoc/markdown)
   (:import-from #:rove
                 #:ok
                 #:deftest))

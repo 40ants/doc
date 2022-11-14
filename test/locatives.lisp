@@ -1,5 +1,7 @@
 (defpackage #:40ants-doc-test/locatives
   (:use #:cl)
+  (:import-from #:40ants-doc)
+  (:import-from #:40ants-doc/swank)
   (:import-from #:rove
                 #:ok
                 #:testing
