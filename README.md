@@ -1,4 +1,4 @@
-<a id="x-2840ANTS-DOC-2FDOC-3A-40README-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+<a id="x-2840ANTS-DOC-FULL-2FDOC-3A-40README-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 # 40ANTS-DOC Documentation Generator
 
@@ -13,7 +13,7 @@
 </tr>
 </table>
 
-<a id="x-2840ANTS-DOC-2FDOC-3A-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+<a id="x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40ABOUT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## About this fork
 
@@ -36,7 +36,7 @@ integration.
 The third goal was to make documentation processing more sequential and hackable.
 To introduce hooks for adding new markup languages, and `HTML` themes.
 
-<a id="x-2840ANTS-DOC-2FDOC-3A-3A-40DIFFERENCE-FROM-MGL-PAX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+<a id="x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40DIFFERENCE-FROM-MGL-PAX-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ### Why this fork is different
 
@@ -66,21 +66,21 @@ Here are features already implemented in this fork:
   like GitHub pages.
 
 * It is possible to render pages in multiple formats and having cross references between them.
-  See [`Multiple Formats`][0b09].
+  See [`Multiple Formats`][a367].
 
-I'm planning to extend this fork even more. Read [`todo`][db30] section to learn about
+I'm planning to extend this fork even more. Read [`todo`][bc3a] section to learn about
 proposed features or [start a new discussion][6f00]
 on the GitHub to suggest a new feature.
 
 See full list of changes in the [`ChangeLog`][e991] section.
 
-<a id="x-2840ANTS-DOC-2FDOC-3A-3A-40FULL-DOC-LINK-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+<a id="x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40FULL-DOC-LINK-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## Full Documentation
 
 Read full documentation at [site 40ants.com/doc/][778d].
 
-<a id="x-2840ANTS-DOC-2FDOC-3A-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+<a id="x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40TUTORIAL-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## Tutorial
 
@@ -91,7 +91,7 @@ etc, all of which should probably have their own docstrings.
 
 The primary focus is on making code easily explorable by using
 `SLIME`'s `M-.` (`slime-edit-definition`). See how to enable some
-fanciness in [`Emacs Integration`][1201]. Generating documentation
+fanciness in [`Emacs Integration`][6f57]. Generating documentation
 from sections and all the referenced items in Markdown or `HTML`
 format is also implemented.
 
@@ -108,6 +108,7 @@ Here is an example of how it all works together:
 
 ```commonlisp
 (uiop:define-package #:foo-random
+  (:nicknames #:40ants-doc-full/tutorial)
   (:documentation "This package provides various utilities for
                    random. See @FOO-RANDOM-MANUAL.")
   (:use #:common-lisp
@@ -181,7 +182,7 @@ Generating documentation in a very stripped down markdown format is
 easy:
 
 ```lisp
-(40ants-doc/builder:render-to-string
+(40ants-doc-full/builder:render-to-string
   @foo-random-manual
   :format :markdown)
 ```
@@ -199,11 +200,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](4084) `foo-random:foo-random-state` ()
+## [class](02ff) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](6fc6) `foo-random:state` (foo-random-state) ()
+## [reader](3338) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -211,24 +212,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](c11f) `common-lisp:print-object` (object foo-random-state) stream
+## [method](70ac) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](3d02) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](7a6b) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](2e72) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](312a) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](774e) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](0e68) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -251,36 +252,36 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[4084]: https://github.com/40ants/doc/blob/dfd843b1eb889e43fbc5b6fcc44b46c9182b512b/tutorial.lisp#L34
-[6fc6]: https://github.com/40ants/doc/blob/dfd843b1eb889e43fbc5b6fcc44b46c9182b512b/tutorial.lisp#L35
-[c11f]: https://github.com/40ants/doc/blob/dfd843b1eb889e43fbc5b6fcc44b46c9182b512b/tutorial.lisp#L38
-[3d02]: https://github.com/40ants/doc/blob/dfd843b1eb889e43fbc5b6fcc44b46c9182b512b/tutorial.lisp#L41
-[774e]: https://github.com/40ants/doc/blob/dfd843b1eb889e43fbc5b6fcc44b46c9182b512b/tutorial.lisp#L44
-[2e72]: https://github.com/40ants/doc/blob/dfd843b1eb889e43fbc5b6fcc44b46c9182b512b/tutorial.lisp#L50
+[02ff]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L35
+[3338]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L36
+[70ac]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L39
+[7a6b]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L42
+[0e68]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L45
+[312a]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L51
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
 because most time documentation are read in the browser these days.
 
-To render into the files, use [`40ants-doc/builder:render-to-files`][05c0]
-and [`40ants-doc/builder:update-asdf-system-docs`][0983] functions.
+To render into the files, use [`40ants-doc-full/builder:render-to-files`][6a41]
+and [`40ants-doc-full/builder:update-asdf-system-docs`][8c6d] functions.
 
 Last one can even generate documentation for different, but related
 libraries at the same time with the output going to different files,
 but with cross-page links being automatically added for symbols
-mentioned in docstrings. See [`Generating Documentation`][44e6] for
+mentioned in docstrings. See [`Generating Documentation`][eb87] for
 some convenience functions to cover the most common cases.
 
 Note how `(*FOO-STATE* VARIABLE)` in the [`defsection`][4e8b] form includes its documentation in
 `@FOO-RANDOM-MANUAL`. The symbols [`variable`][8f5a] and [`function`][0bdf] are just two
 instances of 'locatives' which are used in [`defsection`][4e8b] to refer to
-definitions tied to symbols. See [`Locative Types`][f187].
+definitions tied to symbols. See [`Locative Types`][69f3].
 
 The transcript in the code block tagged with `cl-transcript` is
 automatically checked for up-to-dateness. See
-[`Transcripts`][c301].
+[`Transcripts`][b035].
 
-<a id="x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+<a id="x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## TODO
 
@@ -307,16 +308,16 @@ automatically checked for up-to-dateness. See
 [778d]: https://40ants.com/doc/
 [a2c7]: https://40ants.com/doc/#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29
 [a689]: https://40ants.com/doc/#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29
-[44e6]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
-[0b09]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3A-3A-40RENDERING-MULTIPLE-FORMATS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
-[05c0]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29
-[0983]: https://40ants.com/doc/#x-2840ANTS-DOC-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
 [8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
-[1201]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
-[f187]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
-[db30]: https://40ants.com/doc/#x-2840ANTS-DOC-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
-[c301]: https://40ants.com/doc/#x-2840ANTS-DOC-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [4e8b]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
+[eb87]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+[a367]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3A-3A-40RENDERING-MULTIPLE-FORMATS-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+[6a41]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29
+[8c6d]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
+[6f57]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40EMACS-INTEGRATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+[69f3]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40LOCATIVE-TYPES-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+[bc3a]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FDOC-3A-3A-40TODO-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
+[b035]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FTRANSCRIBE-3A-3A-40TRANSCRIPT-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [0bdf]: https://40ants.com/doc/#x-28FUNCTION-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
 [8f5a]: https://40ants.com/doc/#x-28VARIABLE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
 [e991]: https://40ants.com/doc/changelog/#x-2840ANTS-DOC-2FCHANGELOG-3A-40CHANGELOG-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
