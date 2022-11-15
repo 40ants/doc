@@ -29,4 +29,5 @@
 (asdf:register-system-packages "3bmd-ext-code-blocks" '("3BMD-CODE-BLOCKS"))
 
 (asdf:register-system-packages "swank" '("SWANK-BACKEND"
+                                         "SWANK/BACKEND"
                                          "SWANK-MOP"))

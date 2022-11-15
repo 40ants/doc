@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/ci
+(uiop:define-package #:40ants-doc/ci
   (:use #:cl)
   (:import-from #:40ants-ci/workflow
                 #:defworkflow)
@@ -12,7 +12,8 @@
   :on-push-to "master"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/linter:linter
-          :asdf-systems ("40ants-doc/full"
+          :asdf-systems ("40ants-doc"
+                         "40ants-doc-full"
                          "40ants-doc-test")
           :check-imports t)))
 
@@ -30,4 +31,4 @@
   :on-push-to "master"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/docs:build-docs
-          :asdf-system "40ants-doc/doc")))
+          :asdf-system "40ants-doc-full")))

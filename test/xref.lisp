@@ -5,21 +5,21 @@
                 #:testing
                 #:deftest)
   (:import-from #:40ants-doc)
-  (:import-from #:40ants-doc/commondoc/builder)
-  (:import-from #:40ants-doc/commondoc/reference)
+  (:import-from #:40ants-doc-full/commondoc/builder)
+  (:import-from #:40ants-doc-full/commondoc/reference)
   (:import-from #:40ants-doc/locatives)
   (:import-from #:40ants-doc/reference)
   (:import-from #:common-doc
                 #:make-text
                 #:make-content)
-  (:import-from #:40ants-doc/commondoc/xref
+  (:import-from #:40ants-doc-full/commondoc/xref
                 #:xref-name
                 #:extract-symbols
                 #:fill-locatives
                 #:xref-locative
                 #:make-xref)
-  (:import-from #:40ants-doc/commondoc/page)
-  (:import-from #:40ants-doc/commondoc/format
+  (:import-from #:40ants-doc-full/commondoc/page)
+  (:import-from #:40ants-doc-full/commondoc/format
                 #:with-format))
 (in-package 40ants-doc-test/xref)
 
@@ -45,8 +45,8 @@
 
 (deftest test-reference-collection
   (testing "Checking if this section includes two references"
-    (let* ((doc (40ants-doc/commondoc/builder::to-commondoc @foo-n-bar))
-           (references-and-pages (40ants-doc/commondoc/reference::collect-references doc))
+    (let* ((doc (40ants-doc-full/commondoc/builder::to-commondoc @foo-n-bar))
+           (references-and-pages (40ants-doc-full/commondoc/reference::collect-references doc))
            (references (mapcar #'car references-and-pages)))
       (ok (= (length references)
              3))
@@ -63,14 +63,14 @@
   (with-format (:html)
     (testing "Simple case"
       (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
-             (doc (40ants-doc/commondoc/markdown:parse-markdown "[FOO][function]")))
+             (doc (40ants-doc-full/commondoc/markdown:parse-markdown "[FOO][function]")))
         (flet ((first-child ()
                  (first (common-doc:children doc))))
           (testing "Before replacing we should have a paragraph with internal link"
             (ok (typep doc 'common-doc:paragraph))
-            (ok (typep (first-child) '40ants-doc/commondoc/xref:xref)))
+            (ok (typep (first-child) '40ants-doc-full/commondoc/xref:xref)))
       
-          (let ((result (40ants-doc/commondoc/page::replace-xrefs doc (list (cons reference
+          (let ((result (40ants-doc-full/commondoc/page::replace-xrefs doc (list (cons reference
                                                                                   :no-page)))))
             (testing "Resulting document should remain the same, because only paragraph's child should be changed"
               (ok (eql doc result)))
@@ -80,7 +80,7 @@
     (testing "Case when symbol name already the code"
       (let* ((reference (40ants-doc/reference::make-reference 'foo 'function))
              (doc (extract-symbols
-                   (40ants-doc/commondoc/markdown:parse-markdown "`FOO` function"))))
+                   (40ants-doc-full/commondoc/markdown:parse-markdown "`FOO` function"))))
         (flet ((first-child (node)
                  (first (common-doc:children node))))
           (testing "Before replacing we should have a paragraph with inline code block containing a XREF"
@@ -89,9 +89,9 @@
                        'common-doc:code))
             (ok (typep (first-child
                         (first-child doc))
-                       '40ants-doc/commondoc/xref:xref)))
+                       '40ants-doc-full/commondoc/xref:xref)))
 
-          (let ((result (40ants-doc/commondoc/page::replace-xrefs doc (list (cons reference
+          (let ((result (40ants-doc-full/commondoc/page::replace-xrefs doc (list (cons reference
                                                                                   :no-page)))))
           
             (testing "Resulting document should remain the same, because only paragraph's child should be changed"
@@ -118,15 +118,15 @@
     (testing "Explicit method locative should be replaced with a single link"
       (let* ((generic-reference (40ants-doc/reference::make-reference 'blah 'generic-function))
              (method-reference (40ants-doc/reference::make-reference 'blah '(method () (string))))
-             (doc (40ants-doc/commondoc/markdown:parse-markdown "[BLAH][(METHOD () (STRING))]")))
+             (doc (40ants-doc-full/commondoc/markdown:parse-markdown "[BLAH][(METHOD () (STRING))]")))
         (flet ((first-child ()
                  (first (common-doc:children doc))))
           
           (testing "First child should have given locative"
-            (ok (equal (40ants-doc/commondoc/xref::xref-locative
+            (ok (equal (40ants-doc-full/commondoc/xref::xref-locative
                         (first-child))
                        '(method () (string)))))
-          (let ((result (40ants-doc/commondoc/page::replace-xrefs doc (list (cons generic-reference
+          (let ((result (40ants-doc-full/commondoc/page::replace-xrefs doc (list (cons generic-reference
                                                                                   :no-page)
                                                                             (cons method-reference
                                                                                   :no-page)))))
@@ -139,7 +139,7 @@
       (let* ((original-xref (make-xref "FOO"))
              (doc (common-doc:make-code original-xref)))
       
-        (let ((result (40ants-doc/commondoc/page::replace-xrefs doc nil)))
+        (let ((result (40ants-doc-full/commondoc/page::replace-xrefs doc nil)))
           (testing "Resulting document should remain the same"
             (ok (eql result original-xref))))))
   
@@ -147,7 +147,7 @@
       (let* ((original-xref (make-xref "FOO"))
              (doc (common-doc:make-content original-xref)))
       
-        (let ((result (40ants-doc/commondoc/page::replace-xrefs doc nil)))
+        (let ((result (40ants-doc-full/commondoc/page::replace-xrefs doc nil)))
           (testing "Resulting document should remain the same"
             (ok (eql doc result)))
 
@@ -217,7 +217,7 @@
         (testing "Instead of one text node there should be 3 nodes now"
           (ok (= (length children) 3))
           (ok (typep (first children) 'common-doc:text-node))
-          (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+          (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
           (ok (typep (third children) 'common-doc:text-node))))))
 
   (testing "Symbol name may start from numbers"
@@ -232,7 +232,7 @@
         (testing "Instead of one text node there should be 3 nodes now"
           (ok (= (length children) 3))
           (ok (typep (first children) 'common-doc:text-node))
-          (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+          (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
           (ok (string= (xref-name (second children))
                        "40ANTS-DOC"))
           (ok (typep (third children) 'common-doc:text-node))))))
@@ -251,7 +251,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "*SOME-VAR*"))))
 
@@ -260,7 +260,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "+SOME-VAR+"))))
 
@@ -269,7 +269,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    ":SOME-VAR"))))
 
@@ -279,7 +279,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "SOME-PACKAGE:+SOME-VAR+"))))
   
@@ -288,7 +288,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "SOME-PACKAGE::+SOME-VAR+"))))
 
@@ -297,7 +297,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "SOME/PACKAGE::+SOME-VAR+"))))
 
@@ -306,7 +306,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "SOME.PACKAGE::+SOME-VAR+"))))
   
@@ -315,7 +315,7 @@
            (result (extract-symbols doc))
            (children (common-doc:children result)))
       (ok (= (length children) 3))
-      (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+      (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
       (ok (string= (xref-name (second children))
                    "SOME-PACKAGE:@SOME-SECTION")))))
 
@@ -336,7 +336,7 @@
           (ok (string= (common-doc:text (first children))
                        "This is a "))
           
-          (ok (typep (second children) '40ants-doc/commondoc/xref::xref))
+          (ok (typep (second children) '40ants-doc-full/commondoc/xref::xref))
           (ok (string= (xref-name (second children))
                        "FOO-BAR"))
           

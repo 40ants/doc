@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc-test/transcribe-source
+(uiop:define-package #:40ants-doc-test/transcribe-source
   (:use #:cl))
 (in-package 40ants-doc-test/transcribe-source)
 

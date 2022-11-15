@@ -1,7 +1,6 @@
-(defpackage #:40ants-doc-test/locatives
+(uiop:define-package #:40ants-doc-test/locatives
   (:use #:cl)
-  (:import-from #:40ants-doc)
-  (:import-from #:40ants-doc/swank)
+  (:import-from #:40ants-doc-full/swank)
   (:import-from #:rove
                 #:ok
                 #:testing
@@ -11,9 +10,9 @@
 
 (deftest test-reading-locative
   (testing "Usual symbols should read without problems"
-    (ok (eql (40ants-doc/swank::read-locative-from-string "FUNCTION")
+    (ok (eql (40ants-doc-full/swank::read-locative-from-string "FUNCTION")
              'function)))
   
   (testing "Locative with arguments can be parsed as well"
-    (ok (equal (40ants-doc/swank::read-locative-from-string "(METHOD () (STRING))")
+    (ok (equal (40ants-doc-full/swank::read-locative-from-string "(METHOD () (STRING))")
                '(method () (string))))))

@@ -3,12 +3,12 @@
         #:40ants-doc/locatives)
   (:import-from #:40ants-doc
                 #:defsection)
-  (:import-from #:40ants-doc/doc)
-  (:import-from #:40ants-doc/args)
-  (:import-from #:40ants-doc/builder)
+  (:import-from #:40ants-doc-full/doc)
+  (:import-from #:40ants-doc-full/args)
+  (:import-from #:40ants-doc-full/builder)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/source-api)
-  (:import-from #:40ants-doc/page)
+  (:import-from #:40ants-doc-full/page)
   (:import-from #:common-html)
   (:import-from #:commondoc-markdown)
   (:import-from #:alexandria)
@@ -16,7 +16,8 @@
                 #:ok
                 #:deftest
                 #:testing)
-  (:import-from #:40ants-doc/utils
+  (:import-from #:40ants-doc-full/utils
+                #:transform-tree
                 #:symbol-name-p)
   (:import-from #:40ants-doc-test/utils
                 #:get-files-diff))
@@ -190,7 +191,7 @@
     (bar constant (defconstant bar))
     (baz generic-function (defgeneric baz))
     (baz variable (defvar baz))
-    (40ants-doc/doc::@index section (defsection @index))
+    (40ants-doc-full/doc::@index section (defsection @index))
     (baz-aaa structure-accessor (defstruct baz))
     (40ants-doc package
      (cl:defpackage)
@@ -271,14 +272,14 @@
 
 (deftest test-transform-tree
   (ok (equal '(1)
-             (40ants-doc/utils::transform-tree
+             (transform-tree
               (lambda (parent a)
                 (declare (ignore parent))
                 (values a (listp a) nil))
               '(1))))
 
   (ok (equal '(2 (3 (4 5)))
-             (40ants-doc/utils::transform-tree
+             (transform-tree
               (lambda (parent a)
                 (declare (ignore parent))
                 (values (if (listp a) a (1+ a))
@@ -287,7 +288,7 @@
               '(1 (2 (3 4))))))
   
   (ok (equal '(1 2 (2 3 (3 4 4 5)))
-             (40ants-doc/utils::transform-tree
+             (transform-tree
               (lambda (parent a)
                 (declare (ignore parent))
                 (values (if (listp a)
@@ -300,7 +301,7 @@
 
 (deftest test-macro-arg-names
   (ok (equal '(x a b c)
-             (40ants-doc/args::macro-arg-names
+             (40ants-doc-full/args::macro-arg-names
               '((&key (x y)) (a b) &key (c d))))))
 
 
@@ -343,18 +344,18 @@
 
 
 (defun write-test-document-files (basedir format)
-  (let ((pages (list (40ants-doc/page:make-page @test-other
-                                                :base-filename "other/test-other")
-                     (40ants-doc/page:make-page @test
-                                                :base-filename "test"))))
+  (let ((pages (list (40ants-doc-full/page:make-page @test-other
+                                                     :base-filename "other/test-other")
+                     (40ants-doc-full/page:make-page @test
+                                                     :base-filename "test"))))
 
-    (40ants-doc/builder:render-to-files pages
-                                        :base-dir basedir
-                                        :base-url "https://40ants.com/doc/"
-                                        :format (ecase format
-                                                  (:markdown 'commondoc-markdown:markdown)
-                                                  (:html 'common-html:html))
-                                        :downcase-uppercase-code (eq format :html))))
+    (40ants-doc-full/builder:render-to-files pages
+                                             :base-dir basedir
+                                             :base-url "https://40ants.com/doc/"
+                                             :format (ecase format
+                                                       (:markdown 'commondoc-markdown:markdown)
+                                                       (:html 'common-html:html))
+                                             :downcase-uppercase-code (eq format :html))))
 
 (defun update-test-document-baseline (format)
   (write-test-document-files
@@ -363,7 +364,7 @@
 
 
 (deftest test-core-dependencies
-  (ok (equal (40ants-doc/utils::external-dependencies :40ants-doc)
+  (ok (equal (40ants-doc-full/utils::external-dependencies :40ants-doc)
              (list "asdf"
                    "named-readtables"
                    "pythonic-string-reader"))))

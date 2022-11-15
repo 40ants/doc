@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc-test/utils
+(uiop:define-package #:40ants-doc-test/utils
   (:use #:cl)
   (:export #:get-diff
            #:get-files-diff))

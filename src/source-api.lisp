@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/source-api
+(uiop:define-package #:40ants-doc/source-api
   (:use #:cl)
   (:import-from #:named-readtables)
   (:import-from #:pythonic-string-reader)
@@ -13,8 +13,8 @@
   (:documentation """Like SWANK:FIND-DEFINITION-FOR-THING, but this
   one is a generic function to be extensible. In fact, the default
   implementation simply defers to SWANK:FIND-DEFINITION-FOR-THING.
-  This function is called by 40ANTS-DOC/SWANK:LOCATE-DEFINITION-FOR-EMACS which lies
-  behind the `M-.` extension (see 40ANTS-DOC/DOC:@EMACS-INTEGRATION).
+  This function is called by 40ANTS-DOC-FULL/SWANK:LOCATE-DEFINITION-FOR-EMACS which lies
+  behind the `M-.` extension (see 40ANTS-DOC-FULL/DOC:@EMACS-INTEGRATION).
 
   If successful, the return value looks like this:
 

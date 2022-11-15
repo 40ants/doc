@@ -15,9 +15,9 @@
 (defun 40ants-doc-transcribe-last-expression ()
   "A bit like C-u C-x C-e (slime-eval-last-expression) that
 inserts the output and values of the sexp before the point, this
-does the same but with 40ANTS-DOC/TRANSCRIBE:TRANSCRIBE. Use a numeric prefix
+does the same but with 40ANTS-DOC-FULL/TRANSCRIBE:TRANSCRIBE. Use a numeric prefix
 argument as in index to select one of the Common Lisp
-40ANTS-DOC/TRANSCRIBE:*SYNTAXES* as the SYNTAX argument to 40ANTS-DOC/TRANSCRIBE:TRANSCRIBE.
+40ANTS-DOC-FULL/TRANSCRIBE:*SYNTAXES* as the SYNTAX argument to 40ANTS-DOC-FULL/TRANSCRIBE:TRANSCRIBE.
 Without a prefix argument, the first syntax is used."
   (interactive)
   (insert
@@ -31,9 +31,9 @@ Without a prefix argument, the first syntax is used."
 
 (defun 40ants-doc-retranscribe-region (start end)
   "Updates the transcription in the current region (as in calling
-40ANTS-DOC/TRANSCRIBE:TRANSCRIBE with :UPDATE-ONLY T). Use a numeric prefix
+40ANTS-DOC-FULL/TRANSCRIBE:TRANSCRIBE with :UPDATE-ONLY T). Use a numeric prefix
 argument as in index to select one of the Common Lisp
-40ANTS-DOC/TRANSCRIBE:*SYNTAXES* as the SYNTAX argument to 40ANTS-DOC/TRANSCRIBE:TRANSCRIBE.
+40ANTS-DOC-FULL/TRANSCRIBE:*SYNTAXES* as the SYNTAX argument to 40ANTS-DOC-FULL/TRANSCRIBE:TRANSCRIBE.
 Without a prefix argument, the syntax of the input will not be
 changed."
   (interactive "r")
@@ -69,8 +69,8 @@ changed."
                                     first-line-special-p)
   (let ((transcription
          (40ants-doc-lisp-eval
-          `(cl:if (cl:find-package :40ants-doc/transcribe)
-                  (uiop:symbol-call :40ants-doc/transcribe :transcribe-for-emacs
+          `(cl:if (cl:find-package :40ants-doc-full/transcribe)
+                  (uiop:symbol-call :40ants-doc-full/transcribe :transcribe-for-emacs
                                     ,(buffer-substring-no-properties start end)
                                     ',syntax ',update-only ',echo ',first-line-special-p)
                   t))))
