@@ -318,7 +318,7 @@
                             (push (40ants-doc-full/transcribe::transcription-error-file-position e)
                                   errors*)
                             (throw 'here nil))))
-                     (let* ((input (format nil input))
+                     (let* ((input (format nil "~S" input))
                             (output (when output (format nil output)))
                             (transcript (call-format-on-strings transcript))
                             (transcript* (40ants-doc-full/transcribe::read-transcript input))
