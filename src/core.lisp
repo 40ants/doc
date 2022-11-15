@@ -5,7 +5,6 @@
   (:import-from #:40ants-doc/reference)
   (:import-from #:40ants-doc/locatives/base)
   (:import-from #:40ants-doc/object-package)
-  (:import-from #:40ants-doc/ignored-words)
   (:import-from #:40ants-doc/docstring
                 #:strip-docstring-indentation)
   (:export #:defsection
@@ -44,7 +43,7 @@
   "Define a documentation section and maybe export referenced symbols.
   A bit behind the scenes, a global variable with NAME is defined and
   is bound to a [SECTION][class] object. By convention, section names
-  start with the character `@`. See `40ANTS-DOC/DOC::@TUTORIAL` for an example.
+  start with the character `@`. See `40ANTS-DOC-FULL/DOC::@TUTORIAL` for an example.
 
   ENTRIES consists of docstrings and references. Docstrings are
   arbitrary strings in markdown format, references are defined in the
@@ -61,14 +60,14 @@
   A locative in a reference can either be a symbol or it can be a list
   whose CAR is a symbol. In either case, the symbol is the called the
   type of the locative while the rest of the elements are the locative
-  arguments. See 40ANTS-DOC/DOC::@LOCATIVE-TYPES for the list of locative
+  arguments. See 40ANTS-DOC-FULL/DOC::@LOCATIVE-TYPES for the list of locative
   types available out of the box.
 
   The same symbol can occur multiple times in ENTRIES, typically
   with different locatives, but this is not required.
 
   The references are not looked up (see 40ANTS-DOC/REFERENCE:RESOLVE in the
-  40ANTS-DOC/DOC:@EXTENSION-API) until documentation is generated, so it is
+  40ANTS-DOC-FULL/DOC:@EXTENSION-API) until documentation is generated, so it is
   allowed to refer to things yet to be defined.
 
   If you set :EXPORT to true, the referenced symbols and NAME are

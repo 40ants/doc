@@ -1,13 +1,15 @@
 (uiop:define-package #:40ants-doc-test/test-transcribe
   (:use #:cl)
-  (:import-from #:40ants-doc/utils)
-  (:import-from #:40ants-doc/transcribe)
+  (:import-from #:alexandria)
+  (:import-from #:40ants-doc-full/transcribe)
   (:import-from #:rove
                 #:testing
                 #:ok
                 #:deftest)
   (:import-from #:40ants-doc-test/utils
-                #:get-diff))
+                #:get-diff)
+  (:import-from #:40ants-doc-full/utils
+                #:read-prefixed-lines))
 (in-package 40ants-doc-test/test-transcribe)
 
 
@@ -15,52 +17,52 @@
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1"))
-             (40ants-doc/utils::read-prefixed-lines stream ">")))
+             (read-prefixed-lines stream ">")))
           '("1" 1 nil t 2)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%"))
-             (40ants-doc/utils::read-prefixed-lines stream ">")))
+             (read-prefixed-lines stream ">")))
           '("1" 1 nil t 3)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>"))
-             (40ants-doc/utils::read-prefixed-lines stream ">")))
+             (read-prefixed-lines stream ">")))
           `(,(format nil "1~%") 2 nil t 4)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3"))
-             (40ants-doc/utils::read-prefixed-lines stream ">")))
+             (read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 nil t 9)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy~%"))
-             (40ants-doc/utils::read-prefixed-lines stream ">")))
+             (read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 "xy" nil 10)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy"))
-             (40ants-doc/utils::read-prefixed-lines stream ">")))
+             (read-prefixed-lines stream ">")))
           `(,(format nil "1~%2~%3") 3 "xy" t 10)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1"))
-             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (read-prefixed-lines stream ">" :first-line-prefix "")))
           '(">1" 1 nil t 2)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3"))
-             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 nil t 9)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy~%"))
-             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 "xy" nil 10)))
   (ok
    (equal (multiple-value-list
            (with-input-from-string (stream (format nil ">1~%>2~%> 3~%xy"))
-             (40ants-doc/utils::read-prefixed-lines stream ">" :first-line-prefix "")))
+             (read-prefixed-lines stream ">" :first-line-prefix "")))
           `(,(format nil ">1~%2~%3") 3 "xy" t 10))))
 
 
@@ -279,12 +281,12 @@
      :errors (nil))))
 
 (defun call-format-on-strings (tree)
-  (40ants-doc/utils::transform-tree (lambda (parent node)
-                                      (declare (ignore parent))
-                                      (if (stringp node)
-                                          (values (format nil node) nil nil)
-                                          (values node t nil)))
-                                    tree))
+  (40ants-doc-full/utils::transform-tree (lambda (parent node)
+                                           (declare (ignore parent))
+                                           (if (stringp node)
+                                               (values (format nil node) nil nil)
+                                               (values node t nil)))
+                                         tree))
 
 (deftest test-read-write-transcript
   (loop with *package* = (find-package :40ants-doc-test/test-transcribe)
@@ -301,27 +303,27 @@
                      (errors* ()))
                  (catch 'here
                    (handler-bind
-                       ((40ants-doc/transcribe::transcription-output-consistency-error
+                       ((40ants-doc-full/transcribe::transcription-output-consistency-error
                           (lambda (e)
-                            (push (40ants-doc/transcribe::transcription-error-file-position e)
+                            (push (40ants-doc-full/transcribe::transcription-error-file-position e)
                                   output-consistency-errors*)
                             (continue)))
-                        (40ants-doc/transcribe::transcription-values-consistency-error
+                        (40ants-doc-full/transcribe::transcription-values-consistency-error
                           (lambda (e)
-                            (push (40ants-doc/transcribe::transcription-error-file-position e)
+                            (push (40ants-doc-full/transcribe::transcription-error-file-position e)
                                   values-consistency-errors*)
                             (continue)))
-                        (40ants-doc/transcribe::transcription-error
+                        (40ants-doc-full/transcribe::transcription-error
                           (lambda (e)
-                            (push (40ants-doc/transcribe::transcription-error-file-position e)
+                            (push (40ants-doc-full/transcribe::transcription-error-file-position e)
                                   errors*)
                             (throw 'here nil))))
-                     (let* ((input (format nil input))
+                     (let* ((input (format nil "~S" input))
                             (output (when output (format nil output)))
                             (transcript (call-format-on-strings transcript))
-                            (transcript* (40ants-doc/transcribe::read-transcript input))
+                            (transcript* (40ants-doc-full/transcribe::read-transcript input))
                             (output*
-                              (40ants-doc/transcribe::write-transcript
+                              (40ants-doc-full/transcribe::write-transcript
                                transcript* nil
                                :check-consistency check-consistency
                                :update-only update-only
@@ -356,10 +358,10 @@
   "Check that repeated transcription produces the same results."
   (let ((result (with-output-to-string (transcription)
                   (with-open-file (source source-file)
-                    (40ants-doc/transcribe::transcribe source
-                                                       transcription
-                                                       :update-only t
-                                                       :check-consistency check-consistency)))))
+                    (40ants-doc-full/transcribe::transcribe source
+                                                            transcription
+                                                            :update-only t
+                                                            :check-consistency check-consistency)))))
     (unless (string= (alexandria:read-file-into-string transcription-file)
                      result)
       (cerror "Update transcription file."

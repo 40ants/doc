@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/glossary
+(uiop:define-package #:40ants-doc/glossary
   (:use #:cl)
   (:import-from #:40ants-doc/core)
   (:export

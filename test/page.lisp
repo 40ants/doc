@@ -1,8 +1,8 @@
-(defpackage #:40ants-doc-test/page
+(uiop:define-package #:40ants-doc-test/page
   (:use #:cl)
-  (:import-from #:40ants-doc/commondoc/format
+  (:import-from #:40ants-doc-full/commondoc/format
                 #:with-format)
-  (:import-from #:40ants-doc/commondoc/page
+  (:import-from #:40ants-doc-full/commondoc/page
                 #:make-page
                 #:make-page-uri)
   (:import-from #:rove

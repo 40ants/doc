@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/docstring
+(uiop:define-package #:40ants-doc/docstring
   (:use #:cl)
   (:export
    #:strip-docstring-indentation

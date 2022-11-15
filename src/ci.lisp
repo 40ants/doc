@@ -1,4 +1,4 @@
-(defpackage #:40ants-doc/ci
+(uiop:define-package #:40ants-doc/ci
   (:use #:cl)
   (:import-from #:40ants-ci/workflow
                 #:defworkflow)
@@ -8,17 +8,14 @@
 (in-package #:40ants-doc/ci)
 
 
-(defparameter *asdf-version* "3.3.5.1"
-  "At some point installation of the latest roswell version was broken:
-   https://github.com/roswell/roswell/issues/497")
-
-
 (defworkflow linter
   :on-push-to "master"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/linter:linter
-          :asdf-systems ("40ants-doc/full")
-          :asdf-version *asdf-version*)))
+          :asdf-systems ("40ants-doc"
+                         "40ants-doc-full"
+                         "40ants-doc-test")
+          :check-imports t)))
 
 
 (defworkflow ci
@@ -27,7 +24,6 @@
   :on-pull-request t
   :jobs ((40ants-ci/jobs/run-tests:run-tests
           :asdf-system "40ants-doc-full"
-          :asdf-version *asdf-version*
           :coverage t)))
 
 
@@ -35,5 +31,4 @@
   :on-push-to "master"
   :on-pull-request t
   :jobs ((40ants-ci/jobs/docs:build-docs
-          :asdf-system "40ants-doc/doc"
-          :asdf-version *asdf-version*)))
+          :asdf-system "40ants-doc-full")))

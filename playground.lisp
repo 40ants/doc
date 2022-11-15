@@ -309,12 +309,12 @@
 
 ;; #+nil
 (defun render ()
-  (40ants-doc/builder::update-asdf-system-html-docs
+  (40ants-doc-full/builder::update-asdf-system-html-docs
    playground::@index :40ants-doc
    :pages
    `((:objects
       (,playground::@index)
-      :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
+      :source-uri-fn ,(40ants-doc-full/github::make-github-source-uri-fn
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
 
@@ -334,19 +334,19 @@
 
 
 (defun render-multi ()
-  (40ants-doc/builder::update-asdf-system-html-docs
+  (40ants-doc-full/builder::update-asdf-system-html-docs
    (list playground::@index
          playground::@second-page)
    :40ants-doc
    :pages
    `((:objects
       (,playground::@index)
-      :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
+      :source-uri-fn ,(40ants-doc-full/github::make-github-source-uri-fn
                        :40ants-doc
                        "https://github.com/40ants/doc"))
      (:objects
       (,playground::@second-page)
-      :source-uri-fn ,(40ants-doc/github::make-github-source-uri-fn
+      :source-uri-fn ,(40ants-doc-full/github::make-github-source-uri-fn
                        :40ants-doc
                        "https://github.com/40ants/doc")))))
 
@@ -355,7 +355,7 @@
                          :external-docs ("./docs/build/"))
   "Checking how trans work
 
-   40ANTS-DOC/BUILDER:RENDER-TO-FILES
+   40ANTS-DOC-FULL/BUILDER:RENDER-TO-FILES
 "
   (the-object function))
 
@@ -365,25 +365,26 @@
 
 
 (defun new-render-multi ()
-  (40ants-doc/builder:render-to-files (list ;; @index
-                                       ;; 40ants-doc/doc::@index
-                                       ;; @second-page
+  (40ants-doc-full/builder:render-to-files
+   (list ;; @index
+    ;; 40ants-doc-full/doc::@index
+    ;; @second-page
                                        
-                                       (40ants-doc/page:make-page @experiment)
-                                       ;; (40ants-doc/page:make-page @readme
-                                       ;;                            :format 'commondoc-markdown:markdown
-                                       ;;                            :base-dir "./new-docs/")
-                                       )
-                                      :base-url "https://40ants.com/doc/"
-                                      :base-dir "./new-docs/html/"
-                                      ;; :format 'commondoc-markdown:markdown
-                                      ))
+    (40ants-doc-full/page:make-page @experiment)
+    ;; (40ants-doc-full/page:make-page @readme
+    ;;                            :format 'commondoc-markdown:markdown
+    ;;                            :base-dir "./new-docs/")
+    )
+   :base-url "https://40ants.com/doc/"
+   :base-dir "./new-docs/html/"
+   ;; :format 'commondoc-markdown:markdown
+   ))
 
 
 (defun render-readme ()
-  (40ants-doc/builder::page-to-markdown
+  (40ants-doc-full/builder::page-to-markdown
    (list
-    40ants-doc/doc::@index
+    40ants-doc-full/doc::@index
     ;; @second-page
     ;; @experiment
     )
@@ -396,6 +397,6 @@
 
 #+nil
 (defun render-readme ()
-  (40ants-doc/builder::update-asdf-system-readme playground::@index :40ants-doc)
-  (40ants-doc/builder::update-asdf-system-readme playground::@index :40ants-doc
-                                                  :format :plain))
+  (40ants-doc-full/builder::update-asdf-system-readme playground::@index :40ants-doc)
+  (40ants-doc-full/builder::update-asdf-system-readme playground::@index :40ants-doc
+                                                      :format :plain))

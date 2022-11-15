@@ -1,7 +1,8 @@
-(defpackage #:40ants-doc/small
+(uiop:define-package #:40ants-doc/small
   (:use #:cl)
-    ;; TODO: Все эти locatives надо сделать доступными в минимальном пакете
+  ;; TODO: Все эти locatives надо сделать доступными в минимальном пакете
   ;; может быть не загружать сами модули, но сделать так, чтобы на них можно было ссылаться
+  ;; А может вовсе удалить этот модуль?
   (:import-from #:40ants-doc/locatives/section)
   (:import-from #:40ants-doc/locatives/function)
   (:import-from #:40ants-doc/locatives/dislocated)
