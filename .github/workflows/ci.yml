@@ -15,11 +15,55 @@
   },
   "jobs": {
     "run-tests": {
+      "strategy": {
+        "fail-fast": false,
+        "matrix": {
+          "quicklisp": [
+            "quicklisp",
+            "ultralisp"
+          ],
+          "lisp": [
+            "sbcl-bin",
+            "abcl-bin",
+            "allegro",
+            "clasp",
+            "lispworks",
+            "mkcl",
+            "ecl"
+          ],
+          "exclude": [
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "abcl-bin"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "allegro"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "clasp"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "lispworks"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "mkcl"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "ecl"
+            }
+          ]
+        }
+      },
       "runs-on": "ubuntu-latest",
       "env": {
         "OS": "ubuntu-latest",
-        "QUICKLISP_DIST": "quicklisp",
-        "LISP": "sbcl-bin"
+        "QUICKLISP_DIST": "${{ matrix.quicklisp }}",
+        "LISP": "${{ matrix.lisp }}"
       },
       "steps": [
         {
@@ -38,7 +82,7 @@
           "uses": "40ants/run-tests@v2",
           "with": {
             "asdf-system": "40ants-doc-full",
-            "coveralls-token": "${{ secrets.github_token }}"
+            "coveralls-token": "\n${{ matrix.lisp == 'sbcl-bin' &&\n    matrix.os == 'ubuntu-latest' &&\n    matrix.quicklisp == 'ultralisp' &&\n    secrets.github_token }}"
           }
         }
       ]

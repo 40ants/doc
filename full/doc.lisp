@@ -102,7 +102,9 @@
 
 <td><a href=\"https://github.com/40ants/doc/actions/workflows/linter.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter\"/></a></td>
 
-<td><a href=\"https://coveralls.io/github/40ants/doc?branch=master\"><img src=\"https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master\"></a></td>
+<td><a href=\"https://coveralls.io/github/40ants/doc?branch=master\"><img src=\"https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master\"/></a></td>
+
+<td><img src=\"https://api.quickdocs.org/badge/doc.svg\"/></td>
 </tr>
 </table>
 "))

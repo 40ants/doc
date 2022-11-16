@@ -367,4 +367,5 @@
   (ok (equal (40ants-doc-full/utils::external-dependencies :40ants-doc)
              (list "asdf"
                    "named-readtables"
-                   "pythonic-string-reader"))))
+                   "pythonic-string-reader"
+                   "uiop"))))
