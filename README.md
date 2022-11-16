@@ -9,7 +9,9 @@
 
 <td><a href="https://github.com/40ants/doc/actions/workflows/linter.yml"><img src="http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter"/></a></td>
 
-<td><a href="https://coveralls.io/github/40ants/doc?branch=master"><img src="https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master"></a></td>
+<td><a href="https://coveralls.io/github/40ants/doc?branch=master"><img src="https://coveralls.io/repos/github/40ants/doc/badge.svg?branch=master"/></a></td>
+
+<td><img src="https://api.quickdocs.org/badge/doc.svg"/></td>
 </tr>
 </table>
 
@@ -200,11 +202,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](02ff) `foo-random:foo-random-state` ()
+## [class](8f33) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](3338) `foo-random:state` (foo-random-state) ()
+## [reader](c7df) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -212,24 +214,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](70ac) `common-lisp:print-object` (object foo-random-state) stream
+## [method](eec3) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](7a6b) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](a27e) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](312a) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](8f26) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](0e68) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](c3f4) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -252,12 +254,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[02ff]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L35
-[3338]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L36
-[70ac]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L39
-[7a6b]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L42
-[0e68]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L45
-[312a]: https://github.com/40ants/doc/blob/193c3040a1b0098b4ed36835299f8e4c69decaec/full/tutorial.lisp#L51
+[8f33]: https://github.com/40ants/doc/blob/f0a21a42708c84fc9cd854e07c3e23a13d5920a4/full/tutorial.lisp#L35
+[c7df]: https://github.com/40ants/doc/blob/f0a21a42708c84fc9cd854e07c3e23a13d5920a4/full/tutorial.lisp#L36
+[eec3]: https://github.com/40ants/doc/blob/f0a21a42708c84fc9cd854e07c3e23a13d5920a4/full/tutorial.lisp#L39
+[a27e]: https://github.com/40ants/doc/blob/f0a21a42708c84fc9cd854e07c3e23a13d5920a4/full/tutorial.lisp#L42
+[c3f4]: https://github.com/40ants/doc/blob/f0a21a42708c84fc9cd854e07c3e23a13d5920a4/full/tutorial.lisp#L45
+[8f26]: https://github.com/40ants/doc/blob/f0a21a42708c84fc9cd854e07c3e23a13d5920a4/full/tutorial.lisp#L51
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
