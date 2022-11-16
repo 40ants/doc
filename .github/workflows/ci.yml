@@ -23,15 +23,39 @@
             "ultralisp"
           ],
           "lisp": [
-            "sbcl",
-            "ccl-bin/1.12.1",
+            "sbcl-bin",
             "abcl-bin",
             "allegro",
             "clasp",
             "lispworks",
             "mkcl",
-            "npt",
             "ecl"
+          ],
+          "exclude": [
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "abcl-bin"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "allegro"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "clasp"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "lispworks"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "mkcl"
+            },
+            {
+              "quicklisp": "quicklisp",
+              "lisp": "ecl"
+            }
           ]
         }
       },
