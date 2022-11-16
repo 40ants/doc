@@ -21,6 +21,17 @@
           "quicklisp": [
             "quicklisp",
             "ultralisp"
+          ],
+          "lisp": [
+            "sbcl",
+            "ccl-bin/1.12.1",
+            "abcl-bin",
+            "allegro",
+            "clasp",
+            "lispworks",
+            "mkcl",
+            "npt",
+            "ecl"
           ]
         }
       },
@@ -28,7 +39,7 @@
       "env": {
         "OS": "ubuntu-latest",
         "QUICKLISP_DIST": "${{ matrix.quicklisp }}",
-        "LISP": "sbcl"
+        "LISP": "${{ matrix.lisp }}"
       },
       "steps": [
         {

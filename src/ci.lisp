@@ -27,8 +27,14 @@
           :quicklisp ("quicklisp"
                       "ultralisp")
           :lisp ("sbcl"
-                 ;; "ccl-bin/1.12.1"
-                 )
+                 "ccl-bin/1.12.1"
+                 "abcl-bin"
+                 "allegro"
+                 "clasp"
+                 "lispworks"
+                 "mkcl"
+                 "npt"
+                 "ecl")
           :coverage t)))
 
 
