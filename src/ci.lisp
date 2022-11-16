@@ -24,6 +24,11 @@
   :on-pull-request t
   :jobs ((40ants-ci/jobs/run-tests:run-tests
           :asdf-system "40ants-doc-full"
+          :quicklisp ("quicklisp"
+                      "ultralisp")
+          :lisp ("sbcl"
+                 ;; "ccl-bin/1.12.1"
+                 )
           :coverage t)))
 
 

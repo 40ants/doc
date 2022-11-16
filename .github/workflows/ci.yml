@@ -15,11 +15,20 @@
   },
   "jobs": {
     "run-tests": {
+      "strategy": {
+        "fail-fast": false,
+        "matrix": {
+          "quicklisp": [
+            "quicklisp",
+            "ultralisp"
+          ]
+        }
+      },
       "runs-on": "ubuntu-latest",
       "env": {
         "OS": "ubuntu-latest",
-        "QUICKLISP_DIST": "quicklisp",
-        "LISP": "sbcl-bin"
+        "QUICKLISP_DIST": "${{ matrix.quicklisp }}",
+        "LISP": "sbcl"
       },
       "steps": [
         {
@@ -38,7 +47,7 @@
           "uses": "40ants/run-tests@v2",
           "with": {
             "asdf-system": "40ants-doc-full",
-            "coveralls-token": "${{ secrets.github_token }}"
+            "coveralls-token": "\n${{ matrix.lisp == 'sbcl-bin' &&\n    matrix.os == 'ubuntu-latest' &&\n    matrix.quicklisp == 'ultralisp' &&\n    secrets.github_token }}"
           }
         }
       ]
