@@ -51,6 +51,15 @@ body h6:hover a.header-link:hover{
     color: #777;
 }
 
+body h1:hover a.header-link:after,
+body h2:hover a.header-link:after,
+body h3:hover a.header-link:after,
+body h4:hover a.header-link:after,
+body h5:hover a.header-link:after,
+body h6:hover a.header-link:after{
+    content: "¶";
+}
+
 body h1{
     font-size: 250%;
 }
@@ -131,35 +140,111 @@ body a{
     border-bottom: 1px solid;
 }
 
+body .reference-bullet{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+body .reference-bullet .reference-bullet-header{
+    display: flex;
+    flex-direction: row;
+}
+
+body .reference-bullet .reference-bullet-header a{
+    border-bottom: none;
+    text-decoration: none;
+}
+
+body .reference-bullet .reference-bullet-header a.locative-type{
+    text-decoration: underline;
+    white-space: nowrap;
+}
+
+body .reference-bullet .reference-bullet-header a.locative-type:before{
+    content: "[";
+}
+
+body .reference-bullet .reference-bullet-header a.locative-type:after{
+    content: "]";
+}
+
+body .reference-bullet .reference-bullet-header a.bullet-link{
+    color: #DDD;
+    padding: 0 4px;
+    text-shadow: none;
+    visibility: hidden;
+}
+
+body .reference-bullet .reference-bullet-header a.bullet-link:after{
+    content: "¶";
+}
 
 
-body .locative-type a{
+
+body .reference-bullet .reference-bullet-header .locative-type a{
     text-decoration: none;
     border-bottom: 0;
     font-weight: bold;
 }
 
-body .reference-object{
-    background-color: #EBE8E2;
+body .reference-bullet .reference-bullet-header .reference-object{
+    display: flex;
+    flex-direction: row;
     padding-left: 0.3em;
     padding-right: 0.3em;
     margin-left: 0.2em;
-    border: solid gray 1px;
-    font-weight: bold;
 }
 
-body .reference-object a{
+body .reference-bullet .reference-bullet-header .reference-object a{
     border-bottom: none;
 }
 
-body .locative-args{
+body .reference-bullet .reference-bullet-header .reference-object .object-name{
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+body .reference-bullet .reference-bullet-header .reference-object .object-args{
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+}
+
+body .reference-bullet .reference-bullet-header .reference-object .object-args .locative-args{
     font-style: italic;
     margin-left: 0.2em;
     color: #777;
 }
 
-body .locative-args code{
+body .reference-bullet .reference-bullet-header .reference-object .object-args .locative-args code{
     font-family: sans-serif;
+}
+
+body .reference-bullet .reference-bullet-header .reference-object:before{
+    content: "(";
+}
+
+body .reference-bullet .reference-bullet-header .reference-object:after{
+    content: ")";
+}
+
+body .reference-bullet .bullet-content{
+    border-left: solid #e9e9e9 0.5rem;
+    padding-left: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+
+
+body .reference-bullet-header:hover a.bullet-link{
+    visibility: visible;
+}
+
+body .reference-bullet-header:hover a.bullet-link:hover{
+    color: #777;
 }
 
 body navigation{

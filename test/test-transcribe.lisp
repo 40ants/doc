@@ -9,7 +9,9 @@
   (:import-from #:40ants-doc-test/utils
                 #:get-diff)
   (:import-from #:40ants-doc-full/utils
-                #:read-prefixed-lines))
+                #:read-prefixed-lines)
+  (:import-from #:rove/core/test
+                #:testing-with-options))
 (in-package 40ants-doc-test/test-transcribe)
 
 
@@ -288,15 +290,45 @@
                                                (values node t nil)))
                                          tree))
 
+
+(defun apply-transcript (input &key check-consistency
+                                 update-only
+                                 include-no-output
+                                 include-no-value
+                                 default-syntax)
+  (let* ((input (call-format-on-strings input))
+         (transcript* (40ants-doc-full/transcribe::read-transcript input))
+         (output*
+           (40ants-doc-full/transcribe::write-transcript
+            transcript* nil
+            :check-consistency check-consistency
+            :update-only update-only
+            :include-no-output include-no-output
+            :include-no-value include-no-value
+            :default-syntax default-syntax)))
+    (values output*
+            transcript*)))
+
+
 (deftest test-read-write-transcript
   (loop with *package* = (find-package :40ants-doc-test/test-transcribe)
         for test-case in *transcribe-test-cases*
-        do (testing (format nil "test case: ~S" test-case)
-             (destructuring-bind (&key input transcript output check-consistency
-                                       update-only (include-no-output update-only)
-                                       (include-no-value update-only)
-                                       default-syntax errors output-consistency-errors
-                                       values-consistency-errors)
+        for test-id upfrom 1
+        do (testing-with-options
+               (format nil "test case ~A: ~S" test-id test-case)
+               (:name (getf test-case :input))
+               
+             (destructuring-bind (&key input
+                                    transcript
+                                    output
+                                    check-consistency
+                                    update-only
+                                    (include-no-output update-only)
+                                    (include-no-value update-only)
+                                    default-syntax
+                                    errors
+                                    output-consistency-errors
+                                    values-consistency-errors)
                  test-case
                (let ((output-consistency-errors* ())
                      (values-consistency-errors* ())
@@ -318,24 +350,22 @@
                             (push (40ants-doc-full/transcribe::transcription-error-file-position e)
                                   errors*)
                             (throw 'here nil))))
-                     (let* ((input (format nil "~S" input))
-                            (output (when output (format nil output)))
-                            (transcript (call-format-on-strings transcript))
-                            (transcript* (40ants-doc-full/transcribe::read-transcript input))
-                            (output*
-                              (40ants-doc-full/transcribe::write-transcript
-                               transcript* nil
-                               :check-consistency check-consistency
-                               :update-only update-only
-                               :include-no-output include-no-output
-                               :include-no-value include-no-value
-                               :default-syntax default-syntax)))
+                     (multiple-value-bind (output*
+                                           transcript*)
+                         (apply-transcript input
+                                           :check-consistency check-consistency
+                                           :update-only update-only
+                                           :include-no-output include-no-output
+                                           :include-no-value include-no-value
+                                           :default-syntax  default-syntax)
                        (when transcript
-                         (ok (equal transcript
-                                    transcript*)))
+                         (let ((expected-transcript (call-format-on-strings transcript)))
+                           (ok (equal transcript*
+                                      expected-transcript))))
                        (when output
-                         (ok (equal output
-                                    output*))))))
+                         (let ((expected-output (call-format-on-strings output)))
+                           (ok (equal output*
+                                      expected-output)))))))
                  (ok (equal (reverse errors*)
                             errors))
                  (ok (equal (reverse output-consistency-errors*)
