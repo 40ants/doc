@@ -1,6 +1,10 @@
 (uiop:define-package #:40ants-doc-full/locatives/utils
   (:use #:cl)
-  (:import-from #:str))
+  (:import-from #:str)
+  (:import-from #:40ants-doc/locatives/base
+                #:locative-type)
+  (:import-from #:40ants-doc/commondoc/utils
+                #:read-locative))
 (in-package #:40ants-doc-full/locatives/utils)
 
 ;;; A utility for writing FIND-SOURCE methods. Try FILTER-STRINGS one
@@ -50,3 +54,7 @@
                         :file)))
     (str:containsp "quicklisp/dists"
                    filename)))
+
+
+(defmethod locative-type ((locative string))
+  (read-locative value))

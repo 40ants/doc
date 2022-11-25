@@ -125,20 +125,18 @@
                nil))
 
 
-(defun locative-type (locative)
-  "The first element of LOCATIVE if it's a list. If it's a symbol then
+(defgeneric locative-type (locative)
+  (:documentation "The first element of LOCATIVE if it's a list. If it's a symbol then
   it's that symbol itself. Typically, methods of generic functions
   working with locatives take locative type and locative args as
   separate arguments to allow methods have eql specializers on the
-  type symbol."
-  (check-type locative (or string symbol cons))
-  
-  (let ((value (if (listp locative)
-                   (first locative)
-                   locative)))
-    (etypecase value
-      (string (uiop:symbol-call :40ants-doc/commondoc/utils :read-locative value))
-      (symbol value))))
+  type symbol.")
+
+  (:method ((locative list))
+    (locative-type (first locative)))
+
+  (:method ((locative symbol))
+    locative))
 
 
 (defun locative-args (locative)
