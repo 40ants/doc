@@ -3,7 +3,7 @@
   (:import-from #:str)
   (:import-from #:40ants-doc/locatives/base
                 #:locative-type)
-  (:import-from #:40ants-doc/commondoc/utils
+  (:import-from #:40ants-doc-full/commondoc/utils
                 #:read-locative))
 (in-package #:40ants-doc-full/locatives/utils)
 
