@@ -526,8 +526,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (40ants-doc/reference:reference-object (reader 40ants-doc/reference:reference))
   (40ants-doc/reference:reference-locative (reader 40ants-doc/reference:reference))
   (40ants-doc/reference:make-reference function)
-  (40ants-doc/locatives/base:locative-type function)
-  (40ants-doc/locatives/base:locative-args function))
+  (40ants-doc/locatives/base:locative-type generic-function)
+  (40ants-doc/locatives/base:locative-args generic-function))
 
 
 (defsection @documentation-printer-variables

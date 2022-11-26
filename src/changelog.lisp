@@ -151,6 +151,9 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.11.1 2022-11-26
+          "* Fixed 40ANTS-DOC/LOCATIVES/BASE:LOCATIVE-TYPE broken by previous refactoring. Now this function
+             was transformed into generic-function as well as 40ANTS-DOC/LOCATIVES/BASE:LOCATIVE-ARGS.")
   (0.11.0 2022-11-16
           "* Large refactoring was introduced. All files related to the documentation builder were moved to `./full/` folder and corresponding packages was renamed to have `40ants-doc-full/` prefix.")
   (0.10.0 2022-11-09
