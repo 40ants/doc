@@ -139,12 +139,13 @@
     locative))
 
 
-(defun locative-args (locative)
-  "The REST of LOCATIVE if it's a list. If it's a symbol then
-  it's ()."
-  (if (listp locative)
-      (rest locative)
-      ()))
+(defgeneric locative-args (locative)
+  (:documentation "The REST of LOCATIVE if it's a list. If it's a symbol then
+  it's ().")
+  (:method ((locative list))
+    (rest locative))
+  (:method ((locative t))
+    nil))
 
 
 (defun locative-equal (left right)

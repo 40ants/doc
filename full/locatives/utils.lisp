@@ -57,4 +57,4 @@
 
 
 (defmethod locative-type ((locative string))
-  (read-locative value))
+  (read-locative locative))
