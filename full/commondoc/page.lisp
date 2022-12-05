@@ -142,8 +142,8 @@
       (with-html
         ;; This should go before doctools
         ;; URL_ROOT: document.getElementById('documentation_options').getAttribute('data-url_root'),
-        (:script
-         "
+        (:script :type "text/javascript"
+                 (:raw "
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT: '',
     VERSION: '5.0.0+',
@@ -156,7 +156,7 @@ var DOCUMENTATION_OPTIONS = {
     SOURCELINK_SUFFIX: '.txt',
     NAVIGATION_WITH_KEYS: false
 };
-")
+"))
         (:script :src (make-relative-path uri "underscore.js"))
         (:script :src (make-relative-path uri "doctools.js"))
         (:script :src (make-relative-path uri "language_data.js"))
