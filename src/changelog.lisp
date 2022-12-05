@@ -151,6 +151,8 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.11.2 2022-12-05
+          "* Script on the search page was fixed.")
   (0.11.1 2022-11-26
           "* Fixed 40ANTS-DOC/LOCATIVES/BASE:LOCATIVE-TYPE broken by previous refactoring. Now this function
              was transformed into generic-function as well as 40ANTS-DOC/LOCATIVES/BASE:LOCATIVE-ARGS.")
