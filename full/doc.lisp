@@ -548,7 +548,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
                              :ignore-words ("SWANK-BACKEND:ARGLIST"
                                             "START"
                                             "END")
-                             :package-symbol :40ants-doc/locatives)
+                             :package :40ants-doc/locatives)
   "These are the locatives type supported out of the box. As all
   locative types, they are symbols and their names should make it
   obvious what kind of things they refer to. Unless otherwise noted,

@@ -12,6 +12,10 @@
                 #:slot-definition-readers
                 #:class-direct-slots
                 #:class-slots)
+  (:import-from #:40ants-doc/autodoc/sections
+                #:registered-subsections
+                #:register-subsection
+                #:with-subsection-collector)
   (:export #:defautodoc))
 (in-package #:40ants-doc/autodoc)
 
@@ -51,21 +55,56 @@
         finally (return result)))
 
 
-(defun make-class-entry-with-accessors-and-readers (class-name)
+;; (defun make-class-entry-with-accessors-and-readers (class-name)
+;;   (multiple-value-bind (readers accessors)
+;;       (class-readers-and-accessors class-name)
+;;     (nconc
+;;      (list (format nil "# Class ~S"
+;;                    class-name))
+;;      (list (list class-name 'class))
+;;      (when readers
+;;        (list "## Readers"))
+;;      (loop for reader in readers
+;;            collect `(,reader (reader ,class-name)))
+;;      (when accessors
+;;        (list "## Accessors"))
+;;      (loop for accessor in accessors
+;;            collect `(,accessor (accessor ,class-name))))))
+
+
+(defun make-class-entry (class-name package-name)
+  (check-type class-name symbol)
+  (check-type package-name string)
+  
   (multiple-value-bind (readers accessors)
       (class-readers-and-accessors class-name)
-    (nconc
-     (list (format nil "# Class ~S"
-                   class-name))
-     (list (list class-name 'class))
-     (when readers
-       (list "## Readers"))
-     (loop for reader in readers
-           collect `(,reader (reader ,class-name)))
-     (when accessors
-       (list "## Accessors"))
-     (loop for accessor in accessors
-           collect `(,accessor (accessor ,class-name))))))
+
+    (let* ((title (symbol-name class-name))
+           (section-name (symbolicate
+                          "@"
+                          (package-name
+                           (symbol-package class-name))
+                          "$"
+                          class-name
+                          "?CLASS"))
+           (entries
+             (nconc
+              (when readers
+                (list "**Readers**"))
+              (loop for reader in readers
+                    collect `(,reader (reader ,class-name)))
+              (when accessors
+                (list "**Accessors**"))
+              (loop for accessor in accessors
+                    collect `(,accessor (accessor ,class-name)))))
+           (section-definition
+             `(eval-when (:compile-toplevel :load-toplevel :execute)
+                (defsection ,section-name (:title ,title
+                                           :package ,package-name)
+                  (,class-name class)
+                  ,@entries))))
+      (register-subsection section-definition)
+      `(,section-name section))))
 
 
 (defun make-package-section (section-name package)
@@ -90,37 +129,46 @@
                           collect (list symbol 'macro) into macros
                         
                         when (find-class symbol nil)
-                          append (make-class-entry-with-accessors-and-readers symbol) into classes
+                          collect (make-class-entry symbol package-name) into classes
                         
                         finally (return
-                                  (append (when macros
-                                            (list* "## Macros"
-                                                   macros))
-                                          (when functions
-                                            (list* "## Functions"
-                                                   functions))
-                                          (when functions
-                                            (list* "## Generic Functions"
-                                                   generics))
-                                          (when classes
-                                            (list* "## Classes"
-                                                   classes)))))))
-    `(defsection ,section-name (:title ,title)
+                                  (uiop:while-collecting (collect)
+                                    (flet ((add-subsection (entries title)
+                                             (let* ((section-name (symbolicate "@"
+                                                                               package-name
+                                                                               "?"
+                                                                               title
+                                                                               "-SECTION")))
+                                               (when entries
+                                                 (register-subsection
+                                                  `(defsection ,section-name (:title ,title
+                                                                              :package ,package-name)
+                                                     ,@(sort (copy-list entries)
+                                                             #'string<
+                                                             :key #'first)))
+                                                 (collect `(,section-name section))))))
+                                      (add-subsection classes "Classes")
+                                      (add-subsection generics "Generics")
+                                      (add-subsection functions "Functions")
+                                      (add-subsection macros "Macros")))))))
+    `(defsection ,section-name (:title ,title
+                                :package ,package-name)
        (,(symbolicate package-name) package)
        ,@entries)))
 
 
 (defun make-entries (system &key (show-system-description-p nil))
-  (loop for package in (system-packages system)
-        for package-name = (package-name package)
-        for section-name = (symbolicate "@" (string-upcase package-name) "-PACKAGE")
-        collect (list section-name 'section) into entries
-        collect (make-package-section section-name package) into sections
-        finally (return (values sections 
-                                (append
-                                 (when show-system-description-p
-                                   (list (list system 'system)))
-                                 entries)))))
+  (with-subsection-collector ()
+    (loop for package in (system-packages system)
+          for package-name = (package-name package)
+          for section-name = (symbolicate "@" (string-upcase package-name) "?PACKAGE")
+          collect (list section-name 'section) into entries
+          do (register-subsection (make-package-section section-name package))
+          finally (return (values (registered-subsections)
+                                  (append
+                                   (when show-system-description-p
+                                     (list (list system 'system)))
+                                   entries))))))
 
 
 (defmacro defautodoc (name (&key system
@@ -134,13 +182,14 @@
 
   (multiple-value-bind (subsections entries)
       (make-entries system :show-system-description-p show-system-description-p)
+    ;; (break)
     `(progn
-      (defsection ,name (:title ,title
-                         :readtable-symbol ,readtable-symbol
-                         :section-class ,section-class
-                         :external-docs ,external-docs
-                         :external-links ,external-links
-                         :ignore-words ,ignore-words)
-        ,@entries)
+       (defsection ,name (:title ,title
+                          :readtable-symbol ,readtable-symbol
+                          :section-class ,section-class
+                          :external-docs ,external-docs
+                          :external-links ,external-links
+                          :ignore-words ,ignore-words)
+         ,@entries)
 
-      ,@subsections)))
+       ,@subsections)))

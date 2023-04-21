@@ -29,16 +29,31 @@
   One may want to set `*DISCARD-DOCUMENTATION-P*` to true before
   building a binary application.")
 
-(defmacro defsection (name (&key (package-symbol '*package*)
-                                 (readtable-symbol '*readtable*)
-                                 (section-class 'section)
-                                 (export nil)
-                                 title
-                                 link-title-to
-                                 (discard-documentation-p *discard-documentation-p*)
-                                 (external-docs nil)
-                                 (external-links nil)
-                                 (ignore-words nil))
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun ensure-package (package)
+    (etypecase package
+      (package package)
+      (keyword (find-package package))
+      (string (find-package package))
+      ;; This is the case when a default value was given
+      ;; like '*package
+      (symbol (symbol-value package)))))
+
+
+(defmacro defsection (name (&key
+                              (package '*package*)
+                              ;; TODO: Deprecate after 2023
+                              (package-symbol nil)
+                              (readtable-symbol '*readtable*)
+                              (section-class 'section)
+                              (export nil)
+                              title
+                              link-title-to
+                              (discard-documentation-p *discard-documentation-p*)
+                              (external-docs nil)
+                              (external-links nil)
+                              (ignore-words nil))
                       &body entries)
   "Define a documentation section and maybe export referenced symbols.
   A bit behind the scenes, a global variable with NAME is defined and
@@ -119,6 +134,12 @@
   (setf entries
         (transform-locative-symbols
          entries))
+
+
+  ;; TODO: Remove after end of 2023
+  (when package-symbol
+    (warn "Argument :PACKAGE-SYMBOL is deprecated in DEFSECTION macr. Use :PACKAGE instead.")
+    (setf package package-symbol))
   
   (transform-entries entries external-links)
   (transform-link-title-to link-title-to)
@@ -136,14 +157,14 @@
   (let ((export-form
           (when export
             `((eval-when (:compile-toplevel :load-toplevel :execute)
-                (export-some-symbols ',name ',entries ,package-symbol))))))
+                (export-some-symbols ',name ',entries ,(ensure-package package)))))))
     `(progn
        ,@export-form
       
        (defparameter ,name
          (make-instance ',section-class
                         :name ',name
-                        :package ,package-symbol
+                        :package ,(ensure-package package)
                         :readtable ,readtable-symbol
                         :title ,title
                         :link-title-to (transform-link-title-to ',link-title-to)
@@ -163,6 +184,7 @@
     this SECTION object.")
    (package
     :initarg :package
+    :type package
     :reader section-package
     :documentation "*PACKAGE* will be bound to this package when
     generating documentation for this section.")
