@@ -11,7 +11,7 @@
   (:import-from #:40ants-doc-full/utils
                 #:read-prefixed-lines)
   (:import-from #:rove/core/test
-                #:testing-with-options))
+                #:with-testing-with-options))
 (in-package 40ants-doc-test/test-transcribe)
 
 
@@ -314,7 +314,7 @@
   (loop with *package* = (find-package :40ants-doc-test/test-transcribe)
         for test-case in *transcribe-test-cases*
         for test-id upfrom 1
-        do (testing-with-options
+        do (with-testing-with-options
                (format nil "test case ~A: ~S" test-id test-case)
                (:name (getf test-case :input))
                
