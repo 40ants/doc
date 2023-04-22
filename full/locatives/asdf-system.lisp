@@ -62,17 +62,34 @@
                                            href (second value))))
                  (make-list-item
                   (make-paragraph
-                   (if href
-                       (make-content
-                        (list (make-text
-                               (format nil "~A: "
-                                       name))
-                              (make-web-link href
-                                             (make-text value))))
-                       (make-text
-                        (format nil "~A: ~A"
-                                name
-                                value)))))))))
+                   (cond
+                     ((eql type :asdf-systems)
+                      (make-content
+                       (list*
+                        (make-text
+                         (format nil "~A: "
+                                 name))
+                        (loop with first = t
+                              for system-name in value
+                              if first
+                                do (setf first nil)
+                              else
+                                collect (make-text ", ")
+                              collect (make-web-link (format nil "https://quickdocs.org/~A"
+                                                             system-name)
+                                                     (make-text system-name))))))
+                     (href
+                      (make-content
+                       (list (make-text
+                              (format nil "~A: "
+                                      name))
+                             (make-web-link href
+                                            (make-text value)))))
+                     (t
+                      (make-text
+                       (format nil "~A: ~A"
+                               name
+                               value))))))))))
       
       (let* ((items (list (item "Version" 'asdf/component:component-version)
                           (item "Description" 'asdf/system:system-description)
@@ -86,7 +103,9 @@
                           (item "Bug tracker" 'asdf/system:system-bug-tracker
                                 :type :link)
                           (item "Source control" 'asdf/system:system-source-control
-                                :type :source-control)))
+                                :type :source-control)
+                          (item "Depends on" 'asdf-system-dependencies
+                                :type :asdf-systems)))
              (children (make-unordered-list
                         (remove nil items)))
              (reference (40ants-doc/reference-api:canonical-reference system)))
@@ -95,3 +114,29 @@
                                      reference)))))
 
 (defvar end-of-asdf-example)
+
+
+(defgeneric asdf-system-dependencies (system)
+  (:method ((system-name string))
+    (asdf-system-dependencies (asdf:registered-system system-name)))
+  (:method ((system-name symbol))
+    (asdf-system-dependencies (asdf:registered-system system-name)))
+  (:method ((system asdf:system))
+    (loop with base-system = (asdf:primary-system-name system)
+          with results = nil
+          for name in (asdf:system-depends-on system)
+          for subsystem = (string-equal base-system
+                                        (asdf:primary-system-name name))
+          do (if subsystem
+                 (setf results
+                       (nunion results
+                               (asdf-system-dependencies name)
+                               :test #'string-equal ))
+                 (pushnew name results
+                          :test #'string-equal))
+          finally (return (sort results
+                                #'string<)))))
+
+
+(defun comma-separated-dependencies (system)
+  (str:join ", " (asdf-system-dependencies system)))

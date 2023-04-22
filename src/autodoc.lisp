@@ -16,7 +16,8 @@
                 #:registered-subsections
                 #:register-subsection
                 #:with-subsection-collector)
-  (:export #:defautodoc))
+  (:export #:defautodoc)
+  (:documentation "This module is not included into asd file because it requires additional dependencies."))
 (in-package #:40ants-doc/autodoc)
 
 
