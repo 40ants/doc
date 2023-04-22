@@ -13,7 +13,9 @@
         ;; Some tests fail on CCL
         ;; "ccl-bin/1.12.1"
         "abcl-bin"
-        "allegro"
+        ;; At 2023-04-22 tests started to fail on Allegro with error:
+        ;; Allegro CL(pid 6257): System Error (gsgc) scavenge found ref to cons outside cons area in 0xffba645c
+        ;; "allegro"
         "clasp"
         ;; This CL implementation does not work in any matrix combinations
         ;; "cmu-bin"
