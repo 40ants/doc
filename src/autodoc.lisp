@@ -181,9 +181,35 @@
                               (external-links nil)
                               (ignore-words nil)))
 
+  "Macro DEFAUTODOC collects all packages of the ASDF system and analyzes all external symbols.
+   In resulting documentation symbols are grouped by packages and types.
+
+   Here is how you can define a section using DEFAUTODOC:
+
+   ```
+   (40ants/defautodoc @api (:system :cl-telegram-bot))
+   ```
+
+   This form will generate complete API reference for the CL-TELEGRAM-BOT system.
+
+   The most wonderful it that you can integrate this `@api` section with handwritten
+   documentation like this:
+
+   ```
+   (defsection @index (:title \"cl-telegram-bot - Telegram Bot API\")
+     (@installation section)
+     (@quickstart section)
+     (@api section))
+
+   When SHOW-SYSTEM-DESCRIPTION-P argument is not NIL, section will be started from the
+   description of the given ASDF system.
+   ```"
+
+  (unless system
+    (error ":SYSTEM argument is required for DEFAUTODOC macro."))
+
   (multiple-value-bind (subsections entries)
       (make-entries system :show-system-description-p show-system-description-p)
-    ;; (break)
     `(progn
        (defsection ,name (:title ,title
                           :readtable-symbol ,readtable-symbol

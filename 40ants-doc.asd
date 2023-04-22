@@ -2,7 +2,7 @@
 
 (defsystem 40ants-doc
   :licence "MIT"
-  :version "0.1.0"
+  :version "0.12.0"
   :author "Alexander Artemenko"
   :mailto "svetlyak.40wt@gmail.com"
   :homepage "https://40ants.com/doc"
