@@ -48,8 +48,7 @@
                "40ants-doc-full/themes/dark"
                "40ants-doc-full/themes/dark""40ants-doc-full/builder"
                "40ants-doc-full/themes/default"
-               "40ants-doc-full/themes/light"
-               )
+               "40ants-doc-full/themes/light")
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))
 
 

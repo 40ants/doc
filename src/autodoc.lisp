@@ -3,6 +3,7 @@
   (:import-from #:40ants-doc
                 #:section
                 #:defsection)
+  (:import-from #:str)
   (:import-from #:alexandria
                 #:symbolicate)
   (:import-from #:40ants-doc/locatives
