@@ -48,11 +48,7 @@
                "40ants-doc-full/themes/dark"
                "40ants-doc-full/themes/dark""40ants-doc-full/builder"
                "40ants-doc-full/themes/default"
-               "40ants-doc-full/themes/light"
-               ;; Additionally we include this module, because
-               ;; it is not loaded in 40ants-doc by default,
-               ;; but we want to run linter against it:
-               "40ants-doc/autodoc")
+               "40ants-doc-full/themes/light")
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))
 
 
