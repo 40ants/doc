@@ -23,7 +23,7 @@ This system is a fork of [MGL-PAX][7927].
 
 There are a few reasons, why I've created the fork.
 
-The main goal is to extract a core features into the [`40ants-doc`][5c49] system
+The main goal is to extract a core features into the [`40ants-doc`][a2c7] system
 with as little dependencies as possible. This is important, because with `MGL-PAX`'s
 style, you define documentation sections in your library's code, which makes
 it dependent on the documentation system. However, heavy weight dependencies
@@ -44,9 +44,9 @@ To introduce hooks for adding new markup languages, and `HTML` themes.
 
 Here are features already implemented in this fork:
 
-* Core system [`40ants-doc`][5c49] now has only two dependencies on `NAMED-READTABLES`
+* Core system [`40ants-doc`][a2c7] now has only two dependencies on `NAMED-READTABLES`
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
-  [`40ants-doc-full`][8636] system which will download such dependencies as markdown
+  [`40ants-doc-full`][a689] system which will download such dependencies as markdown
   parser and more.
 
 * Now you don't have to import any locative symbols into your package. Import
@@ -86,7 +86,7 @@ Read full documentation at [site 40ants.com/doc/][778d].
 
 ## Tutorial
 
-[`40ants-doc`][5c49] provides an extremely poor man's Explorable Programming
+[`40ants-doc`][a2c7] provides an extremely poor man's Explorable Programming
 environment. Narrative primarily lives in so called sections that
 mix markdown docstrings with references to functions, variables,
 etc, all of which should probably have their own docstrings.
@@ -202,11 +202,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](6892) `foo-random:foo-random-state` ()
+## [class](ba72) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](8690) `foo-random:state` (foo-random-state) ()
+## [reader](7751) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -214,24 +214,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](f0cc) `common-lisp:print-object` (object foo-random-state) stream
+## [method](4514) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](6722) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](6d42) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](bc93) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](dfc2) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](827c) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](95a7) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -254,12 +254,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[6892]: https://github.com/40ants/doc/blob/c3bf89fa88ab70074466aa07358caad159d45008/full/tutorial.lisp#L35
-[8690]: https://github.com/40ants/doc/blob/c3bf89fa88ab70074466aa07358caad159d45008/full/tutorial.lisp#L36
-[f0cc]: https://github.com/40ants/doc/blob/c3bf89fa88ab70074466aa07358caad159d45008/full/tutorial.lisp#L39
-[6722]: https://github.com/40ants/doc/blob/c3bf89fa88ab70074466aa07358caad159d45008/full/tutorial.lisp#L42
-[827c]: https://github.com/40ants/doc/blob/c3bf89fa88ab70074466aa07358caad159d45008/full/tutorial.lisp#L45
-[bc93]: https://github.com/40ants/doc/blob/c3bf89fa88ab70074466aa07358caad159d45008/full/tutorial.lisp#L51
+[ba72]: https://github.com/40ants/doc/blob/b3d9479fd275a46cdbd75e09b1bb8e6f8e968b60/full/tutorial.lisp#L35
+[7751]: https://github.com/40ants/doc/blob/b3d9479fd275a46cdbd75e09b1bb8e6f8e968b60/full/tutorial.lisp#L36
+[4514]: https://github.com/40ants/doc/blob/b3d9479fd275a46cdbd75e09b1bb8e6f8e968b60/full/tutorial.lisp#L39
+[6d42]: https://github.com/40ants/doc/blob/b3d9479fd275a46cdbd75e09b1bb8e6f8e968b60/full/tutorial.lisp#L42
+[95a7]: https://github.com/40ants/doc/blob/b3d9479fd275a46cdbd75e09b1bb8e6f8e968b60/full/tutorial.lisp#L45
+[dfc2]: https://github.com/40ants/doc/blob/b3d9479fd275a46cdbd75e09b1bb8e6f8e968b60/full/tutorial.lisp#L51
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
@@ -308,8 +308,8 @@ automatically checked for up-to-dateness. See
 
 
 [778d]: https://40ants.com/doc/
-[5c49]: https://40ants.com/doc/#x-28-2240ants-doc-22-20ASDF-2FSYSTEM-3ASYSTEM-29
-[8636]: https://40ants.com/doc/#x-28-2240ants-doc-full-22-20ASDF-2FSYSTEM-3ASYSTEM-29
+[a2c7]: https://40ants.com/doc/#x-28-23A-28-2810-29-20BASE-CHAR-20-2E-20-2240ants-doc-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29
+[a689]: https://40ants.com/doc/#x-28-23A-28-2815-29-20BASE-CHAR-20-2E-20-2240ants-doc-full-22-29-20ASDF-2FSYSTEM-3ASYSTEM-29
 [8c40]: https://40ants.com/doc/#x-2840ANTS-DOC-2FCHANGELOG-3ADEFCHANGELOG-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [4e8b]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [eb87]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3A-3A-40GENERATING-DOCUMENTATION-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
