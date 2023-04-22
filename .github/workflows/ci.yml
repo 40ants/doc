@@ -25,7 +25,6 @@
           "lisp": [
             "sbcl-bin",
             "abcl-bin",
-            "allegro",
             "clasp",
             "lispworks",
             "mkcl",
@@ -35,10 +34,6 @@
             {
               "quicklisp": "quicklisp",
               "lisp": "abcl-bin"
-            },
-            {
-              "quicklisp": "quicklisp",
-              "lisp": "allegro"
             },
             {
               "quicklisp": "quicklisp",

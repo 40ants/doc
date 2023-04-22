@@ -141,6 +141,7 @@
                               "SLIME"
                               "CSS"
                               "SLY"
+                              "API"
                               "COMMONDOC:SECTION"
                               "COLLECT-REACHABLE-OBJECTS"
                               "LOCATE-AND-COLLECT-REACHABLE-OBJECTS"
@@ -151,6 +152,9 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.12.0 2023-04-22
+          "* Autodoc subsystem was added. It provides a 40ANTS-DOC/AUTODOC:DEFAUTODOC macro which can build an API reference for a given ASDF system.
+           * Now we output a list of dependencies for an ASDF system description.")
   (0.11.2 2022-12-05
           "* Script on the search page was fixed.")
   (0.11.1 2022-11-26

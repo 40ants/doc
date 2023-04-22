@@ -54,6 +54,8 @@
                 #:end-of-variable-example)
   (:import-from #:40ants-doc-full/swank
                 #:locate-definition-for-emacs)
+  (:import-from #:40ants-doc/autodoc
+                #:defautodoc)
   (:export #:@index
            #:@readme
            #:@changelog))
@@ -66,6 +68,8 @@
   (defparameter *ignore-words*
     '("HTML"
       "HTMLs"
+      "API"
+      "CL-TELEGRAM-BOT"
       "README"
       "JSON"
       "MGL-PAX"
@@ -447,7 +451,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
                                     "FIND-SOURCE"))
   "Now let's examine the most important pieces in detail."
   (@defining-sections section)
-  (@cross-referencing section))
+  (@cross-referencing section)
+  (@autodoc section))
 
 
 (defsection @defining-sections (:title "Defining Sections")
@@ -492,6 +497,14 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   ```
 
   and link will lead to the specified method: See [40ANTS-DOC/SOURCE-API:FIND-SOURCE][(method () (40ants-doc/reference:reference))].")
+
+
+(defsection @autodoc (:title "Autodocumentation")
+  "40ANTS-DOC system provides an additional subsystem and package `40ANTS-DOC/AUTODOC`.
+   This subsystem contains a macro DEFAUTODOC, which is similar to
+   DEFSECTION, but generates a section filled with content of the given ASDF system.
+"
+  (defautodoc macro))
 
 
 (defsection @locatives-and-references
@@ -548,7 +561,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
                              :ignore-words ("SWANK-BACKEND:ARGLIST"
                                             "START"
                                             "END")
-                             :package-symbol :40ants-doc/locatives)
+                             :package :40ants-doc/locatives)
   "These are the locatives type supported out of the box. As all
   locative types, they are symbols and their names should make it
   obvious what kind of things they refer to. Unless otherwise noted,
