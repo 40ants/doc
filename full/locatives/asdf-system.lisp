@@ -1,6 +1,5 @@
 (uiop:define-package #:40ants-doc-full/locatives/asdf-system
   (:use #:cl)
-  (:import-from #:str)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-error
                 #:locate-object
@@ -133,11 +132,8 @@
                        (nunion results
                                (asdf-system-dependencies name)
                                :test #'string-equal ))
-                 (pushnew name results
+                 (pushnew (asdf:primary-system-name name) results
                           :test #'string-equal))
           finally (return (sort results
                                 #'string<)))))
 
-
-(defun comma-separated-dependencies (system)
-  (str:join ", " (asdf-system-dependencies system)))
