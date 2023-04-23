@@ -1,6 +1,5 @@
 (uiop:define-package #:40ants-doc-full/locatives/asdf-system
   (:use #:cl)
-  (:import-from #:str)
   (:import-from #:40ants-doc/locatives/base
                 #:locate-error
                 #:locate-object
