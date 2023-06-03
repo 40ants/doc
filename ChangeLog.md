@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E13-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.13.0 (2023-06-04)
+
+* Support for variables was added to autodoc subsystem.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E12-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.12.0 (2023-04-22)
