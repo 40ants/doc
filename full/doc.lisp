@@ -503,6 +503,18 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   "40ANTS-DOC system provides an additional subsystem and package `40ANTS-DOC/AUTODOC`.
    This subsystem contains a macro DEFAUTODOC, which is similar to
    DEFSECTION, but generates a section filled with content of the given ASDF system.
+
+   This subsystem is not loaded by default because it brings a multiple additional dependencies:
+
+   - alexandria
+   - cl-change-case
+   - cl-ppcre
+   - cl-unicode
+   - closer-mop
+
+   but I'm trying to keep dependencies of the core 40ANTS-DOC system is minimal.
+
+   Use it if your don't care or your have docs in a separate ASDF sybsystem.
 "
   (defautodoc macro))
 
