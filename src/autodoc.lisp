@@ -1,6 +1,6 @@
 (uiop:define-package #:40ants-doc/autodoc
   (:use #:cl)
-  (:import-from #:40ants-doc
+  (:import-from #:40ants-doc/core
                 #:section
                 #:defsection)
   (:import-from #:str)
@@ -115,24 +115,32 @@
          (title package-name)
          (accessors-and-readers (package-accessors-and-writers package))
          (entries (loop for symbol being the external-symbols of package
+                        ;; Usual functions
                         when (and (fboundp symbol)
                                   (not (macro-function symbol))
                                   (not (typep (symbol-function symbol) 'generic-function)))
                           collect (list symbol 'function) into functions
-                        
+
+                        ;; Generic functions
                         when (and (fboundp symbol)
                                   (typep (symbol-function symbol) 'generic-function)
                                   (not (member symbol accessors-and-readers
                                                :test 'eql)))
                           collect (list symbol 'generic-function) into generics
-                        
+
+                        ;; Macroses
                         when (and (fboundp symbol)
                                   (macro-function symbol))
                           collect (list symbol 'macro) into macros
-                        
+
+                        ;; Classes
                         when (find-class symbol nil)
                           collect (make-class-entry symbol package-name) into classes
-                        
+
+                        ;; Variables
+                        when (documentation symbol 'variable)
+                          collect (list symbol 'variable) into variables
+
                         finally (return
                                   (uiop:while-collecting (collect)
                                     (flet ((add-subsection (entries title)
@@ -152,7 +160,8 @@
                                       (add-subsection classes "Classes")
                                       (add-subsection generics "Generics")
                                       (add-subsection functions "Functions")
-                                      (add-subsection macros "Macros")))))))
+                                      (add-subsection macros "Macros")
+                                      (add-subsection variables "Variables")))))))
     `(defsection ,section-name (:title ,title
                                 :package ,package-name)
        (,(symbolicate package-name) package)

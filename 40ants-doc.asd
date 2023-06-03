@@ -16,7 +16,8 @@
                "40ants-doc/restart"
                "40ants-doc/glossary"
                "40ants-doc/changelog"
-               "40ants-doc/ignored-words")
+               "40ants-doc/ignored-words"
+               "40ants-doc/autodoc")
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))
 
 
