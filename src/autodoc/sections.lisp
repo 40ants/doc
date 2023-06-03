@@ -1,12 +1,12 @@
 (uiop:define-package #:40ants-doc/autodoc/sections
-  (:use #:cl)
-  (:import-from #:serapeum
-                #:defvar-unbound))
+  (:use #:cl))
 (in-package #:40ants-doc/autodoc/sections)
 
 
-(defvar-unbound *subsections*
-  "This var will collect all subsections, collected inside WITH-SUBSECTION-COLLECTOR's body.")
+(defvar *subsections*)
+
+(setf (documentation '*subsections* 'variable)
+      "This var will collect all subsections, collected inside WITH-SUBSECTION-COLLECTOR's body.")
 
 
 (defun register-subsection (definition)

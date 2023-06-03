@@ -16,7 +16,13 @@
                "40ants-doc/restart"
                "40ants-doc/glossary"
                "40ants-doc/changelog"
-               "40ants-doc/ignored-words")
+               "40ants-doc/ignored-words"
+               ;; This subsystem is not loaded by default
+               ;; because it brings a multiple additional dependencies:
+               ;; alexandria, cl-change-case, cl-ppcre, cl-unicode, closer-mop.
+               ;; Use it if your don't care or your have docs in a separate ASDF sybsystem.
+               ;; "40ants-doc/autodoc"
+               )
   :in-order-to ((asdf:test-op (asdf:test-op "40ants-doc-test"))))
 
 

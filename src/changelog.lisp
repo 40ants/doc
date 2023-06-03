@@ -152,6 +152,8 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.13.0 2023-06-04
+          "* Support for variables was added to autodoc subsystem.")
   (0.12.0 2023-04-22
           "* Autodoc subsystem was added. It provides a 40ANTS-DOC/AUTODOC:DEFAUTODOC macro which can build an API reference for a given ASDF system.
            * Now we output a list of dependencies for an ASDF system description.")
