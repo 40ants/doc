@@ -19,7 +19,8 @@
            #:*discard-documentation-p*
            #:section-ignore-words
            #:defsection-copy
-           #:section-external-docs))
+           #:section-external-docs
+           #:*symbols-with-ignored-missing-locations*))
 (in-package #:40ants-doc)
 
 
@@ -28,6 +29,22 @@
   "The default value of DEFSECTION's DISCARD-DOCUMENTATION-P argument.
   One may want to set `*DISCARD-DOCUMENTATION-P*` to true before
   building a binary application.")
+
+
+(defvar *symbols-with-ignored-missing-locations* nil
+  "Sometimes code might be generated without source location attached.
+
+   For example Mito generates slot readers this way.
+   Such symbols should be added to this list to skip warnings during the documentation build.
+
+   Use such code to add a new symbol to ignore:
+
+   ```lisp
+   (eval-when (:compile-toplevel :load-toplevel :execute)
+     (pushnew 'reblocks-auth/models:profile-user
+              40ants-doc:*symbols-with-ignored-missing-locations*))
+   ```
+")
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)

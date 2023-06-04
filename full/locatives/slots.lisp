@@ -149,8 +149,12 @@
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'reader))
                                    locative-args)
-  (find-source (find-method (symbol-function symbol)
-                            '() (list (find-class (first locative-args))))))
+  (let ((generic-function (symbol-function symbol))
+        (arguments (list (find-class (first locative-args))))
+        (specializers nil))
+    (find-source (find-method generic-function
+                              specializers
+                              arguments))))
 
 (defmethod locate-and-find-source (symbol (locative-type (eql 'writer))
                                    locative-args)
