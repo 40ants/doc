@@ -459,6 +459,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (40ants-doc:defsection macro)
   (40ants-doc:defsection-copy macro)
   (40ants-doc:*discard-documentation-p* variable)
+  (40ants-doc:*symbols-with-ignored-missing-locations* variable)
   (40ants-doc/ignored-words:ignored-words generic-function)
   (40ants-doc/ignored-words:supports-ignored-words-p generic-function)
   (40ants-doc/ignored-words:ignore-words-in-package macro))

@@ -1,10 +1,12 @@
 (uiop:define-package #:40ants-doc-full/github
   (:use #:cl)
   (:import-from #:40ants-doc
+                #:*symbols-with-ignored-missing-locations*
                 #:defsection)
   (:import-from #:cl-fad)
   (:import-from #:40ants-doc-full/source)
-  (:import-from #:40ants-doc/reference)
+  (:import-from #:40ants-doc/reference
+                #:reference-object)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:cl-ppcre)
   (:import-from #:str)
@@ -13,8 +15,7 @@
   (:import-from #:40ants-doc/reference-api
                 #:*source-uri-fn*
                 #:source-uri)
-  (:export
-   #:make-github-source-uri-fn))
+  (:export #:make-github-source-uri-fn))
 (in-package #:40ants-doc-full/github)
 
 
@@ -136,8 +137,10 @@
           (null source-location)
           ;; SBCL, AllegroCL
           (eq (first source-location) :error))
-         (warn "~@<No source location found for reference ~:_~A: ~:_~A~%~@:>"
-               reference (second source-location)))
+         (unless (member (reference-object reference)
+                         *symbols-with-ignored-missing-locations*)
+           (warn "~@<No source location found for reference ~:_~A: ~:_~A~%~@:>"
+                 reference (second source-location))))
         (t
          (assert (eq (first source-location) :location))
          (let* ((filename (second (assoc :file (rest source-location))))
