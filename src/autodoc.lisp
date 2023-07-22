@@ -42,7 +42,10 @@
         when (or (string-equal name system-name)
                  (str:starts-with? (concatenate 'string (string-downcase system-name) "/")
                                    (string-downcase name)))
-          collect package))
+          collect package into results
+        finally (return (sort results
+                              #'string<
+                              :key #'package-name))))
 
 
 (defun package-accessors-and-writers (package)
@@ -162,10 +165,11 @@
                                       (add-subsection functions "Functions")
                                       (add-subsection macros "Macros")
                                       (add-subsection variables "Variables")))))))
-    `(defsection ,section-name (:title ,title
-                                :package ,package-name)
-       (,(symbolicate package-name) package)
-       ,@entries)))
+    (when entries
+      `(defsection ,section-name (:title ,title
+                                  :package ,package-name)
+         (,(symbolicate package-name) package)
+         ,@entries))))
 
 
 (defun make-entries (system &key (show-system-description-p nil))
@@ -173,8 +177,11 @@
     (loop for package in (system-packages system)
           for package-name = (package-name package)
           for section-name = (symbolicate "@" (string-upcase package-name) "?PACKAGE")
-          collect (list section-name 'section) into entries
-          do (register-subsection (make-package-section section-name package))
+          for package-section = (make-package-section section-name package)
+          when package-section
+            collect (list section-name 'section) into entries
+            and
+              do (register-subsection package-section)
           finally (return (values (registered-subsections)
                                   (append
                                    (when show-system-description-p

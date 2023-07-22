@@ -152,6 +152,9 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.15.0 2023-07-22
+          "* Autodoc was fixed to not show packages without external symbols.
+           * Also, now autodoc sorts packages alphabetically.")
   (0.14.0 2023-06-04
           "* Added 40ANTS-DOC:*SYMBOLS-WITH-IGNORED-MISSING-LOCATIONS* variable to ignore warnings on missing source location.
 
