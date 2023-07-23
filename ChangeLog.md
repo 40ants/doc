@@ -2,6 +2,14 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E15-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.15.0 (2023-07-22)
+
+* Autodoc was fixed to not show packages without external symbols.
+
+* Also, now autodoc sorts packages alphabetically.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E14-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.14.0 (2023-06-04)
