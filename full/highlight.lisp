@@ -13,7 +13,8 @@
   ;; https://github.com/highlightjs/highlight.js/issues/3835
   ;; (:import-from #:trivial-extract
   ;;               #:extract-zip)
-  )
+  (:import-from #:which))
+
 (in-package #:40ants-doc-full/highlight)
 
 
