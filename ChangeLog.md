@@ -2,6 +2,14 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E15-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.15.1 (2023-08-05)
+
+* Fixed issue with unpacking Highlight.js archive when it is having absolute pathnames.
+
+Also, a new download `API` is used now.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E15-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.15.0 (2023-07-22)
