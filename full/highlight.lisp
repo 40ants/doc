@@ -7,15 +7,13 @@
                 #:write-string-into-file
                 #:write-byte-vector-into-file
                 #:read-file-into-string)
-  (:import-from #:cl-cookie
-                #:cookie-value
-                #:cookie-name
-                #:make-cookie-jar
-                #:cookie-jar-cookies)
   (:import-from #:tmpdir
                 #:with-tmpdir)
-  (:import-from #:trivial-extract
-                #:extract-zip))
+  ;; TODO: Should be returned back after this issue resolve:
+  ;; https://github.com/highlightjs/highlight.js/issues/3835
+  ;; (:import-from #:trivial-extract
+  ;;               #:extract-zip)
+  )
 (in-package #:40ants-doc-full/highlight)
 
 
