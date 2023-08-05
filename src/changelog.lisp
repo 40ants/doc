@@ -152,6 +152,10 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.15.1 2023-08-05
+          "* Fixed issue with unpacking Highlight.js archive when it is having absolute pathnames.
+
+             Also, a new download API is used now.")
   (0.15.0 2023-07-22
           "* Autodoc was fixed to not show packages without external symbols.
            * Also, now autodoc sorts packages alphabetically.")

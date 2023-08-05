@@ -240,6 +240,27 @@
           languages
           (to-downcased-string theme)))
 
+(defun extract-zip-ignoring-error (pathname)
+  (let ((binary (which:which "unzip")))
+    (unless binary
+      (error "Please unstall \"unzip\" utility."))
+    
+    (handler-bind ((uiop:subprocess-error
+                     (lambda (e)
+                       ;; Starting from 2023-08-05 Highlight.js started to use absolute
+                       ;; pathnames in the zip archive. Here we are ignoring the error
+                       ;; returned by unzip. And we'll have to do this until this issue
+                       ;; will be resolved:
+                       ;; https://github.com/highlightjs/highlight.js/issues/3835
+                       (when (= (uiop:subprocess-error-code e) 1)
+                         (invoke-restart
+                          (find-restart 'continue))))))
+      (uiop:run-program (format nil "~S -o ~S -d ~S"
+                                (namestring binary)
+                                (namestring pathname)
+                                (namestring (uiop:pathname-directory-pathname pathname)))))))
+
+
 (defun download-highlight-js (languages &key (to "./")
                                              (theme "default"))
   (with-tmpdir (tmpdir)
@@ -256,24 +277,16 @@
          (log:info "METADATA file lists same languages and theme. Skipping download of Highlight.js"))
         (t
          (log:info "Downloading Highlight.js")
-         (let* ((url "https://highlightjs.org/download/")
-                (jar (make-cookie-jar))
-                (cookies (progn (dex:get url :cookie-jar jar)
-                                (cookie-jar-cookies jar)))
-                (csrftoken (when-let ((cookie (find "csrftoken" cookies
-                                                    :key #'cookie-name
-                                                    :test #'string-equal)))
-                             (cookie-value cookie)))
-                (post-data (append (list (cons "csrfmiddlewaretoken" csrftoken))
-                                   (loop for lang in languages
-                                         for normalized-lang = (normalize lang)
-                                         collect (cons (format nil "~A.js" lang)
-                                                       "on"))))
-                (headers (list (cons "Referer" url)))
+         (let* ((url "https://highlightjs.org/api/download")
+                (post-data (list :|api| 2
+                                 :|languages|
+                                 (loop for lang in languages
+                                       for normalized-lang = (normalize lang)
+                                       collect normalized-lang)))
+                (headers (list (cons "Content-Type" "application/json")))
                 (response (dex:post url
-                                    :content post-data
-                                    :headers headers
-                                    :cookie-jar jar))
+                                    :content (jonathan:to-json post-data)
+                                    :headers headers))
                 (path (uiop:merge-pathnames* #P"archive.zip" tmpdir)))
 
            (ensure-directories-exist path)
@@ -281,7 +294,7 @@
            
            (write-byte-vector-into-file response path
                                         :if-exists :supersede)
-           (extract-zip path)
+           (extract-zip-ignoring-error path)
 
            (uiop:copy-file (uiop:merge-pathnames* "highlight.min.js" tmpdir)
                            (uiop:merge-pathnames* "highlight.min.js" to))
