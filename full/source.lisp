@@ -28,4 +28,8 @@
 
 
 (defmethod find-source (object)
+  ;; Probably this could be replaced with
+  ;; https://quickdocs.org/definitions
+  ;; or with
+  ;; https://www.hexstreamsoft.com/libraries/definitions-systems/
   (swank:find-definition-for-thing object))
