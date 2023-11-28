@@ -27,12 +27,25 @@
   serves as an example of a symbol that's not accessible in the
   current package and consequently is not exported.")
 
+
+(defun find-system (name)
+  "ASDF:FIND-SYSTEM is 1000 times slower than ASDF:REGISTERED-SYSTEM,
+   but REGISTERED-SYSTEM sometimes unable to find a system (for example
+   when this is a primary ASDF system, but it's defpackage defines
+   package with the name of primary system and a nickname equal to the
+   subsystem name. See log4cl-extras/core as example).
+
+   This we first try to use fast method and fallback to the slow one."
+  (or (asdf:registered-system name)
+      (asdf:find-system name)))
+
+
 (defmethod locate-object (symbol (locative-type (eql 'asdf:system))
                           locative-args)
   (assert (endp locative-args))
   ;; FIXME: This is slow as hell.
   ;; TODO: check if replacement of find-system with registered-system helped
-  (or (asdf:registered-system symbol)
+  (or (find-system symbol)
       (locate-error)))
 
 (defmethod canonical-reference ((system asdf:system))
@@ -118,9 +131,14 @@
 
 (defgeneric asdf-system-dependencies (system)
   (:method ((system-name string))
-    (asdf-system-dependencies (asdf:registered-system system-name)))
+    (asdf-system-dependencies (find-system system-name)))
+  (:method ((system-name (eql nil)))
+    ;; Sometimes find-system might return NIL
+    ;; and if we'll not process it separately, execution will go back
+    ;; to the method where system-name is a symbol leading to heap exhaustion.
+    nil)
   (:method ((system-name symbol))
-    (asdf-system-dependencies (asdf:registered-system system-name)))
+    (asdf-system-dependencies (find-system system-name)))
   (:method ((system asdf:system))
     (loop with base-system = (asdf:primary-system-name system)
           with results = nil
