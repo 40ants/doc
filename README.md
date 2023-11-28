@@ -48,11 +48,9 @@ Here are features already implemented in this fork:
   and `PYTHONIC-STRING-READER`. If you want to compile a documentation, load
   [`40ants-doc-full`][a689] system which will download such dependencies as markdown
   parser and more.
-
 * Now you don't have to import any locative symbols into your package. Import
   only a [`defsection`][4e8b] macro and it will be enough to define documentation for
   your library!
-
 * Added a warning mechanism, which will issue such warnings on words which looks
   like a symbol, but when real symbol or reference is absent:
 
@@ -63,10 +61,8 @@ Here are features already implemented in this fork:
 
 * Documentation processing now uses CommonDoc as intermediate format, and markup languages
   other than Markdown can be supported.
-
 * Added a `JS` search index which will work when you are hosting pages on a static website
   like GitHub pages.
-
 * It is possible to render pages in multiple formats and having cross references between them.
   See [`Multiple Formats`][a367].
 
@@ -202,11 +198,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](c3ab) `foo-random:foo-random-state` ()
+## [class](8e49) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](d13f) `foo-random:state` (foo-random-state) ()
+## [reader](e345) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -214,24 +210,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](cba6) `common-lisp:print-object` (object foo-random-state) stream
+## [method](0ca0) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](f27e) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](90ab) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](ce68) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](1e9c) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](9084) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](80cd) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -254,12 +250,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[c3ab]: https://github.com/40ants/doc/blob/bc860a1bd12c823dcdb4a847d7a9d515a67d64f4/full/tutorial.lisp#L35
-[d13f]: https://github.com/40ants/doc/blob/bc860a1bd12c823dcdb4a847d7a9d515a67d64f4/full/tutorial.lisp#L36
-[cba6]: https://github.com/40ants/doc/blob/bc860a1bd12c823dcdb4a847d7a9d515a67d64f4/full/tutorial.lisp#L39
-[f27e]: https://github.com/40ants/doc/blob/bc860a1bd12c823dcdb4a847d7a9d515a67d64f4/full/tutorial.lisp#L42
-[9084]: https://github.com/40ants/doc/blob/bc860a1bd12c823dcdb4a847d7a9d515a67d64f4/full/tutorial.lisp#L45
-[ce68]: https://github.com/40ants/doc/blob/bc860a1bd12c823dcdb4a847d7a9d515a67d64f4/full/tutorial.lisp#L51
+[8e49]: https://github.com/40ants/doc/blob/36d824300da7accdc66b42377ed0bd1c9181d999/full/tutorial.lisp#L35
+[e345]: https://github.com/40ants/doc/blob/36d824300da7accdc66b42377ed0bd1c9181d999/full/tutorial.lisp#L36
+[0ca0]: https://github.com/40ants/doc/blob/36d824300da7accdc66b42377ed0bd1c9181d999/full/tutorial.lisp#L39
+[90ab]: https://github.com/40ants/doc/blob/36d824300da7accdc66b42377ed0bd1c9181d999/full/tutorial.lisp#L42
+[80cd]: https://github.com/40ants/doc/blob/36d824300da7accdc66b42377ed0bd1c9181d999/full/tutorial.lisp#L45
+[1e9c]: https://github.com/40ants/doc/blob/36d824300da7accdc66b42377ed0bd1c9181d999/full/tutorial.lisp#L51
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork
@@ -288,22 +284,14 @@ automatically checked for up-to-dateness. See
 ## TODO
 
 * <s>Refactor code and make a core package with only a few dependencies.</s>
-
 * <s>Add warnings on `UPPERCASED` symbols in docstrings which aren't found in the package and can't be cross referenced.</s>
-
 * <s>Support `SLY` and make both `SLIME` and `SLY` integrations optional.</s>
-
 * <s>Add a search facility which will build an index for static file like Sphinx does.</s>
-
 * <s>Separate markup parsing and result rendering code to support markups other than Markdown and `HTML`.</s>
-
 * <s>Add a new section type to render ChangeLog.</s>
-
 * <s>Support custom `HTML` themes.</s>
-
 * <s>Generate `RSS` or Atom feed out of changelog items, defined with
   [`40ants-doc/changelog:defchangelog`][8c40] macro.</s>
-
 * Make some warnings compile-time for defsection and show them in the Emacs, if possible.
 
 
