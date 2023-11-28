@@ -152,6 +152,8 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.15.2 2023-11-28
+          "* Fixed stack exhausting when trying to collect dependencies for some ASDF systems.")
   (0.15.1 2023-08-05
           "* Fixed issue with unpacking Highlight.js archive when it is having absolute pathnames.
 
