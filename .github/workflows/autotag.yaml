@@ -1,0 +1,20 @@
+name: Add Version Tag
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: butlerlogic/action-autotag@8bc1ad456dcdee34e8c6ffbce991cc31793578c2
+      with:
+        regex_pattern: "^(?<version>\\d+\\.\\d+\\.\\d+([^ ]+)?)\\n?"
+        root: ./ChangeLog.md
+        tag_prefix: "v"
+      env:
+        GITHUB_TOKEN: "${{ secrets.DEPLOY_TRIGGER_TOKEN }}"
