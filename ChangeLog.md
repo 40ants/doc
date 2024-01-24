@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E15-2E3-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.15.3 (2024-01-24)
+
+* Fixed `URL`s in the search index file when `CLEAN-URLS` argument is given. This should prevent redirection to index.html file from search page - now index.html will be stripped from the path.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E15-2E2-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.15.2 (2023-11-28)
