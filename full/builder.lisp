@@ -324,7 +324,7 @@
         (40ants-doc-full/builder/vars::*base-dir* base-dir)
         (40ants-doc-full/builder/vars::*base-url* base-url)
         (40ants-doc-full/builder/printer::*full-package-names* full-package-names))
-    
+
     (handler-bind ((warning (lambda (c)
                               (declare (ignore c))
                               (incf num-warnings))))
@@ -391,8 +391,8 @@
                                                                :highlight-theme highlight-theme)
 
                     (let* ((page (40ants-doc-full/commondoc/page:make-page nil "search/index"
-                                                                      :title "Search Page"
-                                                                      :format :html))
+                                                                           :title "Search Page"
+                                                                           :format :html))
                            (filename (make-full-filename page)))
                       (ensure-directories-exist filename)
                       (uiop:with-output-file (common-html.emitter::*output-stream*

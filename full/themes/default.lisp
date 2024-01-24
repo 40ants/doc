@@ -10,6 +10,8 @@
                 #:make-relative-path)
   (:import-from #:40ants-doc-full/rewrite)
   (:import-from #:40ants-doc-full/commondoc/changelog)
+  (:import-from #:alexandria
+                #:read-file-into-string)
   (:export #:default-theme))
 (in-package #:40ants-doc-full/themes/default)
 
@@ -282,7 +284,7 @@
         :margin-bottom 1em)))
 
      (.rss-icon
-      :background ,(alexandria:read-file-into-string
+      :background ,(read-file-into-string
                     (asdf:system-relative-pathname :40ants-doc
                                                    "static/rss-icon.base64"))
       :width 1em

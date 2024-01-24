@@ -18,18 +18,6 @@
       "strategy": {
         "fail-fast": false,
         "matrix": {
-          "quicklisp": [
-            "quicklisp",
-            "ultralisp"
-          ],
-          "lisp": [
-            "sbcl-bin",
-            "abcl-bin",
-            "clasp",
-            "lispworks",
-            "mkcl",
-            "ecl"
-          ],
           "exclude": [
             {
               "quicklisp": "quicklisp",
@@ -51,6 +39,18 @@
               "quicklisp": "quicklisp",
               "lisp": "ecl"
             }
+          ],
+          "quicklisp": [
+            "quicklisp",
+            "ultralisp"
+          ],
+          "lisp": [
+            "sbcl-bin",
+            "abcl-bin",
+            "clasp",
+            "lispworks",
+            "mkcl",
+            "ecl"
           ]
         }
       },
@@ -67,7 +67,7 @@
         },
         {
           "name": "Setup Common Lisp Environment",
-          "uses": "40ants/setup-lisp@v2",
+          "uses": "40ants/setup-lisp@v3",
           "with": {
             "asdf-system": "40ants-doc-full"
           }
