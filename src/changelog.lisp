@@ -150,8 +150,11 @@
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
+                              "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.15.3 2024-01-24
+          "* Fixed URLs in the search index file when CLEAN-URLS argument is given. This should prevent redirection to index.html file from search page - now index.html will be stripped from the path.")
   (0.15.2 2023-11-28
           "* Fixed stack exhausting when trying to collect dependencies for some ASDF systems.")
   (0.15.1 2023-08-05

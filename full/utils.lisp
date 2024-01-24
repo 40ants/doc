@@ -3,7 +3,9 @@
   (:import-from #:40ants-doc-full/builder/vars)
   (:import-from #:alexandria)
   (:import-from #:cl-ppcre)
-  (:import-from #:str)
+  (:import-from #:str
+                #:ensure-suffix
+                #:replace-all)
   (:import-from #:40ants-doc/docstring
                 #:whitespacep
                 #:blankp)
@@ -689,6 +691,13 @@
                         do (write-string "../" s))
                   (push to-part rest-to-parts)
                   (format s "~{~A~^/~}" rest-to-parts)))))))
+
+
+(defun make-clean-uri (path)
+  (ensure-suffix "/"
+                 (replace-all "/index.html"
+                              "/"
+                              path)))
 
 
 (defgeneric maybe-downcase (obj)

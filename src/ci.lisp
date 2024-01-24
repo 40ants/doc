@@ -4,7 +4,9 @@
                 #:defworkflow)
   (:import-from #:40ants-ci/jobs/linter)
   (:import-from #:40ants-ci/jobs/run-tests)
-  (:import-from #:40ants-ci/jobs/docs))
+  (:import-from #:40ants-ci/jobs/docs)
+  (:import-from #:40ants-ci/jobs/autotag
+                #:autotag))
 (in-package #:40ants-doc/ci)
 
 
@@ -24,6 +26,11 @@
         ;; This fails to install under the Roswell on Ubuntu
         ;; "npt"
         "ecl") )
+
+
+(defworkflow release
+  :on-push-to "master"
+  :jobs ((autotag)))
 
 
 (defworkflow linter

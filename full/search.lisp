@@ -3,9 +3,11 @@
   (:import-from #:40ants-doc-full/commondoc/mapper
                 #:map-nodes)
   (:import-from #:40ants-doc-full/commondoc/section)
-  (:import-from #:40ants-doc-full/commondoc/page)
+  (:import-from #:40ants-doc-full/commondoc/page
+                #:full-filename)
   (:import-from #:40ants-doc-full/page)
-  (:import-from #:40ants-doc-full/utils)
+  (:import-from #:40ants-doc-full/utils
+                #:make-clean-uri)
   (:import-from #:40ants-doc/locatives)
   (:import-from #:common-html)
   (:import-from #:stem)
@@ -24,7 +26,9 @@
                 #:locative-type)
   (:import-from #:common-doc)
   (:import-from #:common-doc.ops
-                #:collect-all-text))
+                #:collect-all-text)
+  (:import-from #:40ants-doc-full/rewrite
+                #:*clean-urls*))
 (in-package #:40ants-doc-full/search)
 
 
@@ -149,9 +153,12 @@
                       (push (40ants-doc-full/utils:make-relative-path (40ants-doc-full/page:base-filename page)
                                                                       (40ants-doc-full/page:base-filename node))
                             docnames)
-                      (push (40ants-doc-full/commondoc/page:full-filename node
-                                                                          :from page)
-                            filenames))))
+                      (let ((path (full-filename node
+                                                 :from page)))
+                        (push (if *clean-urls*
+                                  (make-clean-uri path)
+                                  path)
+                              filenames)))))
                  node)
                (go-up (node)
                  (typecase node
