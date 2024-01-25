@@ -366,7 +366,7 @@
 (deftest test-core-dependencies
   (ok (equal (40ants-doc-full/utils::external-dependencies :40ants-doc)
              (list "asdf"
-                   "named-readtables"
                    "mgl-pax-bootstrap"  ;; dependency of named-readtables
+                   "named-readtables"
                    "pythonic-string-reader"
                    "uiop"))))
