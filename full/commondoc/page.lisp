@@ -40,7 +40,8 @@
                 #:page-base-url
                 #:base-filename
                 #:page-format)
-  (:import-from #:40ants-doc-full/rewrite)
+  (:import-from #:40ants-doc-full/rewrite
+                #:*clean-urls*)
   (:import-from #:40ants-doc/locatives/base
                 #:locative-equal)
   (:import-from #:40ants-doc-full/dislocated-symbols
@@ -135,7 +136,10 @@
 
 (defun emit-search-page (page)
   "Emit an piece of documentation."
-  (let* ((uri (make-page-uri page)))
+  (let* ((uri (make-page-uri page))
+         (doc-builder (if *clean-urls*
+                          "dirhtml"
+                          "html")))
     (with-page-template (uri
                          (page-title page)
                          :toc (make-page-toc page))
@@ -143,20 +147,21 @@
         ;; This should go before doctools
         ;; URL_ROOT: document.getElementById('documentation_options').getAttribute('data-url_root'),
         (:script :type "text/javascript"
-                 (:raw "
+                 (:raw (format nil "
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT: '',
     VERSION: '5.0.0+',
     LANGUAGE: 'en',
     COLLAPSE_INDEX: false,
-    BUILDER: 'html',
+    BUILDER: '~A',
     FILE_SUFFIX: '.html',
     LINK_SUFFIX: '.html',
     HAS_SOURCE: true,
     SOURCELINK_SUFFIX: '.txt',
     NAVIGATION_WITH_KEYS: false
 };
-"))
+"
+                               doc-builder)))
         (:script :src (make-relative-path uri "underscore.js"))
         (:script :src (make-relative-path uri "doctools.js"))
         (:script :src (make-relative-path uri "language_data.js"))
