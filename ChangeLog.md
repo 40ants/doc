@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E15-2E4-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.15.4 (2024-01-26)
+
+* Another fix to `URL`s on the search page. Now if `CLEAN-URLS` argument is true, search page will link to the pages ended with a backslash. Otherwise, it will link to the html pages.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E15-2E3-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.15.3 (2024-01-24)
