@@ -153,6 +153,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.15.4 2024-01-26
+          "* Another fix to URLs on the search page. Now if CLEAN-URLS argument is true, search page will link to the pages ended with a backslash. Otherwise, it will link to the html pages.")
   (0.15.3 2024-01-24
           "* Fixed URLs in the search index file when CLEAN-URLS argument is given. This should prevent redirection to index.html file from search page - now index.html will be stripped from the path.")
   (0.15.2 2023-11-28
