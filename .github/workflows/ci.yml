@@ -21,19 +21,19 @@
           "exclude": [
             {
               "quicklisp": "quicklisp",
-              "lisp": "abcl-bin"
+              "lisp": "ccl-bin"
             },
             {
               "quicklisp": "quicklisp",
-              "lisp": "clasp"
+              "lisp": "clisp-head"
             },
             {
               "quicklisp": "quicklisp",
-              "lisp": "lispworks"
+              "lisp": "clasp-bin"
             },
             {
               "quicklisp": "quicklisp",
-              "lisp": "mkcl"
+              "lisp": "cmu-bin"
             },
             {
               "quicklisp": "quicklisp",
@@ -46,10 +46,10 @@
           ],
           "lisp": [
             "sbcl-bin",
-            "abcl-bin",
-            "clasp",
-            "lispworks",
-            "mkcl",
+            "ccl-bin",
+            "clisp-head",
+            "clasp-bin",
+            "cmu-bin",
             "ecl"
           ]
         }
