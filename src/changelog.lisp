@@ -153,6 +153,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.16.0 2024-05-04
+          "* A generic-function 40ANTS-DOC/LOCATIVES/ASDF-SYSTEM:ASDF-SYSTEM-DOCUMENTATION-TITLE was added. It allows to override the text of a section showing an information about ASDF system.")
   (0.15.4 2024-01-26
           "* Another fix to URLs on the search page. Now if CLEAN-URLS argument is true, search page will link to the pages ended with a backslash. Otherwise, it will link to the html pages.")
   (0.15.3 2024-01-24

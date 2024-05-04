@@ -56,6 +56,8 @@
                 #:locate-definition-for-emacs)
   (:import-from #:40ants-doc/autodoc
                 #:defautodoc)
+  (:import-from #:40ants-doc/locatives/asdf-system
+                #:asdf-system-documentation-title)
   (:export #:@index
            #:@readme
            #:@changelog))
@@ -582,6 +584,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   
   (40ants-doc/locatives package)
   (system locative)
+  (asdf-system-documentation-title generic-function)
+  
   (section locative)
   (variable locative)
   (constant locative)
