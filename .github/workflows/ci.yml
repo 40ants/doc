@@ -21,22 +21,6 @@
           "exclude": [
             {
               "quicklisp": "quicklisp",
-              "lisp": "abcl-bin"
-            },
-            {
-              "quicklisp": "quicklisp",
-              "lisp": "clasp"
-            },
-            {
-              "quicklisp": "quicklisp",
-              "lisp": "lispworks"
-            },
-            {
-              "quicklisp": "quicklisp",
-              "lisp": "mkcl"
-            },
-            {
-              "quicklisp": "quicklisp",
               "lisp": "ecl"
             }
           ],
@@ -46,10 +30,6 @@
           ],
           "lisp": [
             "sbcl-bin",
-            "abcl-bin",
-            "clasp",
-            "lispworks",
-            "mkcl",
             "ecl"
           ]
         }
@@ -63,13 +43,14 @@
       "steps": [
         {
           "name": "Checkout Code",
-          "uses": "actions/checkout@v3"
+          "uses": "actions/checkout@v4"
         },
         {
           "name": "Setup Common Lisp Environment",
-          "uses": "40ants/setup-lisp@v3",
+          "uses": "40ants/setup-lisp@v4",
           "with": {
-            "asdf-system": "40ants-doc-full"
+            "asdf-system": "40ants-doc-full",
+            "cache": "false"
           }
         },
         {

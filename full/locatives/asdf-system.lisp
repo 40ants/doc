@@ -18,14 +18,20 @@
   (:import-from #:40ants-doc-full/commondoc/section
                 #:make-section-with-reference)
   (:import-from #:40ants-doc-full/commondoc/builder
-                #:to-commondoc))
+                #:to-commondoc)
+  (:import-from #:40ants-doc/locatives/asdf-system
+                #:asdf-system-documentation-title))
 (in-package #:40ants-doc-full/locatives/asdf-system)
 
 (define-locative-type asdf:system ()
   "Refers to an asdf system. The generated documentation will include
   meta information extracted from the system definition. This also
   serves as an example of a symbol that's not accessible in the
-  current package and consequently is not exported.")
+  current package and consequently is not exported.
+
+  A title of the documentation section can be modified if you'll
+  define a method for 40ANTS-DOC/LOCATIVES/ASDF-SYSTEM:ASDF-SYSTEM-DOCUMENTATION-TITLE generic-function.
+  Use EQL specifier for the method.")
 
 
 (defun find-system (name)
@@ -59,9 +65,7 @@
     (:snippet "")))
 
 (defmethod to-commondoc ((system asdf:system))
-  (let ((title (format nil "~A ASDF System Details"
-                       (string-upcase
-                        (asdf:primary-system-name system)))))
+  (let ((title (asdf-system-documentation-title system)))
     (flet ((item (name getter &key type)
              (let* ((value (funcall getter system))
                     (href nil))

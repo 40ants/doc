@@ -17,6 +17,7 @@
                "40ants-doc/glossary"
                "40ants-doc/changelog"
                "40ants-doc/ignored-words"
+               "40ants-doc/locatives/asdf-system"
                ;; This subsystem is not loaded by default
                ;; because it brings a multiple additional dependencies:
                ;; alexandria, cl-change-case, cl-ppcre, cl-unicode, closer-mop.

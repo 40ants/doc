@@ -13,16 +13,25 @@
 (defparameter *lisp-implementations*
   (list "sbcl-bin"
         ;; Some tests fail on CCL
-        ;; "ccl-bin/1.12.1"
-        "abcl-bin"
+        ;; "ccl-bin"
+        ;; CLISP is not supported by bordeaux-threads
+        ;; but it is a transitive dependency
+        ;; "clisp-head"
+        ;; Some tests fail on ABCL
+        ;; "abcl-bin"
         ;; At 2023-04-22 tests started to fail on Allegro with error:
         ;; Allegro CL(pid 6257): System Error (gsgc) scavenge found ref to cons outside cons area in 0xffba645c
         ;; "allegro"
-        "clasp"
-        ;; This CL implementation does not work in any matrix combinations
+        ;; CLASP ails with "Too many arguments for option DOCUMENTATION" error:
+        ;; "clasp-bin"
+        ;; CMU fails with "Redefining slot accessor CHUNK-CACHE-CHUNKS for structure type CHUNK-CACHE" error,
+        ;; occured somewhere inside esrap library:
         ;; "cmu-bin"
-        "lispworks"
-        "mkcl"
+        ;; Lispworks is not supported by setup-lisp action:
+        ;; "lispworks"
+        ;; MKCL has problems when setup-lisp tries to install it:
+        ;; https://github.com/40ants/setup-lisp/issues/17
+        ;; "mkcl"
         ;; This fails to install under the Roswell on Ubuntu
         ;; "npt"
         "ecl") )
