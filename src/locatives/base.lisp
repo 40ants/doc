@@ -57,6 +57,18 @@
   calling 40ANTS-DOC/REFERENCE-API:CANONICAL-REFERENCE on it will return the same reference.
   For extension only, don't call this directly."))
 
+(define-condition locate-error (error)
+  ((message :initarg :message :reader locate-error-message)
+   (object :initarg :object :reader locate-error-object)
+   (locative :initarg :locative :reader locate-error-locative))
+  (:documentation "Signaled by LOCATE when the lookup fails and ERRORP
+  is true.")
+  (:report (lambda (condition stream)
+             (format stream "~@<Could not locate ~A ~A.~@[ ~A~]~:@>"
+                     (locate-error-locative condition)
+                     (locate-error-object condition)
+                     (locate-error-message condition)))))
+
 (defun locate-error (&rest format-and-args)
   "Call this function to signal a LOCATE-ERROR condition from a
   LOCATE-OBJECT generic-function. FORMAT-AND-ARGS contains a format string and
@@ -83,18 +95,6 @@
       (when errorp
         (error 'locate-error :message (locate-error-message e)
                :object object :locative locative)))))
-
-(define-condition locate-error (error)
-  ((message :initarg :message :reader locate-error-message)
-   (object :initarg :object :reader locate-error-object)
-   (locative :initarg :locative :reader locate-error-locative))
-  (:documentation "Signaled by LOCATE when the lookup fails and ERRORP
-  is true.")
-  (:report (lambda (condition stream)
-             (format stream "~@<Could not locate ~A ~A.~@[ ~A~]~:@>"
-                     (locate-error-locative condition)
-                     (locate-error-object condition)
-                     (locate-error-message condition)))))
 
 
 (defgeneric locate-and-find-source (object locative-type locative-args)
