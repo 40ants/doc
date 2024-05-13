@@ -26,7 +26,8 @@
   (loop for plugin in (theme-plugins theme)
         for html = (funcall func plugin uri)
         when html
-        do (write-string html spinneret:*html*)))
+        do (fresh-line spinneret:*html*)
+           (write-string html spinneret:*html*)))
 
 
 (defclass default-theme ()
