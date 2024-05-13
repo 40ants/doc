@@ -55,7 +55,7 @@
         },
         {
           "name": "Run Tests",
-          "uses": "40ants/run-tests@v2",
+          "uses": "40ants/run-tests@handle-serious-error",
           "with": {
             "asdf-system": "40ants-doc-full",
             "coveralls-token": "\n${{ matrix.lisp == 'sbcl-bin' &&\n    matrix.os == 'ubuntu-latest' &&\n    matrix.quicklisp == 'ultralisp' &&\n    secrets.github_token }}"
