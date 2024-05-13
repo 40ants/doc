@@ -157,8 +157,8 @@
           "## Backward incompatible
 
            * A plugin system was introduced.
-
-             Highlight.js and MathJax support were refactored into plugins and MathJax is turned off by default.
+           * Highlight.js and MathJax support were refactored into plugins and MathJax is turned off by default,
+             because it's assets too heavy and math is unnecessary in most Common Lisp libraries.
            * Generic-function 40ANTS-DOC-FULL/THEMES/API:HIGHLIGHT-LANGUAGES and generic-function 40ANTS-DOC-FULL/THEMES/API:HIGHLIGHT-THEME
              are now deprecated. Pass options :LANGUAGES and :THEME arguments to 40ANTS-DOC-FULL/PLUGINS/HIGHLIGHTJS:HIGHLIGHTJS function
              instead.
