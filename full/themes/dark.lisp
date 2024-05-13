@@ -44,6 +44,3 @@
           :background ,font-color)
          ((.toc-active > a)
           :color ,background)))))))
-
-(defmethod 40ants-doc-full/themes/api:highlight-theme ((theme dark-theme))
-  "atom-one-dark")

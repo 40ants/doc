@@ -1,7 +1,5 @@
 (uiop:define-package #:40ants-doc-full/themes/api
   (:use #:cl)
-  (:import-from #:40ants-doc-full/highlight
-                #:download-highlight-js)
   (:import-from #:alexandria
                 #:once-only)
   (:export #:render-css
@@ -17,7 +15,12 @@
            #:render-page-header
            #:render-page-footer
            #:highlight-languages
-           #:highlight-theme))
+           #:highlight-theme
+           #:inject-into-page-header
+           #:theme-plugins
+           #:inject-before-content
+           #:inject-after-content
+           #:copy-static))
 (in-package #:40ants-doc-full/themes/api)
 
 (defvar *theme*)
@@ -29,8 +32,18 @@
                       (t ,theme))))
        ,@body)))
 
+
+(defgeneric theme-plugins (theme)
+  (:documentation "Returns a list of plugin objects which will be used to inject additional information into the pages.")
+  (:method ((theme t))
+    nil))
+
+
 (defgeneric highlight-languages (theme)
-  (:documentation "Returns a list of languages to highlight in snippets. Each language should be supported by Highlight.js.")
+  (:documentation "Returns a list of languages to highlight in snippets. Each language should be supported by Highlight.js.
+
+                   **Deprecated!** will be removed after 2024-11-13.
+                   Pass languages and highlight theme as arguments to highlighjs plugin.")
   (:method ((theme t))
     (list :lisp
           :bash)))
@@ -38,9 +51,23 @@
 (defgeneric highlight-theme (theme)
   (:documentation "Returns a string with the name of the Highlight.js color theme for highlighted snippets.
 
-                   To preview themes, use this site: <https://highlightjs.org/static/demo/>")
+                   To preview themes, use this site: <https://highlightjs.org/static/demo/>
+
+                   **Deprecated!** Will be removed after 2024-11-13.
+                   Pass languages and highlight theme as arguments to highlighjs plugin.")
   (:method ((theme t))
     "magula"))
+
+
+(defgeneric copy-static (plugin target-dir)
+  (:documentation "Define a method for this function if your plugin need to some static assets to work.
+
+                   TARGET-DIR argument is an absolute directory pathname pointing to the root of the site.
+
+                   By default does nothing.")
+  (:method ((theme t) (target-dir t))
+    (values)))
+
 
 (defgeneric render-css (theme)
   (:documentation "Returns a string with CSS."))
@@ -50,6 +77,36 @@
 
 (defgeneric render-page-header (theme uri title)
   (:documentation "Renders whole page header. Does nothing by default."))
+
+(defgeneric inject-into-page-header (plugin uri)
+  (:documentation "Plugins can define a method for this generic-function to add some code to the end of a page header.
+
+                   Each method should return a string which will be inserted without \"escaping\" so
+                   the plugin's responsibility to escape all user input's if necessary.
+
+                   Does nothing by default.")
+  (:method ((plugin t) uri)
+    nil))
+
+(defgeneric inject-before-content (plugin uri)
+  (:documentation "Plugins can define a method for this generic-function to add some HTML before the main content of the page.
+
+                   Each method should return a string which will be inserted without \"escaping\" so
+                   the plugin's responsibility to escape all user input's if necessary.
+
+                   Does nothing by default.")
+  (:method ((plugin t) uri)
+    nil))
+
+(defgeneric inject-after-content (plugin uri)
+  (:documentation "Plugins can define a method for this generic-function to add some HTML after the main content of the page.
+
+                   Each method should return a string which will be inserted without \"escaping\" so
+                   the plugin's responsibility to escape all user input's if necessary.
+
+                   Does nothing by default.")
+  (:method ((plugin t) uri)
+    nil))
 
 (defgeneric render-page-footer (theme uri)
   (:documentation "Renders whole page footer. Does nothing by default."))
@@ -91,14 +148,13 @@
       (write-string (render-css *theme*)
                     stream)
       (terpri stream))
+    
+    (when (or highlight-languages
+              highlight-theme)
+      (warn "Deprecated, will be removed after 2024-11-13.
+Pass languages and highlight theme as arguments to highlighjs plugin of the theme ~A"
+            *theme*))
 
-    (download-highlight-js (or highlight-languages
-                               (highlight-languages *theme*))
-                           :to absolute-dir
-                           :theme (or highlight-theme
-                                      (highlight-theme *theme*)))
-
-    ;; TODO: Probably let to override these files too
     (loop with paths = '(("toc.js" "toc.js")
                          ("search/searchtools.js" "searchtools.js")
                          ("search/language_data.js" "language_data.js")
@@ -109,7 +165,11 @@
           do (uiop:copy-file (asdf:system-relative-pathname :40ants-doc
                                                             (concatenate 'string
                                                                          "static/" from))
-                             (uiop:merge-pathnames* to absolute-dir)))))
+                             (uiop:merge-pathnames* to absolute-dir)))
+    
+    ;; Plugins can override or remove some of the files written above:
+    (loop for plugin in (theme-plugins *theme*)
+          do (copy-static plugin absolute-dir))))
 
 (defun call-with-page-template (func uri title toc)
   (check-type uri string)

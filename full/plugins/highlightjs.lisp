@@ -1,5 +1,12 @@
-(uiop:define-package #:40ants-doc-full/highlight
+(uiop:define-package #:40ants-doc-full/plugins/highlightjs
   (:use #:cl)
+  (:import-from #:40ants-doc-full/themes/api
+                #:copy-static
+                #:inject-into-page-header)
+  (:import-from #:spinneret
+                #:with-html-string)
+  (:import-from #:40ants-doc-full/utils
+                #:make-relative-path)
   (:import-from #:dexador)
   (:import-from #:log)
   (:import-from #:alexandria
@@ -14,9 +21,59 @@
   ;; (:import-from #:trivial-extract
   ;;               #:extract-zip)
   (:import-from #:which)
-  (:import-from #:jonathan))
+  (:import-from #:jonathan)
+  (:export #:highlightjs))
+(in-package #:40ants-doc-full/plugins/highlightjs)
 
-(in-package #:40ants-doc-full/highlight)
+
+(defvar *default-languages*
+  '("lisp" "bash" "css" "json" "yaml" "plaintext" "xml" "markdown"))
+
+
+(defvar *default-theme*
+  "atom-one-dark")
+
+
+(defclass highlightjs ()
+  ((languages :initform *default-languages*
+              :initarg :languages
+              :reader highlight-languages)
+   (theme :initform *default-theme*
+          :initarg :theme
+          :reader highlight-theme))
+  (:documentation "Injects a necessary scripts to use Highlightjs for rendering math formulas in your documentation."))
+
+
+(defun highlightjs (&key (languages *default-languages*)
+                         (theme *default-theme*))
+  "Creates a Highlightjs plugin.
+
+   You can redefine languages list and color theme like this:
+
+   ```
+   (make-instance '40ants-doc-full/themes/light:light-theme
+                  :plugins (list
+                            (highlightjs :theme \"magula\"
+                                         :languages '(\"lisp\" \"python\"))))
+   ```
+
+"
+  (make-instance 'highlightjs
+                 :languages languages
+                 :theme theme))
+
+
+(defmethod inject-into-page-header ((plugin highlightjs) uri)
+  (with-html-string
+    (let ((highlight-css-uri (make-relative-path uri "highlight.min.css"))
+          (highlight-js-uri (make-relative-path uri "highlight.min.js")))
+      (:link :rel "stylesheet"
+             :type "text/css"
+             :href highlight-css-uri)
+      (:script :type "text/javascript"
+               :src highlight-js-uri)
+      (:script :type "text/javascript"
+               "hljs.highlightAll();"))))
 
 
 (defvar *supported-languages*
@@ -311,3 +368,9 @@
            (write-string-into-file metadata metadata-path
                                    :if-exists :supersede))))))
   (values))
+
+
+(defmethod copy-static ((plugin highlightjs) target-dir)
+  (download-highlight-js (highlight-languages plugin)
+                         :to target-dir
+                         :theme (highlight-theme plugin)))

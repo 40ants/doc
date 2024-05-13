@@ -1,6 +1,11 @@
 (uiop:define-package #:40ants-doc-full/themes/docs
   (:use #:cl)
   (:import-from #:40ants-doc-full/themes/api
+                #:copy-static
+                #:inject-before-content
+                #:inject-after-content
+                #:inject-into-page-header
+                #:theme-plugins
                 #:render-css
                 #:render-page
                 #:render-html-head
@@ -17,7 +22,11 @@
                 #:defsection)
   (:import-from #:40ants-doc-full/themes/default)
   (:import-from #:40ants-doc-full/themes/light)
-  (:import-from #:40ants-doc-full/themes/dark))
+  (:import-from #:40ants-doc-full/themes/dark)
+  (:import-from #:40ants-doc-full/plugins/mathjax
+                #:mathjax)
+  (:import-from #:40ants-doc-full/plugins/highlightjs
+                #:highlightjs))
 (in-package #:40ants-doc-full/themes/docs)
 
 
@@ -31,7 +40,9 @@
    - 40ANTS-DOC-FULL/THEMES/DARK:DARK-THEME
 
    You can pass these names as THEME argument to the 40ANTS-DOC-FULL/BUILDER:RENDER-TO-FILES
-   function. Or you can define your own theme.
+   function. Or you can pass a contructed theme object instead of a symbolic class name.
+
+   And of cause, you can define your own theme!
 
    Theme allows to control HTML page rendering, colors and code highlighting.
 
@@ -128,4 +139,41 @@
   (render-sidebar-footer generic-function)
   (render-sidebar-content generic-function)
   (render-toc generic-function)
-  (render-search-form generic-function))
+  (render-search-form generic-function)
+
+  "## Plugins API
+
+   40ANTS-DOC themes support plugins. Plugins are small objects holding some configuration parameters and able to
+   inject additional content into documentation pages or able to copy some static files to the results directory.
+
+   By default, only HIGHLIGHTJS plugin is enabled, but you can pass a custom list of plugins when creating
+   a theme object. For example, here is how to can enable both Hightlight.js and MathJax plugins:
+
+   ```
+   (defsection @index (:title \"Example\")
+     \"MathJax example:
+
+      1. $a \ne 0$
+      2. $x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$\")
+
+   (40ants-doc-full/builder:render-to-files
+    @index
+    :base-dir \"/tmp/output/\"
+    :theme (make-instance '40ants-doc-full/themes/light:light-theme
+                          :plugins (list
+                                    (highlightjs)
+                                    (mathjax))))
+   ```
+   "
+
+  (theme-plugins generic-function)
+  (copy-static generic-function)
+  (inject-into-page-header generic-function)
+  (inject-before-content generic-function)
+  (inject-after-content generic-function)
+
+  "## Built-in Plugins"
+
+  (highlightjs function)
+  (mathjax function))
+

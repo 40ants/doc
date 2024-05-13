@@ -153,6 +153,17 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.17.0 2024-05-13
+          "## Backward incompatible
+
+           * A plugin system was introduced.
+
+             Highlight.js and MathJax support were refactored into plugins and MathJax is turned off by default.
+           * Generic-function 40ANTS-DOC-FULL/THEMES/API:HIGHLIGHT-LANGUAGES and generic-function 40ANTS-DOC-FULL/THEMES/API:HIGHLIGHT-THEME
+             are now deprecated. Pass options :LANGUAGES and :THEME arguments to 40ANTS-DOC-FULL/PLUGINS/HIGHLIGHTJS:HIGHLIGHTJS function
+             instead.
+             
+     ")
   (0.16.0 2024-05-04
           "* A generic-function 40ANTS-DOC/LOCATIVES/ASDF-SYSTEM:ASDF-SYSTEM-DOCUMENTATION-TITLE was added. It allows to override the text of a section showing an information about ASDF system.")
   (0.15.4 2024-01-26
