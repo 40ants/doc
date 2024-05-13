@@ -11,5 +11,10 @@
                "40ants-doc-test/utils-test"
                "40ants-doc-test/markdown")
   :perform (test-op (op c)
-                    (unless (symbol-call :rove :run c)
-                      (serious-condition "Tests failed"))))
+                    (handler-bind ((serious-condition
+                                     (lambda (err)
+                                       (uiop:print-condition-backtrace err
+                                                                       :count most-positive-fixnum)
+                                       (error "Tests failed with error"))))
+                      (unless (symbol-call :rove :run c)
+                        (error "Tests failed")))))
