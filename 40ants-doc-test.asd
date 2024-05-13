@@ -12,4 +12,4 @@
                "40ants-doc-test/markdown")
   :perform (test-op (op c)
                     (unless (symbol-call :rove :run c)
-                      (error "Tests failed"))))
+                      (serious-condition "Tests failed"))))
