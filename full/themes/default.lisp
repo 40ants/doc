@@ -1,6 +1,7 @@
 (uiop:define-package #:40ants-doc-full/themes/default
   (:use #:cl)
   (:import-from #:common-html.emitter)
+  (:import-from #:spinneret)
   (:import-from #:40ants-doc-full/themes/api
                 #:inject-after-content
                 #:inject-before-content
