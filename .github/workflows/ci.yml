@@ -30,7 +30,6 @@
           ],
           "lisp": [
             "sbcl-bin",
-            "ecl"
           ]
         }
       },
