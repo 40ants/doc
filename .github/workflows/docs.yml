@@ -35,6 +35,10 @@
           "with": {
             "asdf-system": "40ants-doc-full",
             "error-on-warnings": true
+          },
+          "env": {
+            "GITHUB_ACTOR": "svetlyak40wt",
+            "GITHUB_TOKEN": "${{ secrets.RELEASE_TOKEN }}"
           }
         }
       ]
