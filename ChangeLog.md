@@ -2,6 +2,21 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E17-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.17.0 (2024-05-13)
+
+<a id="backward-incompatible"></a>
+
+### Backward incompatible
+
+* A plugin system was introduced.
+* Highlight.js and MathJax support were refactored into plugins and MathJax is turned off by default,
+  because it's assets too heavy and math is unnecessary in most Common Lisp libraries.
+* Generic-function [`40ants-doc-full/themes/api:highlight-languages`][841a] and generic-function [`40ants-doc-full/themes/api:highlight-theme`][0ee6]
+  are now deprecated. Pass options `:LANGUAGES` and `:THEME` arguments to [`40ants-doc-full/plugins/highlightjs:highlightjs`][f057] function
+  instead.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E16-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.16.0 (2024-05-04)
@@ -321,6 +336,9 @@ of [`40ants-doc-full/builder:render-to-files`][6a41] function.
 [8c6d]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
 [20dd]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FCOMMONDOC-2FMAPPER-3AMAP-NODES-20GENERIC-FUNCTION-29
 [3855]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FCOMMONDOC-2FMAPPER-3ANODE-SUPPORTS-CHILDREN-20GENERIC-FUNCTION-29
+[f057]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FPLUGINS-2FHIGHLIGHTJS-3AHIGHLIGHTJS-20FUNCTION-29
+[841a]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FTHEMES-2FAPI-3AHIGHLIGHT-LANGUAGES-20GENERIC-FUNCTION-29
+[0ee6]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FTHEMES-2FAPI-3AHIGHLIGHT-THEME-20GENERIC-FUNCTION-29
 [6e29]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FTHEMES-2FDOCS-3A-3A-40DEFINING-A-THEME-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29
 [2fa5]: https://github.com/40ants/40ants-doc-theme-40ants/commit/917a4c1e72b0379f509bdee4864531e641c9ec4e#diff-47d16baea2d4ef710747f19c24df8cf7ef4f6bbbfd1dbb0ade55f47457b1e8feR155-R161
 [c8a6]: https://github.com/fukamachi/mito/blob/6835d2c8120454e93c69d4f22cccb10d9ee24526/src/core/dao/mixin.lisp#L71
