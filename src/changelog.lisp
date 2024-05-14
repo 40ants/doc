@@ -153,6 +153,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.17.2 2024-05-15
+          "* Another update.")
   (0.17.1 2024-05-15
           "* Just a check if tag will be added automatically.")
   (0.17.0 2024-05-13
