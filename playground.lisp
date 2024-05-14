@@ -400,3 +400,27 @@
   (40ants-doc-full/builder::update-asdf-system-readme playground::@index :40ants-doc)
   (40ants-doc-full/builder::update-asdf-system-readme playground::@index :40ants-doc
                                                       :format :plain))
+
+
+;; PLaying with different plugins
+(progn 
+  (defsection @index (:title "Example")
+    "# Highlight example
+
+```lisp
+(loop for i upto 10
+      do (+ i i))
+```
+"
+    "## MathJax example
+
+1. $a \ne 0$
+2. $x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$")
+
+  (40ants-doc-full/builder:render-to-files
+   @index
+   :base-dir "/tmp/output/"
+   :theme (make-instance '40ants-doc-full/themes/light:light-theme
+                         :plugins (list
+                                   (highlightjs :theme "magula")
+                                   (mathjax)))))

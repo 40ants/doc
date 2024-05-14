@@ -4,12 +4,17 @@
                 #:default-theme)
   (:import-from #:lass)
   (:import-from #:40ants-doc-full/themes/api)
+  (:import-from #:40ants-doc-full/plugins/highlightjs
+                #:highlightjs)
   (:export #:light-theme))
 (in-package #:40ants-doc-full/themes/light)
 
 
 (defclass light-theme (default-theme)
-  ())
+  ()
+  (:default-initargs
+   :plugins (list (highlightjs :theme "atom-one-light"))))
+
 
 (defmethod 40ants-doc-full/themes/api:render-css ((theme light-theme))
   (let ((background "#FFFEFB")
@@ -37,7 +42,4 @@
           )
          ((.toc-active > a)
           :color ,background)))))))
-
-(defmethod 40ants-doc-full/themes/api:highlight-theme ((theme light-theme))
-  "atom-one-light")
 

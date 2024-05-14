@@ -1,7 +1,12 @@
 (uiop:define-package #:40ants-doc-full/themes/default
   (:use #:cl)
   (:import-from #:common-html.emitter)
+  (:import-from #:spinneret)
   (:import-from #:40ants-doc-full/themes/api
+                #:inject-after-content
+                #:inject-before-content
+                #:inject-into-page-header
+                #:theme-plugins
                 #:render-css)
   (:import-from #:lass)
   (:import-from #:40ants-doc-full/commondoc/html
@@ -12,12 +17,26 @@
   (:import-from #:40ants-doc-full/commondoc/changelog)
   (:import-from #:alexandria
                 #:read-file-into-string)
+  (:import-from #:40ants-doc-full/plugins/highlightjs
+                #:highlightjs)
   (:export #:default-theme))
 (in-package #:40ants-doc-full/themes/default)
 
 
+(defun %inject (theme func uri)
+  (loop for plugin in (theme-plugins theme)
+        for html = (funcall func plugin uri)
+        when html
+        do (fresh-line spinneret:*html*)
+           (write-string html spinneret:*html*)))
+
+
 (defclass default-theme ()
-  ())
+  ((plugins :initarg :plugins
+            :initform nil
+            :reader theme-plugins))
+  (:default-initargs
+   :plugins (list (highlightjs))))
 
 
 (defmethod render-css ((theme default-theme))
@@ -304,11 +323,6 @@
      (.unresolved-reference
       :color magenta))))
 
-(defmethod 40ants-doc-full/themes/api:highlight-languages ((theme default-theme))
-  '("lisp" "bash" "css" "json" "yaml" "plaintext" "xml" "markdown"))
-
-(defmethod 40ants-doc-full/themes/api:highlight-theme ((theme default-theme))
-  "atom-one-dark")
 
 (defmethod 40ants-doc-full/themes/api:render-page ((theme default-theme) uri title
                                                    &key toc content)
@@ -333,8 +347,6 @@
 
 (defmethod 40ants-doc-full/themes/api:render-html-head ((theme default-theme) uri title)
   (let ((theme-uri (make-relative-path uri "theme.css"))
-        (highlight-css-uri (make-relative-path uri "highlight.min.css"))
-        (highlight-js-uri (make-relative-path uri "highlight.min.js"))
         (jquery-uri (make-relative-path uri "jquery.js"))
         (toc-js-uri (make-relative-path uri "toc.js"))
         (rss-url (40ants-doc-full/commondoc/changelog::get-changelog-rss-url)))
@@ -353,36 +365,16 @@
                :src jquery-uri)
       (:script :type "text/javascript"
                :src toc-js-uri)
-      (:link :rel "stylesheet"
-             :type "text/css"
-             :href highlight-css-uri)
-      (:script :type "text/javascript"
-               :src highlight-js-uri)
-      (:script :type "text/javascript"
-               "hljs.highlightAll();")
-      ;; MathJax configuration to display inline formulas
-      (:script :type "text/javascript"
-               ;; Here we need this :RAW
-               ;; because of the bug in the Spinneret
-               ;; https://github.com/ruricolist/spinneret/issues/59
-               (:raw "
-             MathJax = {
-               tex: {
-                 inlineMath: [['$','$']],
-                 processEscapes: true
-               }
-             };
-        "))
-      (:script :type "text/javascript"
-               :src "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js")
+
       ;; This hack is required, because :HAS CSS selector is not supported by
       ;; browsers yet: https://caniuse.com/css-has
       (:script :type "text/javascript"
-               (:raw "$(document).ready(function() {$('a:has(img)').css('border-bottom', 'none')})")))))
+               (:raw "$(document).ready(function() {$('a:has(img)').css('border-bottom', 'none')})"))
+
+      (%inject theme #'inject-into-page-header uri))))
 
 
 (defmethod 40ants-doc-full/themes/api:render-content ((theme default-theme) uri toc content-func)
-  (declare (ignore uri toc))
   (with-html
     (:div :class "content"
           ;; This role is required for Sphinx Doc's
@@ -390,7 +382,11 @@
           ;; the role[main] block
           :role "main"
           (when content-func
-            (funcall content-func)))))
+            (%inject theme #'inject-before-content uri)
+
+            (funcall content-func)
+            
+            (%inject theme #'inject-after-content uri)))))
 
 
 (defmethod 40ants-doc-full/themes/api:render-sidebar ((theme default-theme) uri toc)
