@@ -2,8 +2,11 @@
   "name": "RELEASE",
   "on": {
     "push": {
+      "branches": [
+        "master"
+      ],
       "paths": [
-        "ChangeLog.md"
+        "**/ChangeLog.md"
       ]
     }
   },
