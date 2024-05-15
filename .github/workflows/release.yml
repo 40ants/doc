@@ -4,9 +4,6 @@
     "push": {
       "branches": [
         "master"
-      ],
-      "paths": [
-        "**/ChangeLog.md"
       ]
     }
   },
