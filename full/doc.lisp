@@ -58,6 +58,10 @@
                 #:defautodoc)
   (:import-from #:40ants-doc/locatives/asdf-system
                 #:asdf-system-documentation-title)
+  (:import-from #:40ants-doc-full/plugins/mathjax
+                #:mathjax)
+  (:import-from #:40ants-doc-full/plugins/highlightjs
+                #:highlightjs)
   (:export #:@index
            #:@readme
            #:@changelog))
@@ -745,6 +749,12 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   ;; unnecessary dependencies here:
   (uiop:symbol-call :ql :quickload
                     :40ants-doc-theme-40ants)
-  (list :theme
-        (find-symbol "40ANTS-THEME"
-                     (find-package "40ANTS-DOC-THEME-40ANTS"))))
+  (let ((theme (find-symbol "40ANTS-THEME"
+                            (find-package "40ANTS-DOC-THEME-40ANTS"))))
+    (unless theme
+      (error "Unable to find 40ANTS-DOC-THEME-40ANTS::40ANTS-THEME symbol"))
+    
+    (list :theme
+          (make-instance theme
+                         :plugins (list (highlightjs)
+                                        (mathjax))))))
