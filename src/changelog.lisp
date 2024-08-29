@@ -153,6 +153,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.18.0 2024-08-29
+          "* Now default theme looks good on mobile devices.")
   (0.17.4 2024-05-15
           "* Update 5")
   (0.17.3 2024-05-15
