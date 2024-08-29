@@ -754,8 +754,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
     (unless theme
       (error "Unable to find 40ANTS-DOC-THEME-40ANTS::40ANTS-THEME symbol"))
     
-    ;; (list :theme
-    ;;       (make-instance theme
-    ;;                      :plugins (list (highlightjs)
-    ;;                                     (mathjax))))
-    ))
+    (list :theme
+          (make-instance theme
+                         :plugins (list (highlightjs)
+                                        (mathjax))))))
