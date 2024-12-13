@@ -27,11 +27,22 @@
           :initarg :height
           :reader height)))
 
+
 (defun full-path (relative-path)
-  (if *current-asdf-system*
-      (asdf:system-relative-pathname *current-asdf-system*
-                                     relative-path)
-      relative-path))
+  (cond
+    ((str:starts-with-p "asdf:" relative-path)
+     (destructuring-bind (prefix asdf-system-name path)
+         (str:split ":" relative-path
+                    :limit 3)
+       (declare (ignore prefix))
+       (asdf:system-relative-pathname asdf-system-name
+                                      path)))
+    (*current-asdf-system*
+     (asdf:system-relative-pathname *current-asdf-system*
+                                    relative-path))
+    (t
+     relative-path)))
+
 
 (defun make-local-image (relative-path &key width height)
   (unless (probe-file (full-path relative-path))
