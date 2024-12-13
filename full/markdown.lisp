@@ -14,6 +14,7 @@
   "The Markdown in docstrings is processed with the
   [3BMD][3bmd] library."
   (@markdown-indentation section)
+  (@markdown-images section)
   (@markdown-syntax-highlighting section)
   (@mathjax section))
 
@@ -44,6 +45,29 @@
   mess up markdown. To handle the most common cases leave the first
   line alone, but from the rest of the lines strip the longest run of
   leading spaces that is common to all non-blank lines."
+  """)
+
+
+(defsection @markdown-images (:title "Images")
+  """
+  You can use markdown syntax for inserting images:
+
+  ```
+  ![](images/demo.gif)
+  ```
+
+  This code will search image file in the current ASDF system directory.
+
+  But some times you may want to refer images from some other ASDF system.
+  This could be useful for dist storage optimization - if you main system changes frequently
+  but images are not, then it is better to keep images in a separate ASDF system and repository.
+
+  In this case you can give asdf system as a prefix to the image path:
+
+  ```
+  ![](asdf:some-system:images/demo.gif)
+  ```
+
   """)
 
 (defsection @markdown-syntax-highlighting (:title "Syntax highlighting")
