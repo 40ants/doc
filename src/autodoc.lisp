@@ -4,6 +4,7 @@
                 #:section
                 #:defsection)
   (:import-from #:str)
+  (:import-from #:swank-backend)
   (:import-from #:alexandria
                 #:symbolicate)
   (:import-from #:40ants-doc/locatives
@@ -144,6 +145,13 @@
                         when (documentation symbol 'variable)
                           collect (list symbol 'variable) into variables
 
+                        ;; Types and not classes
+                        when (and (not (find-class symbol nil))
+                                  (or (documentation symbol 'type)
+                                      (not (eq (swank-backend:type-specifier-arglist symbol)
+                                               :not-available))))
+                          collect (list symbol 'type) into types
+                        
                         finally (return
                                   (uiop:while-collecting (collect)
                                     (flet ((add-subsection (entries title)
@@ -164,6 +172,7 @@
                                       (add-subsection generics "Generics")
                                       (add-subsection functions "Functions")
                                       (add-subsection macros "Macros")
+                                      (add-subsection types "Types")
                                       (add-subsection variables "Variables")))))))
     (when entries
       `(defsection ,section-name (:title ,title
