@@ -2,6 +2,13 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E20-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.20.0 (2024-12-14)
+
+* Type definitions now supported by [`40ants-doc/autodoc:defautodoc`][813d] macro.
+* Type expansion is shown for type definitions when building doc on `SBCL`.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E19-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.19.0 (2024-12-13)
