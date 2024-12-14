@@ -154,6 +154,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.20.1 2024-12-14
+          "* Fixed dependency from swank-backend package for autodoc package.")
   (0.20.0 2024-12-14
           "* Type definitions now supported by 40ANTS-DOC/AUTODOC:DEFAUTODOC macro.
            * Type expansion is shown for type definitions when building doc on SBCL.")

@@ -28,3 +28,6 @@
 
 
 (asdf:register-system-packages "log4cl" '("LOG"))
+(asdf:register-system-packages "swank" '("SWANK-BACKEND"
+                                         "SWANK/BACKEND"
+                                         "SWANK-MOP"))
