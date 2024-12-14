@@ -37,12 +37,33 @@
                                                          (cons locative-type locative-args)))
          (arglist (swank-backend:type-specifier-arglist symbol))
          (docstring (40ants-doc/docstring:get-docstring symbol 'type))
-         (children (when docstring
-                     (40ants-doc-full/commondoc/markdown:parse-markdown docstring))))
+         (docstring-children
+           (when docstring
+             (40ants-doc-full/commondoc/markdown:parse-markdown docstring)))
+         (type-expansion
+           #+sbcl
+           (multiple-value-bind (expansion ok)
+               (handler-case (sb-ext:typexpand-1 symbol)
+                 (serious-condition ()
+                   (values nil nil)))
+             (when ok
+               expansion))
+           #-sbcl
+           nil)
+         (expansion-children
+           (when type-expansion
+             (40ants-doc-full/commondoc/markdown:parse-markdown
+              (with-output-to-string (s)
+                (format s "```
+~S
+```"
+                        type-expansion))))))
 
     (40ants-doc-full/commondoc/bullet:make-bullet reference
                                                   :arglist arglist
-                                                  :children children
+                                                  :children (remove nil
+                                                                    (list docstring-children
+                                                                          expansion-children))
                                                   :ignore-words symbol)))
 
 
