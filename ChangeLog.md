@@ -2,6 +2,15 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E21-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.21.0 (2025-01-05)
+
+* Changed a way how images are processed. New behaviour should be backward compatible,
+but now it is possible. But now [`40ants-doc-full/commondoc/image:local-image`][da99] function
+is exported. You can use this function to build a piece of documentation and include
+an image into this doc. See function's docstring for usage example.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E20-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.20.1 (2024-12-14)
@@ -387,6 +396,7 @@ of [`40ants-doc-full/builder:render-to-files`][6a41] function.
 [c292]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3AGET-CURRENT-ASDF-SYSTEM-20FUNCTION-29
 [6a41]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3ARENDER-TO-FILES-20FUNCTION-29
 [8c6d]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FBUILDER-3AUPDATE-ASDF-SYSTEM-DOCS-20FUNCTION-29
+[da99]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FCOMMONDOC-2FIMAGE-3ALOCAL-IMAGE-20FUNCTION-29
 [20dd]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FCOMMONDOC-2FMAPPER-3AMAP-NODES-20GENERIC-FUNCTION-29
 [3855]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FCOMMONDOC-2FMAPPER-3ANODE-SUPPORTS-CHILDREN-20GENERIC-FUNCTION-29
 [f057]: https://40ants.com/doc/#x-2840ANTS-DOC-FULL-2FPLUGINS-2FHIGHLIGHTJS-3AHIGHLIGHTJS-20FUNCTION-29
