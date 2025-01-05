@@ -2,6 +2,18 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E22-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.22.0 (2025-01-05)
+
+* Exported [`40ants-doc/object-package:object-package`][8fc2] generic-function.
+Define a method for it if you have created a new locative type
+and encounter a warning like this:
+
+```
+WARNING:
+   Unable to figure out *package* for object #<40ANTS-DOC/LOCATIVES::DIAGRAM {1012A10B53}>
+```
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E21-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.21.0 (2025-01-05)
@@ -390,6 +402,7 @@ of [`40ants-doc-full/builder:render-to-files`][6a41] function.
 [b3bb]: https://40ants.com/doc/#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-ARGS-20GENERIC-FUNCTION-29
 [0796]: https://40ants.com/doc/#x-2840ANTS-DOC-2FLOCATIVES-2FBASE-3ALOCATIVE-TYPE-20GENERIC-FUNCTION-29
 [359f]: https://40ants.com/doc/#x-2840ANTS-DOC-2FLOCATIVES-3AINCLUDE-20-2840ANTS-DOC-2FLOCATIVES-3ALOCATIVE-29-29
+[8fc2]: https://40ants.com/doc/#x-2840ANTS-DOC-2FOBJECT-PACKAGE-3AOBJECT-PACKAGE-20GENERIC-FUNCTION-29
 [24f5]: https://40ants.com/doc/#x-2840ANTS-DOC-3A-2ASYMBOLS-WITH-IGNORED-MISSING-LOCATIONS-2A-20-28VARIABLE-29-29
 [4e8b]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
 [ad02]: https://40ants.com/doc/#x-2840ANTS-DOC-3ADEFSECTION-COPY-20-2840ANTS-DOC-2FLOCATIVES-3AMACRO-29-29
