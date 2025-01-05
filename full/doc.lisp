@@ -66,6 +66,8 @@
                 #:height
                 #:width
                 #:local-image)
+  (:import-from #:40ants-doc/object-package
+                #:object-package)
   (:export #:@index
            #:@readme
            #:@changelog))
@@ -657,6 +659,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (define-locative-type macro)
   (exportable-locative-type-p generic-function)
   (locate-object generic-function)
+  (object-package generic-function)
   (locate-error function)
   (canonical-reference generic-function)
   (find-source generic-function)

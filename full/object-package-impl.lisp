@@ -10,11 +10,6 @@
 (in-package #:40ants-doc-full/object-package-impl)
 
 
-(defmethod object-package ((object t))
-  (warn "Unable to figure out *package* for object ~S"
-        object)
-  nil)
-
 (defmethod object-package ((object symbol))
   (symbol-package object))
 

@@ -155,6 +155,15 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.22.0 2025-01-05
+          "* Exported 40ANTS-DOC/OBJECT-PACKAGE:OBJECT-PACKAGE generic-function.
+             Define a method for it if you have created a new locative type
+             and encounter a warning like this:
+
+             ```
+             WARNING:
+                Unable to figure out *package* for object #<40ANTS-DOC/LOCATIVES::DIAGRAM {1012A10B53}>
+             ```")
   (0.21.0 2025-01-05
           "* Changed a way how images are processed. New behaviour should be backward compatible,
              but now it is possible. But now 40ANTS-DOC-FULL/COMMONDOC/IMAGE:LOCAL-IMAGE function
