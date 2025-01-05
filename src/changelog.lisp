@@ -143,6 +143,7 @@
                               "SLY"
                               "API"
                               "SBCL"
+                              "PlantUML"
                               "COMMONDOC:SECTION"
                               "COLLECT-REACHABLE-OBJECTS"
                               "LOCATE-AND-COLLECT-REACHABLE-OBJECTS"
@@ -154,6 +155,12 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.21.0 2025-01-05
+          "* Changed a way how images are processed. New behaviour should be backward compatible,
+             but now it is possible. But now 40ANTS-DOC-FULL/COMMONDOC/IMAGE:LOCAL-IMAGE function
+             is exported. You can use this function to build a piece of documentation and include
+             an image into this doc. See function's docstring for usage example.
+            ")
   (0.20.1 2024-12-14
           "* Fixed dependency from swank-backend package for autodoc package.")
   (0.20.0 2024-12-14
