@@ -16,58 +16,165 @@
   (:import-from #:40ants-doc-full/builder/vars
                 #:*current-asdf-system*)
   (:import-from #:40ants-doc-full/commondoc/mapper
-                #:map-nodes))
+                #:map-nodes)
+  (:import-from #:serapeum
+                #:->)
+  (:export #:local-image
+           #:width
+           #:height))
 (in-package #:40ants-doc-full/commondoc/image)
 
+
 (defclass local-image (common-doc:image)
-  ((width :initform nil
+  ((target-filename :initarg :target-filename
+                    :type string
+                    :reader target-filename)
+   (width :initform nil
           :initarg :width
           :reader width)
    (height :initform nil
-          :initarg :height
-          :reader height)))
+           :initarg :height
+           :reader height)))
 
 
-(defun full-path (relative-path)
+(defun full-path (path)
   (cond
-    ((str:starts-with-p "asdf:" relative-path)
+    ((str:starts-with-p "asdf:" path)
      (destructuring-bind (prefix asdf-system-name path)
-         (str:split ":" relative-path
+         (str:split ":" path
                     :limit 3)
        (declare (ignore prefix))
        (asdf:system-relative-pathname asdf-system-name
                                       path)))
+    ((uiop:absolute-pathname-p path)
+     path)
     (*current-asdf-system*
      (asdf:system-relative-pathname *current-asdf-system*
-                                    relative-path))
+                                    path))
     (t
-     relative-path)))
+     (merge-pathnames path))))
 
 
-(defun make-local-image (relative-path &key width height)
-  (unless (probe-file (full-path relative-path))
-    (error "Image file \"~A\" not found"
-           (full-path relative-path)))
-  ;; Here we are saving a relative path
-  ;; because we'll need it later for makeing
-  ;; the target path:
-  (make-instance 'local-image :source relative-path
-                              :width width
-                              :height height))
+(-> relative-path (string)
+    (values string &optional))
+
+(defun relative-path (path)
+  (cond
+    ((str:starts-with-p "asdf:" path)
+     (destructuring-bind (prefix asdf-system-name relative-path)
+         (str:split ":" path
+                    :limit 3)
+       (declare (ignore prefix asdf-system-name))
+       (values relative-path)))
+    ((uiop:absolute-pathname-p path)
+     (cond
+       (*current-asdf-system*
+        (let ((probably-relative
+                (enough-namestring path
+                                   (asdf:system-relative-pathname *current-asdf-system*
+                                                                     "./"))))
+          (cond
+            ((uiop:absolute-pathname-p probably-relative)
+             ;; If filename is not inside the ASDF system, then probably it is
+             ;; inside the current directory
+             (let ((probably-relative
+                     (enough-namestring path)))
+               (cond
+                 ((uiop:absolute-pathname-p probably-relative)
+                  ;; If filename is not inside the current directory, then there is no
+                  ;; way to learn what is the relative path would be:
+                  (error "Unable to figure out relative path out from ~A path."
+                         path))
+                 (t
+                  probably-relative))))
+            (t
+             probably-relative))))
+       (t
+        (let ((probably-relative
+                (enough-namestring path)))
+
+          (cond
+            ((uiop:absolute-pathname-p probably-relative)
+             ;; If filename is not inside the current directory, then there is no
+             ;; way to learn what is the relative path would be:
+             (error "Unable to figure out relative path out from ~A path."
+                    path))
+            (t
+             probably-relative))))))
+    (t
+     ;; Path already was relative:
+     path)))
+
+
+(defun local-image (path &key target-filename description width height)
+  "Creates a note for rendering an image in the documentation.
+   Could be useful if you are constructing document from CommonDoc nodes.
+
+   The SOURCE argument should point to a file on local filesystem.
+
+   For example, here is how this function is used in the
+   new [`PlantUML` plugin](https://40ants.com/doc-plantuml/):
+
+   ```
+   (defmethod to-commondoc ((diagram diagram))
+     (uiop:with-temporary-file (:pathname pathname
+                                :type \"png\"
+                                :keep t)
+       (ensure-directories-exist pathname)
+   
+       (40ants-plantuml:render (diagram-code diagram)
+                            pathname)
+       (let ((image
+               (local-image
+                (namestring pathname)
+                :target-filename (diagram-filename diagram))))
+         (common-doc:make-paragraph image))))
+   ```
+
+   This code creates a temporary file, renders a png image into it
+   and then makes a paragraph with image, pointing to this temp file.
+"
+     
+  (let ((full-path (full-path path)))
+    (unless (probe-file full-path)
+      (error "Image file \"~A\" not found"
+             full-path))
+
+    (make-instance
+     'local-image
+     ;; This is the path from where we will copy image file
+     :source (namestring full-path)
+     ;; And this is a relative path how we will refer the file
+     ;; in the documentation:
+     :target-filename (cond 
+                        (target-filename
+                         (namestring target-filename))
+                        (t
+                         (namestring (relative-path path))))
+     :description description
+     :width width
+     :height height)))
+
 
 (defun replace-images (document)
   (flet ((replacer (node)
            (typecase node
+             ;; If node is already has needed class,
+             ;; then leave it as is:
+             (local-image
+                node)
              (common-doc:image
-              (let ((source (common-doc:source node)))
-                (if (or (str:starts-with-p "http:" source)
-                        (str:starts-with-p "https:" source))
+                (let ((source (common-doc:source node)))
+                  (if (or (str:starts-with-p "http:" source)
+                          (str:starts-with-p "https:" source))
                     node
+                    ;; We rewrite only nodes pointing to
+                    ;; files on local filesystem:
                     (multiple-value-bind (source width height)
                         (extract-width-and-height source)
-                      (make-local-image source
-                                        :width width
-                                        :height height)))))
+                      (local-image source
+                                   :width width
+                                   :height height)))))
              (t node))))
     (map-nodes document #'replacer)))
 
@@ -100,31 +207,43 @@
      width
      height)))
 
+
 (define-emitter (obj local-image)
   "Emit a local-image and move referenced image into the HTML documentation folder."
-  (let* ((original-path (common-doc:source obj))
-         (source-path (full-path original-path))
-         (target-path (uiop:merge-pathnames* original-path
-                                             (uiop:merge-pathnames* #P"images/"
-                                                                    (uiop:ensure-directory-pathname
-                                                                     40ants-doc-full/builder/vars::*base-dir*))))
+  (let* ((source-path
+           ;; This is the path from where we will copy file:
+           (common-doc:source obj))
+         ;; Directory where we render all documentation files:
+         (base-dir
+           (uiop:ensure-directory-pathname 
+            40ants-doc-full/builder/vars::*base-dir*))
+         (target-path (uiop:merge-pathnames* (target-filename obj)
+                                             base-dir))
+         ;; Path of the current page:
          (page-uri (make-page-uri 40ants-doc-full/builder/vars::*current-page*))
+         ;; This path will be used on the web page to refer the image:
+         (relative-path (namestring
+                         (uiop:enough-pathname target-path
+                                               base-dir)))
          (new-source (make-relative-path page-uri
-                                         (format nil "images/~A"
-                                                 original-path)))
+                                         relative-path))
          (src (if common-html.emitter:*image-format-control*
-                  (format nil common-html.emitter:*image-format-control*
-                          new-source)
-                  new-source))
+                (format nil common-html.emitter:*image-format-control*
+                        new-source)
+                new-source))
          (description (common-doc:description obj)))
 
-    (ensure-directories-exist target-path)
-    (log:info "Copying image from ~A to ~A" source-path target-path)
-    (uiop:copy-file source-path
-                    target-path)
+    (unless (equal source-path
+                   target-path)
+      (log:info "Copying image from ~A to ~A" source-path target-path)
+      (ensure-directories-exist target-path)
+      (uiop:copy-file source-path
+                      target-path))
+
     (with-html
       (:img :src src
             :alt description
             :title description
             :width (width obj)
             :height (height obj)))))
+

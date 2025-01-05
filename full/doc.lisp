@@ -62,6 +62,10 @@
                 #:mathjax)
   (:import-from #:40ants-doc-full/plugins/highlightjs
                 #:highlightjs)
+  (:import-from #:40ants-doc-full/commondoc/image
+                #:height
+                #:width
+                #:local-image)
   (:export #:@index
            #:@readme
            #:@changelog))
@@ -626,6 +630,7 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (@locatives-and-references section)
   (@new-object-types section)
   (@reference-based-extensions section)
+  (@including-images section)
   (@sections section))
 
 
@@ -660,6 +665,16 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (map-nodes generic-function)
   (node-supports-children generic-function)
   (with-node-package macro))
+
+
+(defsection @including-images (:title "Including Images"
+                               :ignore-words ("PlantUML"))
+  "Besides refering images in the Markdown syntax like was shown in the 40ANTS-DOC-FULL/MARKDOWN::@MARKDOWN-IMAGES section,
+   you can construct CommonDoc documents including images as objects."
+  (local-image function)
+  (local-image class)
+  (width (reader local-image))
+  (height (reader local-image)))
 
 
 (defsection @reference-based-extensions
