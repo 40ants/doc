@@ -2,6 +2,16 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E23-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.23.0 (2025-01-06)
+
+* `IGNORE-PACKAGES` argument was added to [`defsection`][4e8b] macro. Packages
+listed in this argument allows to muffle this warning:
+
+```
+Object referenced as #<XREF FOO:BAR CLASS> in "Some section" is not documented.
+```
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E22-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.22.0 (2025-01-05)
