@@ -5,6 +5,9 @@
   (:import-from #:40ants-doc-full/commondoc/bullet)
   (:import-from #:40ants-doc/object-package
                 #:object-package)
+  (:import-from #:serapeum
+                #:soft-list-of
+                #:->)
   (:export
    #:map-nodes
    #:node-supports-children
@@ -79,6 +82,9 @@
       (funcall func))))
 
 
+(-> current-path ()
+    (values (soft-list-of string) &optional))
+
 (defun current-path ()
   "Returns a list of section titles (strings)."
   (unless (boundp '*path*)
@@ -87,13 +93,13 @@
   (loop for item in (reverse *path*)
         for title = (typecase item
                       (common-doc:section
-                       (common-doc.ops:collect-all-text
-                        (common-doc:title item)))
+                         (common-doc.ops:collect-all-text
+                          (common-doc:title item)))
                       (40ants-doc-full/commondoc/bullet::bullet
-                       ;; To always render a package specified version
-                       ;; of symbol names, we need to set keyword package here
-                       (let ((*package* (find-package :keyword)))
-                         (40ants-doc-full/commondoc/bullet::bullet-name item))))
+                         ;; To always render a package specified version
+                         ;; of symbol names, we need to set keyword package here
+                         (let ((*package* (find-package :keyword)))
+                           (40ants-doc-full/commondoc/bullet::bullet-name item))))
         collect title))
 
 

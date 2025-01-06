@@ -17,7 +17,8 @@
   (:import-from #:40ants-doc-full/commondoc/mapper
                 #:with-node-package)
   (:import-from #:commondoc-markdown)
-  (:import-from #:40ants-doc/object-package)
+  (:import-from #:40ants-doc/object-package
+                #:object-package)
   (:import-from #:40ants-doc-full/link)
   (:export
    #:make-xref
@@ -213,8 +214,16 @@
 (defmethod 40ants-doc/object-package::object-package ((obj common-doc:document))
   *package*)
 
-(defmethod 40ants-doc/object-package::object-package ((obj common-doc:document-node))
+(defmethod object-package ((obj common-doc:document-node))
   *package*)
+
+
+(defmethod object-package ((obj xref))
+  (cond
+    ((xref-symbol obj)
+     (object-package (xref-symbol obj)))
+    (t
+     (call-next-method))))
 
 
 (defun extract-symbols (node &aux inside-code-block inside-inline-code)
@@ -240,22 +249,22 @@
        (extractor (node)
          (typecase node
            (common-doc:text-node
-            (cond ((or inside-code-block
-                       40ants-doc-full/commondoc/mapper::*inside-title*
-                       40ants-doc-full/commondoc/mapper::*inside-link*)
-                   node)
-                  (inside-inline-code
-                   ;; If whole content of inline code is recognized
-                   ;; as a symbol, then we'll replace it with XREF:
-                   (let ((result (extract-symbols-from-text node)))
-                     (if (and (typep result 'xref)
-                              (= (length (common-doc:text node))
-                                 (length (common-doc:text result))))
+              (cond ((or inside-code-block
+                         40ants-doc-full/commondoc/mapper::*inside-title*
+                         40ants-doc-full/commondoc/mapper::*inside-link*)
+                     node)
+                    (inside-inline-code
+                     ;; If whole content of inline code is recognized
+                     ;; as a symbol, then we'll replace it with XREF:
+                     (let ((result (extract-symbols-from-text node)))
+                       (if (and (typep result 'xref)
+                                (= (length (common-doc:text node))
+                                   (length (common-doc:text result))))
                          result
                          node))
-                   )
-                  (t
-                   (extract-symbols-from-text node))))
+                     )
+                    (t
+                     (extract-symbols-from-text node))))
            (t node))))
     ;; Here we we need to change *package*
     ;; to make sure, that all symbol mentions are parsed as if we being
