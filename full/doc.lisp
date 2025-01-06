@@ -738,7 +738,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (40ants-doc:section-link-title-to (reader 40ants-doc:section))
   (40ants-doc:section-entries (reader 40ants-doc:section))
   (40ants-doc:section-external-docs (reader 40ants-doc:section))
-  (40ants-doc:section-ignore-words (reader 40ants-doc:section)))
+  (40ants-doc:section-ignore-words (reader 40ants-doc:section))
+  (40ants-doc:section-ignore-packages (reader 40ants-doc:section)))
 
 
 (defsection @todo (:title "TODO"
