@@ -155,6 +155,13 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.23.0 2025-01-06
+          "* IGNORE-PACKAGES argument was added to DEFSECTION macro. Packages
+             listed in this argument allows to muffle this warning:
+
+             ```
+             Object referenced as #<XREF FOO:BAR CLASS> in \"Some section\" is not documented.
+             ```")
   (0.22.0 2025-01-05
           "* Exported 40ANTS-DOC/OBJECT-PACKAGE:OBJECT-PACKAGE generic-function.
              Define a method for it if you have created a new locative type

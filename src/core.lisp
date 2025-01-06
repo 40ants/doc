@@ -7,6 +7,8 @@
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/docstring
                 #:strip-docstring-indentation)
+  (:import-from #:serapeum
+                #:soft-list-of)
   (:export #:defsection
            #:exportable-locative-type-p
            #:section
@@ -20,7 +22,8 @@
            #:section-ignore-words
            #:defsection-copy
            #:section-external-docs
-           #:*symbols-with-ignored-missing-locations*))
+           #:*symbols-with-ignored-missing-locations*
+           #:section-ignore-packages))
 (in-package #:40ants-doc)
 
 
@@ -59,18 +62,19 @@
 
 
 (defmacro defsection (name (&key
-                              (package '*package*)
-                              ;; TODO: Deprecate after 2023
-                              (package-symbol nil)
-                              (readtable-symbol '*readtable*)
-                              (section-class 'section)
-                              (export nil)
-                              title
-                              link-title-to
-                              (discard-documentation-p *discard-documentation-p*)
-                              (external-docs nil)
-                              (external-links nil)
-                              (ignore-words nil))
+                            (package '*package*)
+                            ;; TODO: Deprecate after 2023
+                            (package-symbol nil)
+                            (readtable-symbol '*readtable*)
+                            (section-class 'section)
+                            (export nil)
+                            title
+                            link-title-to
+                            (discard-documentation-p *discard-documentation-p*)
+                            (external-docs nil)
+                            (external-links nil)
+                            (ignore-words nil)
+                            (ignore-packages nil))
                       &body entries)
   "Define a documentation section and maybe export referenced symbols.
   A bit behind the scenes, a global variable with NAME is defined and
@@ -145,8 +149,13 @@
 
   :IGNORE-WORDS allows to pass a list of strings which should not cause
   warnings. Usually these are uppercased words which are not symbols
-  in the current package, like SLIME, LISP, etc."
-  
+  in the current package, like SLIME, LISP, etc.
+
+  Argument IGNORE-PACKAGES can be used to ignore mentions of all symbols from these
+  packages. If given, it should be a list of strings. Comparison of
+  package names is case-sensitive.
+"
+ 
   ;; Let's check the syntax as early as possible.
   (setf entries
         (transform-locative-symbols
@@ -170,6 +179,16 @@
     (setf ignore-words
           (list* 'list
                  ignore-words)))
+
+  (when (and (typep ignore-packages
+                    'list)
+             (typep (first ignore-packages)
+                    'string))
+    ;; This allows to pass an unquoted list of words
+    ;; to the macro, which is what you most commonly need.
+    (setf ignore-packages
+          (list* 'list
+                 ignore-packages)))
   
   (let ((export-form
           (when export
@@ -186,11 +205,13 @@
                         :title ,title
                         :link-title-to (transform-link-title-to ',link-title-to)
                         :entries ,(if discard-documentation-p
-                                      ()
-                                      `(transform-entries ',entries ',external-links))
+                                    ()
+                                    `(transform-entries ',entries ',external-links))
                         :external-docs (list ,@(uiop:ensure-list external-docs))
                         :ignore-words (list
-                                       ,@(eval ignore-words)))))))
+                                       ,@(eval ignore-words))
+                        :ignore-packages (list
+                                          ,@(eval ignore-packages)))))))
 
 (defclass section ()
   ((name
@@ -231,9 +252,16 @@
     :documentation "A list of strings with URLs of other system's documentation.")
    (ignore-words
     :initarg :ignore-words
+    :type (soft-list-of string)
     :initform nil
     :reader section-ignore-words
-    :documentation "A list of strings to not warn about."))
+    :documentation "A list of strings to not warn about.")
+   (ignore-packages
+    :initarg :ignore-packages
+    :type (soft-list-of string)
+    :initform nil
+    :reader section-ignore-packages
+    :documentation "A list of strings denoting package names to not warn about."))
   (:documentation "DEFSECTION stores its :NAME, :TITLE, :PACKAGE,
   :READTABLE and :ENTRIES in [SECTION][class] objects."))
 

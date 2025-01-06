@@ -33,7 +33,8 @@
                 #:make-relative-path
                 #:is-external
                 #:url-join)
-  (:import-from #:40ants-doc/object-package)
+  (:import-from #:40ants-doc/object-package
+                #:object-package)
   (:import-from #:40ants-doc-full/commondoc/format)
   (:import-from #:40ants-doc-full/page
                 #:page-title
@@ -50,7 +51,10 @@
   (:import-from #:40ants-doc-full/themes/api
                 #:with-page-template)
   (:import-from #:40ants-doc
+                #:section-ignore-packages
                 #:section-external-docs)
+  (:import-from #:40ants-doc-full/errors
+                #:object-is-not-documented)
   (:export #:make-page
            #:page
            #:make-page-toc
@@ -351,15 +355,18 @@ var DOCUMENTATION_OPTIONS = {
        (t
         (full-filename page :from from-page))))))
 
+
 (defun replace-xrefs (node known-references
                       &key base-url
-                      &aux ignored-words
-                           dislocated-symbols
-                           current-page
-                           inside-code-block
-                           pages-stack
-                           (common-lisp-package (find-package :common-lisp))
-                           (keywords-package (find-package :keyword)))
+                      &aux
+                      ignored-words
+                      ignored-packages
+                      dislocated-symbols
+                      current-page
+                      inside-code-block
+                      pages-stack
+                      (common-lisp-package (find-package :common-lisp))
+                      (keywords-package (find-package :keyword)))
   "Replaces XREF with COMMON-DOC:DOCUMENT-LINK.
 
    If XREFS corresponds to HTML page format, and BASE-URL argument is not none,
@@ -373,6 +380,9 @@ var DOCUMENTATION_OPTIONS = {
 
    IGNORED-WORDS will be a list of list of strings where each sublist
    contains words, specified as IGNORE-WORDS argument of the 40ANTS-DOC:DEFSECTION macro.
+
+   IGNORED-PACKAGES will be a list of list of strings where each sublist
+   contains packagenames, specified as IGNORE-PACKAGES argument of the 40ANTS-DOC:DEFSECTION macro.
   "
   (with-node-path
     (labels ((collect-dislocated (node)
@@ -387,9 +397,18 @@ var DOCUMENTATION_OPTIONS = {
                  (let ((words (ignored-words node)))
                    (push words
                          ignored-words))))
+             (collect-ignored-packages (node)
+               (when (typep node 'documentation-section)
+                 (let* ((definition (section-definition node))
+                        (section-ignored-packages (section-ignore-packages definition)))
+                   (push section-ignored-packages
+                         ignored-packages))))
              (pop-ignored-words (node)
                (when (supports-ignored-words-p node)
                  (pop ignored-words)))
+             (pop-ignored-packages (node)
+               (when (typep node 'documentation-section)
+                 (pop ignored-packages)))
              (push-page (node)
                (when (typep node 'page)
                  (push node pages-stack)
@@ -408,11 +427,13 @@ var DOCUMENTATION_OPTIONS = {
              (go-down (node)
                (collect-dislocated node)
                (collect-ignored-words node)
+               (collect-ignored-packages node)
                (push-page node)
                (set-inside-code-block-if-needed node))
              (go-up (node)
                (pop-dislocated node)
                (pop-ignored-words node)
+               (pop-ignored-packages node)
                (pop-page node)
                (unset-inside-code-block-if-needed node))
              (make-code-if-needed (obj &key (maybe-downcase t))
@@ -427,14 +448,19 @@ var DOCUMENTATION_OPTIONS = {
                ;; because it could be a cross-referenced title, but we don't want
                ;; to make it a code:
                (etypecase obj
-                 (common-doc:document-node obj)
+                 (common-doc:document-node
+                    obj)
                  (t
-                  (if inside-code-block
+                    (if inside-code-block
                       (make-text obj)
                       (make-code
                        (make-text obj))))))
              (package-specified (text)
                (find #\: text))
+             (in-ignore-list (item ignore-lists)
+               (loop for sublist in ignore-lists
+                     thereis (member item sublist
+                                     :test #'string=)))
              (should-be-ignored-p (text symbol locative)
                (or (and symbol
                         (not (package-specified text))
@@ -442,9 +468,9 @@ var DOCUMENTATION_OPTIONS = {
 
                    (eql locative
                         '40ants-doc/locatives:argument)
-                   (loop for sublist in ignored-words
-                         thereis (member text sublist
-                                         :test #'string=))
+                   
+                   (in-ignore-list text
+                                   ignored-words)
                    ;; This is a special case
                    ;; because we can't distinguish between absent SYMBOL
                    ;; and NIL.
@@ -456,121 +482,134 @@ var DOCUMENTATION_OPTIONS = {
                             (eql (symbol-package symbol)
                                  keywords-package)))))
              (apply-replacer (node)
-               (40ants-doc-full/commondoc/mapper:map-nodes node #'replacer
-                                                           :on-going-down #'go-down
-                                                           :on-going-up #'go-up))
+               (handler-bind ((40ants-doc-full/errors:object-is-not-documented
+                                (lambda (condition)
+                                  ;; (log:error "Handler bind for" node)
+                                  (let* ((reference (40ants-doc-full/errors:object-reference condition))
+                                         (reference-package (object-package reference)))
+                                    (when (and reference-package 
+                                               (in-ignore-list (package-name reference-package)
+                                                               ignored-packages))
+                                      ;; The warning about not-documented object should be
+                                      ;; ignored, if this object is defined in one of the
+                                      ;; ignored packages:
+                                      (muffle-warning))))))
+                 
+                 (40ants-doc-full/commondoc/mapper:map-nodes node #'replacer
+                                                             :on-going-down #'go-down
+                                                             :on-going-up #'go-up)))
              (replacer (node)
                (typecase node
                  (common-doc:code
-                  ;; Here we replace CODE nodes having only one XREF child
-                  ;; with this child
-                  (let* ((children (common-doc:children node))
-                         (first-child (first children)))
-                    ;; We also need to continue replacing on results
-                    (cond
-                      ((and (= (length children) 1)
-                            (typep first-child '40ants-doc-full/commondoc/xref::xref))
-                       (replacer first-child))
-                      (t node))))
+                    ;; Here we replace CODE nodes having only one XREF child
+                    ;; with this child
+                    (let* ((children (common-doc:children node))
+                           (first-child (first children)))
+                      ;; We also need to continue replacing on results
+                      (cond
+                        ((and (= (length children) 1)
+                              (typep first-child '40ants-doc-full/commondoc/xref::xref))
+                         (apply-replacer first-child))
+                        (t node))))
                  (40ants-doc-full/commondoc/xref:xref
-                  (let* ((name (40ants-doc-full/commondoc/xref:xref-name node))
-                         (text (etypecase name
-                                 (string name)
-                                 (common-doc:document-node
-                                  ;; xref-name might return document-node   
-                                  (common-doc.ops:collect-all-text name))))
-                         (symbol (40ants-doc-full/commondoc/xref:xref-symbol node))
-                         (locative (40ants-doc-full/commondoc/xref:xref-locative node))
-                         (found-in-dislocated
-                           (loop for sublist in dislocated-symbols
+                    (let* ((name (40ants-doc-full/commondoc/xref:xref-name node))
+                           (text (etypecase name
+                                   (string name)
+                                   (common-doc:document-node
+                                      ;; xref-name might return document-node
+                                      (common-doc.ops:collect-all-text name))))
+                           (symbol (40ants-doc-full/commondoc/xref:xref-symbol node))
+                           (locative (40ants-doc-full/commondoc/xref:xref-locative node))
+                           (found-in-dislocated
+                             (loop for sublist in dislocated-symbols
                                    thereis (member text sublist
                                                    :test #'string-equal)))
-                         (found-references
-                           (unless found-in-dislocated
-                             (loop for (reference . page) in known-references
-                                   ;; This can be a symbol or a string.
-                                   ;; For example, for SYSTEM locative, object
-                                   ;; is a string name of a system.
-                                   ;; 
-                                   ;; TODO: Think about a GENERIC to compare
-                                   ;;       XREF with references of different locative types.
-                                   for reference-object = (40ants-doc/reference::reference-object reference)
-                                   when (and (etypecase reference-object
-                                               (symbol
-                                                (eql reference-object
-                                                     symbol))
-                                               (string
-                                                ;; Here we intentionally use case insensitive
-                                                ;; comparison, because a canonical reference
-                                                ;; to ASDF system contains it's name in a lowercase,
-                                                ;; but some other locatives like a PACKAGE, might
-                                                ;; keep a name in the uppercase.
-                                                (string-equal reference-object
-                                                              text)))
-                                             (or (null locative)
-                                                 (locative-equal (40ants-doc/reference::reference-locative reference)
-                                                                 locative)))
-                                     collect (cons reference
-                                                   page))))
-                         (found-references
-                           (if current-page
+                           (found-references
+                             (unless found-in-dislocated
+                               (loop for (reference . page) in known-references
+                                     ;; This can be a symbol or a string.
+                                     ;; For example, for SYSTEM locative, object
+                                     ;; is a string name of a system.
+                                     ;; 
+                                     ;; TODO: Think about a GENERIC to compare
+                                     ;;       XREF with references of different locative types.
+                                     for reference-object = (40ants-doc/reference::reference-object reference)
+                                     when (and (etypecase reference-object
+                                                 (symbol
+                                                    (eql reference-object
+                                                         symbol))
+                                                 (string
+                                                    ;; Here we intentionally use case insensitive
+                                                    ;; comparison, because a canonical reference
+                                                    ;; to ASDF system contains it's name in a lowercase,
+                                                    ;; but some other locatives like a PACKAGE, might
+                                                    ;; keep a name in the uppercase.
+                                                    (string-equal reference-object
+                                                                  text)))
+                                               (or (null locative)
+                                                   (locative-equal (40ants-doc/reference::reference-locative reference)
+                                                                   locative)))
+                                       collect (cons reference
+                                                     page))))
+                           (found-references
+                             (if current-page
                                (remove-references-to-other-document-formats current-page
                                                                             found-references)
                                found-references))
-                         (should-be-ignored
-                           (unless found-references
-                             (or found-in-dislocated
-                                 (should-be-ignored-p text symbol locative)))))
+                           (should-be-ignored
+                             (unless found-references
+                               (or found-in-dislocated
+                                   (should-be-ignored-p text symbol locative)))))
 
-                    (cond
-                      (should-be-ignored
-                       (make-code-if-needed text :maybe-downcase nil))
-                      (found-references
-                       (labels ((make-link (reference page text)
-                                  (let ((page-uri
-                                          (when page
-                                            (make-page-uri page :from-page current-page
-                                                                :base-url base-url)))
-                                        (html-fragment
-                                          (40ants-doc-full/utils::html-safe-name
-                                           (40ants-doc/reference::reference-to-anchor reference))))
-                                    (common-doc:make-document-link page-uri
-                                                                   html-fragment
-                                                                   (make-code-if-needed text)))))
+                      (cond
+                        (should-be-ignored
+                         (make-code-if-needed text :maybe-downcase nil))
+                        (found-references
+                         (labels ((make-link (reference page text)
+                                    (let ((page-uri
+                                            (when page
+                                              (make-page-uri page :from-page current-page
+                                                                  :base-url base-url)))
+                                          (html-fragment
+                                            (40ants-doc-full/utils::html-safe-name
+                                             (40ants-doc/reference::reference-to-anchor reference))))
+                                      (common-doc:make-document-link page-uri
+                                                                     html-fragment
+                                                                     (make-code-if-needed text)))))
 
-                         (cond ((= (length found-references) 1)
-                                (destructuring-bind (reference . page)
-                                    (first found-references)
-                                  (typecase reference
-                                    (40ants-doc/reference::external-reference
-                                     (let ((url (40ants-doc/reference::external-reference-url reference))
-                                           (text (40ants-doc/reference::reference-object reference)))
-                                       (make-web-link url
-                                                      (make-code-if-needed text))))
-                                    (40ants-doc/reference::reference
-                                     (let* ((object (40ants-doc/reference:resolve reference))
-                                            (text (or (40ants-doc-full/commondoc/xref:link-text object)
-                                                      text)))
-                                       (make-link reference
-                                                  page
-                                                  text))))))
-                               (t
-                                (common-doc:make-content
-                                 (append (list (make-code-if-needed text)
-                                               (common-doc:make-text " ("))
-                                         (loop for (reference . page) in found-references
-                                               for index upfrom 1
-                                               for text = (format nil "~A" index)
-                                               collect (make-link reference page text)
-                                               unless (= index (length found-references))
-                                                 collect (common-doc:make-text " "))
-                                         (list (common-doc:make-text ")"))))))))
+                           (cond ((= (length found-references) 1)
+                                  (destructuring-bind (reference . page)
+                                      (first found-references)
+                                    (typecase reference
+                                      (40ants-doc/reference::external-reference
+                                         (let ((url (40ants-doc/reference::external-reference-url reference))
+                                               (text (40ants-doc/reference::reference-object reference)))
+                                           (make-web-link url
+                                                          (make-code-if-needed text))))
+                                      (40ants-doc/reference::reference
+                                         (let* ((object (40ants-doc/reference:resolve reference))
+                                                (text (or (40ants-doc-full/commondoc/xref:link-text object)
+                                                          text)))
+                                           (make-link reference
+                                                      page
+                                                      text))))))
+                                 (t
+                                  (common-doc:make-content
+                                   (append (list (make-code-if-needed text)
+                                                 (common-doc:make-text " ("))
+                                           (loop for (reference . page) in found-references
+                                                 for index upfrom 1
+                                                 for text = (format nil "~A" index)
+                                                 collect (make-link reference page text)
+                                                 unless (= index (length found-references))
+                                                   collect (common-doc:make-text " "))
+                                           (list (common-doc:make-text ")"))))))))
                      
-                      (t
-                       (warn "Object referenced as ~A in ~{~A~^ / ~} is not documented."
-                             node
-                             (current-path))
-                       node))))
+                        (t
+                         (warn 'object-is-not-documented
+                               :reference node
+                               :breadcrumbs (current-path))
+                         node))))
                  (t
-                  node))))
+                    node))))
       (apply-replacer node))))
