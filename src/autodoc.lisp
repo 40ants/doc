@@ -23,14 +23,17 @@
 (in-package #:40ants-doc/autodoc)
 
 
-(defun class-readers-and-accessors (class-name)
+(defun class-readers-and-accessors (class-name &key (ignore-symbol-p 'starts-with-percent-p))
   (let* ((class (find-class class-name))
          (slots (class-direct-slots class)))
     (loop for slot in slots
-          for readers = (slot-definition-readers slot)
-          for writers = (slot-definition-writers slot)
+          for readers = (remove-if ignore-symbol-p
+                                   (slot-definition-readers slot))
+          for writers = (remove-if ignore-symbol-p
+                                   (mapcar #'second
+                                           (slot-definition-writers slot)))
           append readers into all-readers
-          append (mapcar #'second writers) into all-writers
+          append writers into all-writers
           finally (return (values (sort all-readers
                                         #'string<)
                                   (sort all-writers
@@ -49,12 +52,13 @@
                               :key #'package-name))))
 
 
-(defun package-accessors-and-writers (package)
+(defun package-accessors-and-writers (package &key (ignore-symbol-p 'starts-with-percent-p))
   (loop with result = nil
         for symbol being the external-symbols of package
         when (find-class symbol nil)
           do (multiple-value-bind (readers accessors)
-                 (class-readers-and-accessors symbol)
+                 (class-readers-and-accessors symbol
+                                              :ignore-symbol-p ignore-symbol-p)
                (setf result
                      (nunion result
                              (nunion readers accessors))))
@@ -78,12 +82,13 @@
 ;;            collect `(,accessor (accessor ,class-name))))))
 
 
-(defun make-class-entry (class-name package-name)
+(defun make-class-entry (class-name package-name &key (ignore-symbol-p 'starts-with-percent-p))
   (check-type class-name symbol)
   (check-type package-name string)
   
   (multiple-value-bind (readers accessors)
-      (class-readers-and-accessors class-name)
+      (class-readers-and-accessors class-name
+                                   :ignore-symbol-p ignore-symbol-p)
 
     (let* ((title (symbol-name class-name))
            (section-name (symbolicate
@@ -113,20 +118,25 @@
       `(,section-name section))))
 
 
-(defun make-package-section (section-name package)
+(defun make-package-section (section-name package &key (ignore-symbol-p 'starts-with-percent-p))
   (declare (optimize (debug 3)))
   (let* ((package-name (package-name package))
          (title package-name)
-         (accessors-and-readers (package-accessors-and-writers package))
+         (accessors-and-readers (package-accessors-and-writers package
+                                                               :ignore-symbol-p ignore-symbol-p))
          (entries (loop for symbol being the external-symbols of package
+                        for should-be-documented = (not (funcall ignore-symbol-p
+                                                                 symbol))
                         ;; Usual functions
                         when (and (fboundp symbol)
+                                  should-be-documented
                                   (not (macro-function symbol))
                                   (not (typep (symbol-function symbol) 'generic-function)))
                           collect (list symbol 'function) into functions
 
                         ;; Generic functions
                         when (and (fboundp symbol)
+                                  should-be-documented
                                   (typep (symbol-function symbol) 'generic-function)
                                   (not (member symbol accessors-and-readers
                                                :test 'eql)))
@@ -134,19 +144,23 @@
 
                         ;; Macroses
                         when (and (fboundp symbol)
+                                  should-be-documented
                                   (macro-function symbol))
                           collect (list symbol 'macro) into macros
 
                         ;; Classes
-                        when (find-class symbol nil)
+                        when (and (find-class symbol nil)
+                                  should-be-documented)
                           collect (make-class-entry symbol package-name) into classes
 
                         ;; Variables
-                        when (documentation symbol 'variable)
+                        when (and (documentation symbol 'variable)
+                                  should-be-documented)
                           collect (list symbol 'variable) into variables
 
                         ;; Types and not classes
                         when (and (not (find-class symbol nil))
+                                  should-be-documented
                                   (or (documentation symbol 'type)
                                       (not (eq (swank-backend:type-specifier-arglist symbol)
                                                :not-available))))
@@ -183,7 +197,8 @@
 
 (defun make-entries (system &key
                             (show-system-description-p nil)
-                            (ignore-packages nil))
+                            (ignore-packages nil)
+                            (ignore-symbol-p 'starts-with-percent-p))
   (with-subsection-collector ()
     (loop for package in (system-packages system)
           for package-name = (package-name package)
@@ -193,7 +208,8 @@
           for section-name = (when collect-this-package
                                (symbolicate "@" (string-upcase package-name) "?PACKAGE"))
           for package-section = (when section-name
-                                  (make-package-section section-name package))
+                                  (make-package-section section-name package
+                                                        :ignore-symbol-p ignore-symbol-p))
           when package-section
             collect (list section-name 'section) into entries
             and
@@ -205,15 +221,21 @@
                                    entries))))))
 
 
+(defun starts-with-percent-p (symbol)
+  (str:starts-with-p "%"
+                     (symbol-name symbol)))
+
+
 (defmacro defautodoc (name (&key system
-                            (title "API")
-                            (show-system-description-p nil)
-                            (readtable-symbol '*readtable*)
-                            (section-class '40ants-doc:section)
-                            (external-docs nil)
-                            (external-links nil)
-                            (ignore-words nil)
-                            (ignore-packages nil)))
+                              (title "API")
+                              (show-system-description-p nil)
+                              (readtable-symbol '*readtable*)
+                              (section-class '40ants-doc:section)
+                              (external-docs nil)
+                              (external-links nil)
+                              (ignore-words nil)
+                              (ignore-packages nil)
+                              (ignore-symbol-p 'starts-with-percent-p)))
 
   "Macro DEFAUTODOC collects all packages of the ASDF system and analyzes all external symbols.
    In resulting documentation symbols are grouped by packages and types.
@@ -252,7 +274,8 @@
   (multiple-value-bind (subsections entries)
       (make-entries system
                     :show-system-description-p show-system-description-p
-                    :ignore-packages ignore-packages)
+                    :ignore-packages ignore-packages
+                    :ignore-symbol-p ignore-symbol-p)
     `(progn
        (defsection ,name (:title ,title
                           :readtable-symbol ,readtable-symbol

@@ -227,9 +227,9 @@ var DOCUMENTATION_OPTIONS = {
              node)
            (documented-p (symbol)
              (member symbol references-symbols)))
-      
+
       (40ants-doc-full/commondoc/mapper:map-nodes node #'collect-packages)
-     
+      
       ;; This blocks extends PACKAGES list with all other
       ;; package-inferred packages for the system
       (when *warn-on-undocumented-packages* (loop with primary-names = nil
@@ -260,17 +260,16 @@ var DOCUMENTATION_OPTIONS = {
                                          '40ants-doc:section)))
                    (push symbol (gethash package undocumented-symbols))))
             finally (unless (zerop (hash-table-count undocumented-symbols))
-                      (warn 
-                       (with-output-to-string (s)
-                         (format s "These symbols are external, but not documented:")
-                         (loop for package being the hash-key of undocumented-symbols
-                                 using (hash-value symbols)
-                               do (format s "~2&  ~A:"
-                                          (package-name package))
-                                  (loop for symbol in (sort symbols #'string<
-                                                            :key #'symbol-name)
-                                        do (format s "~&  - ~A"
-                                                   symbol)))))))))
+                      (warn "These symbols are external, but not documented:~%~A"
+                            (with-output-to-string (s)
+                              (loop for package being the hash-key of undocumented-symbols
+                                    using (hash-value symbols)
+                                    do (format s "~2&  ~A:"
+                                               (package-name package))
+                                       (loop for symbol in (sort symbols #'string<
+                                                                 :key #'symbol-name)
+                                             do (format s "~&  - ~A"
+                                                        symbol)))))))))
   node)
 
 (defun warn-on-references-to-internals (document)
