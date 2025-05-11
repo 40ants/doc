@@ -155,6 +155,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.24.0 2025-05-12
+          "* Autodoc macro now accepts IGNORE-SYMBOL-P argument and by default ignores symbols starting with `%` character.")
   (0.23.0 2025-01-06
           "* IGNORE-PACKAGES argument was added to DEFSECTION macro. Packages
              listed in this argument allows to muffle this warning:
