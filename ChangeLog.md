@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E24-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.24.0 (2025-05-12)
+
+* Autodoc macro now accepts `IGNORE-SYMBOL-P` argument and by default ignores symbols starting with `%` character.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E23-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.23.0 (2025-01-06)
