@@ -151,7 +151,9 @@
                         ;; Classes
                         when (and (find-class symbol nil)
                                   should-be-documented)
-                          collect (make-class-entry symbol package-name) into classes
+                          collect (make-class-entry symbol package-name
+                                                    :ignore-symbol-p ignore-symbol-p)
+                            into classes
 
                         ;; Variables
                         when (and (documentation symbol 'variable)

@@ -155,6 +155,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.24.1 2025-05-26
+          "* Fixed a bug when class slot accessor or reader was not filtered using a custom function passed as IGNORE-SYMBOL-P argument.")
   (0.24.0 2025-05-12
           "* Autodoc macro now accepts IGNORE-SYMBOL-P argument and by default ignores symbols starting with `%` character.")
   (0.23.0 2025-01-06
