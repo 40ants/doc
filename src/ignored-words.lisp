@@ -3,7 +3,8 @@
   (:export
    #:ignored-words
    #:supports-ignored-words-p
-   #:ignore-words-in-package))
+   #:ignore-words-in-package
+   #:ignore-in-package))
 (in-package #:40ants-doc/ignored-words)
 
 
@@ -25,6 +26,13 @@
     (gethash obj *package-ignore-words*)))
 
 
+(defun ignore-in-package (symbol-or-string &key (package *package*))
+  "Adds SYMBOL-OR-STRING to the list of symbols ignored in the given PACKAGE."
+  (pushnew symbol-or-string
+           (gethash package *package-ignore-words*)
+           :test #'equal))
+
+
 (defmacro ignore-words-in-package (&rest symbols-or-strings)
   "Adds given symbols or string to ignore list bound to the current package.
 
@@ -43,3 +51,4 @@
   (member symbol-or-string
           (gethash package *package-ignore-words*)
           :test #'equal))
+
