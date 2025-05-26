@@ -198,11 +198,11 @@ choose which.
 
 <a id="x-28FOO-RANDOM-3AFOO-RANDOM-STATE-20CLASS-29"></a>
 
-## [class](b191) `foo-random:foo-random-state` ()
+## [class](c7dc) `foo-random:foo-random-state` ()
 
 <a id="x-28FOO-RANDOM-3ASTATE-20-2840ANTS-DOC-2FLOCATIVES-3AREADER-20FOO-RANDOM-3AFOO-RANDOM-STATE-29-29"></a>
 
-## [reader](f519) `foo-random:state` (foo-random-state) ()
+## [reader](d1d9) `foo-random:state` (foo-random-state) ()
 
 Returns random foo's state.
 
@@ -210,24 +210,24 @@ Hey we can also print states!
 
 <a id="x-28PRINT-OBJECT-20-28METHOD-20NIL-20-28FOO-RANDOM-3AFOO-RANDOM-STATE-20T-29-29-29"></a>
 
-## [method](2048) `common-lisp:print-object` (object foo-random-state) stream
+## [method](8cad) `common-lisp:print-object` (object foo-random-state) stream
 
 <a id="x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29"></a>
 
-## [variable](ef04) `foo-random:*foo-state*` #<foo-random-state >
+## [variable](dd2d) `foo-random:*foo-state*` #<foo-random-state >
 
 Much like `*RANDOM-STATE*` but uses the `FOO` algorithm.
 
 <a id="x-28FOO-RANDOM-3AGAUSSIAN-RANDOM-20FUNCTION-29"></a>
 
-## [function](e745) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
+## [function](c1bb) `foo-random:gaussian-random` stddev &key (random-state \*foo-state\*)
 
 Return not a random number from a zero mean normal distribution with
 `STDDEV`.
 
 <a id="x-28FOO-RANDOM-3AUNIFORM-RANDOM-20FUNCTION-29"></a>
 
-## [function](d5ef) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
+## [function](7fba) `foo-random:uniform-random` limit &key (random-state \*foo-state\*)
 
 Return a random number from the between 0 and `LIMIT` (exclusive)
 uniform distribution.
@@ -250,12 +250,12 @@ with `FOO`:
 ```
 
 [2133]: #x-28FOO-RANDOM-3A-2AFOO-STATE-2A-20-28VARIABLE-29-29
-[b191]: https://github.com/40ants/doc/blob/336a9f02044de7c41123678bf6666dd289804cac/full/tutorial.lisp#L35
-[f519]: https://github.com/40ants/doc/blob/336a9f02044de7c41123678bf6666dd289804cac/full/tutorial.lisp#L36
-[2048]: https://github.com/40ants/doc/blob/336a9f02044de7c41123678bf6666dd289804cac/full/tutorial.lisp#L39
-[ef04]: https://github.com/40ants/doc/blob/336a9f02044de7c41123678bf6666dd289804cac/full/tutorial.lisp#L42
-[d5ef]: https://github.com/40ants/doc/blob/336a9f02044de7c41123678bf6666dd289804cac/full/tutorial.lisp#L45
-[e745]: https://github.com/40ants/doc/blob/336a9f02044de7c41123678bf6666dd289804cac/full/tutorial.lisp#L51
+[c7dc]: https://github.com/40ants/doc/blob/ccb2f4dd6f67620ae26c79223b56d5ee80dbc2a9/full/tutorial.lisp#L35
+[d1d9]: https://github.com/40ants/doc/blob/ccb2f4dd6f67620ae26c79223b56d5ee80dbc2a9/full/tutorial.lisp#L36
+[8cad]: https://github.com/40ants/doc/blob/ccb2f4dd6f67620ae26c79223b56d5ee80dbc2a9/full/tutorial.lisp#L39
+[dd2d]: https://github.com/40ants/doc/blob/ccb2f4dd6f67620ae26c79223b56d5ee80dbc2a9/full/tutorial.lisp#L42
+[7fba]: https://github.com/40ants/doc/blob/ccb2f4dd6f67620ae26c79223b56d5ee80dbc2a9/full/tutorial.lisp#L45
+[c1bb]: https://github.com/40ants/doc/blob/ccb2f4dd6f67620ae26c79223b56d5ee80dbc2a9/full/tutorial.lisp#L51
 ````
 `MGL-PAX` supported the plain text format which was more readble when viewed
 from a simple text editor, but I've dropped support for plain text in this fork

@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E24-2E2-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.24.2 (2025-05-26)
+
+* Fixed a warning "These symbols are external, but not documented" shown for symboles ignored by passing `IGNORE-SYMBOL-P` argument.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E24-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.24.1 (2025-05-26)
