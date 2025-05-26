@@ -474,7 +474,8 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (40ants-doc:*symbols-with-ignored-missing-locations* variable)
   (40ants-doc/ignored-words:ignored-words generic-function)
   (40ants-doc/ignored-words:supports-ignored-words-p generic-function)
-  (40ants-doc/ignored-words:ignore-words-in-package macro))
+  (40ants-doc/ignored-words:ignore-words-in-package macro)
+  (40ants-doc/ignored-words:ignore-in-package function))
 
 
 (defsection @cross-referencing (:title "Cross-referencing")
