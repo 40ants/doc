@@ -155,6 +155,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.24.2 2025-05-26
+          "* Fixed a warning \"These symbols are external, but not documented\" shown for symboles ignored by passing IGNORE-SYMBOL-P argument.")
   (0.24.1 2025-05-26
           "* Fixed a bug when class slot accessor or reader was not filtered using a custom function passed as IGNORE-SYMBOL-P argument.")
   (0.24.0 2025-05-12

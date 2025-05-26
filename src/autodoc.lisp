@@ -18,6 +18,8 @@
                 #:registered-subsections
                 #:register-subsection
                 #:with-subsection-collector)
+  (:import-from #:40ants-doc/ignored-words
+                #:ignore-in-package)
   (:export #:defautodoc)
   (:documentation "This module is not included into asd file because it requires additional dependencies."))
 (in-package #:40ants-doc/autodoc)
@@ -120,81 +122,86 @@
 
 (defun make-package-section (section-name package &key (ignore-symbol-p 'starts-with-percent-p))
   (declare (optimize (debug 3)))
-  (let* ((package-name (package-name package))
-         (title package-name)
-         (accessors-and-readers (package-accessors-and-writers package
-                                                               :ignore-symbol-p ignore-symbol-p))
-         (entries (loop for symbol being the external-symbols of package
-                        for should-be-documented = (not (funcall ignore-symbol-p
-                                                                 symbol))
-                        ;; Usual functions
-                        when (and (fboundp symbol)
-                                  should-be-documented
-                                  (not (macro-function symbol))
-                                  (not (typep (symbol-function symbol) 'generic-function)))
-                          collect (list symbol 'function) into functions
+  (flet ((ignore-symbol-p-wrapper (symbol)
+           (when (and ignore-symbol-p
+                      (funcall ignore-symbol-p symbol))
+             (ignore-in-package symbol :package package)
+             (values t))))
+    
+    (let* ((package-name (package-name package))
+           (title package-name)
+           (accessors-and-readers (package-accessors-and-writers package
+                                                                 :ignore-symbol-p #'ignore-symbol-p-wrapper))
+           (entries (loop for symbol being the external-symbols of package
+                          for should-be-documented = (not (ignore-symbol-p-wrapper symbol))
+                          ;; Usual functions
+                          when (and (fboundp symbol)
+                                    should-be-documented
+                                    (not (macro-function symbol))
+                                    (not (typep (symbol-function symbol) 'generic-function)))
+                            collect (list symbol 'function) into functions
 
-                        ;; Generic functions
-                        when (and (fboundp symbol)
-                                  should-be-documented
-                                  (typep (symbol-function symbol) 'generic-function)
-                                  (not (member symbol accessors-and-readers
-                                               :test 'eql)))
-                          collect (list symbol 'generic-function) into generics
+                          ;; Generic functions
+                          when (and (fboundp symbol)
+                                    should-be-documented
+                                    (typep (symbol-function symbol) 'generic-function)
+                                    (not (member symbol accessors-and-readers
+                                                 :test 'eql)))
+                            collect (list symbol 'generic-function) into generics
 
-                        ;; Macroses
-                        when (and (fboundp symbol)
-                                  should-be-documented
-                                  (macro-function symbol))
-                          collect (list symbol 'macro) into macros
+                          ;; Macroses
+                          when (and (fboundp symbol)
+                                    should-be-documented
+                                    (macro-function symbol))
+                            collect (list symbol 'macro) into macros
 
-                        ;; Classes
-                        when (and (find-class symbol nil)
-                                  should-be-documented)
-                          collect (make-class-entry symbol package-name
-                                                    :ignore-symbol-p ignore-symbol-p)
-                            into classes
+                          ;; Classes
+                          when (and (find-class symbol nil)
+                                    should-be-documented)
+                            collect (make-class-entry symbol package-name
+                                                      :ignore-symbol-p #'ignore-symbol-p-wrapper)
+                              into classes
 
-                        ;; Variables
-                        when (and (documentation symbol 'variable)
-                                  should-be-documented)
-                          collect (list symbol 'variable) into variables
+                          ;; Variables
+                          when (and (documentation symbol 'variable)
+                                    should-be-documented)
+                            collect (list symbol 'variable) into variables
 
-                        ;; Types and not classes
-                        when (and (not (find-class symbol nil))
-                                  should-be-documented
-                                  (or (documentation symbol 'type)
-                                      (not (eq (swank-backend:type-specifier-arglist symbol)
-                                               :not-available))))
-                          collect (list symbol 'type) into types
+                          ;; Types and not classes
+                          when (and (not (find-class symbol nil))
+                                    should-be-documented
+                                    (or (documentation symbol 'type)
+                                        (not (eq (swank-backend:type-specifier-arglist symbol)
+                                                 :not-available))))
+                            collect (list symbol 'type) into types
                         
-                        finally (return
-                                  (uiop:while-collecting (collect)
-                                    (flet ((add-subsection (entries title)
-                                             (let* ((section-name (symbolicate "@"
-                                                                               package-name
-                                                                               "?"
-                                                                               title
-                                                                               "-SECTION")))
-                                               (when entries
-                                                 (register-subsection
-                                                  `(defsection ,section-name (:title ,title
-                                                                              :package ,package-name)
-                                                     ,@(sort (copy-list entries)
-                                                             #'string<
-                                                             :key #'first)))
-                                                 (collect `(,section-name section))))))
-                                      (add-subsection classes "Classes")
-                                      (add-subsection generics "Generics")
-                                      (add-subsection functions "Functions")
-                                      (add-subsection macros "Macros")
-                                      (add-subsection types "Types")
-                                      (add-subsection variables "Variables")))))))
-    (when entries
-      `(defsection ,section-name (:title ,title
-                                  :package ,package-name)
-         (,(symbolicate package-name) package)
-         ,@entries))))
+                          finally (return
+                                    (uiop:while-collecting (collect)
+                                      (flet ((add-subsection (entries title)
+                                               (let* ((section-name (symbolicate "@"
+                                                                                 package-name
+                                                                                 "?"
+                                                                                 title
+                                                                                 "-SECTION")))
+                                                 (when entries
+                                                   (register-subsection
+                                                    `(defsection ,section-name (:title ,title
+                                                                                :package ,package-name)
+                                                       ,@(sort (copy-list entries)
+                                                               #'string<
+                                                               :key #'first)))
+                                                   (collect `(,section-name section))))))
+                                        (add-subsection classes "Classes")
+                                        (add-subsection generics "Generics")
+                                        (add-subsection functions "Functions")
+                                        (add-subsection macros "Macros")
+                                        (add-subsection types "Types")
+                                        (add-subsection variables "Variables")))))))
+      (when entries
+        `(defsection ,section-name (:title ,title
+                                    :package ,package-name)
+           (,(symbolicate package-name) package)
+           ,@entries)))))
 
 
 (defun make-entries (system &key
