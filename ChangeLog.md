@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E25-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.25.0 (2025-09-13)
+
+* Added a `40ants-doc/mito` package with a helper to solve problem of rendering documentation for projects which use Mito's table classes. You should load this helper as your project's documentation dependency.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E24-2E2-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.24.2 (2025-05-26)
