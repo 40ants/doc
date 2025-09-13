@@ -17,7 +17,8 @@ Without this helper you will get these warnings when trying to build a documenta
 ```
 
 This helper sets methods source to the source of the table class.
-"))
+")
+  (:export #:fixed-dao-table-class))
 (in-package #:40ants-doc/mito)
 
 
@@ -45,14 +46,18 @@ This helper sets methods source to the source of the table class.
   (values))
 
 
-(defmethod initialize-instance :around ((class mito:dao-table-class) &rest initargs)
+(defclass fixed-dao-table-class (mito:dao-table-class)
+  ())
+
+
+(defmethod initialize-instance :around ((class fixed-dao-table-class) &rest initargs)
   (declare (ignore initargs))
   (multiple-value-prog1
       (call-next-method)
     (set-methods-sources class)))
 
 
-(defmethod reinitialize-instance :around ((class mito:dao-table-class) &rest initargs)
+(defmethod reinitialize-instance :around ((class fixed-dao-table-class) &rest initargs)
   (declare (ignore initargs))
   (multiple-value-prog1
       (call-next-method)
