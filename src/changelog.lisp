@@ -155,6 +155,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.25.0 2025-09-13
+          "* Added a `40ants-doc/mito` package with a helper to solve problem of rendering documentation for projects which use Mito's table classes. You should load this helper as your project's documentation dependency.")
   (0.24.2 2025-05-26
           "* Fixed a warning \"These symbols are external, but not documented\" shown for symboles ignored by passing IGNORE-SYMBOL-P argument.")
   (0.24.1 2025-05-26
