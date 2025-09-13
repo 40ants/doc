@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E25-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.25.1 (2025-09-13)
+
+* New package 40ants-doc/mito now exports `fixed-dao-table-class` class which should be used instead of Mito's `dao-table-class`.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E25-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.25.0 (2025-09-13)
