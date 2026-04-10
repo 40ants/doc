@@ -9,8 +9,12 @@
                 #:reference-object)
   (:import-from #:40ants-doc/source-api)
   (:import-from #:cl-ppcre)
-  (:import-from #:str)
+  (:import-from #:str
+                #:trim
+                #:split)
   (:import-from #:alexandria
+                #:read-file-into-string
+                #:length=
                 #:starts-with-subseq)
   (:import-from #:40ants-doc/reference-api
                 #:*source-uri-fn*
@@ -108,23 +112,60 @@
               for ASDF system~% ~A. Links to github will not be generated."
               (asdf:component-name (asdf:registered-system asdf-system))))))
 
+
+(defun read-git-dir-link (pathname)
+  "When system is cloned as a submodule, then instead of .git/ directory there is a file .git
+   with a link like this:
+
+   ```
+   gitdir: ../../.git/modules/libs/ai-agents
+   ```
+
+   This function reads such file and returns a new pathname pointing to the real git dir.
+"
+  (loop with content = (read-file-into-string pathname)
+        with lines = (split #\Newline content)
+        for line in lines
+        for trimmed = (trim line)
+        for splitted = (unless (string= trimmed "")
+                         (split #\: trimmed :limit 2))
+        for key = (when (length= 2 splitted)
+                    (first splitted))
+        when (and key
+                  (string= key "gitdir"))
+          do (return (merge-pathnames (uiop:ensure-directory-pathname
+                                       (trim (second splitted)))
+                                      pathname))))
+
+
 (defun asdf-system-git-version (system)
   (check-type system asdf:system)
   
   (let* ((git-dir
            (merge-pathnames (make-pathname :directory '(:relative ".git"))
-                            (asdf:system-relative-pathname system ""))))
-    (if (probe-file git-dir)
-        (git-version git-dir)
-        nil)))
+                            (asdf:system-relative-pathname system "")))
+         (git-dir
+           (when git-dir
+             (probe-file git-dir)))
+         (git-dir
+           (when git-dir
+             (cond
+               ((uiop:directory-pathname-p git-dir)
+                git-dir)
+               (t
+                (read-git-dir-link git-dir))))))
+    (if git-dir
+      (git-version git-dir)
+      nil)))
+
 
 (defun git-version (git-dir)
   (let ((head-string (read-first-line
                       (merge-pathnames (make-pathname :name "HEAD") git-dir))))
     (if (starts-with-subseq "ref: " head-string)
-        (let ((ref (subseq head-string 5)))
-          (values (read-first-line (merge-pathnames ref git-dir)) ref))
-        head-string)))
+      (let ((ref (subseq head-string 5)))
+        (values (read-first-line (merge-pathnames ref git-dir)) ref))
+      head-string)))
 
 (defun read-first-line (filename)
   (with-open-file (stream filename)

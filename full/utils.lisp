@@ -549,33 +549,72 @@
     (reverse translated)))
 
 
+(defun normalize-system-name (system-name)
+  (cond
+    ((consp system-name)
+     (cond
+       ((eql (first system-name)
+             :feature)
+        (when (member (second system-name)
+                      *features*)
+          (let ((new-dep (third system-name)))
+            (cond
+              ((and (consp new-dep)
+                    (eql (first new-dep)
+                         :require))
+               ;; Usually :require dependencies
+               ;; load native lisp implementation modules,
+               ;; so we don't need to list them as external dependencies.
+               nil)
+              (t
+               system-name)))))
+       (t
+        (error "Deps ok kind ~S are not supported"
+               (first system-name)))))
+    (t
+     system-name)))
+
+
 (defun external-dependencies (system-name) 
   (let ((primary-name (asdf:primary-system-name system-name))
         (processed nil))
     (labels ((rec (system-name &optional collected)
-               (cond
-                 ((member system-name processed
-                          :test #'string-equal)
-                  collected)
-                 (t
-                  (push system-name processed)
-                  ;; (format t "Processing ~S system~%" system-name)
+               (let ((system-name
+                       (normalize-system-name system-name)))
+                 (cond
+                   ((null system-name)
+                    (values))
+                   ((member system-name processed
+                            :test #'string-equal)
+                    collected)
+                   (t
+                    (push system-name processed)
+                    ;; (format t "Processing ~S system~%" system-name)
                   
-                  (let* ((system (asdf:registered-system system-name))
-                         (dependencies (asdf/system:system-depends-on system)))
-                    (loop for dep in dependencies
-                          for dep-primary = (asdf:primary-system-name dep)
-                          unless (or (string-equal primary-name dep-primary)
-                                     (member dep collected
-                                             :test #'string-equal))
-                          collect dep into new-deps
-                          finally (setf collected
-                                        (append new-deps
-                                                collected)))
-                    (loop for dep in dependencies
-                          do (setf collected
-                                   (rec dep collected)))
-                    collected)))))
+                    (let* ((system (asdf:registered-system system-name))
+                           (dependencies (asdf/system:system-depends-on system)))
+                      (loop for dep in dependencies
+                            for normalized-dep = (normalize-system-name dep)
+                            for dep-primary = (when normalized-dep
+                                                (asdf:primary-system-name normalized-dep))
+                            unless (or (null dep-primary)
+                                       (string-equal primary-name dep-primary)
+                                       (member dep-primary new-deps
+                                               :test #'string-equal)
+                                       (member dep-primary collected
+                                               :test #'string-equal))
+                              collect dep-primary into new-deps
+                            finally
+                               (when new-deps
+                                 ;; (format t "Appending ~S to ~S~%" new-deps collected)
+                                 (setf collected
+                                       (append new-deps
+                                               collected))))
+
+                      (loop for dep in dependencies
+                            do (setf collected
+                                     (rec dep collected)))
+                      collected))))))
       (sort (rec system-name)
             #'string<))))
 

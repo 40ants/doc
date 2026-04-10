@@ -411,4 +411,12 @@ body blockquote{
 
 body .unresolved-reference{
     color: magenta;
+}@media (max-width: 800px){
+    body .sidebar{
+        display: none;
+    }
+    body .page > .content{
+        margin: 0 1ex 0 1ex;
+        padding: 1ex;
+    }
 }
