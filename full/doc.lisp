@@ -114,6 +114,8 @@
     "
 <table class=\"badges\">
 <tr>
+<td><a href=\"https://github.com/40ants/ai-badges\"><img src=\"https://img.shields.io/badge/SAFE-HAND%20MADE%20CODE-32CD32\"/></a></td>
+
 <td><a href=\"https://github.com/40ants/doc/actions/workflows/ci.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=ci.run-tests\"/></a></td>
 
 <td><a href=\"https://github.com/40ants/doc/actions/workflows/linter.yml\"><img src=\"http://github-actions.40ants.com/40ants/doc/matrix.svg?only=linter.linter\"/></a></td>
