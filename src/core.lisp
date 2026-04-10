@@ -7,8 +7,11 @@
   (:import-from #:40ants-doc/object-package)
   (:import-from #:40ants-doc/docstring
                 #:strip-docstring-indentation)
-  (:import-from #:serapeum
-                #:soft-list-of)
+  ;; We specially do not use soft-list-from-serapeum here
+  ;; to protect core of 40ants-doc from Serapeum and it's transitive
+  ;; dependencies
+  ;; (:import-from #:serapeum
+  ;;               #:soft-list-of)
   (:export #:defsection
            #:exportable-locative-type-p
            #:section
@@ -213,6 +216,16 @@
                         :ignore-packages (list
                                           ,@(eval ignore-packages)))))))
 
+(deftype simple-list-of (type)
+  "A soft constraint for the elements of a list.
+
+Only first element is checked.
+"
+  `(or null
+       (cons ,type
+             t)))
+
+
 (defclass section ()
   ((name
     :initarg :name
@@ -252,13 +265,13 @@
     :documentation "A list of strings with URLs of other system's documentation.")
    (ignore-words
     :initarg :ignore-words
-    :type (soft-list-of string)
+    :type (simple-list-of string)
     :initform nil
     :reader section-ignore-words
     :documentation "A list of strings to not warn about.")
    (ignore-packages
     :initarg :ignore-packages
-    :type (soft-list-of string)
+    :type (simple-list-of string)
     :initform nil
     :reader section-ignore-packages
     :documentation "A list of strings denoting package names to not warn about."))
