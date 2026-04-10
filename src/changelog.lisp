@@ -155,6 +155,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.26.0 2026-04-11
+          "* Supported documentation building for projects cloned as git submodules.")
   (0.25.1 2025-09-13
           "* New package 40ants-doc/mito now exports `fixed-dao-table-class` class which should be used instead of Mito's `dao-table-class`.")
   (0.25.0 2025-09-13
