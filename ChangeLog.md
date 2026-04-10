@@ -2,6 +2,13 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E26-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.26.0 (2026-04-11)
+
+* Supported documentation building for projects cloned as git submodules.
+* Fixed external dependencies listing in case if some deps use :require.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E25-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.25.1 (2025-09-13)
