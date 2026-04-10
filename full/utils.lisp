@@ -599,12 +599,17 @@
                                                 (asdf:primary-system-name normalized-dep))
                             unless (or (null dep-primary)
                                        (string-equal primary-name dep-primary)
-                                       (member dep collected
+                                       (member dep-primary new-deps
+                                               :test #'string-equal)
+                                       (member dep-primary collected
                                                :test #'string-equal))
-                              collect dep into new-deps
-                            finally (setf collected
-                                          (append new-deps
-                                                  collected)))
+                              collect dep-primary into new-deps
+                            finally
+                               (when new-deps
+                                 ;; (format t "Appending ~S to ~S~%" new-deps collected)
+                                 (setf collected
+                                       (append new-deps
+                                               collected))))
 
                       (loop for dep in dependencies
                             do (setf collected
