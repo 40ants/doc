@@ -44,3 +44,17 @@
     (ok (40ants-doc-full/locatives/slots::find-writer-slot-definition
          'slot-writer
          'slot-reader-writer-class))))
+
+
+(deftest test-reader-locative-finds-a-reader-symbol
+  (testing "A reader locative resolves a slot declared with :reader"
+    (ok (40ants-doc-full/locatives/slots::find-reader-slot-definition
+         'slot-reader
+         'slot-reader-writer-class))))
+
+
+(deftest test-accessor-locative-finds-an-accessor-symbol
+  (testing "An accessor locative resolves a slot declared with :accessor"
+    (ok (40ants-doc-full/locatives/slots::find-accessor-slot-definition
+         'slot-accessor
+         'slot-reader-writer-class))))
