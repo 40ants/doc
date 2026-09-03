@@ -155,6 +155,8 @@
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.26.1 2026-09-03
+          "* Fixed autodoc support for slots declared with `:writer`.")
   (0.26.0 2026-04-11
           "* Supported documentation building for projects cloned as git submodules.
            * Fixed external dependencies listing in case if some deps use :require.")
@@ -399,5 +401,4 @@
       referenced objects are in different packages.
     - Allowed to reference objects using keywords.
     - Fixed docstring extraction for compiler macro."))
-
 

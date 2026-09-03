@@ -24,23 +24,41 @@
   (:documentation "This module is not included into asd file because it requires additional dependencies."))
 (in-package #:40ants-doc/autodoc)
 
+(defmacro %flatmap-slots ((class-name slot-var) &body body)
+  "runs `body` on each slot (bound to `slot-var`) in `class-name`  body should
+return a list.  The results from all slots are flattened, sorted, and returned.
 
-(defun class-readers-and-accessors (class-name &key (ignore-symbol-p 'starts-with-percent-p))
-  (let* ((class (find-class class-name))
-         (slots (class-direct-slots class)))
-    (loop for slot in slots
-          for readers = (remove-if ignore-symbol-p
-                                   (slot-definition-readers slot))
-          for writers = (remove-if ignore-symbol-p
-                                   (mapcar #'second
-                                           (slot-definition-writers slot)))
-          append readers into all-readers
-          append writers into all-writers
-          finally (return (values (sort all-readers
-                                        #'string<)
-                                  (sort all-writers
-                                        #'string<))))))
+This is meant for use with the class-readers and class-writers functions."
+  (let ((mapped-vals (gensym)))
+    `(loop :for ,slot-var :in (class-direct-slots (find-class ,class-name))
+           :append (progn ,@body) :into ,mapped-vals
+           :finally (return (sort ,mapped-vals #'string<)))))
 
+(defun class-readers (class-name &key (ignore-symbol-p 'starts-with-percent-p))
+  "returns list of methods that can read slots of `class-name`"
+  (%flatmap-slots (class-name slot)
+    (remove-if ignore-symbol-p (slot-definition-readers slot))))
+
+(defun class-writers (class-name &key (ignore-symbol-p 'starts-with-percent-p))
+  "returns list of methods that can write to slots of `class-name`."
+  (%flatmap-slots (class-name slot)
+    (remove-if ignore-symbol-p
+               (mapcar (lambda (writer)
+                         (if (typep writer 'list)
+                             (second writer)
+                             writer))
+                       (slot-definition-writers slot)))))
+
+(defun class-accessors (class-name &key (ignore-symbol-p 'starts-with-percent-p))
+  "returns list of methods that are accessors (ie can read and write) to slots
+of `class-name`."
+  (nintersection (class-readers class-name :ignore-symbol-p ignore-symbol-p)
+                 (class-writers class-name :ignore-symbol-p ignore-symbol-p)))
+
+(defun class-readers-writers (class-name &key (ignore-symbol-p 'starts-with-percent-p))
+  "returns list of all methods that read or write to slots of `class-name`"
+  (nunion (class-readers class-name :ignore-symbol-p ignore-symbol-p)
+          (class-writers class-name :ignore-symbol-p ignore-symbol-p)))
 
 (defun system-packages (system-name)
   (loop for package in (list-all-packages)
@@ -54,16 +72,13 @@
                               :key #'package-name))))
 
 
-(defun package-accessors-and-writers (package &key (ignore-symbol-p 'starts-with-percent-p))
+(defun package-readers-and-writers (package &key (ignore-symbol-p 'starts-with-percent-p))
   (loop with result = nil
         for symbol being the external-symbols of package
         when (find-class symbol nil)
-          do (multiple-value-bind (readers accessors)
-                 (class-readers-and-accessors symbol
-                                              :ignore-symbol-p ignore-symbol-p)
-               (setf result
-                     (nunion result
-                             (nunion readers accessors))))
+        do (setf result 
+                 (nunion result (class-readers-writers symbol
+                                                       :ignore-symbol-p ignore-symbol-p)))
         finally (return result)))
 
 
@@ -87,10 +102,15 @@
 (defun make-class-entry (class-name package-name &key (ignore-symbol-p 'starts-with-percent-p))
   (check-type class-name symbol)
   (check-type package-name string)
-  
-  (multiple-value-bind (readers accessors)
-      (class-readers-and-accessors class-name
-                                   :ignore-symbol-p ignore-symbol-p)
+
+  (let ((all-readers (class-readers class-name :ignore-symbol-p ignore-symbol-p))
+        readers
+        (all-writers (class-writers class-name :ignore-symbol-p ignore-symbol-p))
+        writers
+        (accessors (class-accessors class-name :ignore-symbol-p ignore-symbol-p)))
+
+    (setf readers (set-difference all-readers all-writers)
+          writers (set-difference all-writers all-readers))
 
     (let* ((title (symbol-name class-name))
            (section-name (symbolicate
@@ -102,14 +122,21 @@
                           "?CLASS"))
            (entries
              (nconc
+              (when accessors
+                (list "**Accessors**"))
+              (loop for accessor in accessors
+                    collect `(,accessor (accessor ,class-name)))
+              
               (when readers
                 (list "**Readers**"))
               (loop for reader in readers
                     collect `(,reader (reader ,class-name)))
-              (when accessors
-                (list "**Accessors**"))
-              (loop for accessor in accessors
-                    collect `(,accessor (accessor ,class-name)))))
+              
+              (when writers
+                (list "**Writers**"))
+              (loop for writer in writers
+                    collect `(,writer (writer ,class-name)))))
+           
            (section-definition
              `(eval-when (:compile-toplevel :load-toplevel :execute)
                 (defsection ,section-name (:title ,title
@@ -130,8 +157,9 @@
     
     (let* ((package-name (package-name package))
            (title package-name)
-           (accessors-and-readers (package-accessors-and-writers package
-                                                                 :ignore-symbol-p #'ignore-symbol-p-wrapper))
+           (readers-and-writers (package-readers-and-writers 
+                                 package
+                                 :ignore-symbol-p #'ignore-symbol-p-wrapper))
            (entries (loop for symbol being the external-symbols of package
                           for should-be-documented = (not (ignore-symbol-p-wrapper symbol))
                           ;; Usual functions
@@ -145,7 +173,7 @@
                           when (and (fboundp symbol)
                                     should-be-documented
                                     (typep (symbol-function symbol) 'generic-function)
-                                    (not (member symbol accessors-and-readers
+                                    (not (member symbol readers-and-writers
                                                  :test 'eql)))
                             collect (list symbol 'generic-function) into generics
 

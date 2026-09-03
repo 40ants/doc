@@ -87,7 +87,9 @@
 
 (defun find-writer-slot-definition (accessor-symbol class-symbol)
   (dolist (slot-def (swank-mop:class-direct-slots (find-class class-symbol)))
-    (when (find accessor-symbol (swank-mop:slot-definition-writers slot-def))
+    (when (find accessor-symbol (swank-mop:slot-definition-writers slot-def)
+                :key (lambda (w)
+                       (if (listp w) (second w) w)))
       (return-from find-writer-slot-definition slot-def)))
   (locate-error "Could not find writer ~S for class ~S." accessor-symbol
                 class-symbol))
