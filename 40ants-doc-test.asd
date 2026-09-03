@@ -4,7 +4,10 @@
   :description "Test system for 40ANTS-DOC system."
   :class :package-inferred-system
   :pathname "test"
-  :depends-on ("40ants-doc-test/test-transcribe"
+  :depends-on ("40ants-doc/autodoc"
+               "40ants-doc-full"
+               "40ants-doc-test/test-transcribe"
+               "40ants-doc-test/autodoc"
                "40ants-doc-test/test"
                "40ants-doc-test/xref"
                "40ants-doc-test/locatives"
