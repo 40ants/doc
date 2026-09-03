@@ -9,3 +9,7 @@ new-docs/
 .qlot/
 /coverage/
 .DS_Store
+
+
+# APM dependencies
+apm_modules/
