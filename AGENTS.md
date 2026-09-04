@@ -6,6 +6,10 @@ This is a Common Lisp documentation library split into ASDF package-inferred sys
 
 Keep a feature in the smallest appropriate subsystem. For example, add a core locative in `src/locatives/` and a rendering-specific locative in `full/locatives/`.
 
+## Development Workflow
+
+Use the `atomic-spec-orchestrator` skill for all project work. Follow its Atomic Spec process, including the required role transitions and gate validation, when applicable.
+
 ## Build, Test, and Development Commands
 
 Install the locked dependencies once with:
