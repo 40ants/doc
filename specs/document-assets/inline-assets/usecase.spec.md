@@ -86,3 +86,69 @@ None.
 
 - **DL-1** (2026-09-03): The source-path-derived output path is the v1 default, avoiding an additional public option until a concrete need arises.
 - **DL-2** (2026-09-03): Alt text defaults to the asset symbol's name and can be expanded in a follow-up feature if richer metadata is required.
+
+## § Tech Spec
+
+### Public API
+
+`40ants-doc-full/assets:defasset` registers a symbol, a local pathname
+designator, and optional `:target-filename`, `:description`, `:width`, and
+`:height` metadata. The default target is the source's relative pathname.
+
+### Rendering pipeline
+
+1. The existing XREF pass recognizes dotted asset names such as `@DEMO.GIF`.
+2. `replace-assets` changes an XREF with a registered symbol into a
+   `local-image` node before normal XREF replacement.
+3. The builder copies all `local-image` nodes once per target before emitting
+   pages, independent of the selected document format.
+4. HTML emits an `img` element and Markdown emits Markdown image syntax, both
+   calculated relative to the page being rendered.
+
+### Validation
+
+Asset resolution checks source existence, rejects absolute or parent-directory
+target paths, and rejects targets registered by another asset name.
+
+## § Implementation Notes
+
+### File Map
+
+- `full/assets.lisp` — registry, `defasset`, validation, and XREF replacement.
+- `full/commondoc/image.lisp` — shared pre-render copying and HTML/Markdown
+  image emission.
+- `full/builder.lisp` — invokes asset replacement and the common copying step.
+- `full/commondoc/xref.lisp` — recognizes dotted symbol names.
+- `test/assets.lisp` — HTML, Markdown, missing source, unsafe target, and
+  collision coverage.
+
+### Trade-offs
+
+The registry is process-local, matching existing load-time documentation
+definitions. Asset names are symbol identities, so declarations are naturally
+scoped by package.
+
+### Known Limitations
+
+Assets are local images in this version. Rich metadata and non-image files are
+outside this use case.
+
+## § Test Plan
+
+| Test case | Requirement | Verification |
+| --- | --- | --- |
+| TC-001 | HTML rendering; DR-1, DR-2, DR-3 | Render an asset page, assert the copied file and its `img` source. |
+| TC-002 | Markdown rendering; DR-2, DR-3, DR-4 | Render a nested Markdown page, assert the copied file and `../assets/...` image source. |
+| TC-003 | Missing source; DR-1 | Render a page using an absent source and assert an error. |
+| TC-004 | Unsafe target; DR-3, [SEC] | Render a page using `../` as a target and assert an error. |
+| TC-005 | Target collision; DR-3 | Render a page using one of two assets registered for the same target and assert an error. |
+| TC-006 | Regression | Run the complete `40ants-doc-test` ASDF suite. |
+| TC-007 | Static analysis | Run `40ants-linter` for core, full, and test systems with imports checking. |
+
+## § QA Review
+
+- All acceptance criteria are covered by TC-001 through TC-005.
+- The negative scenarios cover missing input, unsafe traversal, and a duplicate
+  output target.
+- IDMP is implemented through a target-keyed copy set; TC-001 and TC-002
+  exercise the common pre-render copying path in both supported formats.
