@@ -66,6 +66,8 @@
                 #:height
                 #:width
                 #:local-image)
+  (:import-from #:40ants-doc-full/assets
+                #:defasset)
   (:import-from #:40ants-doc/object-package
                 #:object-package)
   (:export #:@index
@@ -140,6 +142,7 @@
   (@basics section)
   (@generating-documentation section)
   (@markdown-support section)
+  (@declaring-assets section)
   (@documentation-printer-variables section)
   (@locative-types section)
   (@extension-api section)
@@ -681,6 +684,26 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (local-image class)
   (width (reader local-image))
   (height (reader local-image)))
+
+
+(defsection @declaring-assets (:title "Declaring Assets")
+  "Use DEFASSET to declare a local image once and render it anywhere in
+   prose by writing its name. The asset is copied to the documentation
+   output directory, and its name becomes an HTML or Markdown image
+   depending on the target format.
+
+   ```lisp
+   (defasset @demo.gif #\"static/demo.gif\")
+
+   (defsection @example ()
+     \"Here is @DEMO.GIF.\")
+   ```
+
+   By default, the source's relative pathname is retained below the
+   output directory. Use the :TARGET-FILENAME option when the output
+   name should differ. The target must stay below the output directory
+   and must be unique among declared assets."
+  (defasset macro))
 
 
 (defsection @reference-based-extensions
