@@ -3,7 +3,7 @@ id: DOC-ASSET
 type: domain
 parent: DOC-SYSTEM
 title: "Document assets"
-status: review
+status: implemented
 change_class: additive
 actors: [Library author, Documentation reader]
 emits: [AssetRegistered, AssetRendered]
@@ -14,7 +14,7 @@ owners:
   tester: "@codex"
 tags: [assets, images, rendering]
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 ---
 
 ## § Intent

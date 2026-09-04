@@ -3,7 +3,7 @@ id: DOC-ASSET-INLINE-001-SC-002
 type: scenario
 parent: DOC-ASSET-INLINE-001
 title: "Reject an invalid declared asset"
-status: review
+status: implemented
 change_class: additive
 actors: [Library author]
 emits: []
@@ -14,7 +14,7 @@ owners:
   tester: "@codex"
 tags: [assets, validation]
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 ---
 
 ## § Intent

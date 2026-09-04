@@ -3,7 +3,7 @@ id: DOC-ASSET-INLINE-001
 type: use-case
 parent: DOC-ASSET
 title: "Render declared asset inline"
-status: review
+status: implemented
 change_class: additive
 actors: [Library author, Documentation reader]
 emits: [AssetRegistered, AssetRendered]
@@ -14,7 +14,7 @@ owners:
   tester: "@codex"
 tags: [assets, inline-image, html, markdown]
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 ---
 
 ## § Intent

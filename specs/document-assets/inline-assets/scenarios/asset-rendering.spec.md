@@ -3,7 +3,7 @@ id: DOC-ASSET-INLINE-001-SC-001
 type: scenario
 parent: DOC-ASSET-INLINE-001
 title: "Render a declared asset as an inline image"
-status: review
+status: implemented
 change_class: additive
 actors: [Library author, Documentation reader]
 emits: [AssetRendered]
@@ -14,7 +14,7 @@ owners:
   tester: "@codex"
 tags: [assets, regression]
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-04
 ---
 
 ## § Intent
