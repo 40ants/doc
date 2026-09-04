@@ -701,7 +701,9 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
    (defasset @demo.gif #\"static/demo.gif\")
 
    (defsection @example ()
-     \"Here is @DEMO.GIF.\")
+     \"Here is @DEMO.GIF.\"
+
+     @demo.gif)
    ```
 
    By default, the source's relative pathname is retained below the

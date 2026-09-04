@@ -43,6 +43,19 @@
 (defvar *assets* (make-hash-table :test #'eq))
 
 
+(defun asset-symbol-p (symbol)
+  (not (null (gethash symbol *assets*))))
+
+
+(defmethod 40ants-doc::transform-symbol-entry :around ((entry symbol))
+  (or (gethash entry *assets*)
+      (call-next-method)))
+
+
+(defmethod 40ants-doc/object-package::object-package ((asset asset))
+  (symbol-package (asset-name asset)))
+
+
 (defun pathname-designator-string (pathname-designator)
   (namestring (pathname pathname-designator)))
 

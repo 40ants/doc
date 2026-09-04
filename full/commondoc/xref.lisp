@@ -166,33 +166,24 @@
           thereis (alpha-char-p char)))
 
 
-(defun extract-symbols-from-text (node)
+(defun extract-symbols-from-text (node &key (predicate (constantly t)))
   ;; TODO: Find if this a replacement for FIND-DEFINITIONS-FIND-SYMBOL-OR-PACKAGE.
   (let ((text (common-doc:text node))
         (new-nodes nil)
         (processed-to-idx 0))
 
     (cl-ppcre:do-matches (start end "([A-Z0-9][A-Z0-9-/.]+::?)?[+*@&:]?[A-Z0-9][A-Z0-9-.]*[A-Z0-9]+[+*]?" text)
-      (let ((symbol-name (subseq text start end)))
-        (when (valid symbol-name)
+      (let* ((symbol-name (subseq text start end))
+             (symbol (40ants-doc-full/utils:get-symbol-from-string symbol-name)))
+        (when (and (valid symbol-name)
+                   (funcall predicate symbol))
           (when (> start processed-to-idx)
             (push (common-doc:make-text (subseq text processed-to-idx start))
                   new-nodes))
 
-          (let* (;; (*package* (or
-                 ;;             ;; For some reason, read-locative-from-string
-                 ;;             ;; does now work when current package is COMMON-LISP
-                 ;;             (40ants-doc-full/utils:get-package-from-symbol-name symbol-name)
-                 ;;             *package*))
-                 (symbol (40ants-doc-full/utils:get-symbol-from-string symbol-name)))
-
-            ;; (when (string-equal symbol-name
-            ;;                     "40ANTS-DOC/DOC:@DOCUMENTATION-PRINTER-VARIABLES")
-            ;;   (break))
-            
-            (push (make-xref symbol-name
-                             :symbol symbol)
-                  new-nodes))
+          (push (make-xref symbol-name
+                           :symbol symbol)
+                new-nodes)
 
           (setf processed-to-idx end))))
 
@@ -226,7 +217,8 @@
      (call-next-method))))
 
 
-(defun extract-symbols (node &aux inside-code-block inside-inline-code)
+(defun extract-symbols (node &key (predicate (constantly t))
+                                 &aux inside-code-block inside-inline-code)
   "Extracts non marked up symbols from COMMON-DOC:TEXT-NODE and replaces them with XREF objects."
   
   (labels
@@ -256,7 +248,8 @@
                     (inside-inline-code
                      ;; If whole content of inline code is recognized
                      ;; as a symbol, then we'll replace it with XREF:
-                     (let ((result (extract-symbols-from-text node)))
+                     (let ((result (extract-symbols-from-text node
+                                                              :predicate predicate)))
                        (if (and (typep result 'xref)
                                 (= (length (common-doc:text node))
                                    (length (common-doc:text result))))
@@ -264,7 +257,8 @@
                          node))
                      )
                     (t
-                     (extract-symbols-from-text node))))
+                     (extract-symbols-from-text node
+                                                :predicate predicate))))
            (t node))))
     ;; Here we we need to change *package*
     ;; to make sure, that all symbol mentions are parsed as if we being

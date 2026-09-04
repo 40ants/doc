@@ -6,6 +6,8 @@
                 #:defasset)
   (:import-from #:40ants-doc-full/builder
                 #:render-to-files)
+  (:import-from #:40ants-doc-full/builder/printer
+                #:*document-uppercase-is-code*)
   (:import-from #:rove
                 #:deftest
                 #:ok
@@ -43,6 +45,11 @@
 
 (defsection @repeated-asset-page (:export nil)
   "@TEST-ASSET.PNG and @TEST-ASSET.PNG")
+
+
+(defsection @explicit-asset-page (:export nil)
+  "Here is:"
+  @test-asset.png)
 
 
 (defsection @missing-asset-page (:export nil)
@@ -108,6 +115,27 @@
                                   (read-file-into-string output-path)))))
     (testing "Repeated occurrences share one output target"
       (ok (probe-file (merge-pathnames "assets/test-rendering.png" output-dir))))))
+
+
+(deftest test-asset-renders-when-uppercase-code-is-disabled
+  (let ((*document-uppercase-is-code* nil))
+    (multiple-value-bind (output-dir output-path)
+        (render-asset-page :html "index")
+      (testing "An asset name remains an image even without implicit code"
+        (ok (probe-file (merge-pathnames "assets/test-rendering.png" output-dir)))
+        (ok (search "<img src=\"assets/test-rendering.png\""
+                    (read-file-into-string output-path)))))))
+
+
+(deftest test-explicit-asset-entry-renders-to-markdown
+  (multiple-value-bind (output-dir output-path)
+      (render-to-files @explicit-asset-page
+                       :base-dir (make-test-output-directory)
+                       :format :markdown)
+    (testing "An asset symbol can be a DEFSECTION entry"
+      (ok (probe-file (merge-pathnames "assets/test-rendering.png" output-dir)))
+      (ok (search "![@TEST-ASSET.PNG](assets/test-rendering.png)"
+                  (read-file-into-string output-path))))))
 
 
 (deftest test-missing-asset-is-rejected

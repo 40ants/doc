@@ -210,6 +210,11 @@
   40ants-doc-full/builder/vars::*current-asdf-system*)
 
 
+(defmethod 40ants-doc-full/commondoc/builder:to-commondoc
+    ((asset 40ants-doc-full/assets::asset))
+  (40ants-doc-full/assets::asset-to-local-image asset))
+
+
 ;;; Generate with the default HTML look
 
 (defun process-document (document &key base-url)
@@ -218,9 +223,11 @@
          (document (40ants-doc-full/commondoc/page:warn-on-undocumented-exports document
                                                                            references))
          (document (40ants-doc-full/commondoc/transcribe::warn-on-differences-in-transcriptions document))
-         (document (if 40ants-doc-full/builder/printer:*document-uppercase-is-code*
-                       (40ants-doc-full/commondoc/xref::extract-symbols document)
-                       document))
+         (document (40ants-doc-full/commondoc/xref::extract-symbols
+                    document
+                    :predicate (if 40ants-doc-full/builder/printer:*document-uppercase-is-code*
+                                   (constantly t)
+                                   #'40ants-doc-full/assets::asset-symbol-p)))
          (document (40ants-doc-full/commondoc/xref:fill-locatives document))
          (document (40ants-doc-full/assets::replace-assets document))
          (document (40ants-doc-full/commondoc/section::fill-html-fragments document))

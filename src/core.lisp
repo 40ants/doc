@@ -351,14 +351,29 @@ Only first element is checked.
                 (typecase entry
                   (string (add-external-links entry))
                   (symbol
-                   (let ((value (symbol-value entry)))
-                     (unless (typep value 'string)
-                       (error "~S value should be a string."
-                              entry))
-                     (add-external-links value)))
+                   (let ((transformed-entry
+                           (transform-symbol-entry entry)))
+                     (typecase transformed-entry
+                       (string (add-external-links transformed-entry))
+                       (t transformed-entry))))
                   (t
                    (entry-to-reference entry))))
               entries))))
+
+
+(defgeneric transform-symbol-entry (entry)
+  (:documentation "Transform a symbol used directly as a DEFSECTION entry.
+
+By default, ENTRY names a special variable holding a documentation string.
+Extensions may return another documentation entry, such as an asset."))
+
+
+(defmethod transform-symbol-entry ((entry symbol))
+  (let ((value (symbol-value entry)))
+    (unless (typep value 'string)
+      (error "~S value should be a string."
+             entry))
+    value))
 
 (defun entry-to-reference (entry)
   (destructuring-bind (symbol locative &key export) entry
