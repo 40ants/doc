@@ -2,6 +2,13 @@
 
 # ChangeLog
 
+<a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E27-2E0-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
+
+## 0.27.0 (2026-09-04)
+
+* Added `DEFASSET` for declaring local image assets that render in `HTML` and Markdown.
+* Declared assets can be included in prose or as standalone [`defsection`][4e8b] entries, including when `*DOCUMENT-UPPERCASE-IS-CODE*` is disabled.
+
 <a id="x-2840ANTS-DOC-2FCHANGELOG-3A-3A-7C0-2E26-2E1-7C-2040ANTS-DOC-2FLOCATIVES-3ASECTION-29"></a>
 
 ## 0.26.1 (2026-09-03)
