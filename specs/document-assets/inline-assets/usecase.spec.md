@@ -28,6 +28,8 @@ A library author declares an image once and places its name in documentation so 
 - **DR-3**: The image file is copied to one safe, unique path below the output root. A path collision or traversal attempt fails rendering.
 - **DR-4**: Image source paths are relative to the page that contains the image, including nested pages.
 - **DR-5**: Repeated occurrences of the same asset do not duplicate its output file.
+- **DR-6**: A declared asset name in prose is recognized even when implicit uppercase-code formatting is disabled.
+- **DR-7**: A declared asset symbol may be used directly as a DEFSECTION entry and becomes an image.
 
 ## § Acceptance Criteria
 
@@ -57,6 +59,19 @@ Scenario: Render a repeated image (→ DR-5)
     And two documentation pages contain @DEMO.GIF
   When the author renders documentation
   Then one output file is created for @DEMO.GIF
+
+Scenario: Render with implicit uppercase-code formatting disabled (→ DR-2, DR-6)
+  Given an author has declared an existing asset named @DEMO.GIF
+    And a documentation page contains @DEMO.GIF
+    And implicit uppercase-code formatting is disabled
+  When the author renders documentation
+  Then the page contains an image for @DEMO.GIF
+
+Scenario: Render an explicit asset entry (→ DR-2, DR-7)
+  Given an author has declared an existing asset named @DEMO.GIF
+    And a documentation section contains @DEMO.GIF as a direct entry
+  When the author renders documentation
+  Then the page contains an image for @DEMO.GIF
 
 Scenario: Reject an unusable declaration (→ DR-1, DR-3)
   Given an author has declared an asset with an absent source or unsafe output path
@@ -98,11 +113,15 @@ designator, and optional `:target-filename`, `:description`, `:width`, and
 ### Rendering pipeline
 
 1. The existing XREF pass recognizes dotted asset names such as `@DEMO.GIF`.
-2. `replace-assets` changes an XREF with a registered symbol into a
+2. When implicit uppercase-code formatting is disabled, the XREF pass extracts
+   only registered asset names.
+3. `replace-assets` changes an XREF with a registered symbol into a
    `local-image` node before normal XREF replacement.
-3. The builder copies all `local-image` nodes once per target before emitting
+4. A registered symbol used directly as a DEFSECTION entry is transformed into
+   its asset and then into a `local-image` by the builder.
+5. The builder copies all `local-image` nodes once per target before emitting
    pages, independent of the selected document format.
-4. HTML emits an `img` element and Markdown emits Markdown image syntax, both
+6. HTML emits an `img` element and Markdown emits Markdown image syntax, both
    calculated relative to the page being rendered.
 
 ### Validation
@@ -120,7 +139,8 @@ target paths, and rejects targets registered by another asset name.
 - `full/builder.lisp` — invokes asset replacement and the common copying step.
 - `full/commondoc/xref.lisp` — recognizes dotted symbol names.
 - `test/assets.lisp` — HTML, Markdown, missing source, unsafe target, and
-  collision coverage.
+  collision coverage, plus disabled implicit-code and direct-entry regression
+  coverage.
 
 ### Trade-offs
 
@@ -145,10 +165,12 @@ outside this use case.
 | TC-006 | Repeated asset; DR-5, [IDMP] | Render two occurrences and assert two image nodes sharing one target file. |
 | TC-007 | Regression | Run the complete `40ants-doc-test` ASDF suite. |
 | TC-008 | Static analysis | Run `40ants-linter` for core, full, and test systems with imports checking. |
+| TC-009 | DR-6 | Disable implicit uppercase-code formatting and assert a bare asset name is emitted as an image. |
+| TC-010 | DR-7 | Use an asset symbol directly in DEFSECTION and assert Markdown image output. |
 
 ## § QA Review
 
-- All acceptance criteria are covered by TC-001 through TC-005.
+- All acceptance criteria are covered by TC-001 through TC-010.
 - The negative scenarios cover missing input, unsafe traversal, and a duplicate
   output target.
 - IDMP is implemented through a target-keyed copy set; TC-006 verifies the

@@ -25,6 +25,7 @@ A library author uses a declared asset name in documentation so a reader sees th
 
 - **DR-1**: A resolvable asset name is represented by an image in the selected output format.
 - **DR-2**: The image target exists in the output directory and is addressed relative to the page.
+- **DR-3**: A declared asset is recognized when implicit uppercase-code formatting is disabled and when used as a direct DEFSECTION entry.
 
 ## § Acceptance Criteria
 
@@ -35,6 +36,11 @@ Scenario: Output contains a declared image
   When the author renders the page as HTML or Markdown
   Then the page contains image syntax for @DEMO.GIF
     And the referenced image file is present in the output directory
+
+Scenario: Explicit or non-implicit asset inclusion
+  Given an author has declared @DEMO.GIF for an existing local image
+  When the author disables implicit uppercase-code formatting or uses @DEMO.GIF as a direct DEFSECTION entry
+  Then the page contains image syntax for @DEMO.GIF
 ```
 
 ## § Domain Model Touch
