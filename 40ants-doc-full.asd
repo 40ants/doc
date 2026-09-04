@@ -13,6 +13,7 @@
   :pathname "full"
   :depends-on (;; "40ants-doc/full"
                "40ants-doc-full/builder"
+               "40ants-doc-full/assets"
                "40ants-doc-full/doc"
 
                ;; TODO: Все эти locatives надо сделать доступными в минимальном пакете

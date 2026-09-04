@@ -152,9 +152,14 @@
                               "*DOCUMENT-MARK-UP-SIGNATURES*"
                               "*DOCUMENT-NORMALIZE-PACKAGES*"
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
+                              "*DOCUMENT-UPPERCASE-IS-CODE*"
+                              "DEFASSET"
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.27.0 2026-09-04
+          "* Added DEFASSET for declaring local image assets that render in HTML and Markdown.
+           * Declared assets can be included in prose or as standalone DEFSECTION entries, including when *DOCUMENT-UPPERCASE-IS-CODE* is disabled.")
   (0.26.1 2026-09-03
           "* Fixed autodoc support for slots declared with `:writer`.")
   (0.26.0 2026-04-11
@@ -401,4 +406,3 @@
       referenced objects are in different packages.
     - Allowed to reference objects using keywords.
     - Fixed docstring extraction for compiler macro."))
-

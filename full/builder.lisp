@@ -23,6 +23,7 @@
   (:import-from #:40ants-doc-full/commondoc/section)
   (:import-from #:40ants-doc-full/commondoc/xref)
   (:import-from #:40ants-doc-full/commondoc/image)
+  (:import-from #:40ants-doc-full/assets)
   (:import-from #:40ants-doc-full/external-index
                 #:write-references-index)
   (:import-from #:40ants-doc-full/commondoc/reference)
@@ -209,6 +210,11 @@
   40ants-doc-full/builder/vars::*current-asdf-system*)
 
 
+(defmethod 40ants-doc-full/commondoc/builder:to-commondoc
+    ((asset 40ants-doc-full/assets::asset))
+  (40ants-doc-full/assets::asset-to-local-image asset))
+
+
 ;;; Generate with the default HTML look
 
 (defun process-document (document &key base-url)
@@ -217,10 +223,13 @@
          (document (40ants-doc-full/commondoc/page:warn-on-undocumented-exports document
                                                                            references))
          (document (40ants-doc-full/commondoc/transcribe::warn-on-differences-in-transcriptions document))
-         (document (if 40ants-doc-full/builder/printer:*document-uppercase-is-code*
-                       (40ants-doc-full/commondoc/xref::extract-symbols document)
-                       document))
+         (document (40ants-doc-full/commondoc/xref::extract-symbols
+                    document
+                    :predicate (if 40ants-doc-full/builder/printer:*document-uppercase-is-code*
+                                   (constantly t)
+                                   #'40ants-doc-full/assets::asset-symbol-p)))
          (document (40ants-doc-full/commondoc/xref:fill-locatives document))
+         (document (40ants-doc-full/assets::replace-assets document))
          (document (40ants-doc-full/commondoc/section::fill-html-fragments document))
          (document (40ants-doc-full/commondoc/page::warn-on-references-to-internals document))
          (document (if 40ants-doc-full/link:*document-link-code*
@@ -346,6 +355,9 @@
                      (output-paths nil))
                 
                 (ensure-directories-exist absolute-dir)
+
+                (40ants-doc-full/commondoc/image::copy-local-images full-document
+                                                                      absolute-dir)
 
                 (when (eql 40ants-doc-full/commondoc/format::*current-format* 'common-html:html)
                   (write-references-index (uiop:merge-pathnames* "references.json" absolute-dir)

@@ -8,6 +8,7 @@
                "40ants-doc-full"
                "40ants-doc-test/test-transcribe"
                "40ants-doc-test/autodoc"
+               "40ants-doc-test/assets"
                "40ants-doc-test/test"
                "40ants-doc-test/xref"
                "40ants-doc-test/locatives"

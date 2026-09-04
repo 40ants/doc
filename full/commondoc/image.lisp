@@ -37,7 +37,8 @@
            :reader height)))
 
 
-(defun full-path (path)
+(defun resolve-local-image-path (path)
+  "Resolve PATH according to the current documented ASDF system."
   (cond
     ((str:starts-with-p "asdf:" path)
      (destructuring-bind (prefix asdf-system-name path)
@@ -135,7 +136,7 @@
    and then makes a paragraph with image, pointing to this temp file.
 "
      
-  (let ((full-path (full-path path)))
+  (let ((full-path (resolve-local-image-path path)))
     (unless (probe-file full-path)
       (error "Image file \"~A\" not found"
              full-path))
@@ -178,6 +179,41 @@
              (t node))))
     (map-nodes document #'replacer)))
 
+
+(defun target-path (image base-dir)
+  (uiop:merge-pathnames* (target-filename image)
+                         (uiop:ensure-directory-pathname base-dir)))
+
+
+(defun copy-local-image (image base-dir copied-targets)
+  (let* ((source-path (common-doc:source image))
+         (target-path (target-path image base-dir)))
+    (unless (gethash target-path copied-targets)
+      (unless (equal source-path target-path)
+        (log:info "Copying image from ~A to ~A" source-path target-path)
+        (ensure-directories-exist target-path)
+        (uiop:copy-file source-path target-path))
+      (setf (gethash target-path copied-targets) t))))
+
+
+(defun copy-local-images (document base-dir)
+  "Copy all local images in DOCUMENT to BASE-DIR exactly once per target."
+  (let ((copied-targets (make-hash-table :test #'equal)))
+    (map-nodes document
+               (lambda (node)
+                 (when (typep node 'local-image)
+                   (copy-local-image node base-dir copied-targets))
+                 node))))
+
+
+(defun image-source (image)
+  (let* ((base-dir (uiop:ensure-directory-pathname
+                    40ants-doc-full/builder/vars::*base-dir*))
+         (target-path (target-path image base-dir))
+         (page-uri (make-page-uri 40ants-doc-full/builder/vars::*current-page*))
+         (relative-path (namestring (uiop:enough-pathname target-path base-dir))))
+    (make-relative-path page-uri relative-path)))
+
 (defun extract-width-and-height (path)
   "Returns 3 values, real path, width and height. Width and height might be NIL.
 
@@ -209,37 +245,13 @@
 
 
 (define-emitter (obj local-image)
-  "Emit a local-image and move referenced image into the HTML documentation folder."
-  (let* ((source-path
-           ;; This is the path from where we will copy file:
-           (common-doc:source obj))
-         ;; Directory where we render all documentation files:
-         (base-dir
-           (uiop:ensure-directory-pathname 
-            40ants-doc-full/builder/vars::*base-dir*))
-         (target-path (uiop:merge-pathnames* (target-filename obj)
-                                             base-dir))
-         ;; Path of the current page:
-         (page-uri (make-page-uri 40ants-doc-full/builder/vars::*current-page*))
-         ;; This path will be used on the web page to refer the image:
-         (relative-path (namestring
-                         (uiop:enough-pathname target-path
-                                               base-dir)))
-         (new-source (make-relative-path page-uri
-                                         relative-path))
+  "Emit a local image already copied to the documentation output folder."
+  (let* ((new-source (image-source obj))
          (src (if common-html.emitter:*image-format-control*
                 (format nil common-html.emitter:*image-format-control*
                         new-source)
                 new-source))
          (description (common-doc:description obj)))
-
-    (unless (equal source-path
-                   target-path)
-      (log:info "Copying image from ~A to ~A" source-path target-path)
-      (ensure-directories-exist target-path)
-      (uiop:copy-file source-path
-                      target-path))
-
     (with-html
       (:img :src src
             :alt description
@@ -247,3 +259,10 @@
             :width (width obj)
             :height (height obj)))))
 
+
+(defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
+                                            (obj local-image)
+                                            stream)
+  (format stream "![~A](~A)"
+          (common-doc:description obj)
+          (image-source obj)))
