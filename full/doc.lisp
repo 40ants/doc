@@ -129,9 +129,13 @@
 </table>
 "))
 
+(defasset @logo.png "static/logo.png"
+  :description "40ants-doc logo")
+
 (defsection @index (:title "40Ants Doc Manual"
                     :ignore-words *ignore-words*)
   *badges*
+  "@LOGO.PNG"
   (@about section)
   (40ants-doc system)
   (40ants-doc-full system)
@@ -154,6 +158,7 @@
                      :ignore-words (list* "DEFSECTION"
                                           *ignore-words*))
   *badges*
+  "@LOGO.PNG"
   (@about section)
   (@full-doc-link section)
   (@tutorial section)
