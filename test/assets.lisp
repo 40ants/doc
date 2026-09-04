@@ -18,7 +18,7 @@
 
 
 (defasset @test-asset.png
-  #.(asdf:system-relative-pathname :40ants-doc "static/rendering.png")
+  "static/rendering.png"
   :target-filename "assets/test-rendering.png")
 
 (defasset @missing-asset.png
