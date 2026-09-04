@@ -23,8 +23,7 @@
   (:import-from #:40ants-doc-full/commondoc/section)
   (:import-from #:40ants-doc-full/commondoc/xref)
   (:import-from #:40ants-doc-full/commondoc/image)
-  (:import-from #:40ants-doc-full/assets
-                #:replace-assets)
+  (:import-from #:40ants-doc-full/assets)
   (:import-from #:40ants-doc-full/external-index
                 #:write-references-index)
   (:import-from #:40ants-doc-full/commondoc/reference)
@@ -223,7 +222,7 @@
                        (40ants-doc-full/commondoc/xref::extract-symbols document)
                        document))
          (document (40ants-doc-full/commondoc/xref:fill-locatives document))
-         (document (replace-assets document))
+         (document (40ants-doc-full/assets::replace-assets document))
          (document (40ants-doc-full/commondoc/section::fill-html-fragments document))
          (document (40ants-doc-full/commondoc/page::warn-on-references-to-internals document))
          (document (if 40ants-doc-full/link:*document-link-code*
@@ -350,8 +349,8 @@
                 
                 (ensure-directories-exist absolute-dir)
 
-                (40ants-doc-full/commondoc/image:copy-local-images full-document
-                                                                     absolute-dir)
+                (40ants-doc-full/commondoc/image::copy-local-images full-document
+                                                                      absolute-dir)
 
                 (when (eql 40ants-doc-full/commondoc/format::*current-format* 'common-html:html)
                   (write-references-index (uiop:merge-pathnames* "references.json" absolute-dir)

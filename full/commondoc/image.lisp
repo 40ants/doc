@@ -20,8 +20,6 @@
   (:import-from #:serapeum
                 #:->)
   (:export #:local-image
-           #:copy-local-images
-           #:resolve-local-image-path
            #:width
            #:height))
 (in-package #:40ants-doc-full/commondoc/image)

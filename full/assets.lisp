@@ -1,16 +1,14 @@
 (uiop:define-package #:40ants-doc-full/assets
   (:use #:cl)
   (:import-from #:40ants-doc-full/commondoc/image
-                #:local-image
-                #:resolve-local-image-path)
+                #:local-image)
   (:import-from #:40ants-doc-full/commondoc/mapper
                 #:map-nodes)
   (:import-from #:40ants-doc-full/commondoc/xref
                 #:xref
                 #:xref-locative
                 #:xref-symbol)
-  (:export #:defasset
-           #:replace-assets))
+  (:export #:defasset))
 (in-package #:40ants-doc-full/assets)
 
 
@@ -99,7 +97,9 @@ Every unqualified occurrence of NAME in prose is rendered as an image."
 
 
 (defun validate-asset (asset)
-  (unless (probe-file (resolve-local-image-path (asset-source asset)))
+  (unless (probe-file
+           (40ants-doc-full/commondoc/image::resolve-local-image-path
+            (asset-source asset)))
     (error "Asset ~S source file does not exist: ~A"
            (asset-name asset)
            (asset-source asset)))
