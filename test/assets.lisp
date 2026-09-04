@@ -1,6 +1,5 @@
 (uiop:define-package #:40ants-doc-test/assets
-  (:use #:cl
-        #:40ants-doc/locatives)
+  (:use #:cl)
   (:import-from #:40ants-doc
                 #:defsection)
   (:import-from #:40ants-doc-full/assets
