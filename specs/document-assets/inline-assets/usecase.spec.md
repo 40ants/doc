@@ -142,13 +142,14 @@ outside this use case.
 | TC-003 | Missing source; DR-1 | Render a page using an absent source and assert an error. |
 | TC-004 | Unsafe target; DR-3, [SEC] | Render a page using `../` as a target and assert an error. |
 | TC-005 | Target collision; DR-3 | Render a page using one of two assets registered for the same target and assert an error. |
-| TC-006 | Regression | Run the complete `40ants-doc-test` ASDF suite. |
-| TC-007 | Static analysis | Run `40ants-linter` for core, full, and test systems with imports checking. |
+| TC-006 | Repeated asset; DR-5, [IDMP] | Render two occurrences and assert two image nodes sharing one target file. |
+| TC-007 | Regression | Run the complete `40ants-doc-test` ASDF suite. |
+| TC-008 | Static analysis | Run `40ants-linter` for core, full, and test systems with imports checking. |
 
 ## § QA Review
 
 - All acceptance criteria are covered by TC-001 through TC-005.
 - The negative scenarios cover missing input, unsafe traversal, and a duplicate
   output target.
-- IDMP is implemented through a target-keyed copy set; TC-001 and TC-002
-  exercise the common pre-render copying path in both supported formats.
+- IDMP is implemented through a target-keyed copy set; TC-006 verifies the
+  repeated-use case, while TC-001 and TC-002 exercise both output formats.

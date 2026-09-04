@@ -42,6 +42,10 @@
   "@TEST-ASSET.PNG")
 
 
+(defsection @repeated-asset-page (:export nil)
+  "@TEST-ASSET.PNG and @TEST-ASSET.PNG")
+
+
 (defsection @missing-asset-page (:export nil)
   "@MISSING-ASSET.PNG")
 
@@ -67,6 +71,14 @@
    :format format))
 
 
+(defun count-occurrences (needle text)
+  (loop with start = 0
+        for position = (search needle text :start2 start)
+        while position
+        count 1
+        do (setf start (+ position (length needle)))))
+
+
 (deftest test-asset-renders-to-html
   (multiple-value-bind (output-dir output-path)
       (render-asset-page :html "index")
@@ -85,6 +97,18 @@
     (testing "The asset has a page-relative Markdown image source"
       (ok (search "![@TEST-ASSET.PNG](../assets/test-rendering.png)"
                   (read-file-into-string output-path))))))
+
+
+(deftest test-repeated-asset-is-copied-to-one-target
+  (multiple-value-bind (output-dir output-path)
+      (render-to-files @repeated-asset-page
+                       :base-dir (make-test-output-directory)
+                       :format :markdown)
+    (testing "Each occurrence is rendered as an image"
+      (ok (= 2 (count-occurrences "![@TEST-ASSET.PNG](assets/test-rendering.png)"
+                                  (read-file-into-string output-path)))))
+    (testing "Repeated occurrences share one output target"
+      (ok (probe-file (merge-pathnames "assets/test-rendering.png" output-dir))))))
 
 
 (deftest test-missing-asset-is-rejected
