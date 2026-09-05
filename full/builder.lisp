@@ -75,7 +75,8 @@
   (40ants-doc-full/world::@world section))
 
 
-(defsection @rendering-multiple-formats (:title "Multiple Formats")
+(defsection @rendering-multiple-formats (:title "Multiple Formats"
+                                         :ignore-words ("PAGE"))
   "With 40ANTS-DOC you can render HTML and Markdown documentation simultaneously.
    This way, you can cross-reference entities from the README.md or ChangeLog.md to HTML docs.
 
@@ -211,8 +212,8 @@
 
 
 (defmethod 40ants-doc-full/commondoc/builder:to-commondoc
-    ((asset 40ants-doc-full/assets::asset))
-  (40ants-doc-full/assets::asset-to-local-image asset))
+    ((image 40ants-doc-full/assets::image))
+  (40ants-doc-full/assets::image-to-local-image image))
 
 
 ;;; Generate with the default HTML look
@@ -227,9 +228,9 @@
                     document
                     :predicate (if 40ants-doc-full/builder/printer:*document-uppercase-is-code*
                                    (constantly t)
-                                   #'40ants-doc-full/assets::asset-symbol-p)))
+                                   #'40ants-doc-full/assets::image-symbol-p)))
          (document (40ants-doc-full/commondoc/xref:fill-locatives document))
-         (document (40ants-doc-full/assets::replace-assets document))
+         (document (40ants-doc-full/assets::replace-images document))
          (document (40ants-doc-full/commondoc/section::fill-html-fragments document))
          (document (40ants-doc-full/commondoc/page::warn-on-references-to-internals document))
          (document (if 40ants-doc-full/link:*document-link-code*

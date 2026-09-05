@@ -67,7 +67,7 @@
                 #:width
                 #:local-image)
   (:import-from #:40ants-doc-full/assets
-                #:defasset)
+                #:defimage)
   (:import-from #:40ants-doc/object-package
                 #:object-package)
   (:export #:@index
@@ -109,7 +109,9 @@
       "3BMD"
       "PYTHONIC-STRING-READER"
       "DOCS-BUILDER"
-      "COMMON-DOC:DOCUMENT-NODE"))
+      "COMMON-DOC:DOCUMENT-NODE"
+      "DEFASSET"
+      "DEFIMAGE"))
 
 
   (defparameter *badges*
@@ -129,8 +131,9 @@
 </table>
 "))
 
-(defasset @logo.png "static/logo.png"
-  :description "40ants-doc logo")
+(defimage @logo.png "static/logo.png"
+  :description "40ants-doc logo"
+  :width 256)
 
 (defsection @index (:title "40Ants Doc Manual"
                     :ignore-words *ignore-words*)
@@ -691,14 +694,15 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
   (height (reader local-image)))
 
 
-(defsection @declaring-assets (:title "Declaring Assets")
-  "Use DEFASSET to declare a local image once and render it anywhere in
-   prose by writing its name. The asset is copied to the documentation
+(defsection @declaring-assets (:title "Declaring Images")
+  "Use DEFIMAGE to declare a local image once and render it anywhere in
+   prose by writing its name. The image is copied to the documentation
    output directory, and its name becomes an HTML or Markdown image
    depending on the target format.
 
    ```lisp
-   (defasset @demo.gif #\"static/demo.gif\")
+   (defimage @demo.gif #\"static/demo.gif\"
+     :width 240)
 
    (defsection @example ()
      \"Here is @DEMO.GIF.\"
@@ -709,8 +713,13 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
    By default, the source's relative pathname is retained below the
    output directory. Use the :TARGET-FILENAME option when the output
    name should differ. The target must stay below the output directory
-   and must be unique among declared assets."
-  (defasset macro))
+   and must be unique among declared images.
+
+   :WIDTH and :HEIGHT are positive pixel values. When only one is given, the
+   browser preserves the image's proportions. Markdown keeps ordinary image
+   syntax when no size is requested; with a size it
+   emits an HTML `<img>` tag, because standard Markdown has no dimensions."
+  (defimage macro))
 
 
 (defsection @reference-based-extensions

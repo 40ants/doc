@@ -2,9 +2,9 @@
 id: DOC-ASSET-INLINE-001
 type: use-case
 parent: DOC-ASSET
-title: "Render declared asset inline"
+title: "Render declared image inline"
 status: implemented
-change_class: additive
+change_class: breaking
 actors: [Library author, Documentation reader]
 emits: [AssetRegistered, AssetRendered]
 consumes: [AssetDeclaration, DocumentationSource]
@@ -14,12 +14,12 @@ owners:
   tester: "@codex"
 tags: [assets, inline-image, html, markdown]
 created: 2026-09-03
-updated: 2026-09-04
+updated: 2026-09-05
 ---
 
 ## § Intent
 
-A library author declares an image once and places its name in documentation so a documentation reader sees that image in the rendered format. If the declaration cannot be resolved safely, rendering stops instead of emitting a broken image.
+A library author declares an image once and places its name in documentation so a documentation reader sees that image in the rendered format and requested size. If the declaration cannot be resolved safely, rendering stops instead of emitting a broken image.
 
 ## § Domain Rules
 
@@ -30,6 +30,9 @@ A library author declares an image once and places its name in documentation so 
 - **DR-5**: Repeated occurrences of the same asset do not duplicate its output file.
 - **DR-6**: A declared asset name in prose is recognized even when implicit uppercase-code formatting is disabled.
 - **DR-7**: A declared asset symbol may be used directly as a DEFSECTION entry and becomes an image.
+- **DR-8**: `DEFIMAGE` is the sole declaration API; `DEFASSET` is unavailable.
+- **DR-9**: `:WIDTH` and `:HEIGHT` are positive pixel counts. Each supplied value is emitted as an image attribute; an omitted value is not emitted.
+- **DR-10**: Markdown without dimensions uses Markdown image syntax. Markdown with dimensions uses an HTML `img` element so both dimensions are preserved.
 
 ## § Acceptance Criteria
 
@@ -73,6 +76,12 @@ Scenario: Render an explicit asset entry (→ DR-2, DR-7)
   When the author renders documentation
   Then the page contains an image for @DEMO.GIF
 
+Scenario: Scale a declared image (→ DR-8, DR-9, DR-10)
+  Given an author has declared @DEMO.GIF with only :WIDTH 240
+  When the author renders HTML or Markdown documentation
+  Then the output contains width 240 and no height attribute
+    And Markdown contains an HTML img element
+
 Scenario: Reject an unusable declaration (→ DR-1, DR-3)
   Given an author has declared an asset with an absent source or unsafe output path
   When the author renders documentation containing its name
@@ -106,23 +115,25 @@ None.
 
 ### Public API
 
-`40ants-doc-full/assets:defasset` registers a symbol, a local pathname
+`40ants-doc-full/assets:defimage` registers a symbol, a local pathname
 designator, and optional `:target-filename`, `:description`, `:width`, and
-`:height` metadata. The default target is the source's relative pathname.
+`:height` metadata. Width and height are positive pixels. The default target is
+the source's relative pathname. Only explicitly supplied dimensions are emitted.
 
 ### Rendering pipeline
 
 1. The existing XREF pass recognizes dotted asset names such as `@DEMO.GIF`.
 2. When implicit uppercase-code formatting is disabled, the XREF pass extracts
    only registered asset names.
-3. `replace-assets` changes an XREF with a registered symbol into a
+3. `replace-images` changes an XREF with a registered symbol into a
    `local-image` node before normal XREF replacement.
 4. A registered symbol used directly as a DEFSECTION entry is transformed into
    its asset and then into a `local-image` by the builder.
 5. The builder copies all `local-image` nodes once per target before emitting
    pages, independent of the selected document format.
-6. HTML emits an `img` element and Markdown emits Markdown image syntax, both
-   calculated relative to the page being rendered.
+6. HTML emits an `img` element with supplied dimensions. Markdown emits Markdown
+   image syntax without dimensions and an HTML `img` element with dimensions,
+   all calculated relative to the page being rendered.
 
 ### Validation
 
@@ -133,7 +144,7 @@ target paths, and rejects targets registered by another asset name.
 
 ### File Map
 
-- `full/assets.lisp` — registry, `defasset`, validation, and XREF replacement.
+- `full/assets.lisp` — image registry, `defimage`, validation, and XREF replacement.
 - `full/commondoc/image.lisp` — shared pre-render copying and HTML/Markdown
   image emission.
 - `full/builder.lisp` — invokes asset replacement and the common copying step.
@@ -145,13 +156,13 @@ target paths, and rejects targets registered by another asset name.
 ### Trade-offs
 
 The registry is process-local, matching existing load-time documentation
-definitions. Asset names are symbol identities, so declarations are naturally
+definitions. Image names are symbol identities, so declarations are naturally
 scoped by package.
 
 ### Known Limitations
 
-Assets are local images in this version. Rich metadata and non-image files are
-outside this use case.
+Image dimensions are not read from source files; browsers preserve aspect ratio
+when only one HTML dimension is supplied.
 
 ## § Test Plan
 
@@ -167,10 +178,13 @@ outside this use case.
 | TC-008 | Static analysis | Run `40ants-linter` for core, full, and test systems with imports checking. |
 | TC-009 | DR-6 | Disable implicit uppercase-code formatting and assert a bare asset name is emitted as an image. |
 | TC-010 | DR-7 | Use an asset symbol directly in DEFSECTION and assert Markdown image output. |
+| TC-011 | DR-9 | Declare only `:WIDTH` and assert HTML contains no height attribute. |
+| TC-012 | DR-9 | Declare only `:HEIGHT` and assert HTML contains no width attribute. |
+| TC-013 | DR-10 | Declare both dimensions and assert Markdown emits a sized HTML `img`. |
 
 ## § QA Review
 
-- All acceptance criteria are covered by TC-001 through TC-010.
+- All acceptance criteria are covered by TC-001 through TC-013.
 - The negative scenarios cover missing input, unsafe traversal, and a duplicate
   output target.
 - IDMP is implemented through a target-keyed copy set; TC-006 verifies the

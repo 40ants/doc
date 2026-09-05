@@ -154,9 +154,13 @@
                               "*DOCUMENT-DOWNCASE-UPPERCASE-CODE*"
                               "*DOCUMENT-UPPERCASE-IS-CODE*"
                               "DEFASSET"
+                              "DEFIMAGE"
                               "CLEAN-URLS"
                               ;; These objects are not documented yet:
                               "40ANTS-DOC/COMMONDOC/XREF:XREF"))
+  (0.28.0 2026-09-05
+          "* Replaced DEFASSET with DEFIMAGE for declaring local documentation images.
+           * Added :WIDTH and :HEIGHT to DEFIMAGE. Only supplied image dimensions are emitted, allowing browsers to preserve proportions.")
   (0.27.0 2026-09-04
           "* Added DEFASSET for declaring local image assets that render in HTML and Markdown.
            * Declared assets can be included in prose or as standalone DEFSECTION entries, including when *DOCUMENT-UPPERCASE-IS-CODE* is disabled.")

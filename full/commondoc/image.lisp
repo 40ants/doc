@@ -263,6 +263,14 @@
 (defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
                                             (obj local-image)
                                             stream)
-  (format stream "![~A](~A)"
-          (common-doc:description obj)
-          (image-source obj)))
+  (let ((width (width obj))
+        (height (height obj)))
+    (if (or width height)
+        (format stream "<img src=\"~A\" alt=\"~A\"~@[ width=\"~A\"~]~@[ height=\"~A\"~]>"
+                (image-source obj)
+                (common-doc:description obj)
+                width
+                height)
+        (format stream "![~A](~A)"
+                (common-doc:description obj)
+                (image-source obj)))))
