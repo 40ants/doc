@@ -31,7 +31,7 @@ A library author declares an image once and places its name in documentation so 
 - **DR-6**: A declared asset name in prose is recognized even when implicit uppercase-code formatting is disabled.
 - **DR-7**: A declared asset symbol may be used directly as a DEFSECTION entry and becomes an image.
 - **DR-8**: `DEFIMAGE` is the sole declaration API; `DEFASSET` is unavailable.
-- **DR-9**: `:WIDTH` and `:HEIGHT` are positive pixel counts. If exactly one is supplied, the other is calculated from the source image's aspect ratio; if both are supplied, both are used.
+- **DR-9**: `:WIDTH` and `:HEIGHT` are positive pixel counts. Each supplied value is emitted as an image attribute; an omitted value is not emitted.
 - **DR-10**: Markdown without dimensions uses Markdown image syntax. Markdown with dimensions uses an HTML `img` element so both dimensions are preserved.
 
 ## § Acceptance Criteria
@@ -79,7 +79,7 @@ Scenario: Render an explicit asset entry (→ DR-2, DR-7)
 Scenario: Scale a declared image (→ DR-8, DR-9, DR-10)
   Given an author has declared @DEMO.GIF with only :WIDTH 240
   When the author renders HTML or Markdown documentation
-  Then the output contains width 240 and the height calculated from the source aspect ratio
+  Then the output contains width 240 and no height attribute
     And Markdown contains an HTML img element
 
 Scenario: Reject an unusable declaration (→ DR-1, DR-3)
@@ -118,7 +118,7 @@ None.
 `40ants-doc-full/assets:defimage` registers a symbol, a local pathname
 designator, and optional `:target-filename`, `:description`, `:width`, and
 `:height` metadata. Width and height are positive pixels. The default target is
-the source's relative pathname.
+the source's relative pathname. Only explicitly supplied dimensions are emitted.
 
 ### Rendering pipeline
 
@@ -131,9 +131,9 @@ the source's relative pathname.
    its asset and then into a `local-image` by the builder.
 5. The builder copies all `local-image` nodes once per target before emitting
    pages, independent of the selected document format.
-6. HTML emits an `img` element. Markdown emits Markdown image syntax without
-   dimensions and an HTML `img` element with dimensions, all calculated
-   relative to the page being rendered.
+6. HTML emits an `img` element with supplied dimensions. Markdown emits Markdown
+   image syntax without dimensions and an HTML `img` element with dimensions,
+   all calculated relative to the page being rendered.
 
 ### Validation
 
@@ -161,8 +161,8 @@ scoped by package.
 
 ### Known Limitations
 
-Only PNG, GIF, and JPEG sources can have a missing dimension inferred. Rich
-metadata and non-image files are outside this use case.
+Image dimensions are not read from source files; browsers preserve aspect ratio
+when only one HTML dimension is supplied.
 
 ## § Test Plan
 
@@ -178,8 +178,8 @@ metadata and non-image files are outside this use case.
 | TC-008 | Static analysis | Run `40ants-linter` for core, full, and test systems with imports checking. |
 | TC-009 | DR-6 | Disable implicit uppercase-code formatting and assert a bare asset name is emitted as an image. |
 | TC-010 | DR-7 | Use an asset symbol directly in DEFSECTION and assert Markdown image output. |
-| TC-011 | DR-9 | Declare only `:WIDTH` and assert the inferred HTML height. |
-| TC-012 | DR-9 | Declare only `:HEIGHT` and assert the inferred HTML width. |
+| TC-011 | DR-9 | Declare only `:WIDTH` and assert HTML contains no height attribute. |
+| TC-012 | DR-9 | Declare only `:HEIGHT` and assert HTML contains no width attribute. |
 | TC-013 | DR-10 | Declare both dimensions and assert Markdown emits a sized HTML `img`. |
 
 ## § QA Review

@@ -101,8 +101,8 @@ SOURCE is a pathname designator.  By default, the file is copied to the
 same relative pathname below the documentation output directory.  Use
 :TARGET-FILENAME to choose another relative output pathname.
 
-:WIDTH and :HEIGHT are positive pixel values. If exactly one is supplied,
-the other is calculated from the source image's aspect ratio.
+:WIDTH and :HEIGHT are positive pixel values. Only supplied dimensions are
+emitted, so browsers preserve the image's aspect ratio when one is omitted.
 
 Every unqualified occurrence of NAME in prose is rendered as an image."
   (check-type name symbol)

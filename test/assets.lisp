@@ -133,16 +133,16 @@
                   (read-file-into-string output-path))))))
 
 
-(deftest test-image-width-preserves-aspect-ratio-in-html
+(deftest test-image-width-is-emitted-without-height-in-html
   (multiple-value-bind (output-dir output-path)
       (render-to-files @scaled-asset-page
                        :base-dir (make-test-output-directory)
                        :format :html)
     (declare (ignore output-dir))
-    (testing "A width-only declaration infers the source image height"
+    (testing "A width-only declaration does not emit height"
       (let ((output (read-file-into-string output-path)))
         (ok (search "width=240" output))
-        (ok (search "height=240" output))))))
+        (ok (not (search "height=240" output)))))))
 
 
 (deftest test-image-dimensions-use-html-in-markdown
@@ -156,15 +156,15 @@
                   (read-file-into-string output-path))))))
 
 
-(deftest test-image-height-preserves-aspect-ratio-in-html
+(deftest test-image-height-is-emitted-without-width-in-html
   (multiple-value-bind (output-dir output-path)
       (render-to-files @height-asset-page
                        :base-dir (make-test-output-directory)
                        :format :html)
     (declare (ignore output-dir))
-    (testing "A height-only declaration infers the source image width"
+    (testing "A height-only declaration does not emit width"
       (let ((output (read-file-into-string output-path)))
-        (ok (search "width=180" output))
+        (ok (not (search "width=180" output)))
         (ok (search "height=180" output))))))
 
 

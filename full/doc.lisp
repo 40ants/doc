@@ -715,9 +715,9 @@ See full list of changes in the 40ANTS-DOC/CHANGELOG::@CHANGELOG section.
    name should differ. The target must stay below the output directory
    and must be unique among declared images.
 
-   :WIDTH and :HEIGHT are positive pixel values. When only one is given,
-   the other is calculated from the source image's proportions. Markdown
-   keeps ordinary image syntax when no size is requested; with a size it
+   :WIDTH and :HEIGHT are positive pixel values. When only one is given, the
+   browser preserves the image's proportions. Markdown keeps ordinary image
+   syntax when no size is requested; with a size it
    emits an HTML `<img>` tag, because standard Markdown has no dimensions."
   (defimage macro))
 
