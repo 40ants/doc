@@ -157,6 +157,113 @@
      :height height)))
 
 
+(defun unsigned-16-bit-big-endian (bytes offset)
+  (+ (ash (aref bytes offset) 8)
+     (aref bytes (1+ offset))))
+
+
+(defun unsigned-32-bit-big-endian (bytes offset)
+  (+ (ash (aref bytes offset) 24)
+     (ash (aref bytes (+ offset 1)) 16)
+     (ash (aref bytes (+ offset 2)) 8)
+     (aref bytes (+ offset 3))))
+
+
+(defun unsigned-16-bit-little-endian (bytes offset)
+  (+ (aref bytes offset)
+     (ash (aref bytes (1+ offset)) 8)))
+
+
+(defun png-dimensions (header)
+  (when (and (>= (length header) 24)
+             (equalp (subseq header 0 8)
+                     #(137 80 78 71 13 10 26 10)))
+    (values (unsigned-32-bit-big-endian header 16)
+            (unsigned-32-bit-big-endian header 20))))
+
+
+(defun gif-dimensions (header)
+  (when (and (>= (length header) 10)
+             (or (equalp (subseq header 0 6) #(71 73 70 56 55 97))
+                 (equalp (subseq header 0 6) #(71 73 70 56 57 97))))
+    (values (unsigned-16-bit-little-endian header 6)
+            (unsigned-16-bit-little-endian header 8))))
+
+
+(defun read-octet (stream)
+  (or (read-byte stream nil)
+      (error "Unexpected end of image file.")))
+
+
+(defun read-unsigned-16-bit-big-endian (stream)
+  (+ (ash (read-octet stream) 8)
+     (read-octet stream)))
+
+
+(defun jpeg-dimensions (stream)
+  (when (and (= (read-octet stream) #xff)
+             (= (read-octet stream) #xd8))
+    (loop for marker = (loop for octet = (read-octet stream)
+                             until (/= octet #xff)
+                             finally (return octet))
+          until (= marker #xd9)
+          unless (or (= marker #x01)
+                     (<= #xd0 marker #xd7))
+            do (let ((length (read-unsigned-16-bit-big-endian stream)))
+                 (when (< length 2)
+                   (error "Invalid JPEG segment length."))
+                 (if (member marker '(#xc0 #xc1 #xc2 #xc3
+                                      #xc5 #xc6 #xc7
+                                      #xc9 #xca #xcb
+                                      #xcd #xce #xcf))
+                     (progn
+                       (read-octet stream)
+                       (let ((height (read-unsigned-16-bit-big-endian stream))
+                             (width (read-unsigned-16-bit-big-endian stream)))
+                         (return (values width height))))
+                     (file-position stream (+ (file-position stream)
+                                              (- length 2))))))))
+
+
+(defun image-dimensions (path)
+  "Return the pixel width and height of PNG, GIF, or JPEG PATH."
+  (with-open-file (stream path :element-type '(unsigned-byte 8))
+    (let ((header (make-array 24 :element-type '(unsigned-byte 8)))
+          (bytes-read 0))
+      (setf bytes-read (read-sequence header stream))
+      (multiple-value-bind (width height)
+          (png-dimensions (subseq header 0 bytes-read))
+        (if width
+            (values width height)
+            (multiple-value-bind (width height)
+                (gif-dimensions (subseq header 0 bytes-read))
+              (if width
+                  (values width height)
+                  (progn
+                    (file-position stream 0)
+                    (jpeg-dimensions stream)))))))))
+
+
+(defun rendered-dimensions (image)
+  "Return IMAGE dimensions, inferring the missing pixel dimension when possible."
+  (let ((width (width image))
+        (height (height image)))
+    (cond
+      ((and (or width height)
+            (or (null width) (null height))
+            (or (integerp width) (integerp height)))
+       (multiple-value-bind (source-width source-height)
+           (image-dimensions (common-doc:source image))
+         (unless (and source-width source-height)
+           (error "Unable to determine dimensions of image ~A."
+                  (common-doc:source image)))
+         (if width
+             (values width (round (* width source-height) source-width))
+             (values (round (* height source-width) source-height) height))))
+      (t
+       (values width height)))))
+
+
 (defun replace-images (document)
   (flet ((replacer (node)
            (typecase node
@@ -252,17 +359,27 @@
                         new-source)
                 new-source))
          (description (common-doc:description obj)))
-    (with-html
-      (:img :src src
-            :alt description
-            :title description
-            :width (width obj)
-            :height (height obj)))))
+    (multiple-value-bind (width height)
+        (rendered-dimensions obj)
+      (with-html
+        (:img :src src
+              :alt description
+              :title description
+              :width width
+              :height height)))))
 
 
 (defmethod common-doc.format:emit-document ((format commondoc-markdown:markdown)
                                             (obj local-image)
                                             stream)
-  (format stream "![~A](~A)"
-          (common-doc:description obj)
-          (image-source obj)))
+  (multiple-value-bind (width height)
+      (rendered-dimensions obj)
+    (if (or width height)
+        (format stream "<img src=\"~A\" alt=\"~A\"~@[ width=\"~A\"~]~@[ height=\"~A\"~]>"
+                (image-source obj)
+                (common-doc:description obj)
+                width
+                height)
+        (format stream "![~A](~A)"
+                (common-doc:description obj)
+                (image-source obj)))))

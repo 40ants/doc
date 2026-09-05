@@ -8,31 +8,33 @@
                 #:xref
                 #:xref-locative
                 #:xref-symbol)
-  (:export #:defasset))
+  (:export #:defimage))
 (in-package #:40ants-doc-full/assets)
 
 
-(defclass asset ()
+(defclass image ()
   ((name :initarg :name
-         :reader asset-name)
+         :reader image-name)
    (source :initarg :source
-           :reader asset-source)
+           :reader image-source)
    (target-filename :initarg :target-filename
-                    :reader asset-target-filename)
+                    :reader image-target-filename)
    (description :initarg :description
-                :reader asset-description)
+                :reader image-description)
    (width :initarg :width
           :initform nil
-          :reader asset-width)
+          :type (or null (integer 1 *))
+          :reader image-width)
    (height :initarg :height
            :initform nil
-           :reader asset-height)))
+           :type (or null (integer 1 *))
+           :reader image-height)))
 
 
-(defun make-asset (name source target-filename description &rest restargs
+(defun make-image (name source target-filename description &rest restargs
                     &key width height)
   (declare (ignore width height))
-  (apply #'make-instance 'asset
+  (apply #'make-instance 'image
          :name name
          :source source
          :target-filename target-filename
@@ -40,67 +42,72 @@
          restargs))
 
 
-(defvar *assets* (make-hash-table :test #'eq))
+(defvar *images* (make-hash-table :test #'eq))
 
 
-(defun asset-symbol-p (symbol)
-  (not (null (gethash symbol *assets*))))
+(defun image-symbol-p (symbol)
+  (not (null (gethash symbol *images*))))
 
 
 (defmethod 40ants-doc::transform-symbol-entry :around ((entry symbol))
-  (or (gethash entry *assets*)
+  (or (gethash entry *images*)
       (call-next-method)))
 
 
-(defmethod 40ants-doc/object-package::object-package ((asset asset))
-  (symbol-package (asset-name asset)))
+(defmethod 40ants-doc/object-package::object-package ((image image))
+  (symbol-package (image-name image)))
 
 
 (defun pathname-designator-string (pathname-designator)
   (namestring (pathname pathname-designator)))
 
 
-(defun register-asset (name source &key target-filename description width height)
+(defun register-image (name source &key target-filename description width height)
   (check-type name symbol)
   (check-type source (or string pathname))
+  (check-type width (or null (integer 1 *)))
+  (check-type height (or null (integer 1 *)))
 
   (let* ((source (pathname-designator-string source))
          (target-filename (pathname-designator-string
                            (or target-filename source)))
          (description (or description
                           (symbol-name name)))
-         (new-asset (make-asset name source target-filename description
+         (new-image (make-image name source target-filename description
                                 :width width
                                 :height height))
-         (old-asset (gethash name *assets*)))
-    (when (and old-asset
-               (not (and (string= (asset-source old-asset)
-                                  (asset-source new-asset))
-                         (string= (asset-target-filename old-asset)
-                                  (asset-target-filename new-asset))
-                         (string= (asset-description old-asset)
-                                  (asset-description new-asset))
-                         (equal (asset-width old-asset)
-                                (asset-width new-asset))
-                         (equal (asset-height old-asset)
-                                (asset-height new-asset)))))
-      (error "Asset ~S is already registered with different properties."
+         (old-image (gethash name *images*)))
+    (when (and old-image
+               (not (and (string= (image-source old-image)
+                                  (image-source new-image))
+                         (string= (image-target-filename old-image)
+                                  (image-target-filename new-image))
+                         (string= (image-description old-image)
+                                  (image-description new-image))
+                         (equal (image-width old-image)
+                                (image-width new-image))
+                         (equal (image-height old-image)
+                                (image-height new-image)))))
+      (error "Image ~S is already registered with different properties."
              name))
-    (setf (gethash name *assets*) new-asset)
-    new-asset))
+    (setf (gethash name *images*) new-image)
+    new-image))
 
 
-(defmacro defasset (name source &rest args)
+(defmacro defimage (name source &rest args)
   "Register NAME as a local image used in documentation.
 
 SOURCE is a pathname designator.  By default, the file is copied to the
 same relative pathname below the documentation output directory.  Use
 :TARGET-FILENAME to choose another relative output pathname.
 
+:WIDTH and :HEIGHT are positive pixel values. If exactly one is supplied,
+the other is calculated from the source image's aspect ratio.
+
 Every unqualified occurrence of NAME in prose is rendered as an image."
   (check-type name symbol)
   `(eval-when (:compile-toplevel :load-toplevel :execute)
-     (register-asset ',name ,source ,@args)))
+     (register-image ',name ,source ,@args)))
 
 
 (defun safe-target-filename-p (target-filename)
@@ -109,48 +116,48 @@ Every unqualified occurrence of NAME in prose is rendered as an image."
          (not (member :up (pathname-directory pathname))))))
 
 
-(defun validate-asset (asset)
+(defun validate-image (image)
   (unless (probe-file
            (40ants-doc-full/commondoc/image::resolve-local-image-path
-            (asset-source asset)))
-    (error "Asset ~S source file does not exist: ~A"
-           (asset-name asset)
-           (asset-source asset)))
+            (image-source image)))
+    (error "Image ~S source file does not exist: ~A"
+           (image-name image)
+           (image-source image)))
 
-  (unless (safe-target-filename-p (asset-target-filename asset))
-    (error "Asset ~S target filename is not below the output directory: ~A"
-           (asset-name asset)
-           (asset-target-filename asset)))
+  (unless (safe-target-filename-p (image-target-filename image))
+    (error "Image ~S target filename is not below the output directory: ~A"
+           (image-name image)
+           (image-target-filename image)))
 
-  (maphash (lambda (name other-asset)
-             (when (and (not (eq name (asset-name asset)))
-                        (string= (asset-target-filename other-asset)
-                                 (asset-target-filename asset)))
-               (error "Assets ~S and ~S use the same target filename: ~A"
-                      (asset-name asset)
+  (maphash (lambda (name other-image)
+             (when (and (not (eq name (image-name image)))
+                        (string= (image-target-filename other-image)
+                                 (image-target-filename image)))
+               (error "Images ~S and ~S use the same target filename: ~A"
+                      (image-name image)
                       name
-                      (asset-target-filename asset))))
-           *assets*)
-  asset)
+                      (image-target-filename image))))
+           *images*)
+  image)
 
 
-(defun asset-to-local-image (asset)
-  (validate-asset asset)
-  (local-image (asset-source asset)
-               :target-filename (asset-target-filename asset)
-               :description (asset-description asset)
-               :width (asset-width asset)
-               :height (asset-height asset)))
+(defun image-to-local-image (image)
+  (validate-image image)
+  (local-image (image-source image)
+               :target-filename (image-target-filename image)
+               :description (image-description image)
+               :width (image-width image)
+               :height (image-height image)))
 
 
-(defun replace-assets (document)
-  "Replace XREF nodes naming registered assets with local image nodes."
+(defun replace-images (document)
+  "Replace XREF nodes naming registered images with local image nodes."
   (map-nodes document
              (lambda (node)
                (if (and (typep node 'xref)
                         (null (xref-locative node)))
-                   (let ((asset (gethash (xref-symbol node) *assets*)))
-                     (if asset
-                         (asset-to-local-image asset)
+                   (let ((image (gethash (xref-symbol node) *images*)))
+                     (if image
+                         (image-to-local-image image)
                          node))
                    node))))

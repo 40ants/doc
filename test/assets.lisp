@@ -3,7 +3,7 @@
   (:import-from #:40ants-doc
                 #:defsection)
   (:import-from #:40ants-doc-full/assets
-                #:defasset)
+                #:defimage)
   (:import-from #:40ants-doc-full/builder
                 #:render-to-files)
   (:import-from #:40ants-doc-full/builder/printer
@@ -18,23 +18,39 @@
 (in-package #:40ants-doc-test/assets)
 
 
-(defasset @test-asset.png
+(defimage @test-asset.png
   "static/rendering.png"
   :target-filename "assets/test-rendering.png")
 
-(defasset @missing-asset.png
+(defimage @scaled-asset.png
+  "static/rendering.png"
+  :target-filename "assets/scaled-rendering.png"
+  :width 240)
+
+(defimage @fixed-size-asset.png
+  "static/rendering.png"
+  :target-filename "assets/fixed-size-rendering.png"
+  :width 320
+  :height 180)
+
+(defimage @height-asset.png
+  "static/rendering.png"
+  :target-filename "assets/height-rendering.png"
+  :height 180)
+
+(defimage @missing-asset.png
   "test/data/does-not-exist.png"
   :target-filename "assets/missing.png")
 
-(defasset @unsafe-asset.png
+(defimage @unsafe-asset.png
   #.(asdf:system-relative-pathname :40ants-doc "static/rendering.png")
   :target-filename "../outside.png")
 
-(defasset @colliding-asset-a.png
+(defimage @colliding-asset-a.png
   #.(asdf:system-relative-pathname :40ants-doc "static/rendering.png")
   :target-filename "assets/collision.png")
 
-(defasset @colliding-asset-b.png
+(defimage @colliding-asset-b.png
   #.(asdf:system-relative-pathname :40ants-doc "static/rendering.png")
   :target-filename "assets/collision.png")
 
@@ -50,6 +66,18 @@
 (defsection @explicit-asset-page (:export nil)
   "Here is:"
   @test-asset.png)
+
+
+(defsection @scaled-asset-page (:export nil)
+  "@SCALED-ASSET.PNG")
+
+
+(defsection @fixed-size-asset-page (:export nil)
+  "@FIXED-SIZE-ASSET.PNG")
+
+
+(defsection @height-asset-page (:export nil)
+  "@HEIGHT-ASSET.PNG")
 
 
 (defsection @missing-asset-page (:export nil)
@@ -103,6 +131,41 @@
     (testing "The asset has a page-relative Markdown image source"
       (ok (search "![@TEST-ASSET.PNG](../assets/test-rendering.png)"
                   (read-file-into-string output-path))))))
+
+
+(deftest test-image-width-preserves-aspect-ratio-in-html
+  (multiple-value-bind (output-dir output-path)
+      (render-to-files @scaled-asset-page
+                       :base-dir (make-test-output-directory)
+                       :format :html)
+    (declare (ignore output-dir))
+    (testing "A width-only declaration infers the source image height"
+      (let ((output (read-file-into-string output-path)))
+        (ok (search "width=240" output))
+        (ok (search "height=240" output))))))
+
+
+(deftest test-image-dimensions-use-html-in-markdown
+  (multiple-value-bind (output-dir output-path)
+      (render-to-files @fixed-size-asset-page
+                       :base-dir (make-test-output-directory)
+                       :format :markdown)
+    (declare (ignore output-dir))
+    (testing "Markdown uses HTML to retain both dimensions"
+      (ok (search "<img src=\"assets/fixed-size-rendering.png\" alt=\"@FIXED-SIZE-ASSET.PNG\" width=\"320\" height=\"180\">"
+                  (read-file-into-string output-path))))))
+
+
+(deftest test-image-height-preserves-aspect-ratio-in-html
+  (multiple-value-bind (output-dir output-path)
+      (render-to-files @height-asset-page
+                       :base-dir (make-test-output-directory)
+                       :format :html)
+    (declare (ignore output-dir))
+    (testing "A height-only declaration infers the source image width"
+      (let ((output (read-file-into-string output-path)))
+        (ok (search "width=180" output))
+        (ok (search "height=180" output))))))
 
 
 (deftest test-repeated-asset-is-copied-to-one-target
